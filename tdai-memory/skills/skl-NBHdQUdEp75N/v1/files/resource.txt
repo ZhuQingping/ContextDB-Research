@@ -1,0 +1,2 @@
+TencentDB Agent Memory Skill 验收资源：ACCSKL-1789825507-Nova
+只允许 owner agent 复用。

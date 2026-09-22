@@ -1,0 +1,14 @@
+{
+  "last_captured_timestamp": 0,
+  "total_processed": 0,
+  "last_persona_at": 0,
+  "last_persona_time": "2026-09-22T09:32:05.134Z",
+  "request_persona_update": false,
+  "persona_update_reason": "",
+  "memories_since_last_persona": 42,
+  "scenes_processed": 25,
+  "runner_states": {},
+  "pipeline_states": {},
+  "l0_conversations_count": 0,
+  "total_memories_extracted": 96
+}
