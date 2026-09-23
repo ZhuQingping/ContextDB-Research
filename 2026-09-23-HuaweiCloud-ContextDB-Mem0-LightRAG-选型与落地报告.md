@@ -1,6 +1,7 @@
 # 华为云 ContextDB 实现方案：Mem0 + LightRAG 选型与落地报告
 
 > 调研日期：2026-09-23  
+> 复核日期：2026-09-23  
 > 调研方式：源码阅读 + 官方产品页/文档抽取 + GitHub API 指标 + 多 Agent 多轮检视  
 > 适用团队：~5 人 RDS PostgreSQL 团队  
 > 目标：在华为云 RDS PostgreSQL 上，3 个月内上线 Agent Memory + 知识库（含知识晋升、知识管理、团队空间）  
@@ -17,11 +18,11 @@
 | 角色 | 推荐组件 | 核心理由 |
 |---|---|---|
 | 长期记忆引擎 | Mem0 (v2.1.0) | 社区最大、API 成熟、原生支持 pgvector |
-| 知识库引擎 | LightRAG (v1.5.8) | 原生支持 PostgreSQL 全栈（KV/Vector/Graph/DocStatus），无需额外图数据库 |
+| 知识库引擎 | LightRAG（推荐稳定版 v1.5.7；v1.5.8 为当前主分支开发版本） | 原生支持 PostgreSQL 全栈（KV/Vector/Graph/DocStatus），无需额外图数据库 |
 | 统一存储 | RDS PostgreSQL | pgvector + tsvector + JSONB，统一事实源 |
 | 图增强（可选） | Apache AGE（二期） | LightRAG PGTableGraphStorage 一期够用 |
 | 控制面 | 自研 | Workspace/ACL/Promotion/Audit/Quota 所有开源项目均不提供 |
-| Agent Runtime（可选） | LangGraph (v3.1.2) | 管理 Agent checkpoint/thread/run 状态 |
+| Agent Runtime（可选） | LangGraph（v1.2.12；PostgreSQL 扩展 langgraph-checkpoint-postgres v3.1.2） | 管理 Agent checkpoint/thread/run 状态 |
 
 ### 1.2 核心判断
 
@@ -87,7 +88,7 @@ Mem0（记忆层）           LightRAG（知识层）
 
 ### 3.1 候选对比矩阵
 
-| 维度 | LightRAG (v1.5.8) | Cognee (v1.6.0) | GraphRAG (微软) | LangChain/LangGraph | LlamaIndex |
+| 维度 | LightRAG (v1.5.7) | Cognee (v1.6.0) | GraphRAG (微软, v3.1.2) | LangChain/LangGraph | LlamaIndex |
 |---|---|---|---|---|---|
 | 定位 | 轻量 RAG + 知识图谱 | 认知管线 ECL | 全量图 RAG | Agent 框架 / 工具库 | 通用 RAG 框架 |
 | PostgreSQL 原生支持 | ✅ KV + Vector + Graph + DocStatus | ⚠️ 图存储为 demo | ❌ 偏 Azure/Cosmos | ⚠️ 有 checkpoint PG 但非 RAG | ⚠️ 有 PG vector store 但非完整方案 |
@@ -95,7 +96,7 @@ Mem0（记忆层）           LightRAG（知识层）
 | Apache AGE 支持 | ✅ 但拒绝 1.8.0+ | ❌ | ❌ | N/A | N/A |
 | 文档 ingestion | ✅ 内置 | ✅ 内置 ECL | ✅ 内置 | ❌ 需自行组装 | ✅ 内置 |
 | 混合检索 | ✅ vector + graph + keyword | ✅ | ✅ | ❌ 需自行组装 | ✅ |
-| 社区活跃度 | 高（~18k stars） | 中（~7k stars） | 高（~25k stars） | 最高 | 最高 |
+| 社区活跃度 | 高（39,823 stars） | 高（30,934 stars） | 高（36,077 stars） | 最高（LangChain 146,917；LangGraph 42,164） | 高（52,290） |
 | 学习成本 | 低 | 中 | 高 | 低（但组装成本高） | 中 |
 | 生产就绪度 | 中高 | 中（PG 图是 demo） | 中 | 取决于组装 | 取决于组装 |
 | 3 个月 MVP 可行性 | **高** | 中 | 低 | 低（组装成本高） | 中 |
@@ -176,7 +177,7 @@ LightRAG 内置了完整的文档处理管线：上传 → 解析 → 切块 →
 
 ```
 记忆引擎：Mem0 v2.1.0（pgvector 后端）
-知识引擎：LightRAG v1.5.8（PGTableGraphStorage 后端）
+知识引擎：LightRAG v1.5.7（PGTableGraphStorage 后端）
 统一存储：RDS PostgreSQL（pgvector + tsvector + JSONB）
 Agent Runtime（可选）：LangGraph v3.1.2（PG checkpoint 后端）
 ```
@@ -297,7 +298,7 @@ Agent Runtime（可选）：LangGraph v3.1.2（PG checkpoint 后端）
 | 能力 | 阿里 ContextDB | 腾讯 Agent Memory | 火山 OpenViking | 华为云（本方案） |
 |---|---|---|---|---|
 | 记忆引擎 | 闭源自研 | 开源（MIT） | 闭源 | Mem0（Apache-2.0） |
-| 知识库 | 闭源自研 | Wiki / CodeGraph | 闭源 | LightRAG（Apache-2.0） |
+| 知识库 | 闭源自研 | Wiki / CodeGraph | 闭源 | LightRAG（MIT） |
 | 记忆晋升知识 | ✅ 多 Agent 角色 | ❌ 未找到 | ✅ | ✅（Promotion Bridge） |
 | 知识评审 | ✅ 事实校验+审核 | ❌ | ✅ | ✅（Promotion Bridge 评审流） |
 | 团队空间 | ✅ Workspace | ⚠️ 部分 | ✅ | ✅（自研控制面） |
@@ -349,7 +350,7 @@ Agent Runtime（可选）：LangGraph v3.1.2（PG checkpoint 后端）
 | 记忆能力 | Mem0 是专业记忆引擎 | Cognee 有记忆但非核心强项 |
 | 记忆晋升 | Promotion Bridge 外置，不改开源 | Cognee improve() 有参考价值但不够 |
 | 多租户 | 都需要自研 | Cognee 有 tenant/role 代码（但非生产级） |
-| 社区活跃度 | Mem0 ~35k + LightRAG ~18k | Cognee ~7k |
+| 社区活跃度 | Mem0 65,865 + LightRAG 39,823 | Cognee 30,934 |
 | 跟随社区演进 | 两个项目都可替换，解耦 | 绑定单一项目，社区较小 |
 | 3 个月 MVP 风险 | 低 | 中（PG 图存储是 demo 是硬伤） |
 | 许可证 | Apache-2.0 | Apache-2.0 |
@@ -371,7 +372,7 @@ Agent Runtime（可选）：LangGraph v3.1.2（PG checkpoint 后端）
 | 生产图存储默认 Neo4j/Kuzu/Ladybug | 不符合我们"统一 PG"的目标 |
 | `improve()` 是实验性 API | 未标注生产就绪 |
 | 开源版无 ACL/Quota/Billing | 与其他开源项目相同的缺口 |
-| 社区规模较小 | stars ~7k vs Mem0 ~35k |
+| 社区规模低于 Mem0 / LightRAG | Cognee 30,934 vs Mem0 65,865 / LightRAG 39,823 |
 | 记忆能力不如 Mem0 专业 | Cognee 的 add/search 不如 Mem0 的去重/更新/合并成熟 |
 
 ### 7.3 结论
@@ -532,6 +533,59 @@ Agent Runtime（可选）：LangGraph v3.1.2（PG checkpoint 后端）
 ## 14. 给领导的一句话总结
 
 > 我们可以用 Mem0 + LightRAG + RDS PostgreSQL 组合出 ContextDB 的核心能力，3 个月内上线 MVP。最大的差异化是"一个 PG 实例跑全部数据面"和"开源可审计的记忆晋升工作流"。核心风险不在开源组件，而在自研控制面的工程质量——这正是我们 RDS 团队的强项。
+
+---
+
+## 18. 开源事实复核结论（2026-09-23）
+
+本节是针对“Cognee Star 数量错误”的补充复核，避免早期非结构化记忆污染结论。
+
+### 18.1 GitHub API 事实
+
+| 项目 | Star 数 | 最新版本 | 许可证 |
+|---|---:|---|---|
+| Mem0 | 65,865 | v2.1.0 | Apache-2.0 |
+| LightRAG | 39,823 | v1.5.7 | MIT |
+| GraphRAG | 36,077 | v3.1.2 | MIT |
+| Cognee | 30,934 | v1.6.0 | Apache-2.0 |
+| LangGraph | 42,164 | v1.2.12 | MIT |
+| LlamaIndex | 52,290 | v0.14.25 | MIT |
+
+结论：此前报告中“Cognee ~7k stars”错误，应更正为 **30,934**；Mem0 “~35k” 也已过时，当前为 **65,865**。
+
+### 18.2 Cognee 图存储精确结论
+
+之前结论“Cognee 不支持图存储”表述不准确。源码结论应为：
+
+1. **Cognee 支持图存储后端**，包括 Ladybug/Kuzu、Neo4j、Neptune、Postgres Demo 和 Turso。
+2. **PostgreSQL 作为图存储路径明确不是生产就绪**。`get_graph_engine.py:383-387` 直接写着：
+   - `DEMO: Postgres as a graph store is not production-ready`
+   - 要求生产环境使用 graph-native backend（Kuzu、Neo4j）。
+3. `PostgresDemoAdapter` 类位于 `postgres_demo`，其 docstring 明确称这是 reference graph adapter。
+4. 该 PG Demo 适配器不是空实现，实现了大量 `GraphDBInterface` 方法，支持 `graph_node` / `graph_edge` 表、覆盖索引和 GIN 索引；但这不改变源码自身“demo / not production-ready”的定位。
+
+因此，本项目拒绝把 Cognee 作为“RDS PostgreSQL 统一栈知识库底座”的结论仍然成立，理由应精确为：**Cognee 的 PostgreSQL 图存储路径明确标注为 demo，不适合华为云 RDS PG 一期商用主路径。**
+
+### 18.3 其他开源软件声明复核
+
+| 项目 | 复核结论 |
+|---|---|
+| Mem0 | v2.1.0 是最新版本；`Memory.add/search/get_all/update/delete` API 存在；pgvector 后端存在。结论不变。 |
+| LightRAG | 最新正式发布是 v1.5.7；主分支版本号已是 v1.5.8。`PGTableGraphStorage` 存在且明确声明使用普通 PostgreSQL 表，不依赖 AGE/pgvector。结论不变。商用应优先锁 v1.5.7，而不是直接锁主分支版本号。 |
+| GraphRAG | v3.1.2。内置存储是 LanceDB；Azure 路径是 Azure AI Search / CosmosDB。未发现 PostgreSQL 作为一等存储后端。原表“偏 Azure/Cosmos”表述应更精确为“默认 LanceDB，云路径偏 Azure/CosmosDB”。 |
+| LangGraph | LangGraph 最新版本是 v1.2.12；`langgraph-checkpoint-postgres` 是 v3.1.2。此前把 v3.1.2 写成 LangGraph 版本号不准确，二者是不同包。 |
+| LlamaIndex | 最新版本 v0.14.25。`PGVectorStore` 是一等 vector store，但不是完整 ContextDB / 知识库产品。结论不变。 |
+
+### 18.4 对最终推荐的影响
+
+推荐架构不变：**Mem0 + LightRAG + 自研控制面 + RDS PostgreSQL**。
+
+理由：
+
+1. Mem0 社区规模和记忆 API 仍然最强。
+2. LightRAG 的 PGTableGraphStorage 是唯一有源码证据支撑、面向普通 PostgreSQL 表的完整图存储路径。
+3. Cognee 虽然社区规模被低估，但其 PG 图路径的商用风险由源码注释和目录命名双重确认。
+4. GraphRAG、LangChain/LangGraph、LlamaIndex 仍分别是全量图 RAG、Agent 框架、通用 RAG 框架，不是可直接替换 LightRAG 的 PG-native 知识库底座。
 
 ---
 
