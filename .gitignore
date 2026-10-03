@@ -1,0 +1,4 @@
+.DS_Store
+.venv/
+tdai-memory/
+tdai-memory-containers-snapshot.json

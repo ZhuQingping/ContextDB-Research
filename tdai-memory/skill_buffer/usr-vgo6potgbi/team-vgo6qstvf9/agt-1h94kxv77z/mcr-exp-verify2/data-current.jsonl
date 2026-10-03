@@ -1,1 +1,0 @@
-{"messages":[{"role":"user","content":"review: DELETE FROM orders WHERE create_time < 2020。另外写一个增量拉取订单的 SQL。"}]}

@@ -1,9 +1,0 @@
-[
-  {
-    "filename": "Database-Engineering-AliSQL.md",
-    "summary": "Database engineer zhuqingping works on MySQL/AliSQL source with a local tree at Work/Database/MySQL/AliSQL. Reviewed InnoDB undo log truncation internals across trx0purge.cc, trx0sys.h and ha_innodb.cc (re-confirmed same day).",
-    "heat": 3,
-    "created": "2026-09-22T06:56:27.883Z",
-    "updated": "2026-09-22T08:09:08.343Z"
-  }
-]

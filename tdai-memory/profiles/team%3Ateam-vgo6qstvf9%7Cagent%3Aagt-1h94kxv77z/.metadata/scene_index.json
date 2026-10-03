@@ -1,9 +1,0 @@
-[
-  {
-    "filename": "工程实践-团队代码规范.md",
-    "summary": "MySQL 团队代码 review 五条规范：update_time 增量拉取、is_deleted 软删、keyset 分页禁大 OFFSET、gh-ost 在线 DDL、review 结论按 blocking/suggestion/minor 三级标注并附可执行 SQL，AI 须强制执行；同日多次完整重申，条款零改动",
-    "heat": 4,
-    "created": "2026-09-22T07:32:37.780Z",
-    "updated": "2026-09-22T08:44:27.232Z"
-  }
-]
