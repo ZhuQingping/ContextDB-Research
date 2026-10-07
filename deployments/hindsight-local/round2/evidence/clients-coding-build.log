@@ -1,0 +1,68 @@
+
+> @vectorize-io/hindsight-coding-agents@0.8.0 build
+> tsup
+
+CLI Building entry: {"index":"src/index.ts","opencode2":"src/opencode2.ts","kilo":"src/kilo.ts","deepen":"src/deepen.ts","installer":"src/installer.ts","status":"src/status.ts","claude-hook":"src/claude-hook.ts","claude-stop-hook":"src/claude-stop-hook.ts","claude-sessionstart-hook":"src/claude-sessionstart-hook.ts","cursor-hook":"src/cursor-hook.ts","cursor-sessionstart-hook":"src/cursor-sessionstart-hook.ts","cursor-stop-hook":"src/cursor-stop-hook.ts","copilot-hook":"src/copilot-hook.ts","copilot-sessionstart-hook":"src/copilot-sessionstart-hook.ts","copilot-stop-hook":"src/copilot-stop-hook.ts","cline":"src/cline.ts","dsh":"src/dsh.ts","pi":"src/pi.ts","prime-agent":"src/prime-agent.ts","kimi-hook":"src/kimi-hook.ts","kimi-sessionstart-hook":"src/kimi-sessionstart-hook.ts","kimi-stop-hook":"src/kimi-stop-hook.ts","qwen-hook":"src/qwen-hook.ts","qwen-sessionstart-hook":"src/qwen-sessionstart-hook.ts","qwen-stop-hook":"src/qwen-stop-hook.ts","grok-hook":"src/grok-hook.ts","grok-sessionstart-hook":"src/grok-sessionstart-hook.ts","grok-stop-hook":"src/grok-stop-hook.ts","codex-hook":"src/codex-hook.ts","codex-sessionstart-hook":"src/codex-sessionstart-hook.ts","codex-stop-hook":"src/codex-stop-hook.ts","dcode-hook":"src/dcode-hook.ts","dcode-sessionstart-hook":"src/dcode-sessionstart-hook.ts","dcode-stop-hook":"src/dcode-stop-hook.ts","antigravity-hook":"src/antigravity-hook.ts","antigravity-stop-hook":"src/antigravity-stop-hook.ts","antigravity-statusline":"src/antigravity-statusline.ts","devin-hook":"src/devin-hook.ts","devin-sessionstart-hook":"src/devin-sessionstart-hook.ts","devin-stop-hook":"src/devin-stop-hook.ts","zcode-hook":"src/zcode-hook.ts","zcode-sessionstart-hook":"src/zcode-sessionstart-hook.ts","zcode-stop-hook":"src/zcode-stop-hook.ts","traecode-hook":"src/traecode-hook.ts","traecode-sessionstart-hook":"src/traecode-sessionstart-hook.ts","traecode-stop-hook":"src/traecode-stop-hook.ts","droid-hook":"src/droid-hook.ts","droid-sessionstart-hook":"src/droid-sessionstart-hook.ts","droid-stop-hook":"src/droid-stop-hook.ts","daemon-start":"src/daemon-start.ts","survey-supervisor":"src/survey-supervisor.ts","mcp-server":"src/mcp-server.ts","hindsight-seed":"src/hindsight-seed.ts"}
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/hindsight-integrations/coding-agents/tsup.config.ts
+CLI Target: node18
+CLI Cleaning output folder
+ESM Build start
+DTS Build start
+ESM dist/deepen.js                     103.62 KB
+ESM dist/status.js                     83.76 KB
+ESM dist/installer.js                  225.89 KB
+ESM dist/claude-hook.js                161.29 KB
+ESM dist/cursor-stop-hook.js           164.69 KB
+ESM dist/claude-stop-hook.js           164.69 KB
+ESM dist/cursor-sessionstart-hook.js   184.33 KB
+ESM dist/claude-sessionstart-hook.js   184.33 KB
+ESM dist/cursor-hook.js                161.29 KB
+ESM dist/copilot-stop-hook.js          164.69 KB
+ESM dist/copilot-hook.js               161.29 KB
+ESM dist/copilot-sessionstart-hook.js  184.33 KB
+ESM dist/kimi-hook.js                  161.28 KB
+ESM dist/kimi-stop-hook.js             164.69 KB
+ESM dist/qwen-sessionstart-hook.js     184.33 KB
+ESM dist/kimi-sessionstart-hook.js     184.33 KB
+ESM dist/qwen-stop-hook.js             164.69 KB
+ESM dist/qwen-hook.js                  161.28 KB
+ESM dist/grok-hook.js                  161.28 KB
+ESM dist/grok-stop-hook.js             164.69 KB
+ESM dist/codex-stop-hook.js            164.69 KB
+ESM dist/dcode-sessionstart-hook.js    184.32 KB
+ESM dist/grok-sessionstart-hook.js     184.33 KB
+ESM dist/antigravity-hook.js           161.29 KB
+ESM dist/dcode-stop-hook.js            164.69 KB
+ESM dist/codex-hook.js                 161.28 KB
+ESM dist/devin-hook.js                 161.28 KB
+ESM dist/dcode-hook.js                 161.28 KB
+ESM dist/antigravity-statusline.js     32.68 KB
+ESM dist/codex-sessionstart-hook.js    184.32 KB
+ESM dist/antigravity-stop-hook.js      164.70 KB
+ESM dist/devin-sessionstart-hook.js    184.33 KB
+ESM dist/zcode-hook.js                 161.28 KB
+ESM dist/zcode-sessionstart-hook.js    184.32 KB
+ESM dist/devin-stop-hook.js            164.69 KB
+ESM dist/zcode-stop-hook.js            164.69 KB
+ESM dist/traecode-hook.js              161.29 KB
+ESM dist/traecode-sessionstart-hook.js 184.33 KB
+ESM dist/traecode-stop-hook.js         164.69 KB
+ESM dist/survey-supervisor.js          1.97 KB
+ESM dist/droid-hook.js                 161.29 KB
+ESM dist/daemon-start.js               35.81 KB
+ESM dist/hindsight-seed.js             30.46 KB
+ESM dist/droid-sessionstart-hook.js    184.33 KB
+ESM dist/dsh.js                        707.18 KB
+ESM dist/cline.js                      703.11 KB
+ESM dist/prime-agent.js                703.51 KB
+ESM dist/pi.js                         703.48 KB
+ESM dist/droid-stop-hook.js            164.69 KB
+ESM dist/opencode2.js                  1.12 MB
+ESM dist/index.js                      1.12 MB
+ESM dist/kilo.js                       1.12 MB
+ESM dist/mcp-server.js                 1.19 MB
+ESM ⚡️ Build success in 180ms
+DTS ⚡️ Build success in 724ms
+DTS dist/index.d.ts 213.00 B

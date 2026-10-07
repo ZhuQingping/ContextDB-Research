@@ -1,0 +1,153 @@
+{
+  "results": [
+    {
+      "id": "a0ba4123-6f20-4e18-9a26-aa39510f5169",
+      "text": "Project CDB-CLAW-634 uses approval code FIR-8193 and pool limit 39. | Synthetic acceptance fact.",
+      "type": "world",
+      "entities": [
+        "CDB-CLAW-634",
+        "FIR-8193",
+        "pool limit"
+      ],
+      "context": "This content is an AI-assistant conversation transcript from OpenClaw. Retain request metadata may include routing identifiers such as 'sender_id' (an opaque user ID, not a human name), 'channel_id' (a chat identifier), and 'provider' (the messaging platform name). These are operational routing metadata, not semantic actors or people. Messages with role 'assistant' are from the AI assistant; first-person statements in assistant messages refer to the AI, not the human user. Messages with role 'user' are from the human user. Bank IDs, session keys, agent IDs, thread IDs, source systems, and tags in metadata are also operational routing identifiers, not human names, project names, or organizations.",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:39:36.546929+00:00",
+      "document_id": "openclaw:agent:main:webchat:direct:round2-claw-retain",
+      "metadata": {
+        "source": "openclaw",
+        "agent_id": "main",
+        "provider": "webchat",
+        "sender_id": "round2-claw-retain",
+        "channel_id": "direct:round2-claw-retain",
+        "turn_index": "1",
+        "retained_at": "2026-10-04T14:39:36.468Z",
+        "session_key": "agent:main:webchat:direct:round2-claw-retain",
+        "channel_type": "webchat",
+        "message_count": "2",
+        "retention_scope": "turn"
+      },
+      "chunk_id": "round2-client-openclaw_openclaw:agent:main:webchat:direct:round2-claw-retain_0",
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 1.0999964334424783,
+        "reranker": null,
+        "semantic": 0.9200537109439029,
+        "keyword": 0.9000000357627869
+      },
+      "attachments": null
+    },
+    {
+      "id": "e1a11d82-88a0-4231-8a79-8c6771dda9e2",
+      "text": "The assistant reported approval code FIR-8193 and pool limit 39 for project CDB-CLAW-634, citing supplied memory. | When: Sunday, October 4, 2026 | Involving: AI assistant",
+      "type": "experience",
+      "entities": [
+        "CDB-CLAW-634",
+        "FIR-8193",
+        "pool limit"
+      ],
+      "context": "This content is an AI-assistant conversation transcript from OpenClaw. Retain request metadata may include routing identifiers such as 'sender_id' (an opaque user ID, not a human name), 'channel_id' (a chat identifier), and 'provider' (the messaging platform name). These are operational routing metadata, not semantic actors or people. Messages with role 'assistant' are from the AI assistant; first-person statements in assistant messages refer to the AI, not the human user. Messages with role 'user' are from the human user. Bank IDs, session keys, agent IDs, thread IDs, source systems, and tags in metadata are also operational routing identifiers, not human names, project names, or organizations.",
+      "occurred_start": "2026-10-04T14:39:48.433000+00:00",
+      "occurred_end": "2026-10-04T14:39:48.433000+00:00",
+      "mentioned_at": "2026-10-04T14:39:54.167342+00:00",
+      "document_id": "openclaw:agent:main:webchat:direct:round2-claw-recall",
+      "metadata": {
+        "source": "openclaw",
+        "agent_id": "main",
+        "provider": "webchat",
+        "sender_id": "round2-claw-recall",
+        "channel_id": "direct:round2-claw-recall",
+        "turn_index": "1",
+        "retained_at": "2026-10-04T14:39:54.127Z",
+        "session_key": "agent:main:webchat:direct:round2-claw-recall",
+        "channel_type": "webchat",
+        "message_count": "2",
+        "retention_scope": "turn"
+      },
+      "chunk_id": "round2-client-openclaw_openclaw:agent:main:webchat:direct:round2-claw-recall_0",
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.7699975561764123,
+        "reranker": null,
+        "semantic": 0.8852093747382999,
+        "keyword": 0.800000011920929
+      },
+      "attachments": null
+    },
+    {
+      "id": "01b0056d-3012-482e-b033-8cb3960018c4",
+      "text": "Project CDB-CLAW-634 uses approval code FIR-8193.",
+      "type": "observation",
+      "entities": [
+        "CDB-CLAW-634",
+        "FIR-8193",
+        "pool limit"
+      ],
+      "context": null,
+      "occurred_start": "2026-10-04T14:39:48.433000+00:00",
+      "occurred_end": "2026-10-04T14:39:48.433000+00:00",
+      "mentioned_at": "2026-10-04T14:39:54.167342+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.44304844144424554,
+        "reranker": null,
+        "semantic": 0.8498446509103169,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    },
+    {
+      "id": "64e2d144-b10a-42b9-b4b5-15e0d9bf5a92",
+      "text": "Project CDB-CLAW-634 has a pool limit of 39.",
+      "type": "observation",
+      "entities": [
+        "CDB-CLAW-634",
+        "FIR-8193",
+        "pool limit"
+      ],
+      "context": null,
+      "occurred_start": "2026-10-04T14:39:48.433000+00:00",
+      "occurred_end": "2026-10-04T14:39:48.433000+00:00",
+      "mentioned_at": "2026-10-04T14:39:54.167342+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.11076211036106136,
+        "reranker": null,
+        "semantic": 0.8476648149090785,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    }
+  ],
+  "trace": null,
+  "entities": {
+    "CDB-CLAW-634": {
+      "entity_id": "17ac0c77-3cb7-44cc-be74-31a0dd1b9646",
+      "canonical_name": "CDB-CLAW-634",
+      "observations": []
+    },
+    "FIR-8193": {
+      "entity_id": "5347e0aa-9e6d-41ea-9947-bc63c952c7d1",
+      "canonical_name": "FIR-8193",
+      "observations": []
+    },
+    "pool limit": {
+      "entity_id": "76e256e3-5a64-4fcc-998c-52d4e174663b",
+      "canonical_name": "pool limit",
+      "observations": []
+    }
+  },
+  "chunks": null,
+  "source_facts": null,
+  "source_facts_truncated": null
+}

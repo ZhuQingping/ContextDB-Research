@@ -1,0 +1,16 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--workspace=hindsight-control-plane",
+    "--workspace=hindsight-clients/typescript",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source",
+  "started_utc": "2026-10-04T14:32:19.668488+00:00",
+  "finished_utc": "2026-10-04T14:32:58.502678+00:00",
+  "duration_seconds": 38.836,
+  "exit_code": 0
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "round2_priv_1791125614",
+  "role": "round2_run_1791125614",
+  "checks": [
+    {
+      "name": "health",
+      "status": 200,
+      "response": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 0.3,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      }
+    },
+    {
+      "name": "create-bank",
+      "status": 500,
+      "response": {
+        "detail": "must be owner of table memory_units"
+      }
+    },
+    {
+      "name": "config",
+      "status": 500,
+      "response": {
+        "detail": "must be owner of table memory_units"
+      }
+    },
+    {
+      "name": "retain",
+      "status": 500,
+      "response": {
+        "detail": "must be owner of table memory_units"
+      }
+    },
+    {
+      "name": "recall",
+      "status": 404,
+      "response": {
+        "detail": "Bank 'round2-privilege' not found"
+      }
+    }
+  ],
+  "scope": "pre-migrated single-schema local PG, no RDS or complete runtime-path certification",
+  "migration_exit": 0,
+  "runtime_privileges": {
+    "usage": true,
+    "create": false
+  },
+  "fsync": "off",
+  "api_alive": true,
+  "temporary_api_stopped": true,
+  "all_http_checks_passed": false
+}

@@ -1,0 +1,76 @@
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'openclaw@2026.9.8',
+npm warn EBADENGINE   required: { node: '>=24.16.0 <25 || >=26.1.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/generator@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/parser@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/traverse@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'hosted-git-info@10.1.1',
+npm warn EBADENGINE   required: { node: '^22.22.2 || ^24.15.0 || >=26.0.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/types@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/code-frame@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/helper-globals@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/template@8.0.0',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/helper-validator-identifier@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@babel/helper-string-parser@8.0.6',
+npm warn EBADENGINE   required: { node: '^22.18.0 || >=24.11.0' },
+npm warn EBADENGINE   current: { node: 'v23.11.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw-runtime/node_modules',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw-runtime/node_modules'] {
+npm warn cleanup       errno: -66,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw-runtime/node_modules'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+npm error code 1
+npm error path /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw-runtime/node_modules/openclaw
+npm error command failed
+npm error command sh -c node scripts/preinstall-package-manager-warning.mjs
+npm error [openclaw] error: this OpenClaw release requires Node >=24.16.0 <25 || >=26.1.0.
+npm error [openclaw] detected Node 23.11.0 (exec: /opt/homebrew/Cellar/node/23.11.0/bin/node).
+npm error [openclaw] install Node: https://nodejs.org/en/download
+npm error [openclaw] upgrade Node, then retry the OpenClaw update.
+npm error A complete log of this run can be found in: /Users/zhuqingping/.npm/_logs/2026-10-04T14_32_23_847Z-debug-0.log

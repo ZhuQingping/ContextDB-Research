@@ -1,0 +1,152 @@
+
+> @vectorize-io/hindsight-control-plane@0.10.2 prebuild
+> npm run build -w @vectorize-io/hindsight-client
+
+
+> @vectorize-io/hindsight-client@0.10.2 build
+> tsup
+
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/typescript/tsup.config.ts
+CLI Target: es2020
+CLI Cleaning output folder
+CJS Build start
+ESM Build start
+CJS dist/index.js     86.14 KB
+CJS dist/index.js.map 242.23 KB
+CJS ⚡️ Build success in 16ms
+ESM dist/index.mjs     84.90 KB
+ESM dist/index.mjs.map 242.14 KB
+ESM ⚡️ Build success in 17ms
+DTS Build start
+DTS ⚡️ Build success in 812ms
+DTS dist/index.d.ts  361.92 KB
+DTS dist/index.d.mts 361.92 KB
+
+> @vectorize-io/hindsight-control-plane@0.10.2 build
+> NODE_ENV=production next build && npm run build:standalone
+
+▲ Next.js 16.3.7 (Turbopack)
+✓ Running next.config.ts took 3.3s
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "100mb"
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
+
+  To migrate automatically, run:
+  npx @next/codemod@canary middleware-to-proxy .
+
+  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.4s
+  Running TypeScript ...
+  Finished TypeScript in 3.9s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/57) ...
+  Generating static pages using 9 workers (14/57) 
+  Generating static pages using 9 workers (28/57) 
+  Generating static pages using 9 workers (42/57) 
+✓ Generating static pages using 9 workers (57/57) in 320ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/banks/[bankId]
+├   /[locale]/dashboard
+│ ├ ● /en/dashboard
+│ ├ ● /es/dashboard
+│ ├ ● /fr/dashboard
+│ └ ● [+7 more paths]
+├   /[locale]/login
+│ ├ ● /en/login
+│ ├ ● /es/login
+│ ├ ● /fr/login
+│ └ ● [+7 more paths]
+├ ƒ /api/auth/login
+├ ƒ /api/auth/logout
+├ ƒ /api/banks
+├ ƒ /api/banks/[bankId]
+├ ƒ /api/banks/[bankId]/aliases
+├ ƒ /api/banks/[bankId]/aliases/[alias]
+├ ƒ /api/banks/[bankId]/attachments/[attachmentId]
+├ ƒ /api/banks/[bankId]/audit-logs
+├ ƒ /api/banks/[bankId]/audit-logs/stats
+├ ƒ /api/banks/[bankId]/clone
+├ ƒ /api/banks/[bankId]/config
+├ ƒ /api/banks/[bankId]/consolidate
+├ ƒ /api/banks/[bankId]/consolidation-recover
+├ ƒ /api/banks/[bankId]/consolidation-strategies/preview
+├ ƒ /api/banks/[bankId]/directives
+├ ƒ /api/banks/[bankId]/directives/[directiveId]
+├ ƒ /api/banks/[bankId]/export
+├ ƒ /api/banks/[bankId]/health/llm
+├ ƒ /api/banks/[bankId]/import
+├ ƒ /api/banks/[bankId]/llm-requests
+├ ƒ /api/banks/[bankId]/llm-requests/stats
+├ ƒ /api/banks/[bankId]/memories/dry-run-extract
+├ ƒ /api/banks/[bankId]/mental-models
+├ ƒ /api/banks/[bankId]/mental-models/[mentalModelId]
+├ ƒ /api/banks/[bankId]/mental-models/[mentalModelId]/clear
+├ ƒ /api/banks/[bankId]/mental-models/[mentalModelId]/dry-run-refresh
+├ ƒ /api/banks/[bankId]/mental-models/[mentalModelId]/history
+├ ƒ /api/banks/[bankId]/mental-models/[mentalModelId]/refresh
+├ ƒ /api/banks/[bankId]/observations
+├ ƒ /api/banks/[bankId]/observations/[modelId]
+├ ƒ /api/banks/[bankId]/observations/scopes
+├ ƒ /api/banks/[bankId]/operations/[operationId]
+├ ƒ /api/banks/[bankId]/prompts/preview
+├ ƒ /api/banks/[bankId]/tags
+├ ƒ /api/banks/[bankId]/webhooks
+├ ƒ /api/banks/[bankId]/webhooks/[webhookId]
+├ ƒ /api/banks/[bankId]/webhooks/[webhookId]/deliveries
+├ ƒ /api/chunks
+├ ƒ /api/documents
+├ ƒ /api/documents/chunks
+├ ƒ /api/documents/reprocess
+├ ƒ /api/documents/transfer
+├ ƒ /api/entities
+├ ƒ /api/entities/[entityId]
+├ ƒ /api/entities/[entityId]/regenerate
+├ ƒ /api/entities/graph
+├ ƒ /api/files/download
+├ ƒ /api/files/retain
+├ ƒ /api/graph
+├ ƒ /api/health
+├ ƒ /api/knowledge-base/export
+├ ƒ /api/knowledge-base/folders
+├ ƒ /api/knowledge-base/nodes/[nodeId]
+├ ƒ /api/knowledge-base/pages
+├ ƒ /api/knowledge-base/pages/[pageId]
+├ ƒ /api/knowledge-base/search
+├ ƒ /api/knowledge-base/tree
+├ ƒ /api/list
+├ ƒ /api/memories/[memoryId]
+├ ƒ /api/memories/[memoryId]/history
+├ ƒ /api/memories/retain
+├ ƒ /api/memories/retain_async
+├ ƒ /api/operations/[agentId]
+├ ƒ /api/recall
+├ ƒ /api/reflect
+├ ƒ /api/stats/[agentId]
+├ ƒ /api/stats/[agentId]/memories-timeseries
+└ ƒ /api/version
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> @vectorize-io/hindsight-control-plane@0.10.2 build:standalone
+> rm -rf standalone && SERVER_JS=$(find .next/standalone -path '*/node_modules' -prune -o -name 'server.js' -print | head -1) && test -n "$SERVER_JS" || (echo 'Error: server.js not found in .next/standalone - standalone build failed' && exit 1) && STANDALONE_ROOT=$(dirname "$SERVER_JS") && cp -r "$STANDALONE_ROOT" standalone && cp -r .next/standalone/node_modules standalone/node_modules && mkdir -p standalone/.next && cp -r .next/static standalone/.next/static && mkdir -p standalone/public && (cp -r public/* standalone/public/ 2>/dev/null || true)
+

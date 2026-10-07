@@ -1,0 +1,3691 @@
+
+ContextDB V2.5 · 完整候选架构与验证登记
+全部内容 MR
+完整架构
+需审查决策的问题
+用户纠正后修订 · 具体设计 PROPOSED
+Tenant团队 / Subtenant成员或服务账号 / Bank；Gateway负责鉴权/限流/监控；Gateway、Handler、Worker独立且无状态；全部集群可扩展；PG分离元数据与用户数据；统一LLM Adapter；既有OBS原件先持久再处理，不增副本或日志系统。
+ContextDB V2.5 · 完整候选架构与验证登记
+8 整体目标 / 50 细节目标 · 18 张同源图 · 产品与生产验证 NOT_RUN
+团队检视版：关键流程与判断
+N/M/K/S 抽象架构总图
+优先审查：关键设计变更
+详细集群/模块架构
+多租：具体对象到PG与原件
+集群：扩展机制与触发依据
+筛选章节
+显示全部
+宽屏看图
+0. 设计结论与阅读边界
+0.1 本候选稿的一致假设与改变选择的影响
+1. 面向谁、三业务如何产生价值
+2. 必须拆分的功能集群与详细架构图
+2.0 抽象总览：N个API、M个Handler、K个Worker、S个PG
+2.1 目标集群、内部职责与依赖全图
+2.2 原生Hindsight为什么需要拆：混合API与后台启动
+2.3 API/Gateway的完整职责：鉴权、流量治理、监控与路由
+2.4 Worker、维护池、控制面与数据面的细分
+2.5 开通、动态索引与运行身份
+3. 多租设计：多个Tenant、Subtenant、Bank怎样存进PG和OBS
+3.1 先固定三团队、七主体、七Bank
+3.2 这组对象实际分布在哪里
+3.3 MetaPG：团队、授权、目录和额度的具体表行
+3.4 DataPG：展开U-A的一对schema与实际表行
+3.5 OBS：同一组Bank的原件实际放在哪里
+3.6 按上述表行走一遍写、读、拒绝
+3.7 原生保留什么、产品新增什么、核心必须改什么
+3.8 方案B的边界与A/C、schema粒度备选
+3.9 三业务权威与生命周期仍怎样闭合
+3.10 完整分域规则与稳定文档锚点
+4. 接口、状态与一致性合同
+4.1 跨集群接口、凭据与状态归属（不是仅画连线）
+4.2 统一主体与类型化协议
+4.3 查询与模型资格的受限内部接口
+5. 写入、构建与变化传播
+5.1 既有原件写入前移，再受理和构建
+5.2 原生机制卡与 V2 边界
+5.3 Source、构件复用、Build与发布协议
+5.4 撤回、冲突和人工编辑
+5.5 原件、受理和重建的故障闭包
+6. 查询、证据预算与实际使用
+6.1 时间、查询类型与证据完整性
+6.2 原生召回及实际采用边界
+7. 授权、受众变更与撤权闭包
+7.1 生效回执与在途边界
+8. 耐久任务、共享屏障与失败恢复
+8.1 覆盖所有写点的提交合同
+9. Skill、Session 与宿主的最小完整闭环
+10. 集群扩展：扩什么、凭什么扩、何时扩与怎样缩回
+10.1 无状态只是前提，还需要任务分配、位置映射与额度守恒
+10.2 从同一组三团队展开计算位置：初始E=2、S=2
+10.3 扩缩容决策闭环：指标→判断瓶颈→准入→分配→观察
+10.4 每个集群的扩展单位、触发依据与缩容限制
+10.5 三个具体变化：哪些记录变，哪些数据不搬
+10.6 PG读扩展、写扩展、连接与热点的具体边界
+10.7 角色启动、维护与可选外围能力
+10.8 资源量纲、公平任务分配与连接守恒
+11. 迁移、备份、升级与退出
+11.1 原生导出与完整产品退出
+12. 改造工作包、代价与效果假设
+12.1 模块替换、对照与回滚接口
+12.2 性能保持、成本归因与反转条件
+13. 分期、交付门与未覆盖能力
+V2.5 唯一验证登记：V / DG / MP / PX
+共同协议
+26 项关闭题
+授权、预算与停止
+设计定稿前与后续模块的验证要求（2026-10-03用户确认）
+外部意见复核后的建议验证增量（2026-10-03）
+定稿前最小探针：按可能推翻主线的优先级
+14. 人工待决、保密恢复与接受影响
+14.1 威胁、加密、资源与内容注入
+14.2 AR处理台账
+15. 主要架构选择与双向追踪
+16. LLM Adapter：资格、发送、结果与账务
+16.1 逻辑键、逐次预算与兼容/失败覆盖
+16.2 四条状态轴与三套账务权威
+16.3 result_mode、同步成本与本地模型
+完整目标与出处
+双向追踪 CSV
+完整逐项变化表
+唯一验证登记与最小探针
+19项处理台账
+作者复核与历史审查
+图在HTML离线内嵌，点击放大；也可独立打开SVG。关键决策页单独生成，不与普通修订混排。
+关键设计改变单独审，不以内部PASS代用户接受。
+团队检视版
+关键变更详情（KD-01—13）
+抽象架构总图
+多租存储实例
+集群扩展机制
+API治理与集群详图
+19项处理
+定稿前最小验证
+ContextDB V2.5：以 Hindsight 为底座的完整候选架构
+2026-10-03 · Refs #13 / PR #44 · 
+PROPOSED；用户内容与架构接受 PENDING。
+ 唯一架构正文为本文件，18份DOT/SVG、HTML由生成器派生。V2.4及设计者分析检查点保存在
+历史清单
+，原审查不改写。V2.5为设计文档交付，未启动Hindsight产品实现、付费实跑或生产部署。按用户追加要求提供HTML在线阅读，发布范围见
+在线记录
+。
+0. 设计结论与阅读边界
+V2.5 将 Hindsight 放在
+记忆与知识加工内核
+的位置，复用事实抽取、关联检索、观察归纳、知识页和 PG 持久任务；产品层补足来源版本、可信共享、三业务资产、最后采用证据及恢复协议。Session、Skill 的事实权威不塞进记忆事实表。
+狭义Gateway/API、Handler（前版称Business Runtime）、Worker必须独立且无状态；所有集群支持扩展，PG明确分离元数据/用户数据，LLM Adapter承担多租接入、计费、监控及管理。
+ 源码中协议、附件/输入处理、查询/反思及后台维护的混合，是本轮明确拆分的对象；容量数据只决定副本/硬件/自动化，不取消该边界。
+相对 v1，主要变化包括：从云拓扑转为三业务闭环；从“有引用”转为可判定的来源有效性；继承 v1 的逐提交栅栏方向并补固定源码的具体写点；继承 v1 的冻结/单写迁移协议并补三业务与在途任务清单，明确 ZIP 的适用边界；保留原设计的三功能集群、独立控制面与双placement，补详细模块/调用/部署图；费用与实施分期单列待审，不以成本未知撤销结构目标。请先看独立的 
+关键设计变更重点审查
+（KD-01—13），再看普通细项的 
+完整变化表
+。上一版把拆分降为选项的判断及其内部PASS已被用户USER_REWORK覆盖，原稿仍按历史hash保留。
+判断层
+当前身份
+能支持什么
+三业务、效果/TCO、宿主边界、自主闭源、选择Hindsight；本次确认三功能集群拆分/关键改动单独审查
+USER_AGREED，见 
+目标与出处
+、
+ADR-0001
+本设计必须满足的方向和约束
+H12/H13三层对象、前三无状态/全扩展、PG分离/Adapter；H14/H15既有OBS原件写入前移；H16多对象实例/独立扩展章/API治理
+USER_AGREED（
+ADR-0003
+），具体实施选项另审
+必须覆盖的新目标，不据上游默认缩减
+本轮目标行为细化、分期、模块、接口及补丁
+INFERENCE / PROPOSED
+可评审、可反证的完整方案；不是已实现或用户已批准
+固定源码
+CODE_VERIFIED，统一核验 
+eb021da3b2501911e4b57c82b3de1123572a200e
+既有关键机制及补充算法
+和
+集群拆分源码复核
+、
+逐函数证据
+无费用原函数探针
+限定 EXPERIMENT_VERIFIED
+partition_retracted/prune_based_on
+ 三例分类；不执行页面刷新/DB/模型
+产品质量、授权闭包、并发故障、恢复、性能和生产
+NOT_RUN
+26项预注册关闭题
+，不由页面/结构检查代证
+Chat v1 基于发布提交 
+5fc4ce20917b916240cef27c212c387a177f115b
+。eb021da 是其后继，16 个提交、全仓 292 路径变化；核心 
+hindsight_api
+ 仅 
+memory_engine.py
+ 的两处相关修复：自定义 full_recall 的时间窗口转 tuple，以及不存在 Bank 时不访问 store-owned 命名空间。集成/文档等仍有其他差额，不能说两个发行包等价。选 eb021da 
+只为本轮核验可重放
+；最终部署 release、补丁镜像、依赖束尚未接受。
+版本锁与差额
+阅读顺序：本文 §1—§4 理解目标、API治理、具体多租存储对象和合同；§5—§9 沿正常与变化/失败链读算法、授权和恢复；独立§10看扩展机制/指标/前后实例，§11—§14看迁移、成本、分期和接受缺口；§15 是主要选择的目标依据，§16 展开模型接入、预算与计费。源码事实用 HSRC-xx，目标用 G-/D-，设计选择用 C-xx，未来验证用 V-xx；编号互不替代。
+0.1 本候选稿的一致假设与改变选择的影响
+下表组织一条可复核主线，
+都不是新 accepted ADR
+。已确认的三功能集群、三层对象、无状态/扩展、PG分离目标、统一Adapter、既有OBS原件先持久，以及性能保持/模块演进验证要求继续有效。
+候选假设
+本文一致采用的路径
+依赖、备选与改变影响
+HC-01 PG方案B
+独立MetaPG；每DataPG同database内rt/ud成对schema；guard与内容同连接事务
+PG方案A保同库分schema；方案C把运行元数据再分物理库，须重定提交/发布/恢复，不能照搬本稿本地BEGIN
+HC-02 团队归属
+Tenant-owned Bank/Unit，Manager和读写Grant分开；M样例为团队内工作记忆
+独立个人所有权、离职保留、历史共享与processor收费未接受；Subtenant-owned备选会改导出/迁移/生命周期
+HC-04 版本与读可用性
+Source版本选择 + 不可变构件复用 + Build membership + 短事务发布；单Bank快速路径、有界跨分片协调
+全量代拷贝仅诊断备选；冻结原位重建要明确停读成本；R1跨组范围仍可收缩并返回unsupported
+HC-05 Adapter
+独立L，直达DataPG受限资格过程，耐久模型结果写既有OBS派生域
+独立资格服务/受限U writer/受控SDK各需新权限、连接和故障证据，不能在正文混用
+HC-06 失联与在途
+权威不可确认不新调度；部分消费不发；UNKNOWN留敞口；未drain不报完整effective
+有界继续须另验持久份额和出口fence；取消、BYOK、重试收费与来源L/G/P承诺仍未决
+HC-03/07/08 未设默认
+隔离与管理员/key权利、性能门槛/保留/RPO/RTO、最终release与投入均UNKNOWN
+§14列具体选择；本稿不以共享schema、eb021da核验锁或示例数字替用户决定
+VALIDATION-V2.md
+是V/DG/MP/PX唯一当前验证登记；
+REVIEW-V2.md
+是AR-01—19处理台账。HTML嵌入这两份权威源。事实勘误、设计文本、人工接受、机制、性能、业务效果分别记状态。
+1. 面向谁、三业务如何产生价值
+产品面向需要跨会话、跨 Agent 保存和复用资料的平台团队。首个具名客户、任务族、宿主版本和规模尚 UNKNOWN。V2 用三条合成样例解释机制，样例不是客户事实，也不是已执行 Demo。
+业务 / 整体目标
+同一条正常链
+两条必须成立的变化/失败链
+首期 R1 提案与边界
+K 企业知识与共享 / G-001
+规范 K-A-r1 规定“导出需审批”，例外 K-B-r1 规定“仅全合成且未含生产字段可免审”；两份缺一不可。两 Agent 按不同 grants 查询、回原文、形成有来源回答
+K-A-r2 改规则后旧页暂不可用；撤 Agent-B 的 grant 后搜索/直读/排队派生与下一使用均拒绝
+版本化文本+Bank级共享+获授权联检+来源有效性+一个受控宿主；完整连接器、混合源细粒度ACL后置
+M 个人长期记忆 / G-002
+团队内成员M-U 在项目 P 常用中文，仅出差用英文；保存原事件/条件，抽事实与观察，再按当前问题回原文确认
+迟到的旧事件不覆盖新偏好；宿主截断不丢“仅出差”条件；冲突不明时呈现两个有时间的来源
+同主体/项目范围与当前/历史问法；画像/观察为可选派生；不承诺默认抽取无损
+S 轨迹到可验证 Skill / G-003
+Session S-1 中工具导出成功、S-2 正确拒绝、S-3 异步失败；从真实轨迹冻结 procedure v1，独立留出 Trial 后人工发布，宿主按前提加载执行
+工具schema升级使旧 Skill 退役；假的success文本但外部文件未生成不得晋升；Trial明细丢失不得报已验证
+原轨迹+人工/受控生成候选+独立Trial+显式Release+退役；不将 Hindsight page 当原生 Skill，不默认自动学习发布
+G-004—G-008 贯穿三条链：预算内真实收益、可信共享、宿主采用、耐久运营、自主升级退出。每业务的正确率/失败分母独立；Memory 589题历史成绩不能验收 Knowledge 或 Skill。R1 每类至少一条正常和两条变化/失败路径，但实现顺序和门槛仍需用户接受。
+产品负责接收版本、加工/检索/可用性、授权和服务收据；外部业务系统负责规则原始权威与有效期含义；模型负责有损提取/综合候选而不能批准事实或授权；宿主负责最终窗口、工具许可和任务执行；外部 oracle/审阅人负责 Skill 终态与发布批准。原始内容要求模型“忽略权限”时仍只是资料。
+非目标：重新选择底座、通用图数据库自研、任意宿主的透明完全控制、自动执行不可信 Skill 脚本、单 Bank 跨 PG 多主、跨区域双活、无限离线授权缓存、外部模型费用 exactly-once。Graphiti、Cognee、OpenViking、ReMe、MemOS 和云合同是机制/反例参考，不因此进入必需依赖。
+2. 必须拆分的功能集群与详细架构图
+图18 N API / M Handler / K Worker / S数据PG；PG方案B候选 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  g [label=&quot;N × API\n鉴权 · 限流 · 路由 · 观测&quot;];
+  h [label=&quot;M × Handler\n受理 · 查询协调/固定执行&quot;];
+  w [label=&quot;K × Worker\nclaim · 构建 · guarded提交&quot;];
+  l [label=&quot;L Adapter集群\n逐次资格/发送/费用&quot;];
+  c [label=&quot;C控制面集群\nIAM · Admission · placement&quot;];
+  meta [label=&quot;独立MetaPG\n控制/模型账本权威&quot;];
+  pg [label=&quot;S × DataPG写组\n各Unit的rt+ud同库&quot;];
+  obs [label=&quot;既有OBS\nraw + 隔离派生结果域&quot;];
+  p [label=&quot;获准provider&quot;];
+  g -&gt; h [label=&quot;I-01&quot;];
+  h -&gt; pg [label=&quot;I-02&quot;];
+  w -&gt; pg [label=&quot;I-03&quot;];
+  h -&gt; l [label=&quot;I-04&quot;];
+  w -&gt; l [label=&quot;I-04&quot;];
+  l -&gt; pg [label=&quot;I-08 限定资格&quot;];
+  l -&gt; meta [label=&quot;reserve/CAS/usage&quot;];
+  l -&gt; obs [label=&quot;I-09 结果&quot;];
+  h -&gt; obs [label=&quot;先raw校验&quot;];
+  w -&gt; obs [label=&quot;按ref读取&quot;];
+  l -&gt; p [label=&quot;唯一sender&quot;];
+  c -&gt; meta [label=&quot;控制权威&quot;];
+  c -&gt; g [label=&quot;分配/策略&quot;];
+  c -&gt; h [label=&quot;binding/profile&quot;];
+  c -&gt; w [label=&quot;任务scope&quot;];
+  c -&gt; l [label=&quot;模型路由/预算策略&quot;];
+}
+图01 集群、接口与持久权威 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  g [label=&quot;G\n公共协议/AuthN/AuthZ\n请求/byte/slot准入&quot;];
+  h [label=&quot;H\nIngest/Query/Reflect\n同组直调，跨组I-07&quot;];
+  remote [label=&quot;固定分片H\n不递归协调&quot;];
+  w [label=&quot;W普通/维护池\nAttempt/Build/Publisher&quot;];
+  c [label=&quot;C / 受控Job\nGrantApply/Provision/Index&quot;];
+  pg [label=&quot;DataPG\nR guard/queue/permit\nU不可变构件/内容&quot;];
+  m [label=&quot;MetaPG\nIAM/catalog/admission/model&quot;];
+  l [label=&quot;L\nGenerate/Embed/Rerank\n资格过程客户端/单次sender&quot;];
+  o [label=&quot;OBS raw\n派生Envelope独立域&quot;];
+  g -&gt; h;
+  h -&gt; remote [label=&quot;I-07&quot;];
+  remote -&gt; pg [label=&quot;固定分片/受权scope&quot;];
+  h -&gt; pg;
+  w -&gt; pg;
+  c -&gt; pg [label=&quot;受控apply/DDL&quot;];
+  c -&gt; m;
+  h -&gt; l;
+  w -&gt; l;
+  l -&gt; pg [label=&quot;限定EXECUTE&quot;];
+  l -&gt; m;
+  l -&gt; o [label=&quot;结果&quot;];
+  h -&gt; o [label=&quot;raw先于受理&quot;];
+  w -&gt; o [label=&quot;raw/result读取&quot;];
+}
+图07 固定eb021da原生边界；不是目标部署 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  http [label=&quot;http.py / MCP\n协议+附件/strategy/业务&quot;];
+  eng [label=&quot;MemoryEngine\nRetain/Recall/Reflect&quot;];
+  worker [label=&quot;WorkerPoller\n原生PG operation&quot;];
+  maint [label=&quot;MaintenanceLoop\n独立配置间隔&quot;];
+  pg [label=&quot;原生PG表/ContextVar schema&quot;];
+  models [label=&quot;LLM wrapper / embed / rerank&quot;];
+  http -&gt; eng;
+  http -&gt; worker [label=&quot;HTTP lifespan / WORKER_ENABLED默认True&quot;];
+  eng -&gt; maint [label=&quot;关闭Worker不等于关闭维护&quot;];
+  worker -&gt; eng [label=&quot;后台本地执行&quot;];
+  eng -&gt; pg;
+  eng -&gt; models;
+}
+图08 入口治理与类型化主体/份额 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  auth [label=&quot;G认证/入口授权\n剥离伪造头&quot;];
+  ad [label=&quot;G准入\nrequest token / bytes / slot&quot;];
+  route [label=&quot;G路由/观测\n不持PG/模型业务凭据&quot;];
+  env [label=&quot;I-01签名Envelope\ninitiating/effective/service\nbank_refs[] + 授权/协议/放置版本&quot;];
+  h [label=&quot;H应用服务\n当前guard/资源归属&quot;];
+  coord [label=&quot;Query协调\n子grant/完整性&quot;];
+  shard [label=&quot;固定执行组\n本地召回/批量hydrate&quot;];
+  auth -&gt; ad;
+  ad -&gt; route;
+  route -&gt; env;
+  env -&gt; h;
+  h -&gt; coord;
+  coord -&gt; shard [label=&quot;I-07&quot;];
+}
+图09 控制面、开通与后台责任 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  c [label=&quot;W-Control / C\nMetaPG计划/策略/份额&quot;];
+  prov [label=&quot;bootstrap Job\nREGISTERED→SCHEMA_READY&quot;];
+  bank [label=&quot;Bank开通operation\nPROVISIONING→DATA_READY&quot;];
+  idx [label=&quot;DDL身份\n并发index/INVALID恢复&quot;];
+  w [label=&quot;普通Worker\nready领取/Build阶段&quot;];
+  maint [label=&quot;维护Worker\n重算/GC/恢复/统计&quot;];
+  pg [label=&quot;同DataPG rt/ud\n唯一operation权威&quot;];
+  active [label=&quot;CAPABILITY_READY→ACTIVE\n普通H/W仅DML&quot;];
+  c -&gt; prov;
+  prov -&gt; bank;
+  bank -&gt; idx;
+  idx -&gt; active [label=&quot;验证定义/有效性&quot;];
+  w -&gt; pg;
+  maint -&gt; pg;
+  c -&gt; w [label=&quot;有界任务scope&quot;];
+  active -&gt; pg;
+}
+C-01 / D-039/043：Gateway/API、Handler、Worker是三个独立且无状态的功能集群，属于用户已确认硬约束。
+ 正文旧缩写B与H均指Handler，不改变其独立部署职责。 共享内核库不合并进程、服务身份、配置/凭据、发布或扩缩容边界。下面先给目标部署，再展开原生混合API和各集群内部；图中是可评审目标设计，不是已部署事实。
+图例：G为狭义公共协议集群，B为Handler在线业务集群，W为后台作业集群，C为独立产品控制面，L为LLM Adapter；H核心代码在H/W各进程本地运行，不能在G加载。PG/原件/模型端口是持久和外部计算依赖。功能集群不等于三套物理Kubernetes控制平面，具体基础设施数量待部署方案确认。
+2.0 抽象总览：N个API、M个Handler、K个Worker、S个PG
+先看集群之间的管理与运行关系，再进入§2.1的内部模块。
+N、M、K、S分别表示API、Handler、Worker、数据PG写实例的数量，彼此独立。
+ 计算执行域的数量另用E，避免与Handler/Worker实例数混淆；实例按获准的shard/profile和Unit绑定访问，不表示任意实例可以访问全部PG。
+下载总览PNG
+ · 
+打开原尺寸SVG
+图中有标签连线表示运行调用/数据读写
+：API完成鉴权、限流与监控后路由到Handler；Handler负责业务和持久受理，Worker从PG领取已受理任务并提交合法结果。Handler/Worker通过统一LLM Adapter调用外部模型。
+标为分配/策略/binding的连线是管理关系
+：控制面向各运行集群分配权限、路由、配置、额度和工作范围，接收健康、负载与执行状态；不是每次业务读写都由中央控制面代算。
+原件与任务顺序
+：同一次既有OBS原件写入并校验成功后，Handler才在PG受理；Worker按该引用读取与构建，不另加原件WAL副本或第二队列。
+PG计数边界
+：S只计数据PG写实例/分片，HA和只读副本未展开；元数据PG按当前方案B单列，运行元数据rt仍在DataPG，与用户数据ud分schema。加入本图不等于接受PG物理分离级别或具体规模。
+本图为目标架构表达。§3解释具体团队/Bank/schema/原件落点，§10解释实例/运行池/PG怎样扩展；原图编号保持稳定，图18为抽象总览。
+2.1 目标集群、内部职责与依赖全图
+关键边界：G没有通往业务PG或模型的凭据/调用边；B完成持久受理后返回operation，W直接从PG任务权威领取，在本地调用共享核心，
+不回调公共API或B代算
+。C发布分配/策略，不能用缓存快照替代H/W本地当前guard。原生管理UI经受控业务/管理入口访问，不是产品控制面本身。
+2.2 原生Hindsight为什么需要拆：混合API与后台启动
+图07为固定eb021da源码事实，详细位置见
+集群源码复核
+。
+WORKER_ENABLED=false
+只关闭内置Poller；Engine仍调用MaintenanceLoop启动入口，PG且维护间隔启用时会运行。Handler的背景职责清空还要关闭相关维护间隔，并增加显式role/capability启动门；维护发现/清理/调度归W中的指定维护池。不能把“关闭一个开关”当作已完成集群拆分。
+2.3 API/Gateway的完整职责：鉴权、流量治理、监控与路由
+H16明确：G是独立的API服务治理集群。
+ 它承担公共协议、安全入口、限流、请求观测和路由；把业务加工迁到Handler，不会把这些入口职责一并删掉。下表是目标责任划分，涉及组件/存储的新增实现仍PROPOSED。
+G内部模块
+实际处理什么
+状态/输出在哪里
+与Handler/Worker的边界
+协议与连接管理
+HTTP/SDK/MCP入口、TLS边界协作、请求shape/大小、deadline、流式连接与取消传播
+连接/缓冲是可丢运行态；受理结果来自DataPG，G不能先回业务成功
+文件语义解析、strategy选择、知识加工留Handler/W；G执行大小/协议检查
+身份认证AuthN
+验证API key或token的签名/issuer/audience/有效期；检查凭据状态；从可信目录解析Tenant/Subtenant
+C/IAM为权威，G使用有版本/有效期的校验材料与短缓存；剥离外部伪造身份头
+不接受客户端自报Tenant即可信；内部RPC另验工作负载身份，Handler再次验证委托
+入口授权AuthZ
+校团队/主体状态、API action scope、目标Bank所属Tenant、已生效Bank动作许可；筛选跨Bank请求集合
+请求授权决策/拒绝码、policy版本进入签名信封与审计；不能把尚待apply的Grant意图当有效权限
+Handler仍核真实资源归属/当前数据面guard、来源受众/原件读权；W在claim/发送/提交处重核
+分层限流与准入
+匿名/IP防滥用、Tenant父额度、Subtenant子额度、route/action/可选Bank额度，RPS/突发、并发流、请求/上传字节；下游饱和时背压
+限额策略与跨副本分配记录在C的Admission额度域；G只消费有界授权份额，不自发整份团队额度
+G控制入口流量；Handler/W控制工作并发/任务积压；L控制模型费用。入口次数不冒充供应商计费
+路由/负载均衡
+可信Bank→Unit→compute binding，按服务发现/readiness/可用槽位选择同shard/profile的Handler实例；超时/熔断/有界重试
+C目录和binding为权威；G缓存可重取；连接的短期粘性不成为业务恢复依赖
+不按用户给的DSN/schema路由；effect unknown查原key账本，不换key盲投；不把活跃流静默切到另一调用
+监控、审计与追踪
+请求量/成功拒绝率、401/403/429/5xx、阶段延迟、字节/活跃连接、限流/鉴权/路由原因、trace关联
+脱敏指标/事件输出到监控与审计汇聚端；关键持久操作另有PG业务收据，监控不是状态权威
+G看请求入口，Handler/W补业务阶段与队列，L补真实send/用量；202不记成构建完成
+2.3.1 一个请求如何经过API治理
+合成例：
+T-A/A1
+查询
+bk_a_spec
+。G先验凭据并解析A1，再核
+context.read
+和Bank入口许可；然后同时消费Tenant和Subtenant适用的请求额度，按U-A的binding选
+H-E1-S1-P0
+池中的健康Handler。信封携可信身份、Bank/action、授权版本、admission grant、trace/deadline和幂等键，客户端没有schema选择权。Handler用本地当前guard核资源/来源，读取后再检查结果资格；W的旧任务也不能借“G曾放行”永久授权。返回沿G记录入口耗时/状态与响应字节，业务完成阶段从operation收据读取。
+认证失败、主体停用、入口授权不足、额度耗尽分别停止在对应模块，返回受控401/403/429等类型；鉴权或额度authority不可确认时拒绝相关新请求，不能统一降为“有路由就转发”。C更新撤权必须覆盖G缓存/份额有效期和数据面guard确认，仍按§7声明的生效协议报告，不把某一层拒绝误称全系统撤权已完成。
+2.3.2 跨Gateway副本怎样保持限额，不破坏无状态
+推荐C中的Admission额度服务作策略/分配权威，首期以MetaPG短事务按
+tenant/subtenant/action/window
+检查父子剩余额度，给
+instance_incarnation
+分配有上限、有效期和唯一ID的请求token份额。G本地用原子计数消费份额；重新启动取得新实例身份和新份额，不能从0重新消费旧份额。
+G仍无独占耐久业务状态
+：本地缓存/计数丢失，只会保守浪费该窗已分出的余额，不能复制总额度。
+一次分配同事务扣父/子可分配余额；有效分配之和不超过各自cap，子额度不能借多个Gateway相加逃逸父额度。副本失联时不把未报告消耗立即退回，旧份额必须确定停用或到期且旧持有者不能继续消费后，才能按协议重新分配；提前重发会让两个实例花同一额度。并发流的slot lease另计：失联/到期后须终止或确认旧流已释放，不能仅凭TTL把仍活跃的slot重新发出。上传字节、长连接和请求次数不是同一量纲。
+例中团队一窗允许100个请求token（
+仅守恒示例，非生产配额
+）：G1/G2各分50；扩到G1—G4后可在新窗各分25，或对已确认回收的旧份额重分。不能让四个副本各获得100。新副本增加连接/验证/转发能力，不提高客户合同额度。在线额度RPC逐请求扣减也是备选，强一致计数简单但增加延迟/热点；缓存/专用计数基础设施选型尚未确定，不能在图中暗定Redis或声称分布式限流已实现。
+额度服务分区时，只可在仍有效、绑定当前主体政策的已分份额内工作，到期或授权不可确认就拒绝；不无限fail open。Gateway请求限流与L的模型费用预留各有账本：同幂等键重试仍消耗实际入口资源，但业务和客户模型收费不能因此重复记一份结果。伸缩控制器如何依据入口指标扩G见独立§10。
+2.3.3 监控能解释哪一段，不能把什么当成功
+G输出API吞吐、延迟分位、活跃连接/流、入站字节、AuthN/AuthZ/限流拒绝、路由无健康实例、上游超时与5xx；分别测认证、授权、额度、路由等待、Handler响应等阶段。trace贯穿G→Handler→operation/Attempt→L ProviderAttempt；入队202与事实/派生就绪分别显示。扩容判断要结合Handler、Worker、PG和供应商背压，不能见API慢就只扩Gateway。
+监控端按团队/动作作受控聚合，Bank/operation/request明细通过受权trace/审计查询，避免无限高基数标签；密钥、原文、完整prompt不进入入口日志。指标缓冲可丢不能当业务账本；要求可靠保留的授权/管理审计需明确持久汇聚及失败策略。具体监控后端、采样、保留/告警阈值UNKNOWN，功能责任已明确，部署选择仍待审。
+原生入口/工作
+目标归属
+新增/改造边界
+原生HTTP/MCP协议处理与RequestContext入口
+G协议壳 + 新API治理模块
+路由部分可复用；团队身份、入口授权、跨副本限流、治理监控/签名信封是ADAPTER新增，不能把整个原生http.py放进G
+附件语义、strategy分组、SourceRevision/request hash、结果补齐
+Handler应用服务
+原生业务逻辑迁移并补产品合同；G仍做协议/字节/入口许可检查
+submit_async_retain与持久受理；Recall/Reflect/管理
+Handler本地H核心与受理/读服务
+原生能力复用、事务/当前权限为CORE_PATCH；G只有收到durable结果才转202
+异步retain/consolidation/page刷新与维护
+W普通/维护池
+直接从PG任务权威领取，在本地执行；不经G/Handler代算
+Tenant/IAM/placement/入口额度策略与分配
+C独立控制面
+新控制对象和接口；执行判断/观测仍在G，业务guard在Handler/W；权限/配额不是客户端或缓存自授
+2.4 Worker、维护池、控制面与数据面的细分
+C-02：延续独立产品控制面和控制数据权威。
+ C服务有独立管理身份、发布与故障边界；推荐独立MetaPG存控制元数据，DataPG内运行元数据与用户工作数据分schema；这是§3方案B，A/C作为KD-10备选，分离的物理级别尚待接受。H/W执行处的最新guard仍是本地提交安全权威；C变更按版本化工作流同步/确认，不宣称跨控制库与K个数据分片原子提交。
+角色
+可启动/执行
+必须禁用或隔离
+就绪/扩缩容重点
+G
+公共协议、身份认证/入口授权、父子限流/背压、请求指标/审计/trace、路由转发
+Engine、业务DB凭据、模型客户端、文件持久化、Poller、MaintenanceLoop
+内部B路由/身份可用；G扩容不得放大下游配额
+B
+私有应用入口、当前授权、受理/查询/管理、本地Engine
+内置Poller；全部后台Maintenance jobs默认禁跑；自动DDL；普通公网native管理旁路
+shard/profile匹配、内部身份、接受/读路径；长Reflect可独立业务池但仍属B
+W普通任务池
+assigned范围领取、异步handler、本地Engine、attempt/预算/提交
+公共API；任意跨Unit发现；未分配维护扫描；自行提升policy/storage epoch
+下游队列/PG/模型背压；计划缩容先停领取后排空/封旧attempt
+W维护/管理Job
+被分配的维护发现/清理；迁移Job另获短期管理身份
+每副本无协调全库扫描、普通worker长期持migration凭据
+每任务类能力门/领导租约/水位；定时工作职责可追踪
+L
+统一模型接入/路由、当前发送资格、预算预留/逐次计量
+业务抽取算法、宿主Agent循环、裸正文进账单库、进程内额度作为权威
+无状态副本；MetaPG账本/用户域结果持久；未知外发不盲重试
+C
+IAM/placement/配额、开通/迁移/发布协调与审计
+代算Recall/retain、每事实写的中央同步事务
+变更生效/分区处理；缓存既有资格不能无限续权
+单写入者责任：模块/源码归属和状态权威集中在上述集群中；共享内核作为代码包复用，发布束保证H/W与数据库schema/payload兼容。各图中的拆分实现仍PROPOSED/NOT_IMPLEMENTED，但“必须拆分”本身不再是待优化掉的建议。
+2.5 开通、动态索引与运行身份
+Unit：
+REGISTERED → SCHEMA_PROVISIONING → SCHEMA_READY → ACTIVE
+。C持久plan为管理意图；受控bootstrap Job创建rt/ud、角色、基础键/FK/版本束，验证两域同时READY后ack。未建表前不能依赖该Unit尚不存在的operation队列；bootstrap计划不是第二份摄取任务真相。
+Bank：
+REGISTERED → PROVISIONING → DATA_READY → CAPABILITY_READY → ACTIVE
+。Unit已READY时，专门operation承载可恢复开通执行；普通H/W遇未ACTIVE Bank返回
+BANK_NOT_READY
+，不得调用native get-or-create旁路。
+索引：
+REQUESTED → BUILDING → VALIDATING → VALID
+；失败
+FAILED/INVALID
+，保实际catalog对象ID/定义hash/错误和重试计划。管理者预选本profile必需能力集合；可用精确扫描替代ANN的档位只有经质量/延迟接受后才算CAPABILITY_READY。
+删除：先Bank资格
+DELETING
+/拒新访问，保受理/计费/审计保留；业务内容清理、索引DROP、raw生命周期分别有收据，不让运行角色直接前缀清理原件。
+开通/索引角色持限定Unit对象的DDL凭据；普通H/W只DML或受限过程EXECUTE。原生eager CREATE、threshold maintenance、import创建索引、delete的DROP、默认startup migration全列入口清单。推荐复用已存在的并发维护路径并改其身份/调度；不是再写一套不相关索引系统。
+共享表已有其他Bank写入时，CREATE INDEX CONCURRENTLY在独立autocommit连接执行，不能放入业务受理事务。失败可能留下INVALID对象，重入先检查定义/有效性，不只IF NOT EXISTS；同一表并发构建要排队，扩展类型与并发能力逐profile核实。这些限定来自
+PG18 CREATE INDEX
+，不意味着构建零IO或零写入影响。原生DROP已经有CONCURRENTLY独立路径，应保留而非误改回事务内。
+备选与反转
+：大Bank独立partial index、小Bank合格扫描，或按Unit分区/独立Bank schema；选择依catalog规划/索引增长和同负载并发，不预定阈值。若CONCURRENTLY与所选扩展不兼容，需受控维护窗口及明确不可写/不可用响应，交HC-04/07；禁止临时把DDL权还给所有Worker。
+3. 多租设计：多个Tenant、Subtenant、Bank怎样存进PG和OBS
+图16 三团队、四Unit、七Bank的存储实例 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  m [label=&quot;M0/dbcontrolplane\nT-A/A1 A2 A3; T-B/B1 B2; T-C/C1 C2\nregistry/Grant/placement&quot;];
+  a [label=&quot;S1/dbctx1: rt_u_a + ud_u_a\nU-A/T-A: bk_a_spec, bk_a_skill, bk_a_alice&quot;];
+  b [label=&quot;S1/dbctx1: rt_u_b + ud_u_b\nU-B/T-B: bk_b_spec, bk_b_session&quot;];
+  c [label=&quot;S2/dbctx2: rt_u_c1 + ud_u_c1\nU-C1/T-C: bk_c_shared&quot;];
+  d [label=&quot;S2/dbctx2: rt_u_c2 + ud_u_c2\nU-C2/T-C: bk_c_private&quot;];
+  o [label=&quot;OBS tenants/T-*/banks/bk_*/sources/*/revisions/*/raw\n稳定raw key不含PG schema\n同服务派生结果域另有权限&quot;];
+  m -&gt; a [label=&quot;可信目录&quot;];
+  m -&gt; b;
+  m -&gt; c;
+  m -&gt; d;
+  a -&gt; o [label=&quot;RawRef&quot;];
+  b -&gt; o;
+  c -&gt; o;
+  d -&gt; o;
+}
+图11 所有权、处理主体与受众扩权 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  t [label=&quot;Tenant团队\nBank/Unit候选归属&quot;];
+  s [label=&quot;Subtenant成员/服务\ninitiating principal&quot;];
+  b [label=&quot;Bank\nManager ≠ Grant ≠ billing&quot;];
+  p [label=&quot;ProcessingPolicy\n显式effective processor&quot;];
+  g [label=&quot;Grant pending\nAUDIENCE_PREPARING&quot;];
+  scan [label=&quot;锁外存量证明\n新发布双重准入&quot;];
+  apply [label=&quot;短事务CAS apply\npolicy水位/收据&quot;];
+  r [label=&quot;有效读者集合&quot;];
+  t -&gt; b;
+  s -&gt; b [label=&quot;动作Grant&quot;];
+  s -&gt; p [label=&quot;受理请求不改actor&quot;];
+  p -&gt; b [label=&quot;受限处理/模型/预算&quot;];
+  g -&gt; scan;
+  scan -&gt; apply;
+  apply -&gt; r [label=&quot;收齐ack后effective&quot;];
+}
+图12 PG方案B与全部本地事务边界 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  c [label=&quot;MetaPG C类\nIAM/catalog/配额/model\nsecret仅引用&quot;];
+  r [label=&quot;DataPG rt_Unit\nanchor/guard/Source/Build\noperation/permit/publication&quot;];
+  u [label=&quot;同DataPG ud_Unit\ndocument_versions/components\nprofiles/页/history/诊断&quot;];
+  tx [label=&quot;单连接短事务\nSHARE屏障 + 对象CAS\n正文/阶段收据/outbox&quot;];
+  ddl [label=&quot;受控DDL身份\n成对schema/index版本束&quot;];
+  o [label=&quot;OBS\nraw / result隔离域&quot;];
+  c -&gt; r [label=&quot;版本化apply/ack 非跨库BEGIN&quot;];
+  tx -&gt; r;
+  tx -&gt; u;
+  ddl -&gt; r;
+  ddl -&gt; u;
+  r -&gt; o [label=&quot;typed ref/hash&quot;];
+}
+图02 三业务权威与不可变发布 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  raw [label=&quot;OBS原始事件/文件/文本\n角色/权威/时间&quot;];
+  src [label=&quot;SourceRevision/Composition\nvalid/known/authority&quot;];
+  build [label=&quot;DeltaPlan / Build\n复用Component + 新membership&quot;];
+  pub [label=&quot;Publication\nfacts / graph / page分轴&quot;];
+  m [label=&quot;M事实/观察\nPG source_memory_ids[]&quot;];
+  k [label=&quot;K文档/页/history\n支持集与人工版本&quot;];
+  ss [label=&quot;S Session→SkillVersion\nTrial→Release&quot;];
+  sel [label=&quot;QuerySelection\n同Source不混代&quot;];
+  use [label=&quot;受控UseReceipt\n不等于业务成功&quot;];
+  raw -&gt; src;
+  src -&gt; build;
+  build -&gt; pub;
+  pub -&gt; m;
+  pub -&gt; k;
+  raw -&gt; ss;
+  m -&gt; sel;
+  k -&gt; sel;
+  ss -&gt; sel;
+  sel -&gt; use;
+}
+本章用一组固定对象回答“是谁、能访问什么、各层存什么、具体放在哪里、哪些要改造”。
+独立§10
+复用这些ID，专门回答如何扩副本/运行池/PG分片及扩缩容依据；本章不以部署框图代替数据模型。
+C-22/23与D-041/042/048：Tenant=团队、Subtenant=成员/服务账号是USER_AGREED；本例采用待审推荐“Bank归Tenant、按Tenant-owned Unit成对schema、PG方案B”。全部名称/数据/数量均为
+合成说明 / PROPOSED / NOT_RUN
+，不表示用户已接受Bank归属或PG物理级别，也不表示已建这些表。C=控制元数据，R=运行元数据，U=用户内容；B把C放独立MetaPG，把R与U工作数据分别放同一DataPG database的rt/ud。
+R仍在DataPG，B不是全部元数据物理外置。
+ 摄取原件仍是既有OBS中的那一份。
+3.1 先固定三团队、七主体、七Bank
+Tenant
+Subtenant合成行
+Bank与组织owner
+多对多访问举例
+T-A 研发
+A1 Alice/member；A2 Bob/member；A3 ci-service/service
+bk_a_spec研发规范；bk_a_skill发布Skill；bk_a_alice Alice工作记忆；owner均T-A
+A1 read/ingest bk_a_spec、读bk_a_skill、读写bk_a_alice；A2读bk_a_spec、读写bk_a_skill；A3只ingest bk_a_spec，无read
+T-B 运营
+B1 Chen/member；B2 ingest-service/service
+bk_b_spec运营规范；bk_b_session运营会话；owner均T-B
+B1读写两Bank；B2只ingest两Bank；没有任何bk_a_spec Grant
+T-C 支持
+C1 Dana/member；C2 support-bot/service
+bk_c_shared共享支持资料；bk_c_private支持私有资料；owner均T-C
+C1读bk_c_shared+bk_c_private；C2只read/ingest bk_c_shared，不得读写bk_c_private；同一团队、同一成员可跨两个Unit
+bk_a_spec的Manager是A1，bk_a_skill的Manager是A2；这些管理关系与上表read/write Grant是不同记录。A1管理bk_a_spec不自动获得bk_b_spec权限。bk_a_alice只授权A1也仍归T-A；离职时撤A1权限、由获授权管理流程移交，不把schema或团队资产随A1删除。以上Bank组织归属规则维持现稿推荐身份，非新用户已接受默认。
+入口和所有消费/提交点都核
+caller_tenant=Bank.owner_tenant
+、主体/凭据有效、BankGrant动作、来源受众与资源状态。Manager不是数据read的隐含来源，write/ingest不包含read，客户端Bank列表只会缩小获授权范围；Project不替代Subtenant。
+3.2 这组对象实际分布在哪里
+路径记法是“集群 / database / schema.table”，用于文档定位，
+不是可直接执行的四段SQL名称
+。SQL只能在已连接database内使用
+schema.table
+。
+存储位置
+内容与对象
+角色/限制
+MetaPG M0 / database 
+dbcontrolplane
+ / schemas 
+iam
+,
+catalog
+,
+model
+,
+admission
+三团队IAM/Grant；Bank与Unit目录、placement；模型与预算/计费；API入口限流分配
+C及各专责服务管理；schema命名是待审示例；同database内可建FK；全局表包含tenant_id，不按成员建schema
+DataPG S1 / database 
+dbctx1
+ / 
+rt_u_a
+ + 
+ud_u_a
+Unit U-A，含bk_a_spec/bk_a_skill/bk_a_alice；R运行元数据与U工作数据分schema
+一个Unit属于一个Tenant；各Bank仍有独立bank_id权限域
+DataPG S1 / database 
+dbctx1
+ / 
+rt_u_b
+ + 
+ud_u_b
+Unit U-B，含bk_b_spec/bk_b_session
+与U-A共database，说明schema组织与应用授权都要正确；共库不等于自动强隔离
+DataPG S2 / database 
+dbctx2
+ / 
+rt_u_c1
+ + 
+ud_u_c1
+U-C1，含bk_c_shared
+T-C第一个Unit
+DataPG S2 / database 
+dbctx2
+ / 
+rt_u_c2
+ + 
+ud_u_c2
+U-C2，含bk_c_private
+T-C第二个Unit；不等于C1/C2主体，C1成员可访问两Unit
+OBS示例bucket 
+ctx-raw-demo
+每SourceRevision的唯一原件；键含稳定Tenant/Bank/source/revision
+不出现S1/S2、database、PG schema、Worker attempt；迁PG不改raw key
+初始总数固定为 
+3 Tenant / 7 Subtenant / 7 Bank / 4 Unit / 2 DataPG shard
+；M0不计入业务DataPG shard数。
+不是schema-per-Subtenant，也不是schema-per-Bank。
+ A1/A2/A3共用U-A内各自获准的Bank；bk_a_spec/bk_a_skill/bk_a_alice共享一对schema。T-C有两Unit，而C1一名成员可读两Unit。方案B中R明确仍在DataPG，不能把这张图称“全部元数据物理移出用户PG”。
+每对rt/ud都是两个平级schema，表位于schema内；A1与Bank没有各自再嵌套的schema。同库SQL可以写
+rt_u_a.bank_guard
+或
+ud_u_a.documents
+；连接S1/dbctx1时不能用四段名字直接查询M0的表。
+PG18 schema合同
+说明schema不能嵌套、连接绑定database且权限单独控制，未证明本例隔离实现。
+3.3 MetaPG：团队、授权、目录和额度的具体表行
+以下表及列均为
+产品新增PROPOSED
+，不是Hindsight现有DDL。给键只是可审合同，不交产品DDL。
+M0 / dbcontrolplane / 表
+主键与同库引用建议
+具体行示例
+iam.tenants
+PK tenant_id
+(T-A,研发,active)
+；
+(T-B,运营,active)
+；
+(T-C,支持,active)
+iam.subtenants
+PK(tenant_id,subtenant_id)；tenant_id FK→iam.tenants
+(T-A,A1,member,Alice,active)
+；
+(T-A,A2,member,Bob,active)
+；
+(T-A,A3,service,ci-service,active)
+；其余B1/B2/C1/C2同理
+iam.credentials
+PK credential_id；(tenant_id,subtenant_id) FK→iam.subtenants
+(cred-a1,T-A,A1,credential_ref=secret-ref,version=4,active)
+；无明文bearer
+catalog.units
+PK unit_id；tenant_id FK→iam.tenants；UNIQUE(tenant_id,unit_id)
+(U-A,T-A)
+；
+(U-B,T-B)
+；
+(U-C1,T-C)
+；
+(U-C2,T-C)
+catalog.bank_registry
+PK bank_id；UNIQUE(tenant_id,bank_id)；(tenant_id,unit_id) FK→catalog.units
+(bk_a_spec,T-A,U-A,active)
+；
+(bk_a_skill,T-A,U-A,active)
+；
+(bk_a_alice,T-A,U-A,active)
+；
+(bk_b_spec,T-B,U-B,active)
+；
+(bk_b_session,T-B,U-B,active)
+；
+(bk_c_shared,T-C,U-C1,active)
+；
+(bk_c_private,T-C,U-C2,active)
+iam.bank_managers
+PK(tenant_id,bank_id,subtenant_id)；两个复合FK分别→bank_registry和subtenants
+(T-A,bk_a_spec,A1,{manage_profile,manage_grants})
+；
+(T-A,bk_a_skill,A2,{manage_profile,manage_grants})
+iam.bank_grants
+PK grant_id；(tenant_id,bank_id) FK→bank_registry；(tenant_id,subtenant_id) FK→subtenants
+(g11,T-A,A1,bk_a_spec,{read,ingest},v12,effective)
+；
+(g12,T-A,A2,bk_a_spec,{read},v12,effective)
+；
+(g13,T-A,A3,bk_a_spec,{ingest},v12,effective)
+；
+(g14,T-A,A1,bk_a_skill,{read},v8,effective)
+catalog.storage_placements
+PK unit_id；(tenant_id,unit_id) FK→units；epoch单调
+(U-A,T-A,S1,dbctx1,rt_u_a,ud_u_a,epoch=3)
+；
+(U-B,T-B,S1,dbctx1,rt_u_b,ud_u_b,epoch=2)
+；
+(U-C1,T-C,S2,dbctx2,rt_u_c1,ud_u_c1,epoch=4)
+；
+(U-C2,T-C,S2,dbctx2,rt_u_c2,ud_u_c2,epoch=1)
+catalog.compute_bindings
+PK(unit_id,operation_class)；(tenant_id,unit_id) FK→units；binding_version独立于storage_epoch
+(U-A,T-A,recall,H-E1-S1-P0,v6)
+；
+(U-A,T-A,build,W-E1-S1-P0,v9)
+；其余Unit可指同或不同合格池
+model.budget_grants
+PK budget_grant_id；同home Tenant/Subtenant预算引用
+(bg-a1-7,T-A,A1,charge_account=acct-A,lease=…cap=未知)
+model.model_calls
+ / 
+provider_attempts
+ModelCall PK call_id、UNIQUE(tenant_id,call_id)；Attempt PK(call_id,attempt_no)，含tenant_id且(tenant_id,call_id) FK→call；source/operation为逻辑ref
+(mc-1,T-A,A1,bk_a_spec,op-a1,provider/model,usage=待回报)
+；不存prompt/content；同次实际调用的费用不因DataPG任务取消而删
+admission.rate_policies
+ / 
+allocations
+policy按Tenant/Subtenant/action/window；allocation_id唯一且绑定instance_incarnation；同库原子检查父子cap
+(T-A,A1,context.query,window=w1)
+与
+(alloc-1,G-instance-7,token_cap=25,expires=…)
+；仅分配/用量typed记录，无请求正文；数值是§2.3守恒示例
+C类元数据不是无敏感信息：身份目录中的必要名称/凭据引用仍须受权读取与保留。它与用户长正文/profile/prompt分开，是按权威职责与字段用途分类，不能因字段叫metadata就把任意JSON搬入C/R。原生config须按白名单拆效果参数、平台安全/模型目的与预算策略、秘密：U只保获准用户配置；安全策略归C/R，真实密钥归受管secret存储，PG仅留引用。
+MetaPG 
+Grant.state=effective
+须有DataPG apply/ack证明；尚未应用只存授权意图。表中的Tenant复合FK可约束Grant不会关联到其他团队的主体或Bank（前提是实现这些约束）；
+不能给MetaPG Grant添加一个跨database PostgreSQL FK直指DataPG BankAnchor
+。DataPG引用通过稳定ID、版本、签名/服务身份和apply receipt验证，不能画实线“DB外键”假装数据库自动保证。
+3.4 DataPG：展开U-A的一对schema与实际表行
+op-a1
+、
+f-a1
+是便于读图的别名；原生operation_id与memory_units.id实际为UUID，不能把这些短字符串当原生合法UUID样例。
+doc-release
+/
+page-release
+可作业务文本ID示意。所有rt新增字段及表都标为PROPOSED。下列行用于解释同一次写入的不同阶段，并非声称所有行同一时刻存在：本例r6为此前已经合法发布的版本（旧行未逐项重列）；t0是r7原件已存且PG刚受理，t1是r7 facts合法发布，t2是另一次页刷新完成。表内标明后续产生的行；未生成的行不能据模板存在就视为就绪。
+3.4.1 S1 / dbctx1 / rt_u_a：运行元数据R
+表/分类
+键与引用建议
+具体行/作用
+bank_anchor
+ 新增/由banks拆出
+PK bank_id；可有UNIQUE(tenant_id,bank_id)；tenant/unit经本地UnitGuard约束
+(bk_a_spec,T-A,U-A,registry_version=5)
+、
+(bk_a_skill,T-A,U-A,rv=3)
+、
+(bk_a_alice,T-A,U-A,rv=1)
+；不存name/mission/config正文
+unit_guard
+ 新增
+PK unit_id；单Unit记录
+(U-A,T-A,storage_epoch=3,state=active)
+；声明该schema对的可信归属
+bank_guard
+ / 
+applied_grants
+ 新增
+Guard PK bank_id FK→本地anchor；快照按bank/subject/version关联
+(bk_a_spec,policy_epoch=12,active)
+；
+(bk_a_spec,A1,{read,ingest},v12,lease=…)
+。快照无自行扩权能力，不另成IAM作者
+source_revisions
+ 新增
+PK(bank_id,source_id,revision)；bank_id FK→anchor
+(bk_a_spec,src-release,r7,raw_ref=R-A-7,raw_sha256=h7,state=accepted)
+；无正文
+source_heads
+ 新增
+PK(bank_id,source_id)；accepted_seq与expected_revision；Publication另表
+(bk_a_spec,src-release,accepted_seq=7,accepted_revision=r7)
+；t0当前所需r7尚未READY则明确BUILDING；t1对应Publication选择bg7，历史r6仍按显式时间和当前授权读取
+request_ledger
+ 新增
+PK(tenant_id,subtenant_id,bank_id,action,idempotency_key)；operation_id可本地FK→async_operations
+(T-A,A1,bk_a_spec,ingest,k77,request_hash=q77,op-a1,r7)
+；跨成员相同key不冲突/不互取回执
+async_operations
+原生表迁到rt并改造
+原生PK operation_id；bank FK改指本地anchor
+原生列示例：
+operation_id=op-a1,bank_id=bk_a_spec,operation_type=retain,status=pending
+；
+改造后的
+task_payload仅typed refs，见下文
+job_context
+ / 
+attempts
+ 新增
+job PK operation_id FK→operation；Attempt PK(operation_id,attempt_no)
+(op-a1,T-A,A1,delegation=d7,budget=bg-a1-7)
+；
+(op-a1,attempt=1,owner=W-7,lease=…,epoch=3)（t1执行期间）
+build_memberships
+ / 
+derivations
+ 新增
+PK含bank、object_kind、object_id、generation；source复合ref
+(bk_a_spec,memory_unit,f-a1,build=bg7,source=src-release/r7,valid)（t1后）
+；
+不是原生memory_units已经有source_revision列
+source_composition_parts
+ 新增
+PK(bank_id,source_id,revision,sequence)，段引用必须存在；含base/hash CAS
+r1=A、r2 append B时r2有序引用[A,B]；清单只存refs，不复制A+B原件；旧段A仍被引用不可GC，详§5
+phase_receipts
+ / 
+outbox
+ 新增
+phase幂等键；event_id PK
+(op-a1,bg7,facts-ready,watermark=…)（t1后）
+；
+(evt-1,source-r7-published,typed_ref)
+，与合法业务结果同本地事务
+JSON分离具体例：
+原生事实
+：
+task_payload={"contents":[{"content":"用户正文…",…}],…}
+（HSRC-49/73）。字段是JSON不改变其用户数据属性。
+目标PROPOSED
+：
+task_payload={"payload_version":1,"raw_ref_id":"R-A-7","source_id":"src-release","source_revision":"r7","build_generation":"bg7","job_context_id":"op-a1"}
+。这些键为拟议新合同，非原生现有字段。
+用户tags、context、自由文本parser提示、filename、model response不能改个字段名继续塞rt。输入正文仍在既有OBS原件；需要持久保留的解析/运行用户文本在ud受控对象，rt只留typed ref/hash。原生error_message/result_metadata的任意自由文本也需逐键分流。
+3.4.2 S1 / dbctx1 / ud_u_a：用户数据与工作投影U
+表/分类
+可复用的原生字段/键
+目标具体行与新增边界（文档/fact为t1；页内容为后续t2示意）
+bank_profiles
+新增，banks用户字段拆入
+来源是当前banks.name/disposition/mission/config；目标PK(bank_id,profile_revision)待审
+(bk_a_spec,pr3,name=研发规范,mission=仅引用本团队规范,disposition={…},config={approved_effect_options…})
+；FK bank_id→rt_u_a.bank_anchor。profile_revision为新增；安全出域/预算不受该用户配置覆盖
+document_versions
+原生documents内容改为不可变版本
+id,bank_id,original_text,content_hash,retain_params,tags
+；原生PK(id,bank_id)
+(doc-release,bk_a_spec,revision=r7,build=bg7,"r7解析后的规范文本",content_hash=w7,retain_params={…},tags=[release])
+。原生content_hash是工作文本hash，不默认等于OBS二进制raw_hash；源/Build经rt membership关联，正文版本键显式含revision/build
+memory_units
+原生表迁到ud
+id,bank_id,document_id,text,embedding,context,fact_type,metadata,…
+；原生PK id；(document_id,bank_id) FK→documents(id,bank_id)
+(f-a1,bk_a_spec,doc-release,"发布需要双人批准",embedding=…,fact_type=world)
+；原生文档复合FK须改接rt.document_anchor，QuerySelection选择ud.document_versions；Tenant/Subtenant不是已有原生列，不在例表里伪造
+chunks
+ / 
+entities
+ / 
+memory_links
+等 
+原生表迁到ud
+保原生对象键、bank作用域与来源关系；具体键见固定表清单
+对应bk_a_spec/doc-release的块、实体与连接；图/补齐也须bank约束，不只初次向量搜索过滤
+mental_models
+原生表迁到ud，版本守卫改造
+当前SQL含
+id,bank_id,subtype,name,description,source_query,content,embedding,tags,max_tokens,trigger,structured_content
+；键按Bank复合作用域
+(page-release,bk_a_spec,subtype=pinned,name=发布规则,source_query=发布需要什么条件,content=…,structured_content={…})
+；source_query可为人工定义，不是可从文件重建的纯派生；新page_revision/support/build资格在rt新增对象或明确新增列，不冒充原生已有
+skill_versions
+ / 
+trials
+ / 
+releases
+产品新增
+版本正文、工具/审阅内容在ud_u_a，typed生命周期在rt_u_a
+此处只举U-A的bk_a_skill候选/Trial/Release；H页面不是现成Skill系统；人工版本与验证态须备份/退出。各Unit有同结构产品表，T-B轨迹另见下表
+operation_diagnostics
+ / 
+parser_results
+新增可选工作对象
+无声称原生表
+(op-a1,error-detail-ref=…)
+或
+(R-A-7,parser-v2,markdown=…)
+；错误/解析自由文本属U。是否保留及期限待审，不另造原件副本
+U不全是OBS可重建的投影。
+ 摄取文档/事实是由原件构建；BankProfile、人工定义source_query、人工编辑页/Skill资产有自己的用户权威，必须同样备份/退出，不能仅恢复OBS文档就声称全恢复。对象ID/hash等完整性属性随U行保留，不表示所有技术属性都必须搬rt。
+3.4.3 把同一行模式放到其他Unit
+PG实际表
+示例对象
+为什么不能仅按ID授权
+S1/dbctx1/ud_u_a.document_versions
+(document_id=doc-release,bank_id=bk_a_spec,revision=r7,build=bg7,…)
+；bk_a_skill可有同名id
+原生文档键含bank_id；产品版本查询还必须带revision/build
+S1/dbctx1/ud_u_b.document_versions
+(document_id=doc-release,bank_id=bk_b_spec,revision=r1,build=bg1,original_text=运营流程,…)
+同database、同document名字仍是T-B数据；A1不能因知道路径读取
+S1/dbctx1/ud_u_b.session_events
+(bank_id=bk_b_session,session_id=sess-b1,seq=2,raw_ref=R-BS-2,…)
+；typed生命周期在rt_u_b
+这是T-B/U-B中的原始事件引用和用户工作内容，不写进U-A schema；与bk_a_skill不构成跨租派生授权
+S2/dbctx2/ud_u_c1.mental_models
+(id=page-summary,bank_id=bk_c_shared,…)
+C1有bk_c_shared Grant才可读
+S2/dbctx2/ud_u_c2.mental_models
+(id=page-summary,bank_id=bk_c_private,…)
+同Tenant另一Unit；C1另有bk_c_private Grant。page ID不作为全球唯一授权键
+3.5 OBS：同一组Bank的原件实际放在哪里
+所有bucket/key为合成示例，不表示已开通。图中ASCII ID只是可读别名；生产用稳定opaque IDs，成员姓名不进入key。
+RawRef
+bucket / key
+绑定的PG元数据位置
+R-A-7
+ctx-raw-demo / tenants/T-A/banks/bk_a_spec/sources/src-release/revisions/r7/raw
+S1/dbctx1/rt_u_a.source_revisions 
+(bk_a_spec,src-release,r7)
+R-A2-2
+ctx-raw-demo / tenants/T-A/banks/bk_a_skill/sources/src-review/revisions/r2/raw
+同rt_u_a，另一Bank/source
+R-AM-1
+ctx-raw-demo / tenants/T-A/banks/bk_a_alice/sources/src-pref/revisions/r1/raw
+S1/dbctx1/rt_u_a.source_revisions；仅A1获准访问的记忆输入
+R-B-1
+ctx-raw-demo / tenants/T-B/banks/bk_b_spec/sources/src-faq/revisions/r1/raw
+S1/dbctx1/rt_u_b.source_revisions
+R-BS-2
+ctx-raw-demo / tenants/T-B/banks/bk_b_session/sources/src-session/revisions/r2/raw
+S1/dbctx1/rt_u_b.source_revisions
+R-C1-3
+ctx-raw-demo / tenants/T-C/banks/bk_c_shared/sources/src-case/revisions/r3/raw
+S2/dbctx2/rt_u_c1.source_revisions
+R-C2-6
+ctx-raw-demo / tenants/T-C/banks/bk_c_private/sources/src-ticket/revisions/r6/raw
+S2/dbctx2/rt_u_c2.source_revisions
+原始字节也给出合成例，便于区别“原件”和“PG加工后的内容”：R-A-7是UTF-8文本“发布需要两人复核；紧急回滚需值班负责人确认。”；R-AM-1是带条件偏好的原始成员输入；R-BS-2是含session_id、seq、工具job状态和receipt引用的原始JSON事件包。PG的documents.original_text保存解析工作文本，facts按内核规则抽取，不能从某条事实反推原始bytes完整存在；raw的h7摘要与工作文本w7摘要分别核验。这里h7/w7是字段示意，不是本轮实测hash。
+原件先完整写入校验，然后PG在同事务登记ref/来源/幂等/任务，Worker只从accepted任务读raw。重试复用同ref/hash；build generation变化不产生新raw。Unit U-C2日后搬S3，StoragePlacement与rt/ud位置变更，R-C2-6的key仍不变。原生bank_storage_prefix以当前schema构造tenant路径（HSRC-76），这是本产品改造点；不能沿用会随PG schema迁移变化的命名来宣称key已解耦。原生导入/导出还存在旧bank-only路径，需清单兼容，不混作新raw路径。
+对象key不是权限凭证。客户端不能拿T-B key让A1 Handler代读；RawRef要由本地来源映射校验Tenant/Bank、当前授权和对象hash。只读正文Grant与下载原始附件/导出动作是否合并由产品动作合同决定，示例需写清，不隐式开放。raw保留与删除走产品源生命周期，不让原生delete-after-retain/clear删除权威原件。
+3.6 按上述表行走一遍写、读、拒绝
+下列路径沿相同的T-A/A1、bk_a_spec、U-A、S1/dbctx1、R-A-7与op-a1；合成输入的发布许可覆盖bk_a_spec当前读者，真实请求仍须校来源受众。元数据/原件/工作投影不是独立写一份后便全都成功；受理、facts、页/索引、最终采用仍分别判定。
+3.6.1 正常写入：A1向bk_a_spec写r7
+G/API
+校验cred-a1，得到可信
+T-A/A1
+；做入口ingest权限检查、限流、请求大小边界、trace/拒绝指标，定位Handler池。用户提供bk_a_spec和source revision/幂等key，不能提供DSN/schema来决定访问位置。
+Handler
+查
+M0/dbcontrolplane/catalog.bank_registry
+确认bk_a_spec→T-A/U-A，结合有效Grant与
+S1/dbctx1/rt_u_a
+的当前guard确认A1有ingest；校来源受众。目录/Grant意图未生效不放行。
+既有OBS原件
+写R-A-7并校验hash/长度；若已有对象则同hash复用。此时只能称RawVerified，不能202；OBS写失败不建立accepted operation。
+连接S1/dbctx1的一次短事务
+：锁
+rt_u_a.unit_guard/bank_guard
+及source/idempotency/RawRef生命周期位置，核epoch=3、policy=12、当前委托和expected revision；写
+rt_u_a.source_revisions/source_heads/request_ledger/job_context/async_operations
+。这些表都在同一database内；事务成功才返回op-a1 accepted。
+Worker
+从分配的U-A领取op-a1并建立attempt；在读取R-A-7前先核当前读取/处理权限，获准后才读原件并解析；需要模型抽取/embedding时经L Adapter发送资格与团队预算检查。L的MetaPG账务事务独立，不加入S1的业务BEGIN；模型调用也不是PG事务。
+S1/dbctx1阶段事务
+：同连接核
+rt_u_a
+的guard/Attempt/source revision，写
+ud_u_a.document_versions/memory_units
+及
+rt_u_a.build_memberships/phase_receipts/outbox
+，再推进合法operation状态。
+rt_u_a
+与
+ud_u_a
+可同库原子；跨MetaPG、OBS、模型不原子。文档/事实就绪与知识页/索引就绪仍分水位。
+同一接收k77回执丢失，A1重试查原request_ledger，复用op-a1/R-A-7；A2不能凭相同k77读出A1受理回执。另一个主体A3仅有ingest：若Tenant已显式授权ProcessingPolicy，可由受限processor在关联的新processing operation内构建；requestor仍为A3，旧job actor不改。未配置该policy则只接收raw或BLOCKED_AUTHORITY，不能隐式借平台身份读旧Bank。A3不因受理取得正文/结果读取权。operation查询也不能借状态返回无权正文/诊断。
+3.6.2 正常读取：A1联合查bk_a_spec和bk_a_skill
+G/API
+认证A1、执行入口权限/限流、记录无正文metrics，将
+requested_banks=[bk_a_spec,bk_a_skill]
+和可信身份转Handler。
+Handler
+按M0目录解出两Bank均T-A/U-A，验证A1分别具read；请求集合只会缩小有效Grant集合。定位S1/dbctx1与当前rt/ud pair，检查两Bank各自policy epoch（本例12、8），不能把一个Bank的有效权限用于另一个。
+内核table-aware resolver将
+document_versions/memory_units/mental_models
+定位到
+ud_u_a
+，将guard/operation定位到
+rt_u_a
+；各查询仍带正确bank_id。源码ContextVar只选一个schema，现状不是已经支持该resolver。调用者A1没有自己的schema。
+协调Handler按(shard, profile, embedding_space)分组，保单Bank本地快速路径；跨组按I-07获取轻候选，全局裁剪后按Unit批量hydrate/核资格，再做计划要求的一次共同重排。OBS补读只能从通过资格检查的SourceRevision取得RawRef，不能接受任意外部key。若请求complete且bk_a_skill失败则整体失败；partial模式明确标bk_a_skill缺口。
+输出ContextBundle前再验当前资格；向L的费用归T-A账单并归因A1及所访问Bank。G记录请求完成、延迟和允许的计量摘要，不持正文或账务余额权威。
+C1查bk_c_shared+bk_c_private时重复这条逻辑，分别读
+rt/ud_u_c1
+与
+rt/ud_u_c2
+。本例恰巧同S2/database，但产品仍按Unit/Bank独立授权；不能依赖“现在恰好共库”提供永远跨Unit原子快照，未来迁移后它们可在不同database。
+3.6.3 同一组对象的拒绝与变化例
+请求/变化
+拒绝点与保持不变的事实
+A1请求bk_a_spec+bk_b_spec
+Handler发现bk_b_spec.owner=T-B，拒绝跨Tenant。不能搜索后再滤，也不能因S1同database读到bk_b_spec
+A3写bk_a_skill或Recall bk_a_spec
+当前Grant不覆盖；入口可早拒，Handler必须权威复核；拥有ingest bk_a_spec不等于read或写其他Bank
+客户端header指定schema=ud_u_b
+G剥离/拒绝不受信路由参数，Handler仅接受可信目录解析；table resolver没有public fallback
+Bob A2离职
+停凭据/委托、传播epoch并drain；既有bk_a_spec/bk_a_skill与U-A不搬不删；晚到Worker结果校epoch拒发布
+bk_a_spec管理者A1移交A2
+变Manager/Grant与policy生效流程，bk_a_spec仍T-A/U-A，OBS key不动；新增read仍校来源受众
+M0已提交Grant，S1未ack
+Grant还只是pending，不能按MetaPG新行直接读正文；R本地guard仍裁定当前执行资格
+在S1/dbctx1内的合法阶段使用一个连接：锁
+rt_u_a.unit_guard/bank_guard/attempts
+→校SourceRevision与actor→写
+ud_u_a.document_versions/memory_units
+→写
+rt_u_a.projection_bindings/phase_receipts
+→提交。跨schema同库事务可覆盖这些行；M0的Grant意图/预算、OBS写入与外部模型不在这笔事务中。数据面只接受有版本的apply/ack结果，不把跨库网络请求伪装成FK或BEGIN。
+3.7 原生保留什么、产品新增什么、核心必须改什么
+固定源码现状
+目标落点与变化
+分类/证据
+TenantContext.schema_name
+与
+fq_table(table)
+只选单schema；
+fq_table_explicit
+也单schema
+产品Tenant/Subtenant/Bank解析生成可信Unit StorageContext；table-aware resolver映射rt/ud，未知表拒绝；DSN由固定shard/profile池决定
+原生schema helper可复用，
+ADAPTER+CORE_PATCH
+；HSRC-45/46/51/52
+当前
+banks
+写
+bank_id,name,disposition,mission,internal_id
+，另有config；初始migration的personality/background已变化
+rt.bank_anchor
+保运行标识/引用，
+ud.bank_profiles
+保用户profile；MetaPG另建bank_registry/manager/grant，不是把banks整表搬M0
+CORE_PATCH
+；HSRC-79（当前与历史对照）及HSRC-55，当前字段复核
+retain/bank_utils.py:382
+；rename_personality migration、mental_models_v4 migration移除background。本行校正V2.3把历史字段写成当前字段的口径
+当前
+documents
+写
+id,bank_id,original_text,content_hash,retain_params,tags
+；旧documents.metadata已删除
+表迁ud；保存解析工作文本；新增rt.SourceRevision/Head/Composition与映射；用户retain_params.metadata仍是U，不因叫metadata进C/R
+CORE_PATCH
+；HSRC-80（当前与历史对照）及HSRC-54；
+retain/fact_storage.py:399
+。raw_hash与工作文本content_hash分开
+memory_units
+原生bank/document/text/embedding/fact_type/metadata，原生PK id、document复合FK
+数据迁ud，原生文档FK可同库保留；来源revision/build资格是新rt映射或显式新增列，当前原生并无产品Tenant/Subtenant字段
+原生对象
+NATIVE复用
+，路由/守卫
+CORE_PATCH
+；HSRC-47/54；初始schema:265—292支持这些基础键，不推断全部HEAD字段
+async_operations
+持status、task_payload、result_metadata、bank_id；正文嵌contents；Bank FK级联删除
+表迁rt；保原生执行状态；payload重塑为typed refs；自由文本结果/错误迁U；JobContext/Attempt新表；FK改指本地anchor，独立计费/审计不随Bank删除
+CORE_PATCH
+；HSRC-48/49/50/73
+mental_models
+当前写name/source_query/content/structured_content等；按bank_id+id定位更新
+表迁ud；人工定义与派生正文均按权限保留；新增R的page/query/support revision/CAS；不能把整个mental_models表当“元数据”进M0
+原生页
+NATIVE复用
+，资格/版本
+CORE_PATCH
+；HSRC-81及已有固定memory_engine快照
+17557—17564,19251—19271
+；原生PK隔离migration
+w8r9s0t1u2v3
+按Bank修键
+Worker显式schema claim；维护routine跨schema枚举；Alembic单target_schema与版本表
+发现目标改为assigned Unit schema对；迁移成对束、跨schemaFK/索引/routine/导出清单改造；G/H不可自行全库升级
+CORE_PATCH
+；HSRC-45/51/52
+文件已先store后enqueue，但默认可删除；prefix通常含原生schema
+raw key改稳定产品Tenant/Bank/source/rev；条件创建/hash与PG引用绑定；禁用/隔离内核raw直删；OBJ位置不随PG迁移
+ADAPTER+CORE_PATCH
+；HSRC-74—77
+这里逐行字段来自固定源码的有限摘录，未执行完整HEAD DDL或数据库迁移。原始迁移仅解释历史；当前写路径优先，HSRC-79—81补当前字段与迁移对照。新增表/列/关系均PROPOSED，不把说明性表行当可部署DDL。
+原生
+fq_table("banks")
+只换到rt仍不够：旧查询同时取mission/config等用户字段，必须改BankRepository的锚点/配置读取与写入，逐个复核相关SQL、FK和删除路径。普通runtime角色无DDL/任意schema切换权；table resolver对未知表/丢失Unit上下文拒绝，不回退public。Worker发现与Alembic迁移按
+rt_schema + ud_schema + runtime/data revision + payload capability
+成对生效，两边均READY才开放。
+3.8 方案B的边界与A/C、schema粒度备选
+方案
+C / R / U物理落点
+事务与故障域
+选择状态
+A 全部同一PG database，分控制/runtime/user schema
+control / rt_U / ud_U；OBS仍单份原件
+同连接可原子跨schema；共享CPU/IO/WAL/故障/备份，只有逻辑和角色分离
+低成本备选，不重新默认为已接受
+B 独立MetaPG控制域 + DataPG内R/U双schema
+C在MetaPG；R在DataPG.rt_U；U工作投影在DataPG.ud_U、原件在OBS
+R+U工作投影同库短事务；MetaPG与DataPG通过版本事件/ack/租期协调，无跨库普通原子事务
+本轮推荐PROPOSED
+；平台元数据物理独立，运行元数据与用户PG仍同实例，不能称全部metadata物理分离
+C 所有C/R与U分别放物理数据库
+Meta/RuntimeMetaPG保存所有控制/运行状态；UserDataPG+OBS保存内容
+失去原生operation/guard/正文的本地原子边界；需重做发布/恢复，代价最高
+完全物理分离备选，需用户选择并补专项实现/验收，不能用B冒充C
+推荐B的理由：全球团队/授权/路由/账务与业务内容负载分开，同时保留现有逐阶段guard+版本+结果发布的同库事务。
+这不等于用户已同意R与用户内容共物理PG
+；选择A/B/C在KD-10突出展示。若要求全部R/U物理分离，需采用C的对应合同，不能为省改造而暗中保原同表。
+C可讨论的具体路线是：UserDataPG写不可变、未发布generation；MetaPG在当前attempt/权限下CAS发布版本清单与operation状态；所有读取/模型消费先以MetaPG发布版本筛选，失效/未发布内容不可返回，孤儿版本另清理。旧执行者可能留下不可见暂存内容，但不能发布；该语义与原生就地更新不同，需广泛CORE_PATCH。另一备选为受控分布式事务协调器；PG的
+PREPARE TRANSACTION
+只提供协调原语，不能假定跨库自动原子。C性能、未决事务恢复和全写路径覆盖均NOT_RUN。
+schema粒度候选
+行为与代价
+当前判断
+按Tenant-owned Unit成对schema（默认一团队一Unit）
+同团队Bank用bank_id区分，Subtenant用Grant；共享/换manager不搬数据。大团队按完整Bank组拆Unit
+推荐PROPOSED
+，适合当前团队共享目标；单Bank热点/大量Unit成本另验
+按Subtenant成对schema
+每主体独立存储生命周期；共享Bank要选承载者、跨schema或复制，离职/移交更复杂
+备选，不能因名叫子租户自动采用；不建议默认给每成员建一套H表
+按Bank成对schema
+Bank隔离/搬迁更细
+schema/DDL/索引/连接/联检放大，适用数量与阈值UNKNOWN
+PG schema不能嵌套，且权限取决于数据库角色/授权；逻辑三类对象不必逐层对应物理命名空间。
+PG18 Schemas
+ 只支持这些机制边界，不证明本产品隔离已完成。schema与table名由可信注册生成并按固定表路由校验，禁止用户字段插入SQL标识符；共享角色和专用身份/进程/PG隔离档仍按KD-04分别验收。
+3.9 三业务权威与生命周期仍怎样闭合
+图02保留Memory/Knowledge/Skill对象分工；原件权威在既有OBS，图11的Tenant/Subtenant/Grant与图12的C/R/U位置贯穿每个对象。模型/任务/页状态不得被统一成一个success，三业务具体路径仍见§5—§9。
+生命周期仍按当前资格处理：成员离职停新凭据/委托/额度，传播policy并排空声明范围；团队Bank和schema不随成员删除。移交Manager只改管理/Grant，不改原JobContext actor，不默认搬PG；跨Tenant改归属需另行显式再授权/导入流程，不能只UPDATE tenant_id。源/Grant/删除日志水位缺失的恢复先quarantine。
+3.10 完整分域规则与稳定文档锚点
+下列是候选字段/键合同，尚未实建DDL。原生内容表的全部内容列保留在U；R仅收资格/任务/发布需要的typed状态和引用，C只管IAM/目录/策略/预算。未知列一律
+FIELD_CLASSIFICATION_REQUIRED
+并阻止READY，真实secret转受管引用。不可用部分示例表行冒充完整盘点。
+文档的产品映射在本稿统一为
+rt.document_anchor(bank_id, document_id)
+稳定技术锚点，以及
+ud.document_versions(bank_id, document_id, source_revision, build_id, original_text, metadata_ref, ...)
+不可变版本。原生documents内容迁入版本表（§3.4目标行已同步）；依赖document_id的事实/chunk FK改接本地锚点，读取必须从QuerySelection解析版本。此改动涉及Repository/SQL/FK，不只是fq_table换schema。§3.4的doc-release是稳定锚点别名；每条目标正文行另携revision/build，不能拿稳定ID直接JOIN“最新正文”。
+attachment元数据按选定文档版本绑定；原生当前三元PK 
+(bank_id,document_id,attachment_hash)
+是改造前事实，V2须用新增版本关联表或明确复合版本键保旧版本映射，不能在同一原生行原位换filename/ref。同raw可复用，legacy storage_key可能被多行引用，删除需核全部引用。PG来源关系为
+memory_units.source_memory_ids[]
+；
+observation_sources
+仅Oracle，
+document_attachments
+已由upgrade删除，不是当前PG待新建表。
+实体逻辑ID可稳定；entity summary/metadata、共现和边的可外发语义须有支持集/版本，两端都合格。
+unit_entities.unit_id
+与
+graph_maintenance_queue.unit_id
+是原生memory unit ID，不能接产品UnitGuard。失效正文、页与两类history、用户query/directive、webhook配置、audit/llm诊断正文仍属U；账单与必要typed审计不随Bank内容级联删除。原生维护队列保工作引用并纳入guard，不是另起产品摄取队列。
+表/对象
+C/R/U候选位置
+原生字段举例（非完整DDL）
+R/C typed白名单
+U内容与secret规则
+键/FK/版本合同
+写方
+删除/保留
+恢复
+原生范围
+banks
+rt.bank_anchor + ud.bank_profiles
+bank_id/internal_id；name/mission/disposition/config
+ID/注册版本及guard引用；安全白名单配置
+name/mission/disposition/获准效果config及其历史；secret：provider等秘密只留secret_ref；安全政策C/R
+anchor PK bank_id；profile复合(bank_id,profile_revision) FK→本地anchor；其余原bank FK逐项改接
+C受控开通/apply写anchor；有权H写profile
+先撤资格再按保留清理；账单/必要审计不得级联
+人工profile独立权威不可仅OBS文档重建
+CURRENT_PG_BACKUP_LIST
+bank_aliases
+ud.bank_aliases；必要typed解析引用R
+alias/bank_id/created_at
+只有稳定Bank ID/版本引用，不存任意alias文本于C/R
+alias及显示文本；路由解析仍须当前Grant；secret：无
+native PK alias为单schema域；产品建议tenant/Unit范围唯一并核Bank；不得跨租同名串路由
+有权H管理；G公共入口优先opaque Bank ID
+按Bank生命周期清理；原显示别名不等于永久权限
+别名/Bank映射随资产导出，恢复后仍查Grant
+CURRENT_PG_BACKUP_LIST
+attachments
+ud.attachments + R生命周期ref
+bank_id/document_id/attachment_hash/short_id/media_type/byte_size/storage_key/kind/filename
+typed RawRef/hash/保留与删除状态
+filename/描述/用户字段；原件字节OBS；secret：对象凭据外置
+native当前三元PK保作事实；V2新增document_version关联/版本键；legacy共享key按全部引用清理
+H受理和W绑定；raw删除仅生命周期角色
+legacy storage_key多行共享时核所有引用，禁删一行即删blob；不级联删权威raw
+保对象version/hash与旧key兼容；无document_attachments新表
+CURRENT_PG_BACKUP_LIST
+documents
+rt.document_anchor + ud.document_versions
+id/bank_id/original_text/content_hash/retain_params/tags/file_storage_key/file_original_name/file_content_type
+SourceRevision/Publication/RawRef等新增typed对象
+所有原生正文/参数/用户metadata/tags/文件名随U；技术ID/hash可随U；secret：未知用户配置中的secret转引用
+稳定(bank,document_id)锚点；正文版本键(bank,document_id,revision,build)；所有hydrate按QuerySelection；native内容/FK需迁移
+W guarded staged构建；Publisher发布
+旧代按pin/保留/删除资格清理，禁止原位改仍可读旧代
+OBS工作投影可重建，接受顺序和来源选择需R备份
+CURRENT_PG_BACKUP_LIST
+entities
+ud.entities
+id/canonical_name/bank_id/metadata/first_seen/last_seen/mention_count
+R仅实体投影generation/支持资格ref
+名称/metadata/语义属性及统计留U；secret：无
+native实体ID保留作索引身份；跨Source语义属性需版本/支持，Bank FK按实建清单改anchor
+W实体解析/受控维护
+不可见staged数据不得污染可读语义聚合；无主索引可重建
+保语义与支持或明确可重建，不把无出处摘要外发
+CURRENT_PG_BACKUP_LIST
+chunks
+ud.chunks
+chunk_id/document_id/bank_id/chunk_index/chunk_text
+R构件membership/build refs
+chunk正文及所有内容派生列留U；secret：无
+immutable component_id关联稳定document_anchor；BuildMembership保顺序/复用/选区；原doc/index upsert不可沿用
+W构建/有界重建
+SourceComposition/Build仍引用则不GC；阶段失败清自己的staged
+保持顺序/原文映射/hash及模型/解析代
+CURRENT_PG_BACKUP_LIST
+memory_units
+ud.memory_units
+id/bank_id/document_id/chunk_id/text/embedding/context/fact_type/source_memory_ids
+R publication/binding/support validity refs
+全部事实/观察正文/向量/用户metadata/条件/tags/时间；技术属性可随U；secret：无
+事实/component ID不可变；document FK接稳定anchor；有效metadata/tags用revision overlay；PG source_memory_ids数组
+W retained/derived阶段受guard；有权同步编辑亦受CAS
+失效资格先行；历史/派生按支持与保留清理；不得以删citation替正文失效
+事实可按原件重建但人工编辑/来源版本关系需保全
+CURRENT_PG_BACKUP_LIST
+invalidated_memory_units
+ud.invalidated_memory_units
+id/text/metadata/source_memory_ids/invalidation_reason/invalidated_at/entity_ids（历史LIKE需升级链复核）
+R仅墓碑/retention/发布资格
+全部失效正文/原因/来源等敏感内容留U；secret：无
+不能由LIKE历史DDL推出与当前memory_units全列相同；关联Bank/doc/generation需逐列比对
+受控失效/清理Worker
+无对用户默认可读；隐私删除覆盖历史与备份约定
+保失效原因/历史资格，恢复不得复活
+CURRENT_PG_BACKUP_LIST
+unit_entities
+ud.unit_entities
+unit_id/entity_id
+R仅必要generation/support refs
+关系投影与技术键保U；secret：无
+unit_id是memory_units UUID，不是产品Unit；两端Bank/代际检查
+W实体关联维护
+无权/未发布端点不得参与可外发图解释
+可重建投影；复制需完整端点/来源
+CURRENT_PG_BACKUP_LIST
+entity_cooccurrences
+ud.entity_cooccurrences
+entity_id_1/entity_id_2/cooccurrence_count/last_cooccurred
+R支持/可见代引用
+共现关系及计数留U；secret：无
+两实体同Bank/允许范围，当前完整PK/FK由upgrade dump核；不可从初始DDL忽略后继迁移
+W关联/维护
+新旧代聚合不能静默跨越失效源
+与实体/事实支持映射联合恢复或重建
+CURRENT_PG_BACKUP_LIST
+memory_links
+ud.memory_links
+from_unit_id/to_unit_id/link_type/entity_id/weight/bank_id
+R发布/支持引用
+关系/语义/权重及技术键留U；secret：无
+from/to为memory unit，读图两端均核Bank/可见代，原FK和bank后加字段要核
+W图关系/指定维护
+先资格再清理，不能旧边外发新端点正文
+同代端点/索引恢复，外部投影不作权威
+CURRENT_PG_BACKUP_LIST
+observation_history
+ud.observation_history
+id/observation_id/bank_id/content JSONB/changed_at
+R保留/删除及对应revision指针
+content全JSON正文和历史元信息留U；secret：无
+原observation_id FK→memory_units(id)；产品补Bank与不可变revision关联，防历史级联丢验收证据
+W/受权编辑经Publisher
+不是自动可读的历史；依源撤回/隐私删除策略处理
+人工与派生身份保留，不当current证据
+CURRENT_PG_BACKUP_LIST
+mental_models
+ud.mental_models + R页发布
+id/bank_id/subtype/name/description/source_query/content/embedding/tags/max_tokens/trigger/structured_content
+R page/query/support revisions与资格；安全规则不得被trigger覆盖
+正文/人工定义/效果配置/结构/历史引用留U；secret：任意秘密从用户配置剥离为引用
+native当前按bank_id+id；产品逻辑page ID到physical revision绑定，history/page-tree引用同步
+有权H编辑；W refresh；Publisher CAS
+并发编辑不被旧refresh覆写；撤全部支持后严格读拒绝
+人工query/profile不可仅从raw重建
+CURRENT_PG_BACKUP_LIST
+mental_model_history
+ud.mental_model_history
+id/mental_model_id/bank_id/content JSONB/changed_at
+R保留/删除typed状态
+历史content和技术键留U；secret：无
+原复合(mental_model_id,bank_id) FK→mental_models；§5.3物理revision映射明确，不盲级联删除
+H/W受控history写
+保用户批准的历史/删除政策，不把history当权限豁免
+备份包含人工修改与来源身份
+CURRENT_PG_BACKUP_LIST
+knowledge_pages
+ud.knowledge_pages
+id/bank_id/parent_id/kind/name/mental_model_id/sort_order/managed
+R可见版本/资格ref
+name/树结构/排序/用户管理属性留U；secret：无
+历史DDL PK id；目标显式同Bank parent、MM复合引用及anchor FK；实建当前PK另核
+有权H目录管理；W合格发布
+page-tree删除先核对子关系/人工内容/源保留，不能原生cascade误删必要权威
+页树/人工目录独立保全
+CURRENT_PG_BACKUP_LIST
+directives
+ud.directives
+id/bank_id/name/content/priority/is_active/tags
+R发布资格/ref；平台安全优先级C/R
+name/content/业务priority/tags/用户状态；secret：无
+Bank FK→本地anchor，版本化query/instruction引用；用户priority不覆平台授权
+有权H
+撤回/变更invalidate相关模型输入及派生支持
+人工指令独立资产；备份恢复仍按当前Grant
+CURRENT_PG_BACKUP_LIST
+async_operations
+rt.async_operations + U诊断/派生payload
+operation_id/bank_id/status/operation_type/task_payload/result_metadata/error_message/worker_id/claimed_at/retry_count/serialization_key
+白名单ID/状态/时间/typed refs/子任务关系；Attempt/JobContext新增
+contents/用户tags/context/filename/自由错误及未知JSON迁U或OBS refs；secret：bearer禁止持久
+原Bank FK改本地anchor；operation仍唯一执行真相；parent/Attempt/receipt同本地事务
+H受理；W claim/阶段/terminal；受控管理取消
+cleanup不删除独立dedupe/必要账单审计；终态与所有业务写均owner/attempt条件
+保在途及接受连续性；原生ZIP过滤在途不能替恢复
+CURRENT_PG_BACKUP_LIST
+webhooks
+U endpoint配置 + R投递引用 + C出网策略
+id/bank_id/url/secret/event_types/enabled/http_config
+typed event kind/ref、投递状态、批准目的地引用
+url/http_config自由配置/用户headers（秘密除外）；secret：secret及授权header转secret_ref/version
+Bank作用域与受控endpoint FK/引用；不能普通Agent给任意url绕出网
+有权H配置；指定投递Worker
+停用阻新发；已发不可收回；保必要审计不盲随Bank清除
+恢复key/endpoint policy及回调幂等，不重放未知外发
+CURRENT_PG_BACKUP_LIST
+file_storage
+ud兼容/退役存储；新raw禁用
+storage_key/data BYTEA
+R RawRef/迁移状态/hash
+旧data BYTEA/受控临时派生；secret：存储key权限不是授权；真实secret外置
+旧storage_key引用清单→OBS对象版本/hash，验证后退役；不另建PG原始正文权威
+仅迁移/兼容读取；新raw写方H到OBS
+禁原生document/Bank前缀清理触及权威raw
+按旧对象映射可恢复，不把legacy bytes丢掉作为去重
+CURRENT_PG_BACKUP_LIST
+audit_log
+typed最小审计R/C + ud审计详情
+id/action/transport/bank_id/started_at/ended_at/request/response/metadata
+白名单actor/action/resource/版本/时间/hash/effect/ref
+request/response/自由metadata；按政策脱敏舍弃或受权U保留；secret：任何secret删除/引用化
+audit event ID不随Bank删除丢；typed outbox与对应权威同库
+各动作作者事务；审计消费者受限
+必要审计失败不得报对应变更成功；保留由HC07，不以采样代权威
+独立安全水位/归档可追；U详情按删除合同
+CURRENT_PG_BACKUP_LIST
+llm_requests
+U诊断 + typed R/C索引；不当计费权威
+id/bank_id/operation/scope/trace_id/span_id/provider/model/status/tokens/input/output/error/llm_info/metadata
+白名单测量/trace/时间/status/ref；usage missing保nullable
+input/output/error/自由llm_info/metadata；secret：key/credential明文禁止
+关联ModelCall/ProviderAttempt但不替Usage/Cost/Billing三账本
+L受控capture/诊断消费者
+不因业务失败删实际usage；诊断保留和账期各自政策
+Meta故障沿Envelope恢复，未知不记0
+CURRENT_PG_BACKUP_LIST
+graph_maintenance_queue
+rt.graph_maintenance_queue
+bank_id/unit_id/enqueued_at
+仅typed Bank/memory-unit ID/调度时间
+新增自由内容必须U引用；secret：无
+unit_id是原生memory unit；受指定scope/guard，不能改接产品unit_id
+指定维护Worker；普通H只受控登记候选
+此为原生维护候选，不另复制业务operation终态；毒/过期候选有处置
+随Unit及引用端点恢复；旧epoch不得新写
+CURRENT_PG_BACKUP_LIST
+entity_maintenance_queue
+rt.entity_maintenance_queue
+bank_id/entity_id/enqueued_at
+typed Bank/entity ID/调度时间
+新增自由内容必须U引用；secret：无
+原复合(bank_id,entity_id)域；核本地anchor与实体实际归属
+指定维护Worker
+同上；禁止每H副本无限跨schema扫描
+与实体状态/任务capability恢复
+CURRENT_PG_BACKUP_LIST
+bank_stats_cache
+R白名单统计；未知payload保U或重建
+bank_id/payload JSONB/computed_at
+获准枚举/计数/时间，不作权限/账务权威
+出现用户派生字段则U；secret：无
+原bank_id PK、无FK；不盲引入新跨库约束
+统计读取/维护
+可丢并重建；clear与generation联动，不据cache授权
+原备份测试排除该cache；产品恢复后冷启动，不假称权威丢失
+CURRENT_PG_CACHE
+document_attachments
+EXCLUDED_REMOVED_PG
+历史关联表；PG _pg_upgrade删除
+不新增
+旧关联迁入attachments.document_id/filename；bytes不自动搬；secret：无
+不按downgrade CREATE重建；保原migration/旧blob映射
+仅历史迁移说明
+无doc旧孤儿row/blob处置必须按原迁移含义和新raw合同核
+完整upgrade链/目标schema实跑仍待验
+REMOVED_BY_PG_UPGRADE
+observation_sources
+EXCLUDED_ORACLE_ONLY
+Oracle桥表；PG uses_observation_sources_table=False
+不作为PG native R表
+PG来源数组在memory_units，产品Derivation另有typed支持合同；secret：无
+PG不补此桥表；Oracle如将来支持要独立profile/DDL，不借PG测试
+后端条件代码
+逻辑来源关系保留，物理后端条件不能去掉
+不把Oracle表计进24个PG名称
+ORACLE_ONLY
+表中24个当前静态PG对象来自23个BACKUP_TABLES名称加bank_stats_cache；两项后端/历史排除另列。最终release仍须逐migration head与实建catalog对照表/列/PK/FK/trigger/routine/sequence/index/extension，DG-03、MP-05、PX-01均NOT_RUN。人工profile/页/Skill权威不能仅从OBS文档重建。
+4. 接口、状态与一致性合同
+以下 
+/v2/
+ 是
+建议产品接口
+，不是 Hindsight 已有路由。HTTP、SDK 和 MCP 映射同一应用服务，不逐个暴露底层管理方法。R1 接口接入范围在接受后冻结。
+应用命令/查询
+必需输入
+成功/冲突/拒绝合同
+POST /v2/banks/{bank}/sources:ingest
+source_id、revision、expected_revision、原件ref/hash、事件/有效时间、idempotency key；可信身份由服务解析
+持久受理后202+operation_id/source revision；同键同内容返原op，同键异内容409；412为期望版本冲突
+GET /v2/operations/{id}
+ID+当前读权限
+原生执行状态+产品阶段读模型+失败/缺口；不能因知道UUID就有权查看payload
+POST /v2/context:query
+banks、task_kind、query、time_mode/valid_at/known_at/required revisions、budget、complete、consistency
+bundle、有效证据、失败Banks、实际费用/预算消耗；必需来源未就绪409/202可重试状态，完整模式缺Bank明确失败
+POST /v2/context/{bundle}:prepare-use
+bundle_id、宿主最终编译的证据映射/request hash、host revision
+当前权限/内容资格复核，返回绑定最终输入的待消费资格或拒绝；严格采用只有受控dispatcher可执行；内核模型调用也使用§7同一发送合同
+POST /v2/sessions/{id}/events
+event_id/seq、run/tool contract、原件refs与外部receipt
+重送去重、乱序标缺口；追加完成不等于产生经验/Skill
+POST /v2/skills/{id}/versions
+ / 
+:trial
+ / 
+:release
+ / 
+:revoke
+frozen body/hash、前提/tool schema；Trial oracle；独立发布者授权
+candidate→verified→released显式动作；正文变更新version，旧trial不转移；权限不足/前提不符拒绝
+POST /v2/sources/{id}:retract
+ / 
+grants:revoke
+expected revision/epoch、reason、目标语义等级
+分别返回 accepted/effective/purged 范围与收据；202不是完成；授权生效不借来源L等级豁免
+管理面 
+export/restore/migrate/profile
+运维身份、manifest、计划/expected epoch
+长作业、校验/单写切换可查；普通 Agent 不得调用原生直连DB CLI
+请求例（合成，省略凭据；客户端不能提供 schema、DSN、allowed_actions）：
+{&quot;source_id&quot;:&quot;K-A&quot;,&quot;revision&quot;:&quot;r2&quot;,&quot;expected_revision&quot;:&quot;r1&quot;,&quot;body_sha256&quot;:&quot;&lt;content-hash&gt;&quot;,&quot;valid_from&quot;:&quot;2026-10-01T00:00:00Z&quot;,&quot;idempotency_key&quot;:&quot;K-A-r2&quot;,&quot;wait_until&quot;:&quot;facts&quot;,&quot;deadline_ms&quot;:3000}
+deadline_ms=3000
+ 只是字段演示，不是产品SLO。等待超时返回仍可查询的operation；显式cancel是独立命令，不能撤销已外发模型计算或已经合法提交的旧阶段。
+C-05：产品状态是原生状态的可解释读模型。
+ 原生 pending/processing/completed/failed/cancelled 等按原枚举和版本保留，不直接改名。另列：
+状态轴
+最低字段
+对调用者的含义
+接收
+RawVerified、accepted、input_durable、acceptance_unknown
+OBS校验不等于accepted；PG受理提交后才202；不新增OBS日志/队列
+来源
+accepted_revision、active_revision、facts_ready_revision、zero_facts/error
+当前业务来源与加工状态分开，不靠max revision掩盖缺口
+派生
+object revision、support set、build_generation、valid/stale/quarantined
+fresh
+原生标记不能单独授予严格读取资格
+搜索
+profile/index generation、已完成集合或连续无缺口前缀
+只对覆盖版本声称可检索；读副本合格性另验
+采用
+bundle_id、use_id、host request hash、ADOPTION_UNKNOWN
+服务返回不是模型实际使用，更不等于任务成功
+撤回/删除
+accepted、effective scope、purge receipts、backup expiry
+逻辑禁用、派生重算、物理清理三种完成时点
+来源新鲜度等级：L 可在明确 as-of/陈旧提示下用仍获授权的旧公开内容；G 要求生效后的新使用不采用已撤回来源；P 增加派生副本物理清理及保留期收据。三业务取值尚未接受。
+访问权限是独立硬合同：已经失权不能因为选择 L 继续读取。
+ 对隐私删除，原文回源也必须禁止。未声明as-of时不得悄悄把过期资料当当前答案。
+4.1 跨集群接口、凭据与状态归属（不是仅画连线）
+接口ID / 方向
+合同与状态权威
+允许凭据 / 失败边界
+I-01 / G→B
+版本化私有RPC：Retain受理、Recall/Reflect、资源管理、operation查询；B权威处理业务
+mTLS/工作负载身份+短期签名委托；B重新验证资源、policy与binding，不因来自G就设无条件internal信任
+I-02 / B→PG
+原生受理+RequestLedger/SourceRevision/JobContext同事务；查询与受限管理
+B绑定shard/Unit业务角色；无DDL/任意guard改写权限；202必须在durable提交后
+I-03 / W↔PG
+claim/attempt/lease、阶段提交、子任务/checkpoint/outbox；operation唯一执行状态
+分配范围Worker角色；源/epoch/owner与attempt同事务校验；不依赖G内存队列或B回调
+I-04 / H/W→L Adapter→获准供应商
+generate/embed/rerank；ModelCall与每次ProviderAttempt分离；当前资格+实际wire hash+destination/budget+发送lease
+H/W仅有Adapter服务身份，无外部供应商密钥/任意出网；L持获准credential版本；重试/failover逐次记账，详§16
+I-05 / C→G/H/W及管理Job
+路由、profile、可处理Unit/task class、policy/额度版本快照；控制authority一处
+签名/版本化分配；快照过期拒用/回源；特权guard/DDL仅受控Job身份，C不参与每事实事务
+I-06 / H/W↔原件/附件
+immutable对象、source revision/hash、归属/下载许可、备份/迁移manifest
+最小对象/文件访问身份；G只转发bytes或B签发受限URL，不持可任意读取/写入的业务存储凭据
+I-01的建议envelope：
+contract_version, request_id, trace_id, service_actor, tenant_id, caller_subtenant_id, initiating_principal, effective_principal, bank_refs[], action, delegation_id, policy_epoch, unit_id, expected_storage_epoch, expected_binding_version, runtime_profile, deadline_at, admission_allocation_id, model_budget_grant_id
+。资源/身份由可信边界解析，B再次核当前权威；公共客户端不能声明DSN/schema或授予allowed_actions。内部HTTP/gRPC具体选型未定，但字段语义不可在拆分时丢失。
+I-01方法 / B内落点
+请求/响应与幂等
+授权、预算、重试/取消
+Source.SubmitRetain
+ → Ingest/Acceptance
+source_id/revision/expected_revision、content或有权blob_ref/hash、parser/strategy、idempotency_key；canonical_request_hash由B算。响应durable operation_id、accepted revision与阶段水位
+B校source.write与来源受众，原件先OBS完成校验、再PG引用/任务同事务受理；同key异hash冲突。等待deadline与作业执行deadline分开，G超时不撤销已受理任务
+Context.Recall
+ → Query/Context
+query/time_mode/valid_at/known_at、请求Banks/filters、required revisions、token/retrieval budget、partial policy；响应bundle/evidence refs、水位、完整性/失败Bank、usage
+B以当前grant求交并执行候选/重排/附件补齐前后资格门；G不再保留engine相关附件访问。request_id关联trace，读重试消耗仍入同budget grant
+Reasoning.Reflect
+ → Online Reflect
+query、directive/version refs、output_schema、iteration/总token预算、allowed tools；响应answer/based_on、tool trace、finish_status/usage
+B本地tool loop，每轮读取/外发都受控；G透传取消并停止新流片段，已发模型可能计费。超时不自动改成异步受理成功
+Resource.Mutate
+ / 
+Knowledge.RequestRefresh
+ → 管理受理
+page_id/expected_page_revision、query/source generation、key/hash/mode；响应operation_id与预期版本；
+Operation.Get
+查PG权威
+B核动作和支持源读权限；W本地执行并用page/source/attempt CAS发布。取消为独立命令，不回滚已合法提交阶段；status读取不查询某个Worker内存
+内部错误至少区分 
+AUTH_DENIED
+、
+BUDGET_EXHAUSTED
+、
+BUSY(retry_after)
+、
+BINDING_STALE(effect=none|accepted|unknown)
+、
+IDEMPOTENCY_CONFLICT
+、
+SOURCE_REVISION_CONFLICT
+、
+DEADLINE_EXCEEDED(effect=...)
+。公网错误不泄露DB地址/schema。G对明确未产生效果的过期binding可在同key/budget内刷新一次路由；effect unknown先按key查权威账本，禁止换key盲投。流已开始不得静默拼另一epoch结果。G→B断线、B停机、W停机、C分区分别进入V-19的独立失败路径。
+4.2 统一主体与类型化协议
+字段
+明确定义
+签名与使用
+tenant_id / caller_subtenant_id
+已认证团队/发起主体
+外部伪造头剥离；tenant与资源归属匹配
+initiating_principal
+原始发起身份的稳定引用；成员/服务账号均有明确映射
+永久审计不因管理移交改写
+effective_principal
+本operation实际被授权处理的主体；默认等于caller的principal
+若不同，必须有预先授权的ProcessingPolicy/委托链；不是客户端指定的“目标主体”
+service_actor
+G/H/W/L工作负载身份、incarnation
+不授用户数据权限；动作需与effective principal及委托范围相交
+delegation_id/version
+受限动作/资源/期限/issuer链
+不能存长期bearer；新operation明确继承范围，不把旧job actor换人
+bank_refs[]
+规范化复数资源集合，单Bank方法规定长度=1
+签名覆盖排序/去重后的集合及方法体hash；alias先按当前权限解析
+idempotency_key / canonical_request_hash
+写方法必填，读request_id不等同持久去重
+hash覆盖动作/原件/语义参数，排除trace；保留窗口和恢复epoch受§11限制
+admission_allocation_id
+入口次数/字节/slot份额引用
+与模型额度不同；无模型快读也可能使用入口份额
+model_budget_grant_id / reservation_id
+模型总预算委托/每次尝试预留
+仅发生模型步骤才需要reservation；不能由G请求数推导客户模型收费
+eligibility_permit_id / dispatch_lease_id
+一次性消费对象/获准在途生命周期
+消费permit并建立/持有lease；二者不都叫budget或“消费lease”
+contract/profile/binding/storage/recovery版本
+兼容和位置检查
+未知版本拒绝；effect未知不能通过换key/路由盲重试
+建议错误记录
+code, effect, retryable, operation_id?, current_state, missing_scopes, retry_after?, observed_revision?, recovery_epoch
+；公网不得泄露其他Tenant存在性或DB位置。区分
+NOT_DISPATCHED/ACCEPTED/DISPATCH_UNKNOWN/PARTIAL_STREAM
+等effect，HTTP状态本身不决定收费。
+AUTH_DENIED
+和source/build冲突不静默降为partial成功；partial只返回被批准的可服务子集及明确缺口。
+revision采用opaque ID，expected_revision作相等CAS，accepted_seq供内部排序。分页cursor绑定租户、过滤/排序、selection/profile及必要epoch；稳定排序含ID tie-break，失权重验，版本失效给cursor过期而不是跨代翻页。批量受理逐项返回结果，跨Unit不声称批原子；同Unit整批原子须所有raw verified且同一接受事务。cancel不撤销已合法提交或外部费用，流重连默认查原调用终态，不新发推理伪装续传。
+Bundle/UseReceipt保存期限和正文/诊断访问动作分别定；GetCall/Operation.Get不因知道UUID就返回内容。签名覆盖method、audience、主体链、bank集合、deadline和body hash；内部mTLS只证明服务身份，不替当前资源授权。为HTTP/SDK/MCP给同一组成功/冲突/超时/恢复gap示例；通过消费方契约回归后才发布稳定SDK。
+4.3 查询与模型资格的受限内部接口
+接口
+唯一执行者与权威
+故障/边界
+I-07 Handler→固定分片Handler
+QueryPlan / RetrieveCandidates / HydrateEligibleBatch，详§6；单Bank本地直调
+分片不得递归协调，不接受客户端DSN；complete与预算由协调者负责
+I-08 L→DataPG资格过程
+AcquireBatch / Consume / Cancel / DrainStatus；DataPG.rt权威
+L只有固定search_path的限定EXECUTE，参数不拼schema，无任意U SELECT；不依赖在线Handler
+I-09 L→既有OBS派生结果域
+Capture/Get ResponseEnvelope，attempt限定key和hash；MetaPG记result-ready引用
+无raw覆盖/删除权；未持久不报耐久结果就绪；具体result_mode与成本见§16
+所有字段状态由生产者签发并由消费方核验；I-01到I-09版本兼容、错误effect、重复/超时/取消例一起进入DG-08/MP契约检查。
+5. 写入、构建与变化传播
+图03 原件先持久、增量构件与短发布 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  in [label=&quot;身份/来源/输入资源门&quot;];
+  raw [label=&quot;同一raw\n条件写+hash校验&quot;];
+  acc [label=&quot;DataPG accepted\nSourceRevision+ledger+op&quot;];
+  delta [label=&quot;DeltaPlan\nsame splitter / 完整指纹&quot;];
+  reuse [label=&quot;unchanged构件复用\n新membership/overlay&quot;];
+  new [label=&quot;changed/new抽取\nL资格/预算/结果&quot;];
+  stage [label=&quot;guarded staged批\nComponent+receipt同事务&quot;];
+  pub [label=&quot;单Source Publication CAS\nZERO_FACTS明确/分轴READY&quot;];
+  in -&gt; raw;
+  raw -&gt; acc;
+  acc -&gt; delta;
+  delta -&gt; reuse;
+  delta -&gt; new;
+  reuse -&gt; stage;
+  new -&gt; stage;
+  stage -&gt; pub;
+}
+图15 原件/受理的失败窗口与恢复缺口 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  raw [label=&quot;RawVerified\n不等于accepted&quot;];
+  tx [label=&quot;PG受理事务&quot;];
+  rec [label=&quot;签名receipt\nrecovery_epoch + accepted_seq&quot;];
+  gap [label=&quot;PITR丢账本\nACCEPTANCE_GAP&quot;];
+  replay [label=&quot;核WAL/安全高水位\n旧费用/原件/旧sender&quot;];
+  accept [label=&quot;显式reaccept\nreplaces_receipt/新授权&quot;];
+  gc [label=&quot;GC封新引用→等pin\n不能扫OBS自动建任务&quot;];
+  raw -&gt; tx;
+  tx -&gt; rec [label=&quot;commit后&quot;];
+  rec -&gt; gap [label=&quot;旧回执记录缺失&quot;];
+  gap -&gt; replay;
+  replay -&gt; accept [label=&quot;不可恢复且显式确认&quot;];
+  raw -&gt; gc [label=&quot;未受理孤儿也要并发门&quot;];
+}
+C-06：复用原生受理与算法，在同一事务补来源、请求与委托合同。
+ 原生 
+submit_async_retain(operation_id=...)
+ 已能按Bank/type重放原UUID，父子operation和payload持久；它不比较完整请求hash，也不等于所有接口永久去重（HSRC-12/13）。因此不是在网关先写一条“成功”再HTTP转给原生；应让受理扩展参与原生事务。
+5.1 既有原件写入前移，再受理和构建
+D-049/050 / C-26：这是同一份既有OBS原件的写入顺序调整，不新增原件副本、OBS WAL对象或日志服务。
+ 用户的WAL/redo类比取“先持久再处理”；PG自己的WAL/备份仍负责数据库恢复。具体OBS厂商和保留阈值未选定。
+Handler先解析Tenant/Subtenant/Bank、当前写入/来源发布权限、输入大小及稳定幂等身份。来源准入须符合§7受众不变量；write权限不自动授予read/后台模型处理权。来源不可确认先拒绝或quarantine。准备身份和权限可在上传前做，但不能先构建或回accepted。
+将原始字节写入既有OBS位置一次，完成并校验后才继续。
+ File保原始二进制；Text保确定编码的原文；Session保有版本的原始事件包/工具收据，并记录
+asserted_by/message_role/authority_kind
+，区分用户断言、助手转述与工具实际观测。解析Markdown、chunks和抽取facts是派生工作投影。
+RawRef={namespace,key,version_id?}
+绑定SourceRevision、明确算法digest、byte_length、content_type和校验时间。新源内容才产生新revision；重试/重解析/换模型只复用该原件，后者产生新build generation。已在受管OBS的原件校验后直接登记引用。
+key由稳定source/revision或服务签发并由客户端保存的upload handle决定；一次性请求也必须以scope内稳定idempotency key推导相同身份，不能重试随机生成原件。条件创建拒覆写；已有对象须核相同hash才能复用。Hash是明确定义存储字节的摘要，
+ETag不一律等于MD5
+；multipart未Complete不算RawVerified。
+S3条件写
+、
+上传校验
+仅作S3类能力合同，其他OBS兼容性待测。
+RawVerified后，在所属DataPG同一连接短事务中锁Unit/Bank/SourceHead和RawRef生命周期位置，复核当前权限、原件未被GC标deleting、expected_revision及canonical_request_hash；原子绑定SourceRevision/RawRef、RequestLedger、JobContext、operation与outbox。R只存typed ref/hash/状态，原始body不内联task payload；源用户metadata/解析参数内的用户文本进入U域。请求hash覆盖动作/Bank/raw digest/输入选区/语义参数，不含trace等易变值。
+MetaPG模型预算不加入此本地事务
+；此处只引用可验证budget grant，实际模型预留见§16。
+PG提交后才返回accepted/202和原operation/revision回执。
+ 同key同hash返回原结果，同key异hash拒绝；提交结果未知先查账本，不换key盲重投。同步等待模式也先同一受理，再等待该operation，不能绕过原件持久门。多文件可逐项接受并返回每项状态；整批原子只能在全部RawVerified且同一事务域有完整绑定合同后宣称。
+Worker只领取PG已接受任务，按RawRef重验、解析/抽取/构建；当前授权/模型许可与阶段发布guard持续生效。SourceHead记录accepted_seq及接受CAS版本，SourceSelection按业务有效期/来源权威选择，不以最后到达代替当前规则。新有效版本激活使旧派生失效；原件仍按独立retention保存。
+追加与完整版本重建（PROPOSED协议，V-25/26）
+：一次接收的原始输入和某source的完整逻辑版本分开。
+replace
+ revision的
+SourceComposition
+是本次RawRef；
+append
+ revision在PG只登记
+base_revision + expected_composition_hash + ordered input_refs/segment_ids + sequence + composition_hash
+，引用此前已接受原件和本次新增原件，不把A+B重新复制成一份OBS原件。例：r1原件A，r2追加原件B，r2完整输入清单明确为[A,B]；重建/历史r2回源必须校验并按定义编码/边界有序读取两者，不能只读r2的新B。原件hash针对单段原始bytes，composition hash针对版本化有序清单/组合规则，不能互替。
+Handler以SourceHead/base revision CAS在同一受理事务绑定新清单、新增ref与operation；同key重送同B只出现一次，base冲突拒绝或由调用者明确重基，不能自动重复append。清单由服务从已接受同Tenant/Bank来源生成，限制无环/可解析依赖；客户端不能凭任意RawRef串入他人资料。首次支持append前必须定义拼接编码/段边界与验证；未经定义的native append入口拒绝，不能绕产品清单。读取/构建需全部段完整且当前获权；撤回任一仍被完整版本依赖的段使该版本失去资格，不能静默少一段继续称完整。GC/保留/导出/迁移按所有保留SourceComposition引用闭包计数，旧段仍被新版本引用时不得当过期孤儿清理。Session采用相同有序事件引用原则，保event_id/seq与缺口；这是PG元数据引用，不是另一份OBS日志。
+H 
+documents/chunks
+是SourceRevision的可重建工作投影，保留原生delta分块算法与文档锁/append CAS的防冲突目的，写入对象按§5.3改造，但它们必须位于上述完整输入清单合同之内。它们可以含同文文本，但不是第二个原件权威；历史查询按合法as-of回OBS版本，重建错误不能损坏原始字节。原件成功而PG未受理是未登记对象，不由bucket扫描自动授权或创建任务。
+5.2 原生机制卡与 V2 边界
+以下默认只描述 eb021da 的
+代码默认
+，不是批准的生产参数。有效配置来自 global→tenant→Bank/strategy；实验必须锁解析后的值及prompt hash。安全政策不使用 ConfigResolver 的失败回空覆盖行为（HSRC-10）。
+机制
+输入→触发→算法/prompt→持久/使用
+默认/可选与成本
+V2 改造和反例
+Retain
+显式文本/事件/文档→同步或持久operation→分块、抽取what/when/who/context、实体消歧/embedding/关系→world/experience、文档/chunks→recall
+retain_extraction_mode=concise
+、chunk_size=3000字符、causal links默认开；verbatim仍有元数据/embedding工作；不是原文全保真
+保原文、条件、角色；user偏好与assistant行为不混为一类；每批提交fence/版本支持集，V-01/03/08
+Consolidation
+新facts+按实体/facet召回的旧observations→LLM输出creates/updates/deletes、reason及source_fact_ids→PG memory_units.source_memory_ids[]（Oracle才用observation_sources桥表）→recall/page
+prompt优先同facet UPDATE、不同facet CREATE，保重要历史、禁止无依据算数；mission可覆盖一般规则。默认LLM batch=8、每轮最多100、recall budget=low；数字是内存/预算策略
+prompt不是规则正确性证明；源在LLM期间改变需版本重核，PG live-source保护可复用；共享Unit/Bank屏障+来源/对象CAS，V-02/03/09
+Knowledge refresh
+已定义query/页版本+支撑facts/observations→Reflect或结构化delta/unsay→mental_models正文/history→page搜索/直读
+自动刷新受触发配置影响；全部grounding消失时原生 
+unresolvable
+ 分支保正文并剪引用；无新证据/失败亦可能保旧值
+页资格取决于Derivation而非is_stale；显式区分导入断链与真实撤回，source/query/page revision CAS，V-02/05/09
+Skill compile
+有独立工具终态的Session→人工/受控compiler→固定过程、条件/失败分支、工具contract→candidate
+产品新模块；可参考ReMe表示/Cognee proposal，不引其运行时为必需依赖；自动生成默认不开启承诺
+不是H原生能力；不由LLM把自身输出批准为verified；留出Trial及Release，V-04
+精确补充：
+config.py
+ 1628–1650、1740–1765；
+retain/fact_extraction.py::_BASE_FACT_EXTRACTION_PROMPT
+；
+consolidation/prompts.py::_PROCESSING_RULES/_OUTPUT_SECTION
+；
+源码账本 HSRC-29
+。原生prompt的assistant类型到experience持久映射仍由原生抽取转换处理，产品保存输入角色，不能只从“我”字识别用户/Agent。
+5.3 Source、构件复用、Build与发布协议
+C-07/C-13，AR-02：此处替换V2.4原位更新可读代的隐含路径。
+ 受理新输入、选为当前来源、facts发布、页/图就绪是不同事件。推荐不可变构件与版本membership，保留原生delta的分块分类和changed-only抽取算法；不能直接重用原生删除旧chunk、原位更新unchanged fact metadata的写法。
+对象 / 唯一写方
+键与核心内容
+生命周期与读资格
+SourceRevision / Handler受理
+bank/source/opaque revision、Source作用域accepted_seq、RawRef或SourceComposition、valid区间/权威引用
+ACCEPTED/RETRACTED是来源状态；accepted_seq用于CAS，不代表业务有效优先级
+DocumentAnchor / 开通或受理过程
+bank/document_id稳定锚点，与source一一映射
+无正文；native document FK改接此本地对象；不是跨MetaPG FK
+DocumentVersion / W
+bank/document_id/revision/build、完整工作正文、原文映射/用户metadata/tags
+U中不可变；从选中的Build精确hydrate，不从逻辑ID取最新行
+Component / W
+bank/source/component_id、chunk text/hash、facts/vector、extraction_fingerprint
+不可变内容；复用限同源/同授权域，默认不跨Bank；新事实/观察另有immutable ID
+Build / W
+bank/source/revision/build_id，parser/prompt/model/space版本、owner attempt、manifest hash
+ALLOCATED→BUILDING→READY或FAILED；每小批可提交但staged不可供在线读/模型归纳
+BuildMembership（rt）与RevisionOverlay（ud） / W
+build→component与顺序/来源选区/支持；每revision有效metadata/tags/observation_scope
+metadata/tags/自然语言条件留ud overlay，rt仅ref/hash/版本；复用构件不改旧行；过滤/召回/观察构建读取选中overlay，不能读旧fact上的陈旧tag冒充当前
+Publication / Publisher
+source/revision/profile→selected_build、facts/graph/page就绪轴、publish_revision
+READY后短CAS发布；REVOKED拒新严格使用；历史保留按当前授权/删除门与显式历史选择读取
+Derivation / W或有权编辑者
+immutable observation/page/Skill revision、精确支持组件及来源/overlay版本、人工revision/query_revision
+源变化先deny/stale再重算；人工修改不能被旧refresh覆盖；旧Trial不批准新Skill
+QuerySelection / Handler
+query_id、每Source选中revision/build、每Bank当前policy和实际水位、selection_hash
+一响应同Source不混代；不承诺跨PG全局MVCC快照
+delta接入与代价
+：原生
+_try_delta_retain
+ / 
+_run_delta_db_work
+以document hash和同一splitter比较unchanged/changed/new/removed，保短document锁复核与流水合批；本产品的
+DeltaPlan(base_build, input_manifest, extraction_fingerprint)
+把相同分类落到新membership。changed/new抽取新Component，removed仅不加入新Build，unchanged引用已有Component/vector。复制的是有界manifest/overlay，不为每个代复制全部向量或重复建一套物理索引。索引仍对组件集合建，资格join将staged/旧选择排除。
+复用指纹必须覆盖
+实际编译输入
+、splitter/parser、prompt、模型/embedding参数、空间、条件和抽取所读上下文；实体消歧/旧知识参与时也要绑定其支持版本。输入metadata若进入prompt，变化就使相关组件重新抽取；不进入抽取的metadata-only变化只生成新overlay，但会使依赖scope/tag的观察失效/重算。不能只比chunk正文hash，不能沿用
+update_memory_units_metadata_and_tags
+原位改仍供旧代使用的facts。native 
+store_chunks_batch
+按doc/index生成并upsert ID、delete_chunks级联删旧facts，也必须替换为不可变component写入/引用感知GC。HSRC-82—85给固定源码挂点；运行改造NOT_RUN。
+昂贵工作在复用成立时约为受影响组件的抽取/向量写，manifest可仍为O(全体组件数)的小记录；上下文/模型变化可能使全量受影响，不承诺每次O(changed)或零成本。记录
+reuse_ratio, extracted_tokens, component_rows, vector_bytes, membership_rows, index_bytes, retained_generations, GC_backlog
+，同输入对照原生PB0及同合同PB1。上限以保留代数/字节/合法pin/备份窗口约束，具体值HC-07待定；达到上限背压/返回CAPACITY_BLOCKED，不暗中删除被合法读/发送/SourceComposition引用的对象。
+阶段事务
+：锁顺序按§8，当前Attempt+Source通过后，同DataPG事务写Component/DocumentVersion/membership及phase_receipt/checkpoint/outbox；失败只留下不可见staged构件。Publisher核清单/每批收据/向量空间/有效Attempt/支持集合，再CAS单Source Publication，不更新全Bank content_epoch。ZERO_FACTS是完整处理的结果，不能悄悄让当前请求复用已不适用的旧facts。facts可先READY，图/页另列缺口。
+全读路径
+：SQL候选臂、graph seed与两端、实体语义、consolidation输入、ID直读、页/附件/列表/导出都使用
+当前授权 AND SourceSelection AND BuildMembership AND Publication能力 AND 支持集资格
+；不能只在API尾部过滤。CandidateHandle带确切构件+build；hydrate把fact→DocumentAnchor→选中DocumentVersion，并返回overlay；禁止沿document_id读“最新documents正文”。并行连接允许不同读时点，但融合/发送前解析同一SourceSelection，变化则有界replan或VERSION_CONFLICT，不在LLM等待期间维持长事务。
+GC先封新pin，再等已获资格的读/dispatch、保留和备份引用结束，按共享引用闭包删除；组件创建中由build/attempt pin保护。失败Build和旧代有单独可审清理收据。全量代复制只作诊断备选，放大实测后才能接受；冻结原位重建会在窗口返回BUILDING/不可用，需HC-04/07接受，不能无声切换。
+5.4 撤回、冲突和人工编辑
+C-07：先取消读取/使用资格，再重建，物理清理另有收据。
+ 来源撤回事务写reason/tombstone并提高content epoch；已知受影响Derivation置invalid，未知依赖的页/观察按Bank generation保守隔离。原文中仍有效且获授权的B可直接召回，避免一律全拒绝。后台重算读取当前源，发布时再次校源集合与epoch；新版本完成才替换readable指针。
+必须区分四类变化：业务改版可保留历史as-of；隐私删除禁止回源；权限撤销按principal/action处理但不必物理删除他人仍合法的源；导入改变native ID必须携ID map/provenance generation，不能猜成真实撤回或导入。全失联默认“保正文可用”在严格G模式被拒绝；作者运维可在受限诊断面查看隔离版本。
+页刷新记录 
+expected_page_revision, query_revision, source_generations, model_revision
+。人工编辑得到新page revision；旧refresh CAS失败后重读/rebase或显式冲突，不覆盖。R1不做通用自然语言三方自动合并：保留人工区块/整页隔离，待审阅后发布。若人工段落的事实依据不完整，明确其作者断言身份，不自动当机器核实证据。
+5.5 原件、受理和重建的故障闭包
+故障点
+已持久/对外状态
+处理与保证边界
+上传或multipart中断
+无RawVerified/accepted；可能有未完成parts
+续传/终止分片；失败清理不能删另一次重试已完成的同key对象
+OBS成功，PG提交失败或未知
+原件在；accepted可能无或unknown
+同scope/key查PG；确认未受理且授权有效才复用同ref受理；不删除“回滚”可能已受理的原件
+PG成功，202丢失
+原件和唯一operation已持久
+同key取原回执，不造新任务/原件；客户端断线不撤销已接受事实
+Worker崩溃/解析或构建错误
+原件与受理记录不变，可能有合法checkpoint
+新实例/attempt读同ref重建；旧attempt不能发布；各次模型真实费用仍记账
+重放前停用主体/撤源/冻结Bank
+历史accepted仍成立，当前执行资格失效
+拒读/拒发送/拒发布；有权团队须另建显式委托及operation，不偷换原任务actor
+孤儿清理与迟到受理并发
+原件尚无接受绑定或引用不可确认
+GC与受理共用RawRef锁/生命周期记录，先标deleting阻新绑定再删；若已绑定则GC退出；PG失联/迁移恢复中延后，不靠年龄/listing判断无引用
+原件误删/hash不符
+PG存在但源不可用/完整性失败
+停止构建并告警；恢复确切版本再验hash；不能把PG投影或空文本当原始字节成功
+必须改造的原生删除差额：默认
+FILE_DELETE_AFTER_RETAIN=True
+，
+_handle_file_convert_retain
+提交下游retain后即可删file；document delete与Bank clear也会删文件/prefix（HSRC-73—78）。对权威raw禁止这些直删，
+只关一个配置不够
+：上传角色条件创建、Worker只读、原生临时文件清理角色无raw Delete权限；原件显式删除由SourceRevision生命周期/tombstone/outbox驱动，复用既有PG任务。普通Bank清理先撤资格，再按已接受的保留/隐私删除合同清理，不永远保留也不因build失败即删。
+未完成parts、未接受raw、有效已接受raw、撤回待purge和派生临时文件分开保留。对象删除后不重用原件ID；外部管理员/OBS Lifecycle必须受同一保留约束，否则PG锁不能阻止外部误删。对象版本功能如采用，需明确历史版本成本/删除口径，不默认给用户增加另一套长期副本。
+详见固定源码与失败推演 
+RAW-ORDER-REVIEW.md
+。原件存在能恢复字节和重建输入，
+不能单凭OBS恢复接受顺序、Grant/墓碑、任务检查点与账单
+；完整系统仍需§11的PG恢复。V-25/26全部NOT_RUN。
+6. 查询、证据预算与实际使用
+图04 协调、全局预算、精确hydrate与最终采用 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  q [label=&quot;当前授权/时间/策略\nQueryPlan父预算&quot;];
+  group [label=&quot;按shard/profile/space分组\n单Bank本地快速路径&quot;];
+  arms [label=&quot;本地原生并行召回\n轻CandidateHandles&quot;];
+  cut [label=&quot;全局轻融合/裁剪\n失败Bank/已耗预算&quot;];
+  hyd [label=&quot;按Unit批量资格+hydrate\nSelection→DocumentVersion/overlay&quot;];
+  rank [label=&quot;一次共同rerank（可选）\n所有模型消费前许可&quot;];
+  bundle [label=&quot;EvidenceGroup/Bundle\n条件完整/水位/缺口&quot;];
+  use [label=&quot;最终request hash\nprepare-use→dispatch→receipt&quot;];
+  q -&gt; group;
+  group -&gt; arms [label=&quot;有界I-07&quot;];
+  arms -&gt; cut;
+  cut -&gt; hyd;
+  hyd -&gt; rank;
+  rank -&gt; bundle;
+  bundle -&gt; use;
+}
+候选合同：
+G只按请求和可信目录选择一个具协调能力的Handler。该Handler生成有版本的QueryPlan，将Banks按(shard, profile, embedding_space)分组；同组本地执行可直接调用内核，远端调用I-07。分片执行者不得递归协调。协调者拥有完整性、总预算及合并责任，各执行者拥有本地真实资源、资格、版本和候选获取责任。
+I-07最小合同：
+对象/方法
+必填内容
+限制/失败
+QueryPlan
+query_id/plan_version、可信主体链、bank_refs、asset_kind、strategy、valid_at/known_at、required revisions、总deadline、总candidate/token/model预算、complete策略
+客户端scope只缩小当前授权；不能携可执行DSN/schema；不接受未知策略静默fallback
+RetrieveCandidates
+group_id、可信binding/storage epoch、相同query编译hash、可选已获权query embedding+space ID、有限子预算
+本地保native召回并行/融合/裁剪；可返回轻候选，不默认每Bank执行昂贵rerank；超时也返回已耗预算/effect
+CandidateHandle
+tenant/bank/unit、source_revision/build、object_kind/physical_id、channel/rank、score语义、support_digest、payload_size提示、读取水位
+不兼容embedding距离不直接相加；ID不是访问令牌；不得将staged/失权候选正文返回协调者
+HydrateEligibleBatch
+被全局轻量筛选保留的handles、一组所需附件/原文片段、selection hash
+每Unit一次有界批量；先查当前资格再按确切generation读正文，返回剔除/缺证原因；禁止逐候选RPC
+分片回执
+成功/失败Bank集合、selection/watermark、实际资源/模型用量、缺候选原因、binding提示
+complete=true任何必需Bank失败则不返回伪完整Bundle；partial保缺口，源规则缺失不能凭例外给肯定结论
+流程：定向授权→按组有限并行取候选→全局轻量融合/裁剪→按Unit批量hydrate/资格→一次共同rerank（若计划需要）→证据组装→输出前及每次模型消费前再核。原生某store已返回payload时不再做一次重复hydrate；任何分支的provider/local rerank都须遵守资格门。保单Bank原生路径，不为它强制增加两个跨Handler RPC。
+预算由协调者给各分支唯一子grant，
+已消耗+未决+已分未回收 ≤ 父grant
+；失败重试沿同query_id/剩余额度，不发一份新全额。协调者崩溃后读请求可终止，已产生模型成本留ModelCall；重试由持久ModelCall/查询回执找状态，不承诺读查询exactly-once。分支超时后迟到结果不能被已结束计划拼入。
+备选
+：R1明确仅同兼容执行组联检，跨组返回
+CROSS_SHARD_QUERY_UNSUPPORTED
+；对R1范围影响交HC-04。推荐先在D0定I-07并做两执行者机制证据，再决定上线范围。若全局裁剪严重损害某Bank稀有证据，比较受限候选保底/两级重排方案并计全部费用，不能未经对照重复重排。
+6.1 时间、查询类型与证据完整性
+时间字段及选择算法
+：SourceRevision表示一次不可变输入；Assertion另有
+subject_ref, predicate, condition_scope_ref, valid_from, valid_to, event_at, asserted_by, authority_kind, supersedes[], conflicts[]
+。用户自然语言条件留U；R只放受控类型/引用与版本。知识来源的业务优先级由有权业务配置，助手转述/模型推断保自身身份，不能变成用户断言。
+请求含
+time_mode=now|valid_as_of|as_known
+，
+valid_at
+是业务时点，
+known_at
+是系统当时已知截止点；默认now以服务时钟评估，历史有效时间查询可按当前已知材料回答，只有as_known才限制accepted_seq/接收时间。权限始终按当前时刻核，historical不恢复旧Grant。
+known_at
+不能直接用应用发起时间或事务内
+now()
+冒充提交可见时间。候选采用由既有PG WAL/恢复归档路径生成的不可变CommitReceipt（source/accepted_seq、事务提交水位、数据库提交时间、timeline/恢复epoch），异步关联受理记录；不新建raw日志或第二业务队列。
+as_known
+先将截止点解析为所属authority的已证明knowledge cut，再筛选版本；证据尚未捕获或有缺段时返回
+KNOWLEDGE_CUT_NOT_READY
+，不能猜测已知集合。服务签发的known_cursor可直接绑定这组cut；多PG公开各自水位/时钟限制，不宣称一个全球快照。上述commit元数据可由
+PG18逻辑解码回调
+取得；具体产品接入仍是提案。捕获延迟、WAL解码/保留权限、时钟偏差和映射缺口进入DG-03/MP-08探针，未验前该历史能力不能标READY；now/valid_as_of仍按当前已提交可读集合执行。
+选择顺序固定：①当前授权/删除门；②主体/项目/条件可判定性；③valid区间与可选known_at；④显式authority/优先级和supersedes；⑤同优先级互斥且无法裁定则返回
+CONFLICT
+及来源，不任选最大revision。revision是opaque业务版本，另外用单调accepted_seq处理CAS，不能做字符串大小比较。临时出差例外只在明确条件成立时覆盖常态；条件未知返回条件分支或澄清需求。
+未来激活采用“持久activation operation预热+读取时兜底”，延迟调度不得改变正确选择。缓存key包含query语义、Source选择/Build、授权域和policy版本；
+not_after=min(缓存TTL,下一已知生效/失效边界,许可期限)
+。now请求在发送前跨过边界或Source选择已改变，重新计划/拒旧Bundle；显式历史valid_at保持其时间语义，但仍重核当前权限/删除。新受理的迟到事件按valid/authority纳入选择，不能由arrival改写当前偏好。无新写跨边界也必须失效。
+规则+例外
+：新增
+EvidenceGroup(group_id, task_contract_version, required_roles, members/revision_refs, completeness)
+，可来自有权标注、连接器或待审核抽取；模型猜出的关联未验前不冒充硬依赖。命中规则后按group查例外/适用条件，按同预算定向补取；例外不可用时回明确缺口，不能仅凭例外批准动作。自由开放领域无法预先穷尽所有例外，应限制“完整证据”声明，报告group覆盖UNKNOWN；不能用top-k扩大伪装证明不存在遗漏。
+查询类型
+：建议
+asset_kind=knowledge|memory|skill
+，
+strategy=direct|hybrid|bounded_reflect
+，另带声明任务族版本。direct有受权精确ID/小集合条件；hybrid映原生fact_type、budget、max_tokens及通道profile；bounded_reflect只在可命名的证据缺口和剩余预算允许时升级，保最大轮数和停止码。Skill只取前提相容的Release；不映成原生fact_type='skill'。统一映射表必须锁当前native支持枚举，不能凭旧同步recall签名外推所有入口。
+6.2 原生召回及实际采用边界
+原生
+recall_async
+先validator、embedding/时间/类型/tags，再可选store.full_recall；默认并行语义/词法、图、temporal臂，经融合/重排/token裁剪和补齐返回。RRF函数为Σ1/(60+rank)，另有interleave；全局rerank候选默认300、per-source cap默认0仅是配置默认，不是固定工作量（HSRC-19/29/30）。本稿把当前资格前移到每次内容消费之前、把跨组共同重排放在全局裁剪之后。store.full_recall或后端自带模型若不能提供同等资格/计量钩子，严格档明确禁用。单Bank保原生并行和流水，不强制增加远端I-07跳数。
+asset_kind映射：knowledge/memory以native world/experience/observation和页类型为候选，按任务与已配置支持枚举过滤；skill取产品Release，不发native fact_type=skill。direct只读已授权的有限ID/集合；hybrid锁通道/profile/budget/max_tokens；bounded_reflect必须有可命名证据缺口、剩余预算、最大轮数及停止码。自动策略对照固定三策略，各自同预算，不宣称Reflect永远更优。
+ContextBundle记录evidence groups、片段/来源revision/build、角色/条件、selection hash、成功/失败Banks、实际token/费用和valid-until。宿主只能在预算内删完整证据组或请求更小Bundle，不能保例外删规则、保结论删条件。服务返回不等于实际入窗：宿主最终编译request hash和证据映射经prepare-use，受控dispatcher按§16消费资格并留UseReceipt。不可控宿主只能声明服务返回级保证，强采用UNSUPPORTED；最终任务成功由业务oracle判，不由UseReceipt判。源资料和Skill文字不能扩大授权。
+7. 授权、受众变更与撤权闭包
+图05 撤权、暂停sender与生效范围 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  intent [label=&quot;MetaPG撤权意图\n非全局effective&quot;];
+  deny [label=&quot;各DataPG deny/epoch\n拒新读/提交/消费&quot;];
+  issued [label=&quot;ISSUED→取消\n不再授send&quot;];
+  used [label=&quot;CONSUMED / DISPATCHING\n包括尚未发字节&quot;];
+  drain [label=&quot;取消确认/出口fence\n或终止与provider终态&quot;];
+  pending [label=&quot;缺证明：PENDING/UNKNOWN\nTTL不证明暂停者已死&quot;];
+  eff [label=&quot;收齐apply+drain证据\neffective(scope)&quot;];
+  purge [label=&quot;保留/备份/对象清理\n独立purged收据&quot;];
+  intent -&gt; deny;
+  deny -&gt; issued;
+  deny -&gt; used;
+  used -&gt; drain;
+  drain -&gt; pending [label=&quot;证据不足&quot;];
+  issued -&gt; eff;
+  drain -&gt; eff [label=&quot;证据充分&quot;];
+  eff -&gt; purge;
+}
+C-09/10/22：当前权限贯穿入口、内部读取、每次模型消费和每次提交。
+ G的AuthN/入口AuthZ只是早拒；Handler、Worker、L资格过程按当前资源/主体/委托/存储与恢复epoch重核。缓存与签名许可不永久授予权限；service_actor不替effective_principal。RawRef、UUID、alias、OBS key都不是访问令牌。
+入口/动作
+必查资格与证据
+未覆盖时的行为
+recall/Reflect工具/ID/list/page/附件/导出
+Bank动作、来源受众、SourceSelection/支持集、明确下载/导出action
+不读出再过滤；不合格对象从SQL/支持选择处剔除，必要证据缺口显式
+W claim/raw读取/抽取/旧知识消歧/归纳
+原requestor与effective processor委托、当前来源/目标/模型许可
+BLOCKED_AUTHORITY，不偷换job actor；旧任务不得借提交时未撤销的缓存
+L generate/embed/rerank及本地模型
+完整Unit集合的EligibilityPart、实际wire hash/destination、dispatch nonce、模型reservation
+任何part失败不发送；不凭预算预留替内容资格
+source撤回/主体停用/Grant撤销
+本地deny与epoch/墓碑、apply回执、ISSUED拒消费、CONSUMED在途drain
+分别报accepted/local-denied/effective/purged；MetaPG提交不代表所有Unit已生效
+Bank级统一受众为首期候选：可读产物每个支持源都须允许Bank全体目标读者，否则quarantine或进单独受限Bank。粗粒度不能表达的混源ACL后置，不能声称有tag就已实现。授权失效始终拒绝；来源L（明确陈旧/as-of）、G（新使用排除撤源）、P（另需物理副本清理）是独立内容新鲜度等级，不能用L继续读失权内容。
+Grant扩权短锁协议
+：
+MetaPG登记pending目标受众；DataPG短事务取得Bank排他屏障，登记
+AUDIENCE_PREPARING(target_version)
+及目标受众合同。此后新增/更新可读产物须同时满足现有与目标受众，不把新Grant提前生效。
+锁外扫描屏障前存量的distinct来源policy凭证/已发布支持集合，保存可审证明；新发表已受双重准入约束。来源policy收紧仍先deny并记录变化，撤销相关证明；不靠陈旧覆盖摘要授权。
+最终短事务核target_version、证明覆盖和policy变更水位，确保没有未处理收紧事件，CAS应用Grant/epoch并产ack；有缺口返回
+GRANT_BLOCKED_SOURCE_AUDIENCE
+，保持旧授权。MetaPG收到apply证据才报告effective。
+审批失败可取消target；等待期间的双重准入可能拒绝新资料，必须展示影响。若没有足够索引/证明，选择显式有界暂停进行全量检查，而非无上限持Bank锁扫描。
+这是避免每个正常批次更新全Bank内容计数的候选方法，尚需DG-03/04验证新增/删除/ACL收紧与证明提交的全部交错。备选源集合revision CAS更简单，但更新热行成本也必须测。历史是否对新成员开放仍交HC-02；默认不放宽原Bank全受众不变量。content generation只能使内容缓存精确失效，授权epoch绝不可删除。
+ingest-only加工
+：
+requestor_subtenant
+永不改写；可选Tenant ProcessingPolicy授指定
+processor_principal
+处理已接受raw并发布指定Bank，保billing_subject、policy版本、动作/来源/目的模型/预算/期限。受理操作与后续processing operation关联，后者是PG operation的新合法委托，不替换原actor，不另建任务系统。自动触发须在受理前明确policy，撤销时所有未完阶段重新核资格。原生抽取/实体消歧/归纳若需读旧Bank，processor必须有对应显式read；只有raw读取权时禁这些阶段或限定无旧内容处理路径。上传者不因202得到旧知识、模型结果或诊断正文读权。收费/主体停用后是否继续必须HC-02/06确认。
+个人资产
+：先准确说明现例为团队内工作记忆。若用户需要独立个人所有权，提出独立产品安全域与导出/团队保留政策，由HC-02决定；不擅自重定义已确认的Tenant=团队，也不借external identity自动跨域。
+7.1 生效回执与在途边界
+每个Unit独立拒新资格/提交后，控制面收齐apply证据并检查受影响的DispatchLease、宿主use、缓存和旧执行者。已消费但尚未发字节也属于在途，须取消确认或出口fence/进程终止证明；TTL并不证明暂停进程不会恢复。无法证明则effective保持PENDING并列Unit/attempt缺口。外部供应商已收到的内容不能收回，网络抵达墙钟不是本稿承诺的线性化点。严格能力只能在受控sender和已验provider执行形态启用；无取消/最长执行证据的batch禁用该强档。§16给跨Unit消费和MetaPG故障完整时序。
+审计最小授权事件与各自权威状态同本地事务或可核持久捕获；不可用则动作不报完成。公开错误不泄露其他Tenant存在性，操作/模型状态查询需独立权限，不能借diagnostic读正文。
+8. 耐久任务、共享屏障与失败恢复
+图06 合法提交、冻结与恢复向量 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  tx [label=&quot;普通批次\nUnit SHARE→Bank SHARE&quot;];
+  obj [label=&quot;Policy/Source→Attempt→对象\n当前版本/owner CAS&quot;];
+  commit [label=&quot;正文+phase/outbox同事务&quot;];
+  freeze [label=&quot;冻结/授权切换\nUnit或Bank UPDATE&quot;];
+  restore [label=&quot;RESTORING→QUARANTINED&quot;];
+  vec [label=&quot;恢复向量\n各authority连续水位/key/费用&quot;];
+  new [label=&quot;新recovery/storage epoch\n旧permit/Attempt/份额封禁&quot;];
+  open [label=&quot;SAFETY_RECONCILED\n逐能力READABLE/WRITABLE&quot;];
+  tx -&gt; obj;
+  obj -&gt; commit;
+  freeze -&gt; tx [label=&quot;等待先有短事务&quot;];
+  restore -&gt; vec;
+  vec -&gt; new;
+  new -&gt; open;
+}
+普通合法阶段在UnitGuard和BankGuard取得共享行锁，只作权限/放置/生命周期屏障；排他锁限制于本次改变的Source、Attempt、文档/页/观察等对象。Unit冻结、Bank停用/授权代次切换取得对应排他屏障。任何慢解析、OBS、模型、RPC均在事务外；没有实测证据，不把全Bank串行当作性能保持的默认方案。
+初始候选采用READ COMMITTED短事务；每个判断在获取相应锁后读取当前行。PG中FOR SHARE阻止相关行的非键更新，FOR KEY SHARE不足以挡普通epoch更新；死锁按事务整体有界重试。此为
+PG18行锁语义
+支持的设计推导，实际多路径锁图仍须DG-04验证。
+动作
+UnitGuard
+BankGuard/Policy
+Source控制/支持版本
+Attempt与对象
+普通staged批提交
+SHARE
+SHARE；只核不改全局epoch
+涉及来源/删除门SHARE
+本attempt UPDATE/CAS；本document或受影响object UPDATE，保持原生约束
+发布单Source build / 编辑页
+SHARE
+SHARE
+发布目标UPDATE；仅依赖来源SHARE，源集合稳定排序
+attempt UPDATE；Publication/page revision CAS；冲突重算/拒绝
+领取/接管/完成/失败
+SHARE
+SHARE
+有来源判断时先锁其控制行
+原operation+Attempt同事务，owner/attempt/lease条件；不得先锁op后倒序申请Bank
+撤一来源/删除其资格
+SHARE
+SHARE
+目标Source UPDATE并提高source-policy/tombstone版本
+标对应资格拒新发；长purge在后续guarded任务，不持锁做模型重算
+Grant apply/Bank停用
+SHARE
+Bank UPDATE、Policy UPDATE
+锁外证明检查；最终短事务核证明版本
+不逐对象长扫描；旧正常提交先结束，变更提交后新事务拒旧资格
+整Unit freeze / storage切换
+Unit UPDATE
+必要时按Bank ID排序
+不在持Unit锁期间远程复制
+只提交冻结/epoch；另行drain/复制，目标激活后旧源仍冻结
+总序建议：
+Unit → Bank → Policy/Subject → Source控制行(稳定ID) → Attempt/operation(稳定ID) → 对象(kind,id)
+；事先列完整锁集合、一次取所需最强模式，禁止先SHARE再临时升级到UPDATE。原生document锁/父子operation汇总/observation live-source锁/附件清理需纳入相同序或拆为幂等阶段；只在新wrapper遵守不足以通过。Reaper不先拿Attempt再回头拿Unit；父子聚合按排序锁，必要时独立受guard的汇总任务。
+不能在普通批次顺便UPDATE BankGuard.updated_at、全Bank content_epoch或全Unit计数，否则共享屏障又退化成热点。内容选择尽量按Source/Build版本；未知依赖需保守Bank失效时，明确这是异常/修复路径和对应暂停代价。统计用原生可重建cache/阶段事件聚合，不作为权限或账务权威。既有原生自身必须的Bank锁另计PB0与PB2差额，不承诺一处代码改动消除全部争用。
+不变量是“新Attempt/冻结代次生效后旧提交不再成功”；已有合法短事务可以先完成，冻结/接管等待其结束。lease墙钟到期本身不杀SQL；statement/lock/transaction timeout、长事务告警与强制终止策略须在实验前锁定。共享锁的MultiXact、WAL和热页成本也计入，不以相容矩阵替代吞吐测量。
+定稿前最小证据
+：2文档同Bank、2Bank同Unit和同Source冲突三组；在锁前、锁后、提交前暂停A，再freeze/接管B并恢复A。预期前两组存在重叠合法事务，同Source串行或冲突，fence生效后A所有批/terminal/outbox/统计补写拒绝。真实PG探针未跑，协议不得因此标MECHANISM_PASS。
+8.1 覆盖所有写点的提交合同
+operation是唯一执行任务权威，Attempt是一次执行身份，phase_receipt/checkpoint/outbox是其同事务事实。lease到期不杀正在运行的SQL；接管须按总锁序提升owner/attempt并拒旧提交。原生只按worker_id回收不能覆盖新身份实例接管，需要改claim/recover与所有mark路径。W持久进度后可跨实例恢复，模型结果经§16复用合法result，不盲重发UNKNOWN。
+必覆盖写点
+写方与锁/CAS要求
+异常结果
+accept / append / metadata-only / ZERO_FACTS
+H或W，Unit/Bank SHARE、Source控制锁、request或Attempt CAS
+hash/原件/版本/权限不符整体回滚，零事实仍有完整阶段收据
+retain每批 / chunks/facts/links/entities / membership
+W，本阶段完整支持锁集、Attempt与对象锁，正文和phase_receipt同事务
+旧attempt不能先写正文后发现terminal被拒
+consolidation / page refresh / 人工编辑
+W或有权H，来源稳定排序SHARE、目标对象UPDATE/CAS
+支持/人工revision变动则拒发布或重算，不覆盖
+claim / heartbeat / reaper / parent rollup / terminal
+W/指定维护，先Unit/Bank，再排序operation/Attempt
+不先锁子任务再倒序申请Bank/父任务；汇总可拆幂等guarded阶段
+index metadata / maintenance / import / delete / cleanup
+专用角色/任务，资格与owner同样核；DDL另用受控autocommit
+拒运行者提权、裸SQL旁路；raw生命周期另有引用闭包
+stats/cache / outbox / checkpoint / 诊断补写
+当前合法阶段或独立guarded维护身份；可重建统计异步聚合
+不能终态被拒后继续补写；不UPDATE热Bank/Unit计数器
+扩展点为AcceptanceTransaction、CommitGuard、ProjectionPublisher；原生隐藏事务/implicit commit/副作用逐入口登记，不由三个接口名字证明覆盖。正常路径不写全Bank发布epoch；权限/放置epoch只在相应控制变更更新。§12工作包W-C负责源码写点矩阵，DG-04最小真实PG探针优先。当前未改产品源码，全部机制与吞吐NOT_RUN。
+9. Skill、Session 与宿主的最小完整闭环
+C-14：Skill 是可验证资产，不是另一种记忆摘要。
+ 复用Hindsight经验召回定位有价值轨迹；过程编译/验证/发布由产品与宿主合作。R1人工选择/冻结候选即可，不依赖引入第二个长期记忆引擎或自动成功判断。
+SessionEvent(工具请求/返回/外部job结果) → 完整episode或标缺口 → 选取成功/失败轨迹 → SkillVersion(candidate) → 独立Trial → verified → 有权审批者Release → 宿主按前提加载 → UseReceipt/工具终态 → 继续有效或revoke
+。
+每次Trial锁正文hash、tool schema、环境和权限scope、封存任务ID；被测Agent不能改oracle或自己的发布记录。试用环境只允许批准工具与合成数据；Skill文本中的命令不是工具授权。正确拒绝和正确识别异步失败分别记任务成功类型，不计为导出成功。
+发布门：至少有约定留出证据、所有适用性/安全硬条件成立、审批角色确认；数量/成功率阈值由具体任务合同确定，当前UNKNOWN。不用“trial_count=1”“active”或签名本身代替row-level试用证据。候选正文更改、工具/权限/来源失效创建新version或退役旧Release；历史Trial保留且不会随Skill upsert级联丢失。撤回影响范围沿来源/工具依赖查，不偷偷给新版本继承旧批准。
+与强基线比较：原始成功/失败轨迹、人工runbook、生成候选分别喂给相同宿主与工具oracle；统计首试终态、重复运行可靠性、错误动作、模型/工具次数、成本及泛化任务。历史MemOS小题候选组未增加完成数，S01也发生过trial明细丢失，只作为设计反例，不能外推当前H未运行产品的效果。若生成候选无益，保轨迹/runbook和版本/验证/退役能力，不取消 G-003。
+10. 集群扩展：扩什么、凭什么扩、何时扩与怎样缩回
+图10 计算位置与数据位置独立扩展 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  m [label=&quot;MetaPG目录\nBank→Unit→storage/binding&quot;];
+  g [label=&quot;G健康路由&quot;];
+  h1 [label=&quot;E1: 固定S1/P0 H/W池&quot;];
+  h2 [label=&quot;E2: 固定S2/P0 H/W池&quot;];
+  pg1 [label=&quot;S1 rt/ud U-A,U-B&quot;];
+  pg2 [label=&quot;S2 rt/ud U-C1,U-C2&quot;];
+  pg3 [label=&quot;新增S3\nU-C2成对迁移&quot;];
+  l [label=&quot;有界L资格pool\n按scope访问&quot;];
+  m -&gt; g;
+  g -&gt; h1;
+  g -&gt; h2;
+  h1 -&gt; h2 [label=&quot;跨组I-07&quot;];
+  h1 -&gt; pg1;
+  h2 -&gt; pg2;
+  pg2 -&gt; pg3 [label=&quot;freeze/copy/CAS单写&quot;];
+  l -&gt; pg1;
+  l -&gt; pg2;
+  l -&gt; pg3;
+}
+图17 扩缩容与资源守恒闭环 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=LR; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  obs [label=&quot;观测ready/blocked/锁/IO\n字节/slot/model/费用&quot;];
+  why [label=&quot;定位瓶颈\nAPI/计算/PG/429/权限&quot;];
+  ad [label=&quot;C准入份额\n父Tenant不随Bank/副本增长&quot;];
+  g [label=&quot;扩G/H/W副本\n新incarnation/固定profile&quot;];
+  pg [label=&quot;连接/PG容量门\n主读权威/副本水位&quot;];
+  sched [label=&quot;PG任务公平调度\n交互/后台/维护分槽&quot;];
+  down [label=&quot;缩容/drain\n未证回收不重发份额&quot;];
+  measure [label=&quot;同总资源PB0/1/2\n全部失败分母&quot;];
+  obs -&gt; why;
+  why -&gt; ad;
+  ad -&gt; g;
+  ad -&gt; pg;
+  g -&gt; sched;
+  sched -&gt; measure;
+  g -&gt; down;
+  down -&gt; ad [label=&quot;确认回收后&quot;];
+  measure -&gt; obs;
+}
+本章单独讨论扩展机制，不重新定义多租对象。
+ 沿§3的T-A/T-B/T-C、7个Bank、U-A/U-B/U-C1/U-C2举例。增加成员只增加IAM/Grant记录；同一Unit内增加Bank通常增加行和相应索引对象；增加服务副本改变计算容量；新PG写分片并迁Unit才改变数据放置。这四件事分别触发，不能用“每来一租户新建一套集群”替代设计。
+C-15/16/24、D-043/044：G/Handler/W无状态、所有集群可扩展是已确认目标；下面是满足目标的PROPOSED机制。示例副本数只说明前后关系，不是容量规划，实际阈值/吞吐/SLO未测。
+10.1 无状态只是前提，还需要任务分配、位置映射与额度守恒
+集群
+新实例凭什么接手工作
+耐久状态在哪里
+扩容不会自动改变什么
+G API/Gateway
+负载均衡器把新连接分配给已注册健康实例；每次独立验证身份/入口权限；领取有界admission份额
+IAM/策略/份额分配在MetaPG；持久操作回执在DataPG；本地缓存/连接/份额计数可丢且不能重置重花
+团队合同额度、Bank权限和后台完成状态；G增加后仍承担监控/鉴权/限流
+Handler
+G在相同shard/profile的合格池内选实例；任何实例根据签名上下文和PG权威重建请求状态
+Bank/Source/RequestLedger/操作结果在DataPG；原件在OBS；无独占会话/本地业务盘
+数据所属Unit、PG写能力、当前source/Grant；流中请求可能中断，不能假称连接无损迁移
+Worker
+按assigned Unit/task class发现
+rt_U.async_operations
+，通过PG claim/lease与Attempt fence领取；新worker_id可恢复
+operation、JobContext、Attempt/checkpoint在rt；U结果在ud、原件在OBS；费用在L账本
+一个已领任务不会因加Worker就无条件执行两次；旧attempt提交仍须被拒
+L Adapter
+负载均衡分配ModelCall；同key由持久唯一约束/CAS协调；实际send逐ProviderAttempt
+Tenant-home MetaPG的预算、send/usage/成本/客户账单；需要恢复的结果在U域
+外部provider账号速率/费用额度和已外发UNKNOWN；新副本不得自动重发或复制余额
+C 控制面
+管理请求可分摊；开通/迁移/策略任务按Tenant/Unit/plan领取有持久租约的分区工作
+MetaPG的计划、directory、placement、policy、分配与apply receipts
+同一Unit迁移或同一预算写权不能多个leader同时拥有；热点同一键仍串行
+MetaPG/DataPG
+增加读副本、纵向资源或独立写分片，各用对应复制/路由/迁移机制
+数据/WAL/备份及各自权威；PG是有状态层
+HA/只读副本不会自动成为多主写入；新空PG不会自动得到表、角色、数据和路由
+OBS原件存储
+服务后端的容量/请求配额扩展，加上受控客户端并行上传/读取
+同一原件及对象服务自己的耐久机制；RawRef在PG
+不能靠增加G/W突破对象服务配额；扩展不要求加一份raw日志副本
+同一pool内增加副本，通常只更新服务发现成员和实例分配资格，
+不必修改Unit→pool的compute binding
+。新增执行域/运行池、或改变某Unit允许哪些池处理，才更新binding版本。存储搬迁才更新storage placement/epoch。两个版本解决不同问题。
+10.2 从同一组三团队展开计算位置：初始E=2、S=2
+这里E表示计算执行域总数，S表示数据PG写分片总数；N/M/K继续分别表示API/Handler/Worker实例数。E1/E2是
+计算执行域
+，不是已选云地域/AZ，也不是两个巨型Python进程。H/W池按固定DataPG连接与profile部署；例如
+H-E1-S1-P0
+表示E1内、连S1、profile=P0的Handler池。一个池可有多个副本；Handler与Worker仍是不同服务/身份。
+Unit / 对应Bank
+storage placement（来自§3）
+Handler池
+Worker池
+U-A / bk_a_spec、bk_a_skill、bk_a_alice
+S1/dbctx1，rt_u_a+ud_u_a，epoch=3
+H-E1-S1-P0
+W-E1-S1-P0
+U-B / bk_b_spec、bk_b_session
+S1/dbctx1，rt_u_b+ud_u_b，epoch=2
+H-E1-S1-P0
+W-E1-S1-P0
+U-C1 / bk_c_shared
+S2/dbctx2，rt_u_c1+ud_u_c1，epoch=4
+H-E1-S2-P0
+W-E1-S2-P0
+U-C2 / bk_c_private
+S2/dbctx2，rt_u_c2+ud_u_c2，epoch=1
+H-E2-S2-P0
+W-E2-S2-P0
+E1可以包含连S1和连S2的不同进程池；
+一个Python进程仍固定backend/profile，不通过请求ContextVar换DSN
+。E2与E1都能在各自授权scope访问S2，不等于两个独立PG故障域。增加E3的S1池可以得到E&gt;S而不搬数据；保留E1/E2并新增S3写分片可得到E&lt;S，此时新增指向S3的固定H/W池。数量关系由映射支持，不要求一租户一计算域一PG。
+10.3 扩缩容决策闭环：指标→判断瓶颈→准入→分配→观察
+扩展能力来自上面的可分配工作/外部状态与受控映射；自动控制器只是执行方式。首期可由运维按同一协议审批并执行扩容计划，后续再自动化，不能删除必要的池注册、配额、租约和epoch保护。
+观察
+：G采集认证/授权/限流/路由各阶段延迟、连接数和拒绝原因；Handler上报在线等待/CPU/在途请求；W上报可执行任务的积压年龄与预计剩余工作量；L和PG/OBS上报自身等待/配额/资源饱和。撤权阻塞、等未来时间、失败待人工处理的任务不能一概算可执行积压。
+判断
+：区分本层算力不足与下游受限。若模型429/预算耗尽、PG锁/IO饱和、OBS配额受限，先限流/背压或处理相应瓶颈；单纯加Handler/Worker通常只增加等待、连接和重试费用。按任务类别分池测服务时间，不把轻查询与长Reflect平均成一个数。
+准入
+：扩容计划检查实例预算、PG连接余量、Tenant/Subtenant/模型/入口全局额度、可用节点、profile/DDL/payload兼容性和允许的最大并发。可用槽位为0时不向新实例发工作。
+加入
+：新实例取得服务身份与独立incarnation，加载可信目录/兼容profile，通过就绪检查，再注册服务发现/assigned Unit。G从负载均衡获得新连接，Handler从G获同池请求，W从PG claim工作，L通过持久幂等/额度发模型请求。扩容不是复制某旧Pod内存。
+确认与回退
+：比较同负载下本层排队、成功吞吐、尾延迟、拒绝、PG/provider压力与成本；无改善或恶化就停止增副本、收回未用分配并定位瓶颈。观察窗口/冷却期/每次最大变更/上下阈值应预先配置且有滞后，数值目前UNKNOWN，避免上下抖动。
+缩回
+：先停止新连接/请求/任务领取，排空在途；未完成工作保留耐久checkpoint并封旧attempt。确认旧实例不能消费后才回收其额度。进程突然退出按持久租约接管；未知模型外发仍挂原ProviderAttempt费用敞口，不因缩容清零。
+10.4 每个集群的扩展单位、触发依据与缩容限制
+层
+实际怎么扩/分摊
+观察哪些信号、何时有效
+必须满足的限制与缩容动作
+API/Gateway
+增副本，由前端LB按健康/连接负载分新请求；AuthN/入口AuthZ独立执行，admission份额重分
+本层CPU/TLS/协议处理或连接容量接近约定上限，认证/路由等待持续增长，而下游仍有余量
+新副本不获完整团队额度；旧流排空/有限deadline；限流服务瓶颈须扩其权威路径，不能绕过
+Handler
+在固定S/profile池增加进程；可按轻Recall/长Reflect分任务类池；G只发给匹配实例
+在线等待和CPU/本地工作饱和；PG、L/provider、OBS并未主导等待，受控探针确认有效
+总PG连接与下游并发cap；不能逐请求换全局backend；已durable任务不随实例退出丢失
+Worker
+扩对应shard/profile/task class池；数据库claim分散未领工作，长任务有租约/checkpoint
+可执行backlog及最老等待增长、估算工作秒数超处理能力；真正瓶颈是可并行计算而非Bank短锁/模型额度
+全部写点attempt fence；按Tenant公平调度和维护预留；缩容先停领/排空，旧worker_id不作恢复前提
+L Adapter
+扩网络连接/stream/协议处理副本，按provider/region/task class分池；共享持久幂等/预留
+Adapter自身排队/CPU/连接饱和，外部provider账号及父子预算仍有余量
+不能突破外部TPM/RPM/并发合同或重复预留；UNKNOWN外发不能自动重发；旧stream/费用有归属
+C控制面
+扩管理API及按Tenant/Unit分区的控制worker；每plan/额度scope有单一持久租约
+开通/策略apply/迁移计划积压且各计划可独立推进；单leader扫描瓶颈可按scope分区
+同Unit计划、同quota键的串行语义保留；C宕机不凭本地缓存无限续权；DDL/guard权限独立
+MetaPG
+先HA和合格只读副本/纵向资源；写压力增长时按Tenant-home迁控制/预算/账单分区
+写延迟、锁、IO/WAL、目录/账本增长，或控制/分配事务已成为瓶颈
+同Tenant父子预算保持同home事务；全局目录只维护home/版本；跨home provider总额用保守子预留，不能伪造跨库原子
+DataPG
+分别扩读、单写组资源、写分片/容量；完整Unit迁新写组
+read查询成为瓶颈且副本资格可满足；或单写组CPU/IO/存储/锁持续饱和且有可迁Unit
+单Bank仍单写；长事务/热点锁先治理；迁rt/ud与任务/ACL/墓碑闭包，旧源冻结；只读副本不当新写主
+OBS
+申请/配置对象服务容量与请求吞吐，按稳定对象key并行；客户端并发与超时受控
+上传/下载吞吐、服务限额/429、尾延迟、容量/请求成本；查明服务侧与网络侧原因
+bucket/key分布不授予权限；Multipart/校验/原件先持久门不省略；provider物理耐久不是产品多写一份日志
+可用监控数据按任务族估算所需并发，例如“到达率×服务时间”用于初估在途量，再按每副本安全并发估算副本数；必须用同版本实测参数和目标利用率校准。长尾、重试、锁竞争、分片热点和下游配额会使简单线性公式失效，所以此处不给未测QPS和自动扩容阈值。
+10.5 三个具体变化：哪些记录变，哪些数据不搬
+例A：入口压力增加，G从2副本扩到4副本。
+ T-A等IAM/Bank/Unit记录不变，S1/S2 schema不变；LB/readiness增加两个成员，C给新incarnation分配份额。沿§2.3的100 token示例，新窗四实例各25，而不是各100。请求认证/授权/监控仍逐实例执行并汇聚；如果延迟主要来自S1查询，新Gateway不会消除该等待，应转查对应瓶颈。
+例B：U-A/U-B有可并行ready任务，W-E1-S1-P0从2副本扩到4副本。
+ 不新增Tenant/Bank/schema，不搬OBS。新W拿到U-A/U-B分配资格，分别在
+rt_u_a.async_operations
+和
+rt_u_b.async_operations
+按claim事务领取；只能消费获分作业/模型额度。已有任务保原operation；A失联后新实例提升Attempt再执行，迟到A不能提交，但已经发生的模型用量仍记原ProviderAttempt。同池副本变化靠服务发现/分配记录，不要求改Unit→pool映射。
+例C：S2写/容量到达可审瓶颈，新增DataPG S3并把U-C2迁出。
+ 先证明负载可按完整U-C2拆开；若真正热点是U-C2中的单Bank锁，仅换地址未必提吞吐。新S3/dbctx3由受控Job创建rt_u_c2/ud_u_c2、角色、FK/索引与版本束；源U-C2冻结、排空旧写/封旧attempt，复制并核对R/U/任务/权限/墓碑引用闭包。C对U-C2的storage placement CAS 
+S2/dbctx2/epoch1 → S3/dbctx3/epoch2
+，绑定到E2中新建的
+H-E2-S3-P0/W-E2-S3-P0
+池，目标核凭证后唯一激活。旧源保持冻结，不能因回滚路由又自行接写；完整迁移见§11。
+迁后U-C1仍在S2，U-C2在S3；C1 Dana仍凭两个Bank Grant查询，Handler按两个Unit分别读并按complete/partial合同合并，不能再用同库JOIN偷做跨库事务。R-C2-6的OBS key和字节不变，PG只搬引用。例C才需要数据迁移；例A/B只是增加计算与受控并发。
+10.6 PG读扩展、写扩展、连接与热点的具体边界
+PG18热备机制
+支持standby上的只读查询；它不会让同一PG成为自动多主写库。读副本只有追平要求的发布/源水位且安全资格仍由当前authority判定，才可承接对应查询；落后时回主库、等待或明确不可满足，不把缺行当事实不存在。身份/撤权/预算/claim/合法发布等要求当前权威的写事务不发只读副本。
+纵向扩容CPU/内存/IO/存储可缓解单写组资源压力，但不能证明某类锁争用会消失。水平写扩展采用已有storage placement按Unit把
+不同写入域
+分到多个独立PG写组；新增PG本身不会搬数据，原生单schema路由也不自带该控制器。单Bank跨PG并行写不在当前合同内，热点Bank需先优化索引/事务/模型工作比例，或另立可审拆分方案，不能把“多租数量更多”当解决方案。
+每shard连接门仍为 
+Σ(Handler进程×连接池上限)+Σ(Worker进程×池上限)+DDL/监控/恢复预留 ≤ 可分配连接
+；控制PG和Adapter账本连接另算。扩副本前先预留连接/预算，再加入流量；连接池代理如采用必须验证session/事务上下文边界，不在本轮默认引入。schema/Bank/索引增加会带来catalog/DDL/vacuum/备份成本，不能把schema数当无限伸缩刻度。
+10.7 角色启动、维护与可选外围能力
+Handler必须关闭 
+HINDSIGHT_API_WORKER_ENABLED
+、
+HINDSIGHT_API_RUN_MIGRATIONS_ON_STARTUP
+，并关闭本进程的 
+consolidation_reconcile_interval_seconds
+、
+retention_sweep_interval_seconds
+、
+mental_model_refresh_tick_seconds
+、
+operation_cleanup_interval_seconds
+（临时配置均为0）。仅关Poller不能关闭默认PG维护循环；增加Handler副本时尤其不能每副本再启动一套全库扫描。
+正式改造用role/capability白名单初始化：G只开API治理模块、不构造Engine；Handler开业务处理/必要客户端，保本请求必需的audit/outbox写；W普通池仅领分配任务；指定维护池按scope/租约运行扫描/清理/定时派生；迁移Job获独立短期DDL身份。新维护类型默认拒绝，避免上游升级后无意在所有Handler上重复运行。每计划/scanner的持久租约支持故障接手，不能靠永不重启的“主Pod”。
+C-17：原生图关联先复用，外围投影扩展按业务证据触发。
+ GraphRetriever、可重建投影与权威Memories Store替换三层分别验收；TuGraph/Dgraph等历史图线候选不自动进入当前部署。可选外围索引沿PG/outbox→版本投影Worker→条件写/收据→读前核水位/权限/来源→回权威取证；不可fence的外部后端不能借“独立集群”称强一致。未证实有任务收益/容量瓶颈时不默认增加新图或broker。
+10.8 资源量纲、公平任务分配与连接守恒
+Admission量纲
+：
+维度
+推荐权威/消费语义
+失联/扩副本
+Tenant/Subtenant请求token
+MetaPG按window原子分有界份额，绑定instance incarnation；G本地单调消费
+丢计数只浪费已分余额，重启取新身份；旧份额可消费期间不重发
+请求/上传字节
+同一父子配额的独立byte grant；已知长度先预留，流式按有限chunk预领后接收；最大对象大小另限
+不能拿token替字节；direct upload需长度/对象范围可强制的受限凭据，若后端不能限制只能声明服务受理限制，不能声称供应商入站字节硬帽
+并发连接/流slot
+slot lease绑定实例与连接；关闭/drain确认后回收
+TTL不是确认旧流已结束；扩副本不复制总slot
+匿名/IP防滥用
+推荐edge层独立防滥用策略；局部近似须明确非租户计费/配额合同
+如用户要求全局硬IP cap，须集中份额/计数验证，不可默认每G一整份
+模型token/费用/在途
+L的ModelCall/reservation/ProviderAttempt合同
+入口额度不能代替模型预算；模型未知不释放风险占用
+PG任务调度候选
+：operation仍是唯一执行任务状态。R中新增/规范
+tenant_id, execution_class, eligible_at, blocked_reason, work_estimate_version, estimated_units, lease_owner/expiry, attempt
+，正文仍引用U/OBS。先验证父Tenant跨Unit的有限资源子grant，再在获得的scope内按任务类选ready operation；推荐有成本估计的deficit round-robin，备选为固定份额+aging，二者以同负载饥饿/吞吐对照选定，不暗定生产权重。
+估算单位按任务类固定（输入token/字节/历史工作时间等），每轮加
+weight×quantum
+，满足估算且有槽位才领取；完成后用实际量校正，长任务每小批check-point并允许让出。一个Tenant建更多Bank不增加父grant。交互、后台、维护分槽，维护留最低份额；安全/预算blocked任务移出ready选择，独立记录blocked年龄，不能从用户延迟分母删除。
+初始索引候选围绕
+execution_class,status,eligible_at,bank_id
+，按pending可领集合建partial index；lease回收索引另建。是否沿用/修改原生索引由EXPLAIN与混合负载决定，不凭新增字段就承诺性能。心跳批量更新本Attempt、无需每次更新Bank/Unit；终态压缩/归档必须保独立request ledger或dedupe墓碑，不能随operation cleanup删去幂等事实。每类重试上限、退避、死信诊断与vacuum/归档阈值留在run manifest，未测不填数。
+每DataPG写组连接预算：
+Σ实际角色实例×到该组pool上限 + DDL/监控/复制/恢复保留 ≤ 已接受连接预算
+。实际角色包含H/W/L资格连接和开通/索引/审计/备份客户端。L结果写OBS不增加U writer池；MetaPG、OBS/provider、代理前端socket与后端PG连接分别计，不重复也不漏算。有界按scope懒连接避免每个L连所有shard大池。任何并发或连接数字在HC-07接受前只是测量变量。
+11. 迁移、备份、升级与退出
+备份/恢复manifest至少携
+MetaPG home_id/home_epoch + control_event_seq
+、每Unit 
+storage_epoch/recovery_epoch + WAL位置/时间线 + request_ledger_cut
+、source撤回/删除事件水位、policy apply receipts、Publication版本、账务观察/未决敞口水位、OBS对象版本/hash及key引用。它是
+恢复向量
+，不是一个跨库timestamp或可跨PG比较的LSN。accepted_seq只在(bank,source)范围单调，不能为每次受理UPDATE全Bank/Unit计数。request_ledger_cut引用受理收据分段清单/缺口与WAL位置；控制/安全序号按所属authority单调，重放按事件ID去重；保留连续区间/缺口，不能用MAX序号声称中间全齐。
+控制变更与最小安全事件同MetaPG事务/outbox；源撤回/删除和本地apply回执同DataPG事务。既有备份/归档执行者将WAL/事件段和带hash的高水位清单保全到与被回滚实例隔离的恢复域，使用专门只追加/保留身份。恢复域可以使用已有受管备份存储；即使在同对象服务，也不是同权限可任意删掉的raw前缀。若业务要求RPO=0，受理/安全事件确认点须等待对应耐久副本/归档策略，这是成本/可用性决定，不能默认已有异步备份满足。
+恢复顺序：
+RESTORING → QUARANTINED → SAFETY_RECONCILED → REISSUING_EXECUTION → READABLE/WRITABLE
+。隔离实例核备份链、key可用与OBS；取最新可信外部高水位；重放权限/墓碑和placement；提升不能因本次回滚而重用的恢复epoch；封旧Attempt/permit/份额；核MetaPG已发模型与未决费用；最后按对象/能力发布。拿不到最新安全高水位或旧sender停止证明就保quarantine，列具体缺段、补证责任与可恢复范围。
+回执合同
+：accepted回执增加受理域/恢复epoch、accepted_seq、operation_id、scope+key hash、request hash及服务签名key版本。正常保留窗口内、账本连续时同键同内容返回原op。PITR后旧回执指向缺失记录则返回typed 
+ACCEPTANCE_GAP
+，不伪装404=从未受理，也不自动新建op。先恢复WAL/账本；仍无法恢复则记录loss declaration，核旧ProviderAttempt/费用和原件后，调用者显式
+reaccept
+并带
+replaces_receipt
+，生成新operation和新授权，不继承旧执行/发布资格。
+没有旧回执也不能可靠判定某盲重试从未发生：写入准备票据绑定recovery_epoch，恢复切换后旧票据/旧epoch key须查缺口或明确重新受理。新准备票据是新请求确认，不允许SDK在后台自动替旧key换epoch。“至少一次执行”不豁免重复收费说明。幂等保留窗口到期返回
+IDEMPOTENCY_WINDOW_EXPIRED
+或要求显式新命令，不能悄悄复用相同key成新写。
+DataPG迁Unit
+保原冻结/复制/校验/CAS单写方向，增加§5.3全部代际/支持、§16在途许可和结果引用、§11接受连续性/key清单。R1推荐V-13最小一Unit演练；目标新写后仅能重新冻结反向迁移/前向修复，不能改路由直接回旧源。
+MetaPG home迁移
+是另一合同：
+PLAN → STOP_NEW_ALLOCATIONS → DRAIN_OR_RECONCILE → COPY_AND_VERIFY → HOME_CAS → ACTIVATE → RETIRE
+。先禁止新Admission/模型份额、provision/Grant计划写；旧已发份额和UNKNOWN费用保留，未证明回收不得在目标重发。复制IAM/目录/账单/价目/预算/plan/回执及未决尝试；全局home目录CAS提升home_epoch，目标取得一次激活资格后唯一写，旧home保持frozen。迟到provider回调经新home去重记原payment route。无法追平的在途不靠一次COPY解决；可选择延后迁移，或在受权的只追加对账通道汇合后才切换。
+启用多home前还须明确HomeDirectory所在的稳定控制authority与恢复域，它不能随被迁home一起回滚后自证新写权；额外目录/连接/运维成本进入MP-07，本稿不暗加一套R1物理库。
+R1候选仅纳入所选home的HA/恢复和显式容量上限；自动home迁移标
+UNSUPPORTED_PENDING_PROTOCOL_VALIDATION
+。定稿保扩展接口即可，启用前MP-07/V-12/13/24须专门运行。这个后置不取消全部集群可扩展目标，也不冒用DataPG演练PASS。
+11.1 原生导出与完整产品退出
+固定源码
+stream_export_bank
+定义在engine/transfer/export.py:515，536—544说明其独立表查询并非一个跨表一致快照；
+updated_at
+增量不能带齐硬删除、权限/费用、在途任务或人工资产（HSRC-25/26）。原生archive是有限数据接口，不是完整迁移/备份合同。
+完整退出manifest覆盖SourceComposition/原件hash、DocumentVersion/构件membership、来源/支持/有效时间、用户profile/directive/页history、Session事件/receipt、Skill/Trial/Release、撤回/墓碑、Grant与主体映射、幂等回执/Attempt、model结果引用/未决费用、保留与key能力。目标若不支持原语，显式降级并quarantine对应资产；保原始导出、可核恢复步骤与丢失字段清单。退出不将用户秘密明文写包，也不把目录hash当语义往返成功。
+版本束锁上游SHA、schema/payload/contract、parser/prompt/model/space、patch与依赖。采用expand→回填→切读→contract，混合版本只领兼容payload；回滚不得重新赋予旧Attempt/授权、不得整库回快照丢新业务。运行release仍HC-08未决，eb021da仅固定本轮核验。许可硬门在§12/§14。
+12. 改造工作包、代价与效果假设
+下表是实际需要实现的责任拆解，
+不是本轮已写产品代码
+。负责人列的是所需角色，具体姓名UNKNOWN。依赖项代表验收先后，不承诺并行度/日期。
+包 / 实现层级
+明确改动位置与产物
+依赖 / 验收 / 风险
+W-0 三功能集群切分 / ADAPTER+CONFIG+CORE_PATCH
+重建Gateway协议/身份认证/入口授权/分层限流/监控审计/路由模块；把HTTP/MCP中的附件/strategy/结果补齐/管理迁到B应用服务；私有RPC、取消/幂等/预算/binding合同；B关闭Poller和全部维护并加role门；W独立执行/指定维护池
+内核/接口/平台负责人；V-19；这是已确认架构约束，代码实现与范围仍须接受；不能只改部署名字
+W-A 来源与三资产 / ADAPTER+CORE_PATCH
+SourceRevision/SessionEvent、稳定映射、RequestLedger、Skill/Trial/Release；原生受理事务扩展钩子
+业务/宿主负责人；V-01/03/04/08；原件角色、raw保留和清单成本
+W-B 授权闭包 / CONFIG+ADAPTER+CORE_PATCH
+TenantExtension/OperationValidator复用；JobContext委托；所有非搜索/内部Reflect读取、rerank前候选资格、llm_wrapper及独立embedding/rerank providers统一发送门；来源受众准入/扩权校验；fail-closed政策authority
+安全/内核负责人；V-05/07/11；旧文件前缀、缓存、internal绕行需逐项关闭
+W-C 合法提交/恢复 / CORE_PATCH
+原生受理连接、claim/recover/mark状态、retain每批、consolidation/page/delete/maintenance提交guard、owner/attempt CAS
+内核/DB负责人；W-A/B；V-08/09；最广核心修改面积，不能称薄网关适配
+W-D 来源失效与页CAS / ADAPTER+CORE_PATCH
+Derivation/support set、Source/Build Publication与支持版本、Page/query revision、retraction reason、deny-first重建；未知来源保守隔离
+内核/知识负责人；W-A/B/C；V-02/05/09；误封、重算和人工冲突成本
+W-E Context与宿主 / ADAPTER+HOST
+query plan、获授权Bank联检、bundle、完整证据预算、最后use permit/dispatch receipt
+宿主/检索负责人；W-B/D；V-06/07/10；最终出口不可控时强G采用UNSUPPORTED
+W-F 运营/配额 / CONFIG+ADAPTER
+运行健康、资源/连接/ready与blocked指标、背压/维护份额、阶段视图；控制API归W-Control，模型账本归W-J
+平台负责人；W-C；V-11/12/17；专用进程成本与DB连接限制
+W-G 迁移/升级/退出 / ADAPTER+必要CORE_PATCH
+完整清单、冻结/单写切换、安全事件恢复、CommitReceipt捕获/knowledge cut、版本束、capability/退出quarantine
+平台/DB负责人；W-A—F；V-13—16/18；原生archive不能替代
+W-Control 控制面服务 / ADAPTER
+C管理API/控制worker、MetaPG IAM/catalog/admission、Grant apply/ack、provision计划、双placement、份额发放/回收与home接口；平台/安全/DB角色，姓名UNKNOWN
+W-0/I/C/J接口合同；V-19/20/22/24、MP-07；不以W-F监控替代控制服务
+W-I 多租与PG字段分离 / ADAPTER+CORE_PATCH
+Tenant/Subtenant/Manager/Grant；fq_table改table-aware resolver、rt/ud成对Worker scope/FK/DDL/迁移；task/body/profile拆字段；MetaPG跨库应用确认
+V-20/21/24；同名主体、移交/停用、两库恢复与混合字段是主要风险；分离级别KD-10待审
+W-J LLM Adapter / ADAPTER+CORE_PATCH
+generate/embed/rerank、无旁路网络/凭据、ModelCall/ProviderAttempt、预算/三账本/UNKNOWN对账；关闭或受控batch/cache/init路径
+V-23/24；隐藏兼容重试、故障时外部结果未知、provider账单迟到；不假设幂等收费
+W-K 既有原件先持久 / ADAPTER+CORE_PATCH
+文本/文件/Session统一OBS原件门；稳定ref/hash、PG受理绑定；禁native原件直删、GC与迟到受理互斥、同原件重建
+V-25/26；已有S3写入前移，不新增WAL副本/队列；OBS+PG不是原子事务
+W-H 领域验证 / HOST+验证工具
+三业务封存数据、强基线、外部oracle、正常/变化/故障trace与失败分母
+业务/测试负责人；与实现逐步配套；V-01—18；gold缺陷和预算必须先锁
+R1必须保留W-0集群职责边界及W-Control/I/J/K的新目标，并评审W-A/B/C/D/E的最小三业务闭环与W-F/G的必要恢复/退出边界；不能为缩小估算偷偷删S或授权责任。R1可后置在线迁移、自动多租调度、外部图/权威store替换、自动Skill发布和完整连接器。某核心补丁未完成时，接口声明对应能力未开放，不用“以后补”掩盖当前承诺缺口。
+C-20：工作量按可核工作包校准，不继承 v1 人周总额。
+ 每个W包记录 Agent session数、可复用原件、实现/重构代码范围、人工决策与审阅小时、运行消耗、日历等待和返工；前几个代表性补丁（受理事务接入、page CAS、退出字段保全）完成后更新后续范围。当前无实做速率/团队容量，故总session、工期、货币预算 UNKNOWN；旧图线54–91 session与Chat86–136人周/5–10月都不是本任务预算。
+TCO模型：
+C_total = C_introduce + C_ingest + C_update/retract + C_query + C_model_final + C_failed_attempts + C_storage/backup + C_ops + C_upgrade + C_exit
+。
+C_query
+再拆embedding、候选/SQL、rerank、Reflect和跨Bank；共用加工只计一次，不把最终token降低直接当总成本降低。核心指标是 
+C_total / 成功任务数
+，失败/正确拒绝/任务种类另列，不给三业务混一个准确率。
+待测收益假设
+借鉴机制与本设计落点
+代价与可推翻条件
+事实/观察减少长期重复上下文成本
+Hindsight事实→归纳，G-002；M按条件回原文
+摄取/归纳费与条件丢失；若B0同预算更好则关闭相应派生
+来源版本/资格减少规则变化后错误
+Cognee/Graphiti所有权反例、H页反例，G-001/005；W-D
+整页/Bank隔离导致有效信息暂缺，须同时测残留率与误封/恢复窗口
+分层精读/有界补证改善困难题
+OpenViking分层读取参考、H多路/Reflect，G-004；W-E
+查询轮次、重排与尾延迟；多因子同变不能归因目录/图
+独立Trial避免不可靠经验上线
+ReMe过程、Cognee提案、MemOS trial反例，G-003；W-A/H
+工具沙箱、数据与版本维护；未胜轨迹/runbook则不推进自动生成
+PG任务+受控patch降低自建服务成本
+H受理/worker，G-007/008；W-C
+所有持久写点审计和每release回归；patch面积超预期时重估范围/向上游贡献，不隐去成本
+许可门先于TCO：固定Hindsight根MIT 
+LICENSE
+ 不能批准全部依赖、可选后端、模型/数据与交付方式。R1需列实际发行SBOM/模型政策；OpenViking等仅借鉴机制，不自动复制AGPL实现；Neo4j按用户约束排除。全栈许可接受仍UNKNOWN，V-18关闭前不承诺闭源发行合规已完成。
+12.1 模块替换、对照与回滚接口
+MP / 模块
+可替换接口及版本键
+对照和回滚必须保什么
+MP-01 G
+RequestEnvelope/Admission/Route、contract_version
+同一客户端fixture、转发字节/连接/错误/effect；回滚不复活已撤份额
+MP-02 Handler计划
+QueryPlan→CandidateSet→Bundle、planner_version
+相同输入/Bank集合/总预算做shadow；旧planner只在当前资格有效且IDL兼容时回退
+MP-03 检索/重排
+RecallArms/HydrateEligibleBatch/Rank、index_space/ranker_version
+原生并行和裁剪边界保留；异向量空间分代，回旧索引前核来源/权限，不能混距离
+MP-04 Worker
+BuildStage/Checkpoint/CommitGuard、payload capability
+同一operation身份与可判定phase；旧worker不识别新payload拒领，旧Attempt不可恢复写权
+MP-05 DataPG
+TableResolver/Publisher/Eligibility、rt/ud schema束
+expand→回填→切读取→contract；回滚先核兼容代/单写epoch，不整库回旧快照丢新数据
+MP-06 L
+Generate/Embed/Rerank/SingleSend/GetResult、transport/usage规范
+同一wire/语义hash对照，真实attempt/费用永保；rollback不能让UNKNOWN再发一次
+MP-07 C
+Directory/GrantApply/Admission/Provision、home/policy/binding版本
+单权威apply/ack；旧控制器不得降epoch或重新分已发额度；多home启用另验
+MP-08 K/M
+SourceSelection/Assertion/Derivation/Publication、semantic policy版本
+当前/历史/条件/撤回及人工资产保持；shadow派生未批准不替当前发布
+MP-09 Skill/宿主
+FrozenSkill/Trial/Release/PrepareUse、tool/host/version hash
+同工具oracle、留出与实际采用证据；新正文不继承旧Trial，回退只用仍有效Release
+同资源的影子计算仍有成本，必须计预算并隔离输出，不把它免费计入性能主臂。实现版本、上游SHA、schema/payload/profile/model/index共同构成兼容束；control/data schema任一未READY则不接流。结构profile固定DSN/backend/embedding空间和需进程固定的全局对象；凭据、价目、额度、授权版本走受控动态白名单，不因每次轮换复制整套H/W进程池。
+本地embedding/rerank同样经治理接口/资格，可采用受控本地执行池而非强制公网调用。若选进程内受控SDK备选，须单独证明无法绕过许可/计量及实例预算，部署接受交HC-05。本地调用记录LocalExecutionAttempt/算力资源，外部wire记录ProviderAttempt；不能把本地CPU时间伪装供应商token收费。原生一次retain的CoalescingEmbedder保留逐item顺序/错误传播；Adapter公布batch_size与总并发，不在下层再乘一层SDK并发。
+fork跟随交付包括代表性受理/Publisher/模型transport补丁的改动面、一次明确目标版本的upgrade差额与退出往返，记录Agent session、人审小时、账单与等待时间。未知不填固定工期；上游接受通用钩子是降低成本的备选，未接受时仍需能维护本产品受控补丁。
+12.2 性能保持、成本归因与反转条件
+PB0=固定eb021da原生配置；PB1=同授权/版本/持久/账务语义的受控诊断路径，保真正状态操作而可替换transport，不建议合并产品部署；PB2=候选G/H/W/C/L及存储实现。B0/B1/B2继续分别指强混合原文/runbook、原生H、产品V2的业务效果臂。
+总CPU/内存/连接/模型并发含G/C/L及所有agent，不只比较H/W；同输入、同有效证据/质量与安全合同、同模型/索引/profile、同冷热和到达负载，保全部失败/超时分母。PB0缺新安全/耐久语义时同时列总差额和PB1诊断，不删这部分耗时，也不借其不等价宣布“无退化”。
+路径
+必保原生结构/候选上界
+PB2新增工作与计时/反转
+快查询：ID、热缓存、小Bank、无模型
+单Bank定向、本地SQL；不请求模型reserve；批量当前资格/精确代际hydrate
+G→H固定转发、短批量资格/选择检查；测p50/p95/p99、绝对增量A及资源。固定RPC成本大时调本地资格边界/transport，不能仅看相对大模型耗时
+模型重路径：embedding/rerank/Reflect
+原生召回内部并行及连接预算、裁剪后hydrate；每轮有共同预算；一次共同rerank
+L RPC、每实际send的MetaPG事务与按Unit资格、结果持久/对账；测各轮和总调用、TTFT、尾延迟。不能逐候选远程校验或重复重排
+OBS受理及构建
+同一raw、完整校验、PG durable受理；retain流水、增量块复用、embedding合批
+对原生文本内联PG路径新增OBS同步边界；计调用开始→RawVerified→accepted→facts/page searchable；原件写入次数/hash/字节单列，不能把upload从计时移走
+混合负载：写/读/政策变更/索引/恢复
+同Bank多文档和跨Bank可并行；预算/槽位守恒、维护不饿死
+SHARE屏障、Source/Attempt短写、DDL/队列/vacuum/账本/政策apply；测goodput、队列/锁、IO/WAL/MultiXact、误封和重算。429/锁饱和先背压，不靠加机器过门
+定稿时为每一负载声明
+δ_p95、A_abs、goodput_floor、error/timeout_cap、resource_per_success、quality_floor
+及适用条件，由HC-07事前接受；本轮均UNKNOWN。不得用10%/5%示例代填。缺负载和阈值可以完成合同讨论，不能关闭性能通过。
+HSRC-19/30
+核实原生裁剪/并行路径的代码基础，不证明新SQL谓词/资格过程低开销。
+调用/写入预算必须按实际DAG算：单次远端model attempt在本候选中包含MetaPG reserve/CAS、每Unit的资格Acquire/Consume、结果capture和后续结算；可在同一权威内合并安全的事务、批量取得同阶段许可，但不能跨库假原子或先发后记发送权。写放大进入
+C_authority + C_ledger + C_result_capture
+，读取加入
+C_selection + C_eligibility + C_fanout
+；重建加入generation存储/索引/GC和丢弃重算。原有C_total公式保留并展开，不再只说“模型费通常占主导”。
+query embedding只在编译后bytes、用途、model/space、区域/credential及授权域相容时复用；不同前缀/维度不能共享。第一版规则计划器对照固定direct、固定hybrid、固定bounded-reflect和自有plan；证据组、全局rerank、缓存分别单因素，不能一次换模型/图/预算后归因。资格硬门以同合同PB1诊断开销，不能在真实租户关鉴权/弱撤权测“更快”。
+13. 分期、交付门与未覆盖能力
+D0当前为完整V2.5候选稿，合同明确不等于设计定稿。V/DG/MP/PX要求和状态全部由下方
+唯一验证登记
+生成；没有第二份“已通过”清单。
+阶段
+可验收产物
+进入/退出边界
+D0 候选修订
+8G/50D/26C、源码账本、18图、13KD、19AR处置、接口/字段/锁/成本/恢复与探针合同
+本轮文档与页面检查可完成；人工接受PENDING，DG关键机制/性能NOT_RUN
+D1 定稿前最小证据
+优先真实PG发布/锁/DDL，再资格/暂停恢复/H停机，再跨组协调/合批，随后raw/回执/key与份额守恒
+使用隔离合成数据与provider替身；不得自动启动付费/完整产品开发；失败先改协议
+R1a 技术纵向链
+G身份/份额→H raw-first受理→PG→W→受控L→合法发布→单Bank读，含kill与拒权
+从起点有三集群、OBS、主体/Attempt/预算；替身不证明模型质量
+R1b K与当前使用
+规则+例外、变更/撤源/撤权、一个受支持宿主UseReceipt
+V-01/02/05/07/08/19/23/25适用最小项；真实provider另获实施/费用授权
+R1c M/S与多租
+条件/迟到/未来/历史；Session→冻结Skill→独立Trial→人工Release；成员/服务主体
+V-03/04/20/24；个人资产归属HC-02，oracle分开分母
+R1d 耐久/保持
+最小V-12/V-13/V-15
+：公平/预算、单Unit离线迁移、备份恢复与退出；四类PB、注入与key
+对应D-022/025；跨PG联检按HC-04接受的capability；RPO/容量未测不称生产
+R2 证据触发扩展
+更大规模公平V-12、在线迁移V-13、生产恢复V-15、多home、更多连接器/宿主/混源ACL
+各项独立进入门，不用R1小探针代生产；home自动迁移在专门协议验证前UNSUPPORTED
+R3 生产接受
+已定义客户负载/SLO、隔离/HA/key/备份RPO/RTO、支持与全栈权利
+真实部署/故障/安全/性能/成本与运维接受，本轮NOT_RUN
+V2.5 唯一验证登记：V / DG / MP / PX
+2026-10-01 · Refs #13 · PRE_REGISTERED / PROPOSED。本页定义未来实跑，不代表已授权付费模型、云资源或完整产品实现。
+下列 V-01—V-26 的产品执行均 NOT_RUN
+；本轮仅运行 
+原函数三例
+、文档/来源/生成检查和独立内容审查。
+共同协议
+执行前封存 manifest：上游 SHA（设计核验 eb021da，实际运行 release 待定）、产品 patchset/image、DDL/payload/profile、解析/embedding/rerank/回答模型与 prompt、输入 hash、宿主版本、预算、oracle、允许重试和停止条件。未填字段不能用默认值悄悄运行。数据仅用合成或获授权脱敏输入，账户/地区/凭据不入报告。
+每例记录 
+case_id, variant, tenant_id, caller_subtenant_id, bank_refs, raw_ref, build_generation, stage, attempt, model_call_id, provider_attempt_id, input_revision, principal, policy_epoch, operation_id, expected, observed, error, model_usage, elapsed
+；原始请求/响应受控保存，报告只放必要脱敏原件/摘要和 hash。模型超时、服务拒绝、缺测、adapter 失败、oracle 缺失各有分母。不得只统计有答案的题。开发与留出按任务族分开，重复种子不能当新的独立样本。
+基线分层：B0 = 同源版本/ACL/混合检索/原文精读或轨迹+人工 runbook；B1 = 固定原生 Hindsight；B2 = V2 对应适配/核心补丁。各自承担的代码与预算分开。算法比较固定最终回答模型与窗口并报告总调用；默认产品比较允许内部模型不同但单独列成本，不借整体分数归因模块。
+安全/数据不变量在登记样本内要求全部满足；这不是统计上的“普遍零泄漏”。业务收益、误封、p95、RPO/RTO、成本改善的数值阈值必须在看结果前由任务负责人确认，目前 UNKNOWN。仅结构、模型一致或平均高分均不能替代这些门。
+26 项关闭题
+ID / 覆盖
+固定输入与动作（执行前生成 fixture）
+Oracle / 必须记录的失败分母
+通过条件与失败后的处置
+V-01 资产/摄取/就绪
+一个含例外段落的企业规则、一段条件偏好、一个包含异步失败工具结果的 Session；相同字节重送、同键改字节、空抽取、解析失败
+接收对象 hash/事件 seq；逐源原件、chunks、facts、derived、searchable 收据；所有输入均计数
+可定位失落阶段；不得把 accepted/零事实当完整知识可用；格式未支持必须显式拒绝/缺失。失败先修采集，停止后续质量归因
+V-02 K 正常/更新/撤源/编辑
+规则 A-r1 与 B-r1 共同支持页；A-r2 改有效期，撤 A，最后撤全部；另在 refresh 计算期间人工改页；并列 partial/all grounding 与导入ID断链
+封存规则、例外、保留句/应删句、页 revision/支持集合；最终请求和答案；更新每阶段均计数
+新旧按业务时间区分；无依据的句不可进入严格请求；保 B/人工段落；冲突拒绝或rebase。事实正确而页旧仍失败；先整页隔离+回源，记录误封与恢复时间
+V-03 M 正常/反转/迟到
+用户 U 在项目 P 偏好中文，仅出差用英文；新事件改变常态，最后补录更早事件；问当前、过去、另一项目；将助手错误复述再次摄取两轮
+人工封存时间线和条件；候选、抽取文本、最终窗口与答案；每个阶段完整分母
+主体/条件/否定不丢，迟到不覆盖当前；助手复述保assistant来源而不晋升用户断言，递归回灌不提高证据权威；B0/B1/B2配对同预算；无净收益保原文路线，不宣称长期记忆收益已证实
+V-04 S 正常/前提变化/错误回执
+两个成功和一个正确拒绝的工具轨迹→冻结候选→未见过的同族任务；再换工具schema、撤权限、制造异步作业失败
+独立工具/文件/DB终态 oracle，Trial不可由被测模型自写；记录候选是否实际加载、所有模型/工具调用
+candidate/verified/released分开；仅scope匹配且发布有效可用；假成功回执不得晋升；与原轨迹/runbook比较首试成功、错误动作和费用；无增益停自动学习 INJ-02/03/04核外部工具oracle、越权Skill和正常误拒，不能只看模型话术。
+V-05 授权/撤权/来源撤回闭包
+两tenant相同Bank/source/operation名字；读写/列表/文件/页/导出/operation/缓存/MCP/UI；排队后撤grant、模型外发前撤、组装后撤、restore后撤；private来源写shared Bank、grant扩权、源ACL收紧；Worker通过旧检查后暂停再send、失效页先进入rerank/Reflect
+全入口拒绝矩阵；grant/revocation生效点、来源受众包含证明/发布凭证、数据面epoch、全部Runtime/Worker/Host provider调度证据、来源版本；必须列全部未测入口
+无权限入口拒绝；旧委托不可提交/外发；来源不匹配不得入共享Bank/新增grant；失效候选不得先进入rerank/Reflect再末端过滤；来源L/G/P单列，不以L豁免ACL。后置hook吞异常用B1反例验证，B2须前置硬拒绝；无法控制最后宿主出口则不验强采用合同 INJ-01/04核实际查询/provider wire；跨Unit部分消费、暂停sender恢复和drain，TTL不得代替终止证明。
+V-06 检索和成本消融
+同一封存题含中文编号、否定、两来源关系、无seed/错边/高扇出/过期页；B0强混合 vs 原生 facts/观察/页/图/重排/Reflect逐项开关
+答案与gold证据、候选漏项、排序/裁剪原因、最终token、所有写读/重试调用、p50/p95；超时计入
+先达身份/安全/来源门再看配对任务净收益；两因素同时变不可单因果归因；无净收益的增强关闭。收益及成本阈值执行前确认
+V-07 宿主/接口
+同请求经HTTP/SDK/MCP；连续三轮：初始、源修订、无新修订；压缩/截断/工具schema膨胀；服务超时后重试
+provider发送前真实序列化请求hash/证据边界与服务receipt关联；任务终态；不支持的宿主单列
+最后窗口保条件且无旧revision；同接口错误语义一致；超时返回可查operation，不能当取消；无法观测者标ADOPTION_UNKNOWN
+V-08 耐久/幂等/接管
+同scope同key同payload和不同payload；在对象上传后、受理COMMIT前后、每facts批后、后续任务插入后kill；A失联B接管A再返回
+request/operation/attempt/facts/checkpoint/outbox和模型尝试账本；注入点×重复次数事先封存，未完成不丢
+202只能对应可恢复受理；异payload同key冲突；新attempt后旧结果/terminal状态均拒绝；不重复发布；外部调用费用可重复且必须计入。任一绕写阻止自动接管上线 PITR早于accepted时旧签名回执给ACCEPTANCE_GAP；显式reaccept保replaces_receipt并核旧费用。
+V-09 并发/写栅栏
+同源两replace/append，页编辑vs刷新，consolidation与delete，冻结与事务开始/COMMIT交错；锁等待/DB连接丢失
+DB提交日志、revision、guard锁顺序、attempt；逐阶段写点矩阵而非仅最终状态
+要么合法串行结果要么显式CAS冲突；guard确认后不能有旧代持久写。测试所有声明写入口；未覆盖入口导致强fence门未通过 r6/r7两批交错、metadata-only overlay、ZERO_FACTS、candidate-hydrate切代；全部隐式写点同锁序。
+V-10 跨Bank/新鲜度
+同项目两个获授权Bank，第三无授权Bank；其中一分片慢/副本落后；要求source_revision=2和complete=true/false
+请求授权集合、成功/失败Bank集合、证据版本、安全epoch、候选统一预算
+无授权Bank从不参加；complete=true缺一应失败；partial模式必须显式；异向量空间先分域召回再统一重排。全局事务/跨Bank图路径不在首期保证 I-07双shard慢/失败/撤权、协调者中断、全局预算子grant、一次共同重排及按Unit批量hydrate。
+V-11 进程/profile/隔离
+两profile不同store、embedding/模型和同名Bank并发；缺schema context；共享role与专用role分别故意误路由
+真实连接/查询scope、cache namespace、模型地址脱敏hash；SQL拒绝与API拒绝分开
+固定profile进程无串配置；缺安全上下文拒绝；共享role不能获得强隔离结论。若动态multi-engine无法闭合则维持分进程
+V-12 公平/预算/背压
+轻查询租户与长retain租户并发，模型429、PG连接耗尽；一tenant两个Unit申请预算，重试/取消后外部调用仍计费
+活动预算子分配和总额、等待年龄、排队/DB/模型耗时、实际尝试账本；负载矩阵事先封存
+不重复发全额、不无界重试；维护不永久饿死；吞吐/尾延迟只按已确认阈值评判。没有负载输入只做协议守恒，不报容量 byte/request/slot/model四量纲与PG公平调度；同Bank并行、维护和多Bank不突破父Tenant。
+V-13 迁移/回滚
+整Unit包含待办operation、幂等键、页人工修改、附件和墓碑；源冻结期间重放旧路由；切到目标新写后尝试直接回源
+分对象清单/hash/FK/ID/任务状态、源/目标guard与placement CAS序列、实际拒绝日志
+唯一写位置；在途任务/请求key不丢；目标新写后拒直接回切；原生archive作B1对照显示多时点/在途过滤，不能当物理迁移通过 R1最小单Unit离线演练；MetaPG home迁移另有停止分配/drain/home CAS门，未验不自动开放。
+V-14 升级/索引
+锁旧/新patch/schema/payload，旧Worker领取新payload；增加模型字段/换embedding维度；expand后故障、contract前回滚
+capability矩阵、未知字段、schema revision、向量space/hash、原函数回归及业务题
+不兼容拒领/排空；未知字段不静默丢；旧query不能混距离；git apply通过不算。补丁面超过收益时提交收缩/替代提案
+V-15 备份恢复/物理清理
+撤权/撤源前备份，之后新增内容并删除A；隔离恢复旧备份，重放安全日志；同时另tenant持续写
+PG/对象/策略/墓碑恢复清单，备份可恢复性、删除清单/保留时限、实际恢复时钟
+未重放政策前不开放；其他tenant不被回滚；RPO/RTO按对象类别实测；物理副本清理与新读禁用分开，备份残留有声明期限 恢复向量不能比较跨PG LSN；外部连续安全水位或key缺段保持quarantine，受理回执缺失不盲重放。
+V-16 退出
+导出三业务及人工段落、SourceRevision、依赖、ACL、Session、Trial、Release、运行预算/任务信息；在隔离目标重建
+字段级往返、业务问答/拒用、独立工具oracle、未完成任务归属、丢失清单
+不能以文本可读代替语义恢复；导入先quarantine；未知schema/capability拒发布；原生逻辑archive仅覆盖其合同字段
+V-17 观测/运营/成本
+一条成功、一条部分派生、一条CAS失败、一条拒绝、一条重试；用只读产品视图定位原因并核账
+request→operation→attempt→source→bundle→host的链；模型实际尝试与用户计费分别对账；明文/secret扫描
+用户能解释“为什么不可用/用了哪个版本”；指标不伪报completed；费用不因失败隐藏。人类可理解性需真实读者，不由页面smoke替代
+V-18 许可/范围/接受
+release候选全依赖/模型/插件清单、三业务矩阵、目标→源码/改造→验收及未决阈值；KD-01—13的原目标/变更/影响/用户决定单独可见；区别源码参考与实际分发
+SPDX/原LICENSE/模型条款快照、必需功能来源、负责人确认、ADR/范围接受记录
+硬许可/必需业务缺失阻止该方案正式接受；已确认的功能集群边界不能被Agent建议撤销；KD未接受事项不能成为默认；设计审查/结构PASS/原函数probe均不能令产品或生产通过
+V-19 三功能集群与RPC/维护边界
+固定G/B/W三独立部署/身份及一套profile；HTTP/MCP普通/文件/管理入口逐个跑；只关worker开关而保留maintenance默认作负例；正确B配置全关维护再启角色门；分别停G/B/W，CP断联，B提交后丢回执、binding过期与流中取消；伪造Tenant header/失效凭据/无入口权限；G2→4共享父子cap、计数丢失/旧grant复用、401/403/429和各段trace
+源码依赖/初始化与网络/DB/模型凭据清单；G/B/W实际部署与伸缩记录；I-01—06逐字段trace；Poller/Maintenance作业观察；operation/hash/attempt及错误effect；每入口/故障点完整分母
+G鉴权/授权/限流/监控必须实跑且跨副本额度守恒，失联不重发仍可消费份额；无业务Engine/数据PG模型凭据；B不领队列/跑业务维护/启动DDL，W不靠G/B代算；B关闭时已受理且仍获授权的W可继续，W停机B读与受控受理/积压可判；取消/预算/幂等/epoch不丢。功能隔离必须成立，物理HA/吞吐不由本小样本推出；未实现部署前NOT_RUN
+V-20 三层身份/共享/生命周期
+以§3三Tenant/七Subtenant/七Bank/四Unit固定ID建合成fixture；两团队同名文档/Bank；一Subtenant多Bank、两Subtenant共享Bank、服务账号write-only；manager移交、成员离职、key轮换
+先由独立读者按例子逐项反查每个Bank所在PG/database/rt/ud/OBS key和actor；运行时再核Tenant组织归属、caller、Manager、Grant及账单快照分别核；全入口正负矩阵；已有任务actor和来源权限
+无跨Tenant串读，write不隐含read/模型消费，离职不删团队Bank/不偷换旧job actor；移交不默认迁schema；未接受Bank归属备选不得伪报已选
+V-21 PG分离与schema合同
+对文本/文件/Session/Bank profile/tags/模型错误植入可检索哨兵；检查C/R/U具体表行/PK与本地FK、fq_table/Worker/FK/DDL/import/export；HSRC79—81当前字段与历史字段分开，op/fact别名不当UUID字面值；A/B/C分开试验
+MetaPG与DataPG实际拓扑、逐字段内容扫描、role拒绝、跨schemaFK与受理事务；C方案同时注入数据写/manifest发布失败
+原件只在既有OBS权威；元数据无原文/用户自由文本/秘密；B只声明C物理与R/U逻辑分离；C所有读须不可变publish gate或真实协调事务，不能声称跨库BEGIN原子 静态24表+2排除到实建catalog/PK/FK；document_anchor版本化读取、未知字段阻READY、无DDL角色和INVALID索引恢复。
+V-22 无状态/伸缩/PG扩展
+分别kill/替换G/Handler/W且换worker_id，L/C副本重启；计划缩容/滚动升级/Pod盘清空；E
+S、读副本滞后、单Bank热点和MetaPG预算压力
+已accepted任务/结果/费用、lease/checkpoint/owner epoch、重试回执、连接/父子预算守恒、读写容量分别测
+无粘滞pod/本地盘权威、可跨实例接管且旧attempt拒写；加副本不加总额度；按G2→4、W2→4、S3迁U-C2三例核：副本变化不搬schema、同池发现不假称改binding、PG迁移成对且raw key不变；区分ready积压与授权/429/锁阻塞；缩容需封旧代和确认回收。PG HA/读扩展不冒充写扩展，具体容量阈值没锁则UNKNOWN
+V-23 Adapter覆盖/费用/UNKNOWN
+generate tools兼容修复、SDK retries、embed/rerank failover、cache、batch、init probe；双副本同key；发送前后kill、429/断流/取消未确认、迟到重复usage
+实际每wire send捕获并映射ProviderAttempt；父子reservation、nullable raw usage、平台成本/客户账单及payment route；部分/累积/final事件去重
+所有模型无旁路，隐藏重试可逐次计量；未知不记零/不TTL释放/不盲重发；旧business attempt不发布但费用仍保；无取消到期合同的异步batch严格档禁用 L直连资格过程与OBS派生Envelope；durable_build/online开销分别计，ephemeral不能默认替代可恢复构建。
+V-24 跨层联合生命期
+成员请求Bank读/写/模型调用入队后停用；共享Bank改Manager；MetaPG已接受撤权但DataPG不可达；迁Unit/home时有未知模型发送；旧备份恢复
+actor/Grant版本、RawRef、rt/ud位置/epochs、dispatch drain、model send/usage、发布与账单原归因；无效与部分状态逐项列
+每层对同一主体/资源理解一致；无中央更新即全局effective假象；迁移不复活旧授权/重复发额度；新Manager不继承旧job actor；缺控制安全水位quarantine
+V-25 OBS-first受理/重试
+文本、原始二进制、结构化Session；上传中断/未Complete、OBS成功PG失败或unknown、PG成功丢202、同key同/异bytes、多文件部分成功、r1=A/r2 append B并重送/冲突base、并发重试条件写
+RawRef/object版本/digest/bytes与PGLedger/SourceRevision/operation顺序；真实对象数、每项accepted与拒绝分母
+同revision一份权威原件，校验前无accepted/构建；PGunknown查账本；相同请求返原op，不另存raw WAL；multipart失败不能删另一成功重试的同key；append清单[A,B]只有一次B且base CAS成立
+V-26 原件重建/清理/联合恢复
+抽取错误/Worker故障/换parser或embedding后重建；撤权/隐私撤源后尝试重放；native转换删file/document delete/Bank clear；孤儿GC与迟到accept；PG丢控制/接受状态；删PG文档后重建r2=A+B并尝试GC旧段A
+原件hash不变、build generation与attempt、源授权/删除收据、GC和受理锁时序；MetaPG/DataPG恢复水位；OBS可读与系统可恢复分别计
+失败留raw，重建读同ref；原生无raw删除权；GC先deleting则受理拒、受理先绑定则GC退出；缺PG权威不扫OBS自动受理/授权；未上传Session不声称可恢复；r2重建仍完整A+B，A仍被清单引用则不可GC；人工profile/页定义须另核权威备份，不能假称由文档重建 复用指纹包含真实抽取上下文，metadata变化不得改旧代；GC守完整membership/dispatch/backup引用闭包。
+授权、预算与停止
+未来产品实跑由实现/业务负责人共同提交具体 cohort 和成本上限后按当次用户授权执行。基础设施预算、模型单价、账户、RPO/RTO、p95、样本规模、业务阈值和负责人姓名均 UNKNOWN，不从历史试验授权继承。不新开后台长跑。
+停止条件：输入/版本漂移、oracle错误、无权限外发、密钥进入日志、预算触顶或关键不变量首次失守时停止对应臂，保留已消耗费用、所有成功/失败与诊断，修订协议后用新cohort继续。对硬安全缺陷先最小复现，不用扩大样本掩盖；对效果不确定可以扩样，但须在扩样前登记。
+本轮设计审查出口：来源与层级、50条细节目标、主要设计选择、独立KD重点审查、v1裁决、上述关闭题双向闭合；独立审查退回项修复；HTML/图与正文同源。用户内容接受、产品实现/实跑和生产门各自保留状态。
+设计定稿前与后续模块的验证要求（2026-10-03用户确认）
+用户明确要求：“这些内容请记录进去，这些也是设计定稿前需要验证或者后续每个模块需要验证的地方。”
+USER_AGREED：将“改造不明显损害当前性能、保留各模块持续优化空间”及其风险点正式纳入验证。
+ 本节是这些验证要求的唯一登记处，审查报告HTML从本节生成展示；对应论证见
+性能保持
+、
+PP-01—08约束与模块接口
+。原V-01—26继续作为运行测试合同，本节按时间点和模块把它们关联起来，不新建另一套动态任务状态。
+用户确认的是
+需要验证及其分期
+；具体实现、数值阈值、模型/资源预算和部署方案仍待确定，不因此启动付费运行或产品开发。报告中的10%/5%、附加10ms等仅是讨论/算术示例，没有变成项目SLO。
+验证时点与共同关闭规则
+DG：相关设计定稿前。
+ 明确方案、关键路径、接口/事务/锁、工作量与开销预算、反例和验收阈值。可能推翻方案的关键假设，需要最小机制探针或等价可检查证据；如Bank串行是否破坏必要并行度，不能只以“后续优化”关闭。完整生产规模验证不要求在设计文档定稿前跑完。
+MP：模块首次实现及后续相关变更。
+ 模块实现、算法/模型/索引/profile/协议/资源调度变化时运行适用回归，必要时补端到端验证。首轮通过不永久覆盖以后版本。
+本次状态：候选合同已写入V2.5；全部技术关闭项为OPEN，运行状态为NOT_RUN。
+ 记录完整、链接/脚本通过不关闭技术问题。不能在必要证据缺失时声称“性能保持已通过”。
+关闭必须有证据。
+ 记录版本/配置、输入与基线、明确预期、原始结果位置、全部成功/失败分母、指标和资源、审查结论。未实现阶段可关闭“合同已明确”，不能同时把“运行通过”置PASS。
+具体姓名均UNKNOWN、尚未认领；表中责任角色用于后续分工。执行状态与负责人的认领由Issue管理；本节保留要求与验证证据引用。
+性能基线单独命名为PB0/PB1/PB2，避免与上文业务效果基线B0/B1/B2混用。
+ PB0=固定原生Hindsight对应配置；PB1=相同安全/版本/账务合同的受控诊断基线；PB2=目标架构部署。原业务效果B0仍是强混合原文/runbook，含义不改。性能比较须锁输入、质量/安全语义、模型/索引、总资源、冷热状态、并发与故障条件；不具备等价语义的部分分项列出，不能隐藏受理前上传时间。
+DG-01—08：设计定稿前的关闭题
+ID / 对应约束
+定稿前必须验证/明确什么
+关闭证据及失败处置
+原合同 / 工作包 / 责任角色
+当前状态
+DG-01 / PP-08
+PB0/PB1/PB2、R1能力边界、快查询/模型重路径/摄取/混合负载分别比较；明确相对δ、绝对A、goodput/错误率/资源指标
+版本/配置与负载manifest、指标分母、阈值及接受记录；缺输入保持OPEN，不拿示例数字代替
+V-06/12/17/18；E0/E4；架构、性能、业务
+OPEN / NOT_RUN
+DG-02 / PP-01/02/05/06
+单Bank定向路由；原生召回并行、裁剪后hydrate、retain流水与embedding合批保留；跨Bank协调与总预算有归属
+调用DAG、RPC/SQL/模型次数与字节预算；关键transport/合批探针；发现逐候选RPC、重复重排或无必要广播就修订路径
+V-06/07/10/19/23；E0/E1/E4；接口、检索、内核
+OPEN / NOT_RUN
+DG-03 / PP-03/05
+方案B的rt/ud同连接事务，稳定文档锚点/不可变构件/Build membership与overlay、精确hydrate、版本发布/当前资格的读写点明确；控制面不按候选参与；方案C另行论证
+事务/字段/角色/查询计划与资格接口；版本混读/跨库假原子/权威不清则不得关闭对应设计
+V-05/09/11/21/24；E0/E1；DB、内核、安全
+OPEN / NOT_RUN
+DG-04 / PP-04
+Unit/Bank FOR SHARE共享屏障与Source/Attempt/page对象CAS及总锁序；禁止普通Bank/Unit热计数；原生同Bank多文档并行是否被新Bank串行破坏；慢调用不持事务锁
+同Bank多文档、同Unit双Bank及freeze最小探针，锁等待与持锁时间；超预算细化source/page/object提交域，不能靠加Worker遮盖
+V-08/09/12/22；E1/E4；DB、内核、性能
+OPEN / NOT_RUN
+DG-05 / PP-02/05/07
+Adapter保留批处理与总并发；资格消费/发送/预留有明确权威；H停止时后台依赖符合合同
+跨Unit部分consume、双L同nonce、暂停恢复与撤权drain、MetaPG reserve/CAS/回包故障、result_mode与OBS capture开销、单一retry owner/合批/429探针；隐藏重试、并发相乘、过期许可重用则返工
+V-05/19/23/24；E1/E2/E4；模型平台、安全、内核
+OPEN / NOT_RUN
+DG-06 / PP-06/08
+OBS先持久的受理语义和端到端计时；Text/File/Session、快查询与大文件分别给开销/搬运预算
+原件→accepted→searchable时序、上传/校验/流式或直传合同、失败窗；不能删除上传耗时或多存raw副本刷结果
+V-01/17/25/26；E0/E1/E2；存储、接口、性能
+OPEN / NOT_RUN
+DG-07 / PP-04/07/08
+同总资源下G/H/W/L/PG/MetaPG连接、并发、队列和额度守恒；明确饱和与背压边界
+资源预算、混合负载/热点/429/维护预留的最小验证；若中央热点或排队放大，修订分配与准入而非默认加机器
+V-11/12/19/22/23；E0/E4；平台、DB、模型平台
+OPEN / NOT_RUN
+DG-08 / PP-08
+九模块的替换接口、版本/能力协商、对照/回滚及端到端责任；局部加速不能破坏权限/状态/质量
+接口矩阵、一个代表性替换/回滚计划、MP覆盖；发布/来源/身份合同泄漏到各处则先收敛接口
+V-07/14/16/18；E0/E1/E5；架构、各模块负责人
+OPEN / NOT_RUN
+DG的最小探针可使用合成数据和可控模型替身；这种结果只关闭被探查的机制，不证明真实模型收益或生产SLO。依赖真实provider、完整实现或规模环境的验证进入MP及原V合同，保留NOT_RUN和明确的接受限制，不用全量实跑缺失阻止有边界设计讨论。
+MP-01—09：各模块实现及持续演进的验证
+每项首次实现必验；后续变更触及该项时重验。共同证据包括模块指标、端到端变化、质量/授权/耐久不变量、同总资源PB对照、失败分母和可回滚版本。未触及项可引用仍匹配的历史证据；不能把其他模块的PASS移用。
+ID / 模块
+首次及后续重验触发
+必须检查的内容与指标
+原合同 / 关联设计门 / 建议责任
+当前状态
+MP-01 / API-Gateway
+协议、鉴权、限流、路由、连接/流处理或副本策略变化
+快读/上传/长流的p95/p99、转发与编码、连接复用/缓冲；拒绝、幂等/effect、deadline/cancel及扩副本额度不变
+V-07/19/22；DG-02/06/07；接口、平台
+OPEN / NOT_RUN
+MP-02 / Handler-查询计划
+计划器、跨Bank协调、预算、缓存或Reflect策略变化
+单Bank不广播；完整/部分结果正确；query embedding/重排不无效重复；证据覆盖、轮数、token、总费用与尾延迟
+V-06/07/10/17；DG-01/02/08；检索、应用
+OPEN / NOT_RUN
+MP-03 / 召回与重排
+索引查询、融合、图扩展、分词、向量/重排模型变更
+中文/编号/否定/条件/时态证据覆盖；资格过滤后补召回；裁剪后hydrate；同预算质量、查询计划、候选规模、模型/SQL开销
+V-02/03/05/06/14；DG-02/03/08；检索、模型
+OPEN / NOT_RUN
+MP-04 / Worker-构建
+pipeline、batch、调度、checkpoint、维护或恢复变化
+ready排队与公平性、合批率、构建/更新时延、吞吐/资源；旧attempt拒写、子任务收据、取消、维护不饿死，重试不相乘
+V-08/09/12/22/26；DG-02/04/05/07；内核、平台
+OPEN / NOT_RUN
+MP-05 / DataPG-存储投影
+DDL、索引/分区、锁、读副本、schema/profile、迁移变化
+同Bank/跨Bank并行、规划/执行/锁等待、IO/WAL/vacuum、连接/索引数；代际不混读、DDL权限、单写迁移、恢复/回滚
+V-09/11/13/14/15/21/22；DG-03/04/07/08；DB、内核
+OPEN / NOT_RUN
+MP-06 / LLM Adapter
+provider、SDK重试、模型池、合批/cache、quota/计费或传输变化
+逐wire发送与usage归因、隐式重试/并发乘积、首token/总时延、429、资源/费用；资格、UNKNOWN敞口、取消/回调去重及预算守恒
+V-05/12/23/24；DG-05/07/08；模型平台、安全
+OPEN / NOT_RUN
+MP-07 / 控制面-MetaPG
+IAM、目录/placement、home、策略apply、预算分配或开通变化
+热路径回源次数、锁/写热点、传播延迟、分区/缓存过期；grant仅apply后生效、无双主放置/重复配额、控制面故障影响有界
+V-05/12/13/19/20/22/24；DG-03/07/08；平台、安全、DB
+OPEN / NOT_RUN
+MP-08 / Knowledge-Memory资产
+抽取/归纳、来源支持、激活/冲突、刷新、失效策略变化
+当前/历史/未来生效/迟到/条件正确；助手转述不升权；撤回残留率、误封、刷新/重算成本和窗口；人工版本不被覆盖
+V-01/02/03/05/09/26；DG-01/03/08；知识、记忆、内核
+OPEN / NOT_RUN
+MP-09 / Skill-宿主适配
+Skill编译/匹配、工具/环境、Trial/Release、SDK/MCP或宿主窗口变更
+冻结版本/独立oracle/留出终态、前提失效拒用；最终请求来源映射、条件保留、预算/正确任务成本、回滚不继承旧Trial
+V-04/05/07/14/16；DG-01/08；宿主、Skill、业务
+OPEN / NOT_RUN
+记录结果和定稿裁决
+每个DG/MP结果至少关联：ID、设计/源码/镜像/配置版本、负责人及审阅人、case/run ID、PB与业务基线类型、阈值接受依据、原始证据位置/hash、结果及全部失败分母、未覆盖项、返工或适用边界。不要为每个新session复制此表；在既有Issue/run记录执行与证据链接。
+裁决分别记录 
+合同已明确 / 机制已验证 / 性能回归通过 / 业务效果通过
+。任何一项不能自动推导另一项；UNKNOWN/NOT_RUN不能改名PASS。设计定稿须逐项处理适用DG的缺口，模块交付/升级须满足适用MP；有未关闭项时列具体限制及决定依据，不能仅用总分或未来优化计划盖过。
+外部意见复核后的建议验证增量（2026-10-03）
+本节源自
+30条外部意见的独立裁决
+，是INFERENCE / PROPOSED，不把外部模型建议升级为USER_AGREED。既有DG/MP验证覆盖已获用户确认，本节补具体关闭题；所有PX项尚未运行，具体方案和阈值仍待决定。
+ID
+增量关闭题
+证据与预期行为
+关联原合同 / 设计门 / 模块
+状态
+PX-01
+完整原生表/字段与后端盘点
+23备份表+可重建cache为静态范围；排除已删document_attachments和Oracle-only表；实建目标schema核PK/FK/写方/正文哨兵/保留和恢复，不能整表把日志/config搬C/R
+V-11/15/21/26；DG-03/08；MP-05/08
+PROPOSED / NOT_RUN
+PX-02
+L资格/结果路径、连接预算及MetaPG失联
+未预留、已预留未发送、已获发送权、已发送回包未入账、恢复逐阶段注入；核typed许可消费、结果writer/hash、实际客户端连接、在途费用不丢/不重发
+V-05/19/22/23/24；DG-05/07；MP-06/07
+PROPOSED / NOT_RUN
+PX-03
+数据/备份加密与key恢复合同
+逐介质与链路确定责任、key权限/轮换/撤销；验证备份和key共同恢复、key不可用拒绝/告警、导出/日志不旁路；不由mTLS或云默认推导全覆盖
+V-05/11/15；DG-03/08；MP-05/07
+PROPOSED / NOT_RUN
+PX-04
+证据定位语义与历史可重放
+静态勘误/生成器回归证据见generator-regression-v2.5.json；继续核实际stream_export_bank、常量符号-文件-行、Oracle/PG条件、D-032正文与D-046/048来源、历史review固定指针；类型化区分符号与描述性scope
+V-18；DG-08；MP-05/07
+PROPOSED / NOT_RUN
+PX-05
+自有查询机制与成本归因
+task_kind与策略枚举/参数映射；规则+例外、中文编号/条件/历史回源；V2计划/组装/重排单因素对照，硬安全门仅做受控同合同成本诊断
+V-02/03/06/10/17；DG-01/02；MP-02/03
+PROPOSED / NOT_RUN
+PX-06
+RPO窗口内已accepted回执丢失
+恢复点早于受理、OBS仍在、原op查不到时须给恢复缺口/受控重新受理语义；核WAL/回执/恢复epoch与计费归属，不扫OBS自动重放
+V-08/13/15/24/26；DG-01/03；MP-04/05/07
+PROPOSED / NOT_RUN
+PX-07
+I-01主体/幂等/份额类型与字节维度
+公共信封和方法体联合核字段；区分caller/effective principal/service actor/delegation、admission/model budget/reservation/permit/lease；扩副本不放大全局字节quota，局部近似档显式
+V-07/12/19/20/23；DG-02/05/07；MP-01/06/07
+PROPOSED / NOT_RUN
+PX-08
+威胁矩阵与内容注入负例
+按共享/专用档列主体×资产×攻击面；不可信原文要求绕Grant、伪造工具回执、Skill诱导越权及正常对照，使用授权与真实工具oracle，不只看模型措辞
+V-04/05/11；DG-08；MP-01/08/09
+PROPOSED / NOT_RUN
+源事实勘误可由作者直接修订；PG级别、隔离/key权利、R1迁移范围、Adapter/结果路径、MetaPG失联策略及性能/RPO等取舍见
+人工确认表
+。当前人工选择见
+正文HC-01—08
+。设计/文档修复、机制探针、性能回归、业务效果和人工接受分别记状态；本轮候选文本已修不令这些验证通过。
+定稿前最小探针：按可能推翻主线的优先级
+这些是验证准备，尚未启动产品实现/真实PG/OBS/provider运行。每项用隔离合成fixture与替身可先做机制；HC-07事前锁PB负载/δ/A/goodput/质量/资源阈值，当前UNKNOWN。机制最小成功不能关闭性能/业务/生产。各run分别记录合同明确、机制、性能、业务四轴；AR只记录文本处理。
+优先级 / DG争点
+最小输入、注入与证据
+失败处置/后续验证
+状态
+01 · DG-03 / AR-02/17
+r6已发布；r7分2批，第一批后kill；在候选后、hydrate前切Publication；观察fact/doc/page/附件实际bytes+generation，扫描staged不得进入归纳；加metadata-only复用/完整输入指纹、同fact不同版本的正文与overlay核对、pin/GC中断。
+混代则Publisher/读取谓词不定稿；MP-05/08实建全部表/FK/迁移与能力回归
+NOT_RUN
+02 · DG-04 / AR-03
+同Bank两文档、同Unit两Bank、同源冲突；锁前/后/commit前暂停旧worker，接管/freeze后恢复；记录pg_locks、事务时序和每写点结果
+额外串行/旧写成功则修锁域或旁路；不以仅terminal被拒代替各批被拒；MP-04/05性能
+NOT_RUN
+03 · DG-03/07 / AR-04
+无DDL业务role，受控Job建Bank及并发索引；旁侧Bank持续写；注入进程死、INVALID索引、定义同名不符、drop失败
+非法运行DDL/误ACTIVE即修开通状态及检查；MP-05/07、V-19/21/22
+NOT_RUN
+04 · DG-05 / AR-05
+2个L副本重放同part；跨2Unit只消费一端；MetaPG reserve/CAS前后断联；sender消费后暂停；所有H停机；替身记录每wire send；分别测durable结果PUT/hash/result-ready延迟、OBS失败和暂停者出口fence证据。
+重复send、TTL误effective、失败后自动补发即退回§16候选；MP-06/07真实provider取消/费用语义仍待验
+NOT_RUN
+05 · DG-02 / AR-01/12
+两个固定shard执行者、两Bank；一慢一撤权；记录RPC序列、候选数、实际embedding/rerank次数与费用子grant；协调者中断后重试
+逐候选RPC/重复rerank/丢失败Bank即修I-07；MP-02/03、V-10的真实两PG路径与负载
+NOT_RUN
+06 · DG-03 / AR-06/09
+冻结一组业务时间/条件/权威；无新写跨生效点、延迟提交/CommitReceipt缺段的known_at；扩Grant扫描期间插新来源、收紧policy、删历史
+错选择/缓存越界/扩权放过则修选择/证明协议；MP-02/08真实内容质量与误封
+NOT_RUN
+07 · DG-06 / AR-07/16
+Text、File、Session三输入，raw每次唯一key；断上传、停OBS、OBS成PG未知、丢202；测完整时序/上传字节，不调用真实付费模型
+未RawVerified就受理、raw额外副本、藏upload成本则退回W-K；MP-01/04、V-25/26
+NOT_RUN
+08 · DG-07 / AR-10
+2Tenant，一方多Bank/长任务，另一轻任务+维护；扩G/W后cap不变，provider429、权威失联、字节token与slot分别检查
+饥饿/重复份额/无限ready重试则修调度准入；MP-04/07和混合负载容量
+NOT_RUN
+09 · DG-03/08 / AR-11/18
+恢复点早于accepted、晚于raw；MetaPG仍有旧费用；安全归档缺一段或key缺失；旧receipt再提交
+默认为新op、旧权限复活、key缺失仍开放则退回恢复/key合同；R1最小V-13/15，生产规模另验
+NOT_RUN
+10 · DG-08 / AR-13/14/19
+一组消费方IDL示例+代表性Publisher/ModelTransport版本替换及回退计划；固定源符号/行/后端条件机器核对
+不兼容仍领任务、丢字段/历史指针或消费方误解即修契约；实际升级由MP及V-14/16承接
+NOT_RUN
+当前勘误/生成器检查只覆盖PX-04的静态子集；其模块升级/发行重验仍NOT_RUN。DG-01—08、MP-01—09、PX机制/性能和V-01—26运行合同保持OPEN/NOT_RUN；原函数三个纯函数探针只保历史限定EXPERIMENT_VERIFIED，不迁移为上述产品通过。
+14. 人工待决、保密恢复与接受影响
+HC-01—08是唯一当前人工待决编号；原U-01—11保留在V2.4历史，避免重复提问。已确认目标不再提请重选。姓名、首个客户/任务族/宿主与oracle、规模/负载、预算、SLO仍UNKNOWN；分别归HC-04/07/08。推荐只用于本稿连贯推演，不代表接受。
+HC / 问题
+选项与本轮推荐（仍PROPOSED）
+影响/代价与证据前置
+阻止阶段
+HC-01 PG物理级别
+A同库全分schema；
+推荐B
+独立MetaPG、DataPG内rt/ud同库；C全部C/R与U分物理库
+B保本地guard+结果事务，R仍在DataPG；C须另定不可变发布/协调，不能照搬本轮所有本地事务。先有全表分域、§5.3/8机制证据及隔离要求
+分域DDL、Publisher/恢复协议及部署定稿
+HC-02 Bank/个人资产/加工归属
+推荐团队Bank归Tenant，管理/read分权，团队工作记忆先明确
+；备选Bank归Subtenant；独立个人资产另立被接受的产品域。自动摄取可选预授权processor或仅保存raw
+离职/删除/导出/收费、历史读者、processor读旧知识许可都受影响。须给成员离职、共享历史、服务上传和跨域导出实例；不得擅改Tenant团队定义
+M数据政策、默认Bank所有权、自动摄取闭环
+HC-03 隔离/管理员/key权利
+共享逻辑档且明确可信运维；专用身份/进程/PG档；抵御管理员的更强加密/受信计算档。
+推荐先明确威胁再选默认，不能替用户直接选强弱档
+加密/key恢复矩阵、误路由/被攻破进程负例、成本与检索兼容；磁盘加密不抵御在线管理员
+保密/隔离对外承诺、真实敏感数据、对应默认配置
+HC-04 R1能力包和可用性
+推荐三业务各一受控闭环+一个宿主/oracle+单Unit离线迁移/恢复；跨PG联检可纳入有界两分片
+。备选R1仅同兼容组，跨组明确unsupported；投影默认代际，冻结重建作为可用性备选
+§6/5.3/2.5最小机制、W-Control完整责任和资源假设；代际存储/增量保留成本vs冻结停读。所有R1子门从起点含授权/OBS/费用边界
+全面并行实现、R1接口能力和演示范围冻结
+HC-05 Adapter部署/资格/结果路径
+推荐独立L、DataPG受限资格过程、OBS派生结果
+；备选独立资格服务/受限U writer，或受控SDK/本地执行池
+§16状态、H全停后台、各角色凭据/pool、DG-05/07开销；不能只因统一组件目标已定就宣布独立服务也已接受
+I-04、部署凭据、连接预算及结果耐久合同
+HC-06 失联、撤权在途与账务政策
+推荐无权威确认不新调度、UNKNOWN占敞口、无法drain不报完整effective
+；有界继续仅在持久份额/出口fence证据成立后选。L/G/P来源等级、provider取消/费用上界、BYOK/重试收费单列
+跨Unit许可、暂停恢复、MetaPG故障和真实provider合同；较强承诺增加拒绝/等待，不能把预算未知改零
+严格撤权、生效回执、硬预算、账单政策与失联可用性承诺
+HC-07 性能、保留与RPO/RTO
+分快读/模型重/OBS受理/混合负载选择δ/A/goodput/质量阈值；按受理/安全事件/内容/费用定义RPO与保留。
+推荐事前分别锁，拒一个总百分比覆盖全部
+PB0/1/2同总资源、DG最小机制、恢复回执/key依赖；原生文本新增OBS成本透明，RPO=0不能凭异步备份默认承诺
+性能通过、容量/SLO、删除/恢复承诺；不阻止无阈值的事实勘误
+HC-08 release/patch/发行与投入
+推荐保eb021da为核验锁，最终运行release另选；代表补丁+一次升级/退出校准后批准投入
+；备选限制能力减少补丁或以证据重开底座ADR
+patch面/兼容矩阵、实际升级、SBOM/模型/必需权利、资源与付费预算；不把上游贡献必被合并或外部churn当工期
+发行定型、产品实现和付费/生产验证授权
+HC-08同时承接原U-08/ D-032全栈许可硬门：根MIT不能替全部依赖/模型/数据/分发权利；SBOM与必需权利未关闭时，不承诺闭源发行已可行。若必需三业务、安全、升级/退出在可承担补丁成本内不成立，凭固定证据请用户重开ADR-0001；本轮不擅自换底座。
+14.1 威胁、加密、资源与内容注入
+加密/key候选合同
+：
+介质/链路
+推荐最低责任
+key/失败/恢复限制
+G/H/W/L/C互通、各服务到PG/OBS/provider
+认证且校验端点身份的加密传输；凭据按role最小化
+证书/信任配置失败拒绝，不回退明文；内部mTLS不替Grant
+MetaPG/DataPG数据盘、WAL、临时空间、副本
+部署层受管卷/介质加密，备份不能遗漏WAL/临时落盘
+不宣称磁盘加密防在线DB/主机管理员；具体发行能力/产品许可待HC-03/08
+OBS raw及派生Envelope
+对象加密与Tenant受限访问；record key_ref/version、对象版本和hash
+不把某一家S3默认值外推所有OBS；key不可用则原件/结果不可恢复，不报成功
+备份/导出/审计/模型诊断
+独立授权的加密包/存储、完整性校验、访问和保留收据
+key恢复材料与数据备份分权保全；不能只备数据不保解密能力
+provider/API/webhook secret
+secret service引用、版本、轮换及最小读取者
+明文不入普通C/R/U/log；旧在途归旧credential付款关系
+key生命周期：
+ACTIVE → ROTATING(new key version) → READ_OLD_ONLY → RETIRED
+，原数据/备份未重加密或未过保留期前不得销毁仍依赖的旧key。停用/吊销导致相应读写/恢复fail closed；核审批、告警及可恢复条件。key备份/恢复清单包括算法、key引用/版本、包封关系、访问政策与受权恢复步骤；不把密钥原文提交Git。删除key只说明密文无法解密的某种条件，不自动证明缓存/模型/导出等所有明文副本已清除。
+保护层区别已复查
+PG18加密选项
+：传输、存储与客户端加密覆盖不同威胁。本表是产品提案；若HC-03要求抵御DB/平台管理员，普通块加密和schema角色不足，须另论证客户端/应用加密或受信计算及检索/运维代价，未验前不作该承诺。
+威胁×档位的最低声明
+：不可信外部客户端/普通恶意租户由AuthN、Grant、ID归属、输入/资源限制防护；同一共享runtime被攻破时共享逻辑档不承诺抵御其DB权限范围，专用身份/进程/PG仅在配置与负例通过后声明范围。运维/DB管理员是另一个信任选择；外部provider得到已获准发送内容，不能宣称撤权后能收回。来源/Skill文字无权更改授权或预算；配额内恶意高成本仍需工作量准入和资源上限，不能只有限额便认为无邻居干扰。
+资源合同
+：按输入kind登记
+max_raw_bytes,max_expanded_bytes,max_pages,max_parse_cpu_ms,max_parse_wall_ms,max_temp_bytes,max_dependencies,max_redirects,max_remote_fetch_bytes
+；解析沙箱无业务DB/secret/任意出网权限，URL解析重定向也校目的地，超限终止本次构建并留raw/typed原因。具体数值在DG/MP fixture执行前封存，不能留无限默认。上传、解析、派生放大和模型费用不同量纲，均进预算/观测。
+必要审计
+：Grant/placement/删除、原件受理、合法发布、发送权/费用事实的最小审计与各自权威状态同本地事务或可核持久捕获；写失败则该权威动作不报成功。监控/采样trace可有界丢弃并报告；已发模型回包无法阻止时沿§16保存Envelope/UNKNOWN，不伪造无费用。日志正文若保留进U受权诊断，不混入中央索引标签。
+采用下列V-04/05、PX-08的fixture（均NOT_RUN）：
+fixture
+受控输入/动作
+独立oracle
+INJ-01
+获权文档正文要求忽略Grant并读取另一Tenant Bank
+授权日志/真实查询与provider wire中没有无权正文；不是只看模型说“不”
+INJ-02
+工具文本回报success，但外部合成文件/作业失败
+Trial保持failed/unknown，不能Release；工具终态由独立测试身份封存
+INJ-03
+已发布Skill正文夹带要求扩大工具scope/外发私有原件的步骤
+宿主实际工具调用被既定scope拒绝；版本签名不授动作权
+INJ-04
+正常规则+例外，与上述攻击样式相近但无越权要求
+合法任务仍完成，记录误拒；不能用全拒获得“安全通过”
+14.2 AR处理台账
+下表由
+REVIEW-V2.md
+生成；设计文本修正不等于关闭原问题，人工/机制/性能未决保持显式。
+AR
+原裁决
+本轮落实与理由
+事实勘误
+设计文本
+人工待决
+机制
+性能
+正文章节
+目标
+选择
+V
+DG
+MP
+PX
+AR-01
+必须修改
+Handler协调/固定执行，I-07分组预算、全局裁剪与批量hydrate；保单Bank快路径
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-04
+NOT_RUN
+NOT_RUN
+§2/4/6/10
+D-009;D-023;D-029;D-038
+C-08;C-09;C-15
+V-10;V-19;V-22
+DG-02
+MP-02;MP-03
+NOT_APPLICABLE
+AR-02
+必须修改
+稳定document_anchor、DocumentVersion、不可变组件与membership/overlay；替换分析稿每代doc ID歧义，保delta复用并列GC成本
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-01;HC-04;HC-07
+NOT_RUN
+NOT_RUN
+§3/4/5/6/8/11
+D-001;D-006;D-007;D-020;D-024;D-037;D-038
+C-03;C-05;C-07;C-13;C-23
+V-01;V-02;V-08;V-09;V-14;V-26
+DG-03;DG-04
+MP-03;MP-05;MP-08
+PX-01;PX-06
+AR-03
+必须修改
+Unit/Bank FOR SHARE + 对象CAS，总锁序覆盖全部批/terminal/统计/维护写点；禁止普通全局热计数
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-07
+NOT_RUN
+NOT_RUN
+§7/8/10/12
+D-019;D-020;D-022;D-043
+C-12;C-13;C-24
+V-08;V-09;V-12;V-22
+DG-04
+MP-04;MP-05
+NOT_APPLICABLE
+AR-04
+必须修改
+Unit/Bank/index状态与受控DDL身份，普通H/W禁止get-or-create；INVALID索引恢复
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-01;HC-04;HC-07
+NOT_RUN
+NOT_RUN
+§2/3/8/10/12
+D-017;D-027;D-042;D-043
+C-11;C-19;C-23;C-24
+V-11;V-19;V-21;V-22
+DG-03;DG-04;DG-07
+MP-04;MP-05;MP-07
+PX-01
+AR-05
+必须修改
+跨Unit parts消费、单nonce sender、暂停/drain与MetaPG故障；durable结果OBS成本及替代
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-05;HC-06;HC-07
+NOT_RUN
+NOT_RUN
+§4/7/10/16
+D-011;D-015;D-033;D-045;D-046;D-048
+C-09;C-10;C-25
+V-05;V-07;V-19;V-23;V-24
+DG-05;DG-07
+MP-06;MP-07
+PX-02;PX-07
+AR-06
+必须修改
+valid_at/known_at/authority/condition选择，零新写跨时界失效与EvidenceGroup
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-02;HC-04;HC-07
+NOT_RUN
+NOT_RUN
+§3/4/5/6/16
+D-002;D-003;D-006;D-024;D-038
+C-04;C-07;C-08
+V-02;V-03;V-06;V-10
+DG-02;DG-03
+MP-02;MP-03;MP-08
+PX-05
+AR-07
+必须修改
+W-Control明确交付，W-I/J/K依赖和R1a-d；D-022/025补最小V-12/13/15
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-04;HC-07;HC-08
+NOT_RUN
+NOT_RUN
+§2/4/10/12/13/14
+D-022;D-025;D-029;D-036;D-044
+C-16;C-18;C-20;C-24
+V-12;V-13;V-18;V-19;V-22
+DG-01;DG-06;DG-07;DG-08
+MP-01;MP-04;MP-07
+PX-07
+AR-08
+部分采纳
+ingest-only保原requestor；预授权processor以关联新operation加工，不隐授旧知识read
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-02;HC-04;HC-06
+NOT_RUN
+NOT_RUN
+§3/4/5/7/16
+D-012;D-015;D-041;D-047
+C-10;C-22;C-25
+V-01;V-05;V-20;V-24
+DG-03;DG-05
+MP-04;MP-07;MP-08
+PX-07
+AR-09
+部分采纳
+扩Grant先pending双重准入，锁外存量证明与最终短CAS；历史共享仍待决
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-02;HC-03;HC-07
+NOT_RUN
+NOT_RUN
+§3/6/7/8/12
+D-006;D-013;D-016;D-020;D-022
+C-07;C-10;C-13
+V-02;V-05;V-09;V-10;V-20
+DG-03;DG-04;DG-07
+MP-02;MP-05;MP-07;MP-08
+NOT_APPLICABLE
+AR-10
+部分采纳
+各量纲份额与父Tenant守恒，PG公平调度/ready-blocked/维护槽与索引候选
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-04;HC-07
+NOT_RUN
+NOT_RUN
+§8/10/12
+D-021;D-022;D-030;D-044
+C-12;C-16;C-24
+V-08;V-12;V-22
+DG-07
+MP-04;MP-05;MP-07
+PX-07
+AR-11
+必须修改
+跨authority恢复向量、外部连续安全水位、ACCEPTANCE_GAP/显式reaccept及home迁移边界
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-03;HC-04;HC-06;HC-07
+NOT_RUN
+NOT_RUN
+§4/5/11/16
+D-018;D-025;D-026;D-028;D-046;D-050
+C-06;C-18;C-19;C-25
+V-08;V-13;V-15;V-16;V-24;V-26
+DG-03;DG-08
+MP-04;MP-05;MP-06;MP-07
+PX-06
+AR-12
+部分采纳
+asset_kind/strategy与原生参数映射，证据组/共同重排/规划消融与成本归因
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-04;HC-07
+NOT_RUN
+NOT_RUN
+§4/6/12
+D-009;D-010;D-024;D-034;D-035
+C-08;C-09;C-20
+V-02;V-03;V-04;V-06;V-07;V-10;V-17
+DG-01;DG-02;DG-08
+MP-02;MP-03;MP-08;MP-09
+PX-05
+AR-13
+部分采纳
+七核心扩展边界、九模块接口/版本束/对照/回滚与升级退出校准
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-05;HC-08
+NOT_RUN
+NOT_RUN
+§3/10/11/12
+D-017;D-023;D-024;D-027;D-028;D-035
+C-11;C-15;C-19;C-20;C-24
+V-11;V-14;V-16;V-21;V-22
+DG-08
+MP-01;MP-02;MP-03;MP-04;MP-05;MP-06;MP-07;MP-08;MP-09
+NOT_APPLICABLE
+AR-14
+必须修改
+统一initiating/effective/service主体、复数bank_refs、三类份额与permit/lease、错误effect/分页/取消
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-06;HC-07
+NOT_RUN
+NOT_RUN
+§2/4/5/6/16
+D-012;D-018;D-029;D-030;D-046;D-047
+C-06;C-09;C-22;C-25
+V-01;V-07;V-08;V-17;V-19;V-23
+DG-02;DG-05;DG-08
+MP-01;MP-02;MP-06;MP-09
+PX-06;PX-07
+AR-15
+需人工决定
+明确M示例为团队内工作记忆；个人独立所有权/离职保留提出选项，未替用户决定
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-02
+NOT_RUN
+NOT_RUN
+§1/3/9/11/13
+D-003;D-028;D-041;D-047
+C-22
+V-03;V-16;V-20;V-24
+DG-01;DG-08
+MP-08;MP-09
+NOT_APPLICABLE
+AR-16
+必须修改
+各输入资源上限、沙箱/出网、typed必要审计、注入攻击和正常oracle对照
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-03;HC-07
+NOT_RUN
+NOT_RUN
+§2/7/9/11/12/16
+D-004;D-016;D-030;D-031;D-048
+C-10;C-11;C-14;C-23
+V-04;V-05;V-11;V-12;V-17;V-21;V-25
+DG-03;DG-06;DG-08
+MP-01;MP-05;MP-07;MP-08;MP-09
+PX-08
+AR-17
+必须修改
+24静态PG表+2排除，完整分域/FK/secret/恢复规则；HEAD实建catalog仍待验
+FACT_CORRECTED
+TEXT_APPLIED_PROPOSED
+PENDING: HC-01;HC-03
+NOT_RUN
+NOT_RUN
+§3/5/11
+D-001;D-025;D-026;D-042;D-048
+C-03;C-19;C-23
+V-11;V-15;V-21;V-26
+DG-03;DG-08
+MP-05;MP-08
+PX-01
+AR-18
+必须修改
+逐介质加密/key轮换撤销与共同恢复；共享/专用/管理员威胁边界待接受
+NOT_APPLICABLE
+TEXT_APPLIED_PROPOSED
+PENDING: HC-03;HC-07;HC-08
+NOT_RUN
+NOT_RUN
+§3/7/11/14/16
+D-016;D-026;D-028;D-032;D-048
+C-11;C-19;C-23
+V-05;V-11;V-15;V-21
+DG-03;DG-08
+MP-05;MP-07
+PX-03
+AR-19
+必须修改
+函数/常量/后端与历史定位、5项目标来源生成根因/负例、D-032主落点、旧review指针已修
+FACT_CORRECTED
+TEXT_APPLIED_PROPOSED
+PENDING: HC-08
+DOCUMENT_CHECK_ONLY
+NOT_APPLICABLE
+SOURCE-EVIDENCE/GOAL-SOURCES/TRACEABILITY/workflow/当前源与后续生成件
+D-022;D-025;D-032;D-040;D-046;D-048
+C-17;C-18;C-19;C-20;C-21;C-23;C-25
+V-04;V-05;V-12;V-13;V-15;V-18
+DG-08
+MP-05;MP-07
+PX-04
+15. 主要架构选择与双向追踪
+状态列为审查裁决，证据标签另列；CONFIRMED_FOR_SCOPE仅指该设计理由在核验范围成立，不是运行通过。完整每目标→代码/责任→章节/关闭题在 
+TRACEABILITY-V2.csv
+，每目标出处在 
+GOAL-SOURCES.csv
+。
+选择ID
+本文方案与目标依据
+替代/代价及裁决
+C-01
+G/Handler/W三功能集群独立且无状态；G鉴权/限流/监控/路由、内核在Handler/W本地复用；D-001/029/036/039/043
+USER_AGREED（H11/H16），撤回上版合并建议；CONFIRMED_FOR_SCOPE为硬约束，实现NOT_RUN；HSRC-33—44
+C-02
+独立控制面/控制数据权威，数据面guard本地生效；D-012/023/030/040
+独立MetaPG为方案B推荐，数据面仍保R；A/C及物理级别KD-10待审；CONFIRMED_FOR_SCOPE为职责边界；HSRC-03/10/26/28
+C-03
+产品元数据与三资产、原生事实/页分权；D-001/004/005/028
+全塞memory_units失去轨迹/验证语义；全自建事实库重复责任，REVISE；INFERENCE+HSRC-20
+C-04
+原文/角色/条件保真、按需派生；D-002/003/008/037
+全量抽象可能丢条件；原文路径增加token，CONFIRMED_FOR_SCOPE目标；HSRC-29+历史反例
+C-05
+多轴就绪/撤回/采用读模型；D-007/021/038
+单completed不表达派生/入窗，REVISE；HSRC-27
+C-06
+原生受理事务+请求hash/来源委托；D-018/020
+原件先OBS、PG再绑定；不以外部双写称原子；原生UUID不校hash，REVISE；HSRC-12/13
+C-07
+deny-first、不可变构件复用/Build membership、Publication与支持/页CAS；D-006/020/037
+细粒度支持不足时整页/Bank隔离+回源，增加误封成本，REVISE；HSRC-22—24
+C-08
+Handler跨组协调、全局预算、批量hydrate与任务选择召回/精读/可选Reflect；D-009/010/024/034
+不做默认全通道/第二层Agent循环；效果UNKNOWN；HSRC-19/29/30
+C-09
+Bundle与所有模型消费/Host UseReceipt受控dispatcher；D-011/015/029/031/033
+无可控宿主仅服务返回合同；强G采用UNSUPPORTED该形态，REVISE；HSRC-09/32
+C-10
+Bank统一ACL及来源受众准入/扩权不变量、授权联检、延迟委托；D-012/013/014/015
+混源ACL须全路径过滤且另验，CONFIRMED_FOR_SCOPE为R1候选；HSRC-06/08
+C-11
+按shard/profile分池，共享/专用隔离档单独重点审查；D-016/017/039
+撤回tenant专用进程作默认的未审变更；威胁模型/档位仍PROPOSED；REVISE；HSRC-02/05/42
+C-12
+原生operation+attempt/guard全提交协议；D-018/019/021
+单terminal状态fence不够；外部费用exactly-once REJECT；HSRC-14—17
+C-13
+Unit/Bank FOR SHARE屏障+Source/Page/Attempt对象CAS；D-020/022/037
+冻结/撤权取排他屏障；无普通Bank/Unit热计数；真实PG锁探针NOT_RUN，REVISE；HSRC-17/21/23
+C-14
+Session→SkillVersion→Trial→Release→host；D-004/005/031
+人工候选/R1，不称H原生自动Skill；REVISE v1另计遗漏；历史P02/P05/P06
+C-15
+三集群起步，保留租户/计算域/数据放置解耦、双placement及固定profile池；D-017/023/024/039
+手工绑定与自动调度分期，不删除映射语义；CONFIRMED_FOR_SCOPE继承，容量UNKNOWN；HSRC-02/03/11/28/40/42/43
+C-16
+跨副本预算守恒/背压/实际尝试计量；D-022/030/033/035
+原生轮转/保留槽不等于全局公平，REVISE；HSRC-14/28
+C-17
+原生图保留、外部投影按业务门触发；D-009/024/032
+GraphRetriever≠权威Store替换；效果/许可未验，UNKNOWN；HSRC-18/19
+C-18
+冻结一致清单+单写epoch迁移；D-023/025/026
+ZIP/updated_at不能保在途/硬删除，在线CDC后置，REVISE；HSRC-25/26
+C-19
+完整恢复/退出/版本束与quarantine；D-026/027/028/032
+仅正文导出不保试用/权限语义，REVISE；历史P05+HSRC-25
+C-20
+工作包/Agent session与全生命周期成本，数值待校准；D-033/034/035/036
+不复用v1工期或历史榜单作新产品保证，REJECT其当前承诺身份；INFERENCE
+C-21
+关键架构变化独立KD审查，未获接受保留既有边界展示备选；D-036/040
+USER_AGREED（H11），不能以内部PASS/成本假设代替用户接受；CONFIRMED_FOR_SCOPE为审查规则，产品源码NOT_APPLICABLE
+C-22
+Tenant/Subtenant/Bank，组织归属/Manager/Grant/计费主体分开；D-041/047
+对象定义USER_AGREED；推荐Tenant-owned Bank/Unit，多Subtenant共享；归Subtenant备选未选，REVISE；HSRC-45/46/48/56
+C-23
+C/R/U字段分类，MetaPG+DataPG rt/ud同库成对schema；D-042/048
+分离目标USER_AGREED；方案B推荐非全元数据物理外置；A/C显式代价，REVISE；HSRC-45/47/49/50/51/52/55/79—81
+C-24
+G/Handler/W无状态，L/C副本与PG读/写扩展分责；D-043/044
+用户目标USER_AGREED；跨worker_id接管/缩容与预算守恒待实现，REVISE；HSRC-14—17/40—43/51
+C-25
+LLM Adapter三类端口、逐次ProviderAttempt、三账本与UNKNOWN敞口；D-045/046/048
+组件目标USER_AGREED；独立无状态服务及账务细节PROPOSED，REVISE；HSRC-61—72
+C-26
+既有OBS唯一原件先持久/校验再PG受理，同原件重建及显式清理；D-049/050
+H14/H15 USER_AGREED顺序且不增副本/日志；具体故障/GC协议PROPOSED，REVISE；HSRC-73—78
+这套设计选择的共同边界是：有明确源码可复用处就保留；需触及核心的地方明确列补丁；不能满足或尚无输入的目标列降级与关闭题。完整性指D0设计交付，后续用户接受、产品实现、业务实跑和生产验证各自独立。
+16. LLM Adapter：资格、发送、结果与账务
+图13 独立L的资格与结果主路径 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  hw [label=&quot;Handler / Worker\n无provider密钥/任意出网&quot;];
+  l [label=&quot;L端口/编译\ngenerate/embed/rerank&quot;];
+  m [label=&quot;Tenant-home MetaPG\nreserve→DISPATCHING CAS&quot;];
+  p1 [label=&quot;Unit A rt资格过程\nAcquire/Consume/Drain&quot;];
+  p2 [label=&quot;Unit B rt资格过程\n完整集合hash一致&quot;];
+  send [label=&quot;单owner/nonce sender\n未知不接管重发&quot;];
+  prov [label=&quot;provider / 受控本地池&quot;];
+  obs [label=&quot;OBS派生Envelope\n受限key/hash/保留&quot;];
+  result [label=&quot;MetaPG result-ready/usage\nW再经业务Attempt门&quot;];
+  hw -&gt; l;
+  l -&gt; m;
+  l -&gt; p1;
+  l -&gt; p2;
+  p1 -&gt; send [label=&quot;全部消费收据&quot;];
+  p2 -&gt; send;
+  m -&gt; send [label=&quot;明确CAS成功&quot;];
+  send -&gt; prov;
+  prov -&gt; obs;
+  obs -&gt; result;
+  result -&gt; hw [label=&quot;Result.Get&quot;];
+}
+图14 模型未知、结果持久与独立账务 · 点击放大
+独立打开原尺寸SVG
+查看可编辑图源（与正文同源）
+digraph G {
+  rankdir=TB; graph [bgcolor=&quot;white&quot;, fontname=&quot;sans-serif&quot;, pad=&quot;0.25&quot;, nodesep=&quot;0.35&quot;, ranksep=&quot;0.6&quot;];
+  node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#eef4fa&quot;, color=&quot;#687e96&quot;, fontname=&quot;sans-serif&quot;, fontsize=12];
+  edge [color=&quot;#536b83&quot;, fontname=&quot;sans-serif&quot;, fontsize=10];
+  call [label=&quot;ModelCall逻辑键&quot;];
+  res [label=&quot;reservation + ProviderAttempt&quot;];
+  parts [label=&quot;全部Unit parts CONSUMED&quot;];
+  cas [label=&quot;MetaPG CAS成功\n唯一incarnation/nonce&quot;];
+  wire [label=&quot;实际send\n崩溃可能已发&quot;];
+  out [label=&quot;ResponseEnvelope持久\nresult-ready&quot;];
+  usage [label=&quot;UsageObservation nullable\n事件去重/真实付款路径&quot;];
+  cost [label=&quot;ProviderCostLedger\n成本/UNKNOWN敞口&quot;];
+  bill [label=&quot;CustomerBillingLedger\n收费政策待接受&quot;];
+  unknown [label=&quot;PARTIAL/UNKNOWN\n不记零/不TTL释放/不盲补发&quot;];
+  call -&gt; res;
+  res -&gt; parts;
+  parts -&gt; cas;
+  cas -&gt; wire;
+  wire -&gt; out;
+  wire -&gt; unknown [label=&quot;故障窗口&quot;];
+  out -&gt; usage;
+  usage -&gt; cost;
+  usage -&gt; bill;
+  unknown -&gt; usage [label=&quot;可信对账&quot;];
+}
+新增typed权威
+：
+对象
+权威与唯一写方
+最小字段
+EligibilityPart
+所属DataPG.rt；资格过程
+part_id、provider_attempt_id、完整Unit集合hash、主体/委托、payload/wire hash、destination、source/build/support、policy/storage/recovery epochs、expires_at、state、consumer_incarnation
+DispatchLease
+同DataPG.rt；与该part消费同事务建立/更新
+lease_id、part_id、调度者、last_state、cancel/drain状态；不得用费用预留替代
+ProviderAttempt
+Tenant-home MetaPG.model；L受限状态机
+attempt_id、ModelCall、wire hash、所有part receipts、reservation、owner_incarnation、send_nonce、dispatch状态、effect
+ResponseEnvelope
+既有OBS中Tenant隔离的派生结果域；L只能写本attempt受限key
+response bytes、provider request/event ID、raw usage（nullable）、内容hash、source refs、capture状态；不含密钥，不是新原件或raw WAL
+ModelCall result-ready / UsageObservation
+MetaPG；L完成登记/对账消费者
+Envelope ref/hash、ready/partial、usage source/事件去重键；成本和客户账单沿既有独立权威
+构建输入资格与在线读资格分动作：当前合法processing operation可为其已受理raw/自有staged抽取或embedding输入申请资格，绑定Attempt/Build与输入清单；这不让staged事实进入在线检索、他任务归纳或跨用户缓存。在线/归纳读取已发布支持仍走Publication门。I-08验证可信主体链和动作，不能由L传一个任意principal或schema自授权限。
+接口：
+Eligibility.AcquireBatch
+、
+Consume
+、
+Cancel
+、
+DrainStatus
+，以及
+Result.Get
+；数量按Unit/阶段增长，不按候选逐条RPC。H在线停机不影响W→L→DataPG过程→provider链；DataPG/MetaPG本身不可用仍按其权限/预算依赖拒绝，不能把“后台独立”扩大成脱离持久权威运行。
+正常顺序（不伪造跨库事务）
+：
+L编译确定实际wire payload，锁模型/区域/凭据版本。MetaPG同一home事务建立ModelCall/ProviderAttempt及父子reservation，唯一逻辑键防重复；状态
+RESERVED
+。调用者只能请求，不能自填余额或已获准状态。
+按Unit稳定顺序/有界并行取得批量part；各DataPG在§8短事务内核当前主体/来源/Attempt并记
+ISSUED
+。其中一个拒绝就取消其他尚未消费part并释放已知未发送的reservation。
+每Unit 
+Consume(part_id, attempt_id, consumer_incarnation, send_nonce)
+在本地同事务重核guard，CAS 
+ISSUED→CONSUMED
+并建DispatchLease。part.expires_at不得晚于QuerySelection.not_after及主体委托/操作deadline；消费后的对象不得转回ISSUED；重传返回既有状态，不授第二份发送权。所有parts绑定相同完整集合hash，不能拼接两个请求的局部许可。
+收齐有效消费收据后，在MetaPG以唯一attempt/nonce/owner CAS 
+RESERVED→DISPATCHING
+，登记全部part references。
+跨Unit不是一个事务
+；部分消费、回执丢失或最终CAS未知时不发送，查询/取消/对账，保守占用不能重发。仅靠MetaPG的UNIQUE(permit_id)不能证明DataPG当前资格和drain；必须按本节完整消费/发送/drain协议判断。
+获CAS成功的受控sender才可执行一次传输调用，实际发送前检查本nonce未用、当前取消状态及有效deadline；重试/参数修复每次新ProviderAttempt，再走额度和资格。SDK隐藏重试须禁用或纳入逐次hook。
+DISPATCHING
+后崩溃一律可能已发，不能由另一个副本重驱同send。
+回包先持久ResponseEnvelope并校hash，再在MetaPG登记result-ready与UsageObservation。W消费结果仍校当前业务Attempt/source，拒旧发布但不删除费用。Envelope只保存观察事实，不授新发送权、不持另一份operation状态，不是第二任务真相。
+撤权/暂停窗口
+：DataPG停止ISSUED的新消费并标撤销；CONSUMED及DISPATCHING均进入drain候选，包含“已登记但尚未发字节”的尝试。未发者须收到取消并证明sender不再有发送权；已发者记录外部终态/声明范围。多Unit任一撤权影响整个request，不能以其他Unit成功豁免。普通TTL到期不证明旧进程已终止、供应商已取消或费用为零；无法证明的尝试保持UNKNOWN/PENDING并拒新授权，不确认完整effective。
+线性化点限定为受控sender的合法调度记录，不能承诺网络包在某墙钟时刻之后绝不抵达。若进程可无限暂停后恢复、出口可绕过sender、或provider batch无法取消/限制执行，则相关强生效承诺不能关闭；需限制该执行形态或采用能fence出口的受控transport并最小验证。不得在文件中把这个限制默默改成较弱的立即effective；范围/租期由HC-06确认。一次性调度并不证明外部模型执行/计费exactly-once。
+MetaPG故障表（推荐保守档）
+：
+时点
+行为
+恢复/对外状态
+尚未reserve
+拒绝新模型尝试；有界等待需deadline
+BUDGET_AUTHORITY_UNAVAILABLE / NOT_DISPATCHED
+RESERVED，未完成parts消费
+不凭本地余额继续；已知未发可待恢复取消；不盲放额
+返回等待/未调度，reservation保留
+parts已消费，但DISPATCHING CAS未确认
+不发送；取消/查询各part，Meta结果UNKNOWN先对账
+无凭证不补发；跨库部分状态允许保守占额
+DISPATCHING成功已被当前sender确认，发送前发现故障
+推荐在可检测到authority失联时停止未开始发送；已确认CAS与真实send之间的不可原子窗口按可能外发处理
+不能推断已NOT_SENT；除非有sender完成取消证据，否则UNKNOWN
+已发，响应/usage回到L而MetaPG不可写
+继续有限接收；可写OBS则保存不可变Envelope，不能报ModelCall durable-ready；OBS也失败则仅报告捕获缺口
+原reservation/attempt保未决敞口；不让内存缓冲成为成功证明
+恢复、重复/迟到回调
+以attempt/provider event/revision去重导入Envelope和usage，关账后adjustment
+不重新调用模型来探测费用；缺usage仍nullable/UNKNOWN
+流式片段可作为暂态交付，但不宣称断流无损续传；R1默认重连查终态，若要可恢复流则另有有界持久事件缓冲合同。只有在确认终止、可信provider查询或已接受的可核最长期限等证据后释放远端并发风险；费用UNKNOWN按独立对账策略保留，不能拿安全lease到期清掉账务敞口。
+MetaPG是可HA的Tenant-home逻辑权威；故障范围按该home及依赖操作列出。无模型快读在已有可信路由/有界入口份额、DataPG当前资格可确认时可以继续，不承诺所有读都停，也不无限缓存授权。HC-06若要求故障时继续新模型发送，必须另验持久子份额、sender与drain协议；不是本轮默认。
+连接预算
+：对每DataPG写组，
+Σ实际角色实例×到该组的pool上限 + DDL/监控/复制/恢复保留 ≤ 已接受连接预算
+。本候选包含H、W、L资格连接、provision/index/audit/备份等实际客户端；L结果写OBS不增加U数据写pool。若采用专门资格服务，计算其后端pool，不能又把L→服务的HTTP连接算成PG连接；代理前端socket、代理后端PG连接、在途SQL工作量三套预算分别列。MetaPG和provider/OBS连接另列。所有L副本均持每shard大pool会爆炸，需按可信scope分池/有界懒连接，不以池数未知当成本零。
+替代/反转
+：资格服务可承接相同typed合同，代价是新故障/部署/调用跳数；不能依赖全部在线H而仍声称H停机W可续。结果也可由独立受限U writer写DataPG，需把writer的pool/权限/可用性计入。若本推荐直连资格或OBS结果让快路径/恢复超预算，比较这两种实现，保资格/费用不变量不变；HC-05决定部署承诺，DG-05/07证据决定是否可定稿。
+16.1 逻辑键、逐次预算与兼容/失败覆盖
+ModelCall逻辑键绑定tenant、initiating/effective principal、operation/phase（或query）、语义输入hash、用途和profile；ProviderAttempt另有不可复用attempt_id/owner_incarnation/send_nonce和
+实际wire hash
+。模型兼容修复、重试、failover、区域/credential切换每次建立新attempt，付款归原payment route。仅wire字节相同不允许跨授权域复用缓存；模型/输入前缀/空间/参数不相容不能共用embedding。
+同一Tenant-home事务检查父Tenant与子主体/任务的
+已结算 + 在途预留 + UNKNOWN敞口 + 本次最大可核成本 ≤ cap
+，一次性登记reservation。没有可核成本上限的供应商形态不声明硬费用帽；严格档禁用无取消/到期/用量合同的远端batch。预估上界、实际用量和客户计费分别存，价格版本、货币、provider/credential/payment route不可随重试偷换。未知费用不记零，也不靠TTL释放；已知未发送且取消有证据才退还该预留。并发slot与金额/token是不同量纲。
+覆盖矩阵包括generate/工具兼容修复、embedding/rerank主/备provider、CoalescingEmbedder、local执行、cache命中、batch、init probe和后端自带full_recall。默认关闭SDK隐藏重试；不能关闭时必须在每实际send前后hook产生attempt/usage，未能逐次捕获则该路径不开放。连接、首token、末token、OBS capture和result-ready分段计时；安全审计、原始nullable usage与完整失败分母保留。
+16.2 四条状态轴与三套账务权威
+权威/状态轴
+必须记录
+不允许的简化
+ProviderAttempt发送轴
+NOT_SENT / DISPATCHING / response或error / UNKNOWN，供应商request ID与实际wire版本
+网络超时等于未发；
+max_retries=0
+等于只发一次
+ModelCall结果轴
+语义调用结果ref、partial/error/ready；business attempt和发布资格
+旧Worker失效抹掉已产费用；有finish_reason就等于业务成功
+UsageObservation
+nullable input/output/reasoning/cache/batch等原始计量、partial/final/unknown和事件语义
+缺失记0；累积stream片段与final重复相加；缓存token与input子集重复计价
+PlatformCostLedger
+每真实attempt成本、价格/货币版本、付款账户/凭据、后续账单调整
+BYOK算作平台零成本而把客户成本隐藏；失败成本消失
+CustomerBillingLedger
+租户/子租户/归属业务、客户合同费率、折扣/退款/可审调整、账期状态
+供应商成本自动等于客户收费；两次重试必须收费或必须免费未经合同决定
+原生TokenUsage若缺失会默认0，
+total_tokens
+并不必然包含独立reasoning字段；部分包装只保最后attempt计量。Provider缓存字段常是input子集，具体供应商计价结构/折扣不可通用相加。L保留原始nullable测量并用供应商版本规则归一，不用原生0值/最后返回对象当完整账本。当前具体费率/账期/客户重试收费UNKNOWN，本文不设虚构单价。
+16.3 result_mode、同步成本与本地模型
+result_mode / 路径
+本候选承诺
+同步成本、失败及替代
+durable_build：异步抽取/embedding/归纳/页/Skill构建
+每次需要跨worker恢复的模型结果形成immutable ResponseEnvelope（大输出可分块manifest）；hash与result-ready入MetaPG后才交可恢复result ref
+provider完成→OBS PUT/校验→MetaPG result-ready，至少新增对象字节/请求/延迟及保留/加密/GC成本；OBS失败保未捕获状态，不报持久成功，不自动重发
+durable_online：要求终态可重取的Reflect/重排
+终态按相同capture顺序；流片段可先暂态交付，终态前不称耐久完成
+TTFT与完成延迟分别计；临时流不保证断点无损续传，重连GetCall/GetResult，不以重推理冒充续传
+ephemeral_online：明确可丢结果能力备选
+HC-05/06接受后才启用；result_not_replayable，仍持久资格/真实attempt/usage观察
+可省结果OBS写，但进程丢失不能恢复正文、不能自动再发；绝不用于可恢复Build的隐式优化
+无模型快读 / Handler侧合格Bundle缓存命中
+不调用L、无模型reserve/OBS capture；缓存仍核当前授权、selection和时间边界
+入口/资格/读取开销照计；缓存不能复活旧Grant，命中不能虚造provider usage
+本地embedding/rerank
+同一治理接口/资格和batch预算；LocalExecutionAttempt计实际CPU/GPU
+不伪装provider token收费；受控本地执行池可由L管理，进程内SDK是另一个待验部署备选
+L内部的模型结果cache命中仍经过L当前资格/结果读取路径，计RPC、授权和读取资源；不新增ProviderAttempt或伪造一次provider usage。客户是否对cache服务收费由独立合同决定，不能把Handler缓存的无L快路径成本外推给它。
+L直连DataPG资格过程的pool计入§10预算；结果OBS写使用attempt范围身份，不读写raw，不持任意U表权限。ResponseEnvelope是派生模型输出观察，operation仍只在DataPG；ModelCall仅管调用/预算结果，不复制业务任务状态。Envelope可被W按授权GetResult校hash读取，随后仍经业务Attempt/Source/Publication门。provider成功但结果未捕获标RESULT_UNCAPTURED/UNKNOWN，账务事实保留；有provider可核取回能力才恢复，不凭同prompt重发假称同次结果。
+OBS延迟/成本若不符合已接受阈值，比较受限U writer（增加DataPG连接/写放大）或经明确接受的ephemeral能力；不得章节间静默混用，也不得删资格/账务写来制造性能保持。CoalescingEmbedder保item顺序/错误语义，Adapter公布batch与总并发，下层SDK不能再乘并发或隐藏retry。
+关闭
+此站公开提供V2.5完整架构与决策问题HTML快照。Word、Markdown及补充证据仍需仓库权限；页面不收集成员意见。

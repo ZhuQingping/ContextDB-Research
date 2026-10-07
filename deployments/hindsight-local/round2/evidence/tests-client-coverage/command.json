@@ -1,0 +1,12 @@
+{
+  "command": [
+    "../.venv/bin/python",
+    "-m",
+    "hindsight_dev.client_coverage_check"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-dev",
+  "started_utc": "2026-10-04T14:31:08.427536+00:00",
+  "finished_utc": "2026-10-04T14:31:08.544767+00:00",
+  "duration_seconds": 0.117,
+  "exit_code": 0
+}

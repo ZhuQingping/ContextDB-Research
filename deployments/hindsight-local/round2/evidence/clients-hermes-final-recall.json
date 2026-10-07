@@ -1,0 +1,215 @@
+{
+  "results": [
+    {
+      "id": "4f230f4c-dc60-493d-b0d0-5ad0df6411a2",
+      "text": "Synthetic acceptance fact: project CDB-HERMES-862 uses approval code LARCH-2074 and pool limit 47.",
+      "type": "world",
+      "entities": [
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": "conversation between Hermes Agent and the User",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:34:28+00:00",
+      "document_id": "20261004_223417_fd821f",
+      "metadata": {
+        "platform": "cli",
+        "session_id": "20261004_223417_fd821f",
+        "turn_index": "1",
+        "retained_at": "2026-10-04T14:34:28.821Z",
+        "message_count": "2",
+        "agent_identity": "default"
+      },
+      "chunk_id": "round2-client-hermes_20261004~5F223417~5Ffd821f_0",
+      "tags": [
+        "session:20261004_223417_fd821f"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 1.099994476786739,
+        "reranker": null,
+        "semantic": 0.9231738998397545,
+        "keyword": 0.800000011920929
+      },
+      "attachments": null
+    },
+    {
+      "id": "e9e7b075-7d3f-43c6-ad44-aad83c02abba",
+      "text": "The assistant reported approval code LARCH-2074 and pool limit 47 for project CDB-HERMES-862. | When: Sunday, October 4, 2026 | Involving: Hermes Agent (assistant)",
+      "type": "experience",
+      "entities": [
+        "Hermes Agent",
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": "conversation between Hermes Agent and the User",
+      "occurred_start": "2026-10-04T14:34:50+00:00",
+      "occurred_end": "2026-10-04T14:34:50+00:00",
+      "mentioned_at": "2026-10-04T14:34:50+00:00",
+      "document_id": "20261004_223445_b6d9c9",
+      "metadata": {
+        "platform": "cli",
+        "session_id": "20261004_223445_b6d9c9",
+        "turn_index": "1",
+        "retained_at": "2026-10-04T14:34:50.268Z",
+        "message_count": "2",
+        "agent_identity": "default"
+      },
+      "chunk_id": "round2-client-hermes_20261004~5F223445~5Fb6d9c9_0",
+      "tags": [
+        "session:20261004_223445_b6d9c9"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.9019955853740556,
+        "reranker": null,
+        "semantic": 0.8900258144759374,
+        "keyword": 0.699999988079071
+      },
+      "attachments": null
+    },
+    {
+      "id": "4197b636-10b7-44fb-b1a4-811629b250ea",
+      "text": "Project CDB-HERMES-862 uses approval code LARCH-2074.",
+      "type": "observation",
+      "entities": [
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:34:28+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "session:20261004_223417_fd821f"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.7039964651435129,
+        "reranker": null,
+        "semantic": 0.8429522514343322,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    },
+    {
+      "id": "6bd87d64-bcf8-413e-89f5-4b321fc4a8d2",
+      "text": "On October 4, 2026, Hermes Agent reported a pool limit of 47 for project CDB-HERMES-862.",
+      "type": "observation",
+      "entities": [
+        "Hermes Agent",
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": null,
+      "occurred_start": "2026-10-04T14:34:50+00:00",
+      "occurred_end": "2026-10-04T14:34:50+00:00",
+      "mentioned_at": "2026-10-04T14:34:50+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "session:20261004_223445_b6d9c9"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.5059975235025189,
+        "reranker": null,
+        "semantic": 0.8800694274943741,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    },
+    {
+      "id": "15ffd789-95b5-40c6-a4c6-0fff3ef734fb",
+      "text": "Project CDB-HERMES-862 has a pool limit of 47.",
+      "type": "observation",
+      "entities": [
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:34:28+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "session:20261004_223417_fd821f"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.30799845350028693,
+        "reranker": null,
+        "semantic": 0.8415589332580626,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    },
+    {
+      "id": "d7183028-796b-493a-9510-7a86bded35ea",
+      "text": "On October 4, 2026, Hermes Agent reported approval code LARCH-2074 for project CDB-HERMES-862.",
+      "type": "observation",
+      "entities": [
+        "Hermes Agent",
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": null,
+      "occurred_start": "2026-10-04T14:34:50+00:00",
+      "occurred_end": "2026-10-04T14:34:50+00:00",
+      "mentioned_at": "2026-10-04T14:34:50+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "session:20261004_223445_b6d9c9"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.10999946163098236,
+        "reranker": null,
+        "semantic": 0.8424886371188558,
+        "keyword": 0.30000001192092896
+      },
+      "attachments": null
+    }
+  ],
+  "trace": null,
+  "entities": {
+    "pool limit": {
+      "entity_id": "87cdb167-d229-4c0b-9a6b-79020ba9280e",
+      "canonical_name": "pool limit",
+      "observations": []
+    },
+    "CDB-HERMES-862": {
+      "entity_id": "caa9ef75-87a4-4ab5-9c52-8bde0870f8c0",
+      "canonical_name": "CDB-HERMES-862",
+      "observations": []
+    },
+    "LARCH-2074": {
+      "entity_id": "dbcd691f-81be-4d35-9cb6-7fc5258a6335",
+      "canonical_name": "LARCH-2074",
+      "observations": []
+    },
+    "Hermes Agent": {
+      "entity_id": "14a0b22e-134a-4d31-8674-8cfdde25f6f7",
+      "canonical_name": "Hermes Agent",
+      "observations": []
+    }
+  },
+  "chunks": null,
+  "source_facts": null,
+  "source_facts_truncated": null
+}

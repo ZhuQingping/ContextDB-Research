@@ -1,0 +1,42 @@
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 518, in initialize
+    from transformers import AutoTokenizer
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/transformers/__init__.py", line 30, in <module>
+    from . import dependency_versions_check
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/transformers/dependency_versions_check.py", line 56, in <module>
+    require_version_core(deps[pkg])
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/transformers/utils/versions.py", line 116, in require_version_core
+    return require_version(requirement, hint)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/transformers/utils/versions.py", line 110, in require_version
+    _compare_versions(op, got_ver, want_ver, requirement, pkg, hint)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/transformers/utils/versions.py", line 43, in _compare_versions
+    raise ImportError(
+ImportError: tokenizers>=0.22.0,<=0.23.0 is required for a normal functioning of this module, but found tokenizers==0.23.2.
+Try: `pip install transformers -U` or `pip install -e '.[dev]'` if you're working with git main
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 28, in <module>
+    asyncio.run(main())
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 15, in main
+    t=time.monotonic();await model.initialize();init=time.monotonic()-t
+                       ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 526, in initialize
+    raise ImportError(
+ImportError: onnxruntime and transformers are required for OnnxEmbeddings. Install with: pip install 'hindsight-api-slim[local-onnx]'

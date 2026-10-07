@@ -1,0 +1,152 @@
+{
+  "results": [
+    {
+      "id": "efc0d3a7-a91c-465c-8ce3-b2f783c7089e",
+      "text": "Project CDB-AUTO-729 uses failover approval code WILLOW-3815, stated as a synthetic acceptance fact.",
+      "type": "world",
+      "entities": [
+        "CDB-AUTO-729",
+        "WILLOW-3815"
+      ],
+      "context": "conversation between the user and you (the coding agent): user turns are the user's words and decisions, assistant turns are yours. When an assistant turn says something is fixed, passes or works, record it as the agent's claim (\"the agent reported X fixed\"), not as an established fact.",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:34:26.281000+00:00",
+      "document_id": "conversation:01a10756-4e43-7c71-8c8b-61a6c3b717c2",
+      "metadata": {
+        "ref_id": "conversation:01a10756-4e43-7c71-8c8b-61a6c3b717c2",
+        "source": "chat",
+        "harness": "codex",
+        "session_id": "01a10756-4e43-7c71-8c8b-61a6c3b717c2"
+      },
+      "chunk_id": "round2-client-codex_conversation:01a10756-4e43-7c71-8c8b-61a6c3b717c2_0",
+      "tags": [
+        "source:chat",
+        "harness:codex"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 1.0999999220020105,
+        "reranker": null,
+        "semantic": 0.8633489527314292,
+        "keyword": 0.6000000238418579
+      },
+      "attachments": null
+    },
+    {
+      "id": "82c1532a-fb8e-43bf-a3e2-48b07a963203",
+      "text": "Synthetic test project CDB-SYNTH-793 uses release code ORCHID-6842.",
+      "type": "observation",
+      "entities": [
+        "connection pool",
+        "ORCHID-6842",
+        "CDB-SYNTH-793"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:30:25.893049+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "synthetic-test"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.7699988782301382,
+        "reranker": null,
+        "semantic": 0.8252568736825525,
+        "keyword": 0.10000000149011612
+      },
+      "attachments": null
+    },
+    {
+      "id": "2b4afc41-91f4-445f-93ec-0a605efd50c5",
+      "text": "Synthetic test project CDB-SYNTH-793 uses release code ORCHID-6842 and a maximum connection pool size of 73.",
+      "type": "world",
+      "entities": [
+        "connection pool",
+        "ORCHID-6842",
+        "CDB-SYNTH-793"
+      ],
+      "context": "general",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:30:25.893049+00:00",
+      "document_id": "8e3638ee-e0a3-43d7-93a6-ce5e5d4a13d7",
+      "metadata": {},
+      "chunk_id": "round2-client-codex_8e3638ee-e0a3-43d7-93a6-ce5e5d4a13d7_0",
+      "tags": [
+        "synthetic-test"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.43999935898865045,
+        "reranker": null,
+        "semantic": 0.8218812240291385,
+        "keyword": 0.20000000298023224
+      },
+      "attachments": null
+    },
+    {
+      "id": "22c84234-172e-4ecc-851a-91bbdb16c7a5",
+      "text": "Synthetic test project CDB-SYNTH-793 has a maximum connection pool size of 73.",
+      "type": "observation",
+      "entities": [
+        "connection pool",
+        "ORCHID-6842",
+        "CDB-SYNTH-793"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:30:25.893049+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [
+        "synthetic-test"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.10999983974716258,
+        "reranker": null,
+        "semantic": 0.8075311183929443,
+        "keyword": 0.10000000149011612
+      },
+      "attachments": null
+    }
+  ],
+  "trace": null,
+  "entities": {
+    "CDB-AUTO-729": {
+      "entity_id": "696d9dc6-dfb5-453f-b6f4-65a6693c344a",
+      "canonical_name": "CDB-AUTO-729",
+      "observations": []
+    },
+    "WILLOW-3815": {
+      "entity_id": "ee35a737-d2ac-41c3-a40b-a0abe06fd6bf",
+      "canonical_name": "WILLOW-3815",
+      "observations": []
+    },
+    "connection pool": {
+      "entity_id": "293b00e7-9b68-468c-9023-b02bd6f71462",
+      "canonical_name": "connection pool",
+      "observations": []
+    },
+    "ORCHID-6842": {
+      "entity_id": "6a0aa3d5-0f1c-450f-966e-cd5d177e9caf",
+      "canonical_name": "ORCHID-6842",
+      "observations": []
+    },
+    "CDB-SYNTH-793": {
+      "entity_id": "8d48d45c-1693-4229-8e23-da029adf5827",
+      "canonical_name": "CDB-SYNTH-793",
+      "observations": []
+    }
+  },
+  "chunks": null,
+  "source_facts": null,
+  "source_facts_truncated": null
+}

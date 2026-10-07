@@ -1,0 +1,697 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+  ▄▄       ▄▄
+ ▄ ▀▄ ▄▄▄ ▄▀ ▄
+▀▀▄▄▄▄▀▀▀▄▄▄▄▀▀
+   ▄▄▄ ▄ ▄▄▄
+ ▄▀ ▀▀▄▄▄▀  ▀▄ 
+
+  Hindsight: Agent Memory That Learns
+
+2026-10-04 00:10:58,296 - INFO - hindsight_api.config - Database: pg0://contextdb-research-20261004:55432 (schema: public)
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - Reranker: provider=rrf
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 00:11:00,006 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:11:00,007 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:11:00,007 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:11:00,007 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:11:00,007 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:11:00,205 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+2026-10-04 00:11:00,342 - INFO - hindsight_api.api - HTTP REST API enabled
+2026-10-04 00:11:00,342 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+uvloop available, will use for event loop
+Starting Hindsight API...
+  Version: v0.10.2
+  URL: http://127.0.0.1:8888
+  Database: pg0://contextdb-research-20261004:55432
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+  Extensions: pgvector (vector) / native (text)
+  MCP: enabled at /mcp
+
+INFO:     Started server process [18227]
+INFO:     Waiting for application startup.
+2026-10-04 00:11:01,710 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:11:01,711 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:11:01,711 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+2026-10-04 00:11:01,712 - INFO - root - Metrics initialized - available at /metrics endpoint
+
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]
+Fetching 1 files: 100%|██████████| 1/1 [01:31<00:00, 91.64s/it]
+Fetching 1 files: 100%|██████████| 1/1 [01:31<00:00, 91.64s/it]
+2026-10-04 00:12:40,099 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:12:40,099 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:12:42,354 - WARNING - huggingface_hub.utils._http - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:12:53,288 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:12:53,289 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:12:53,368 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:12:53,397 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=contextdb-research-20261004, port=55432)...
+2026-10-04 00:12:57,279 - INFO - hindsight_api.pg0 - PostgreSQL started: postgresql://hindsight:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:12:57,356 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 00:12:57,357 - INFO - hindsight_api.engine.memory_engine - Running database migrations...
+2026-10-04 00:12:57,357 - INFO - hindsight_api.engine.memory_engine - Running migrations on 1 schema(s)...
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.schemas
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.tables
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.types
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.constraints
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.defaults
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.comments
+2026-10-04 00:12:57,504 - INFO - alembic.runtime.plugins - setup plugin alembic.ext.checkconstraint_byname
+2026-10-04 00:13:03,656 - INFO - hindsight_api.migrations - pgvector extension not found, attempting to install...
+2026-10-04 00:13:03,929 - INFO - hindsight_api.migrations - pgvector extension installed in public schema
+2026-10-04 00:13:03,930 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 00:13:03,930 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:13:03,930 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:13:03,940 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:13:03,940 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:13:04,001 - INFO - alembic.runtime.migration - Running upgrade  -> 5a366d414dce, initial_schema
+2026-10-04 00:13:04,024 - INFO - alembic.runtime.migration - Running upgrade 5a366d414dce -> b7c4d8e9f1a2, add_chunks_table
+2026-10-04 00:13:04,026 - INFO - alembic.runtime.migration - Running upgrade b7c4d8e9f1a2 -> c8e5f2a3b4d1, add_retain_params_to_documents
+2026-10-04 00:13:04,027 - INFO - alembic.runtime.migration - Running upgrade c8e5f2a3b4d1 -> d9f6a3b4c5e2, Rename fact_type 'bank' to 'experience'
+2026-10-04 00:13:04,028 - INFO - alembic.runtime.migration - Running upgrade d9f6a3b4c5e2 -> rename_personality, rename_personality_to_disposition
+2026-10-04 00:13:04,030 - INFO - alembic.runtime.migration - Running upgrade rename_personality -> e0a1b2c3d4e5, disposition_to_3_traits
+2026-10-04 00:13:04,031 - INFO - alembic.runtime.migration - Running upgrade e0a1b2c3d4e5 -> f1a2b3c4d5e6, add_memory_links_from_type_weight_index
+2026-10-04 00:13:04,031 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2a3b4c5d6e7, add_tags_column
+2026-10-04 00:13:04,032 - INFO - alembic.runtime.migration - Running upgrade g2a3b4c5d6e7 -> h3c4d5e6f7g8, mental_models_v4
+2026-10-04 00:13:04,036 - INFO - alembic.runtime.migration - Running upgrade h3c4d5e6f7g8 -> i4d5e6f7g8h9, delete_opinions
+2026-10-04 00:13:04,036 - INFO - alembic.runtime.migration - Running upgrade i4d5e6f7g8h9 -> j5e6f7g8h9i0, mental_model_versions
+2026-10-04 00:13:04,039 - INFO - alembic.runtime.migration - Running upgrade j5e6f7g8h9i0 -> k6f7g8h9i0j1, add_directive_subtype
+2026-10-04 00:13:04,039 - INFO - alembic.runtime.migration - Running upgrade k6f7g8h9i0j1 -> l7g8h9i0j1k2, add_worker_columns
+2026-10-04 00:13:04,040 - INFO - alembic.runtime.migration - Running upgrade l7g8h9i0j1k2 -> m8h9i0j1k2l3, mental_model_id_to_text
+2026-10-04 00:13:04,041 - INFO - alembic.runtime.migration - Running upgrade m8h9i0j1k2l3 -> n9i0j1k2l3m4, learnings_and_pinned_reflections
+2026-10-04 00:13:04,047 - INFO - alembic.runtime.migration - Running upgrade n9i0j1k2l3m4 -> o0j1k2l3m4n5, migrate_mental_models_data
+2026-10-04 00:13:04,048 - INFO - alembic.runtime.migration - Running upgrade o0j1k2l3m4n5 -> p1k2l3m4n5o6, new_knowledge_architecture
+2026-10-04 00:13:04,052 - INFO - alembic.runtime.migration - Running upgrade p1k2l3m4n5o6 -> q2l3m4n5o6p7, fix_mental_model_fact_type
+2026-10-04 00:13:04,052 - INFO - alembic.runtime.migration - Running upgrade q2l3m4n5o6p7 -> r3m4n5o6p7q8, Add reflect_response JSONB column to reflections
+2026-10-04 00:13:04,052 - INFO - alembic.runtime.migration - Running upgrade r3m4n5o6p7q8 -> s4n5o6p7q8r9, Add consolidated_at column to memory_units for incremental consolidation tracking.
+2026-10-04 00:13:04,053 - INFO - alembic.runtime.migration - Running upgrade s4n5o6p7q8r9 -> t5o6p7q8r9s0, Rename mental_model fact_type to observation and reflections table to mental_models
+2026-10-04 00:13:04,055 - INFO - alembic.runtime.migration - Running upgrade t5o6p7q8r9s0 -> u6p7q8r9s0t1, Change mental_models.id from UUID to TEXT
+2026-10-04 00:13:04,056 - INFO - alembic.runtime.migration - Running upgrade u6p7q8r9s0t1 -> v7q8r9s0t1u2, Add max_tokens and trigger columns to mental_models
+2026-10-04 00:13:04,056 - INFO - alembic.runtime.migration - Running upgrade v7q8r9s0t1u2 -> w8r9s0t1u2v3, Fix mental_models primary key to be scoped per bank
+2026-10-04 00:13:04,057 - INFO - alembic.runtime.migration - Running upgrade w8r9s0t1u2v3 -> x9s0t1u2v3w4, Add config JSONB column to banks table for hierarchical configuration
+2026-10-04 00:13:04,057 - INFO - alembic.runtime.migration - Running upgrade x9s0t1u2v3w4 -> y0t1u2v3w4x5, Add GIN index on async_operations.result_metadata for parent_operation_id queries
+2026-10-04 00:13:04,058 - INFO - alembic.runtime.migration - Running upgrade y0t1u2v3w4x5 -> a1b2c3d4e5f6, Add file_storage table for BYTEA-based file storage
+2026-10-04 00:13:04,059 - INFO - alembic.runtime.migration - Running upgrade a1b2c3d4e5f6 -> z1u2v3w4x5y6, Add observation_scopes column to memory_units table
+2026-10-04 00:13:04,059 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> aa2b3c4d5e6f, Make event_date nullable in memory_units to support timestamp-free content
+2026-10-04 00:13:04,059 - INFO - alembic.runtime.migration - Running upgrade aa2b3c4d5e6f -> a2b3c4d5e6f7, Add text_signals column to memory_units for enriched BM25 indexing.
+2026-10-04 00:13:04,063 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7 -> b4c5d6e7f8a9, Backfill observation_scopes column if missing.
+2026-10-04 00:13:04,063 - INFO - alembic.runtime.migration - Running upgrade b4c5d6e7f8a9 -> c1a2b3d4e5f6, Enable pg_trgm extension and add GIN trigram index on entities.canonical_name
+2026-10-04 00:13:04,351 - INFO - alembic.runtime.migration - Running upgrade c1a2b3d4e5f6 -> b3c4d5e6f7g8, Add partial indexes on memory_units temporal date fields for fast temporal retrieval
+2026-10-04 00:13:04,355 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7g8 -> d2e3f4a5b6c7, Add covering and composite indexes to speed up link expansion graph retrieval.
+2026-10-04 00:13:04,356 - INFO - alembic.runtime.migration - Running upgrade d2e3f4a5b6c7 -> e4f5a6b7c8d9, Add webhooks table and next_retry_at to async_operations.
+2026-10-04 00:13:04,358 - INFO - alembic.runtime.migration - Running upgrade e4f5a6b7c8d9 -> f7g8h9i0j1k2, Add http_config JSONB column to webhooks table.
+2026-10-04 00:13:04,358 - INFO - alembic.runtime.migration - Running upgrade f7g8h9i0j1k2 -> a2b3c4d5e6f8, Add GIN index on source_memory_ids for observation lookup performance
+2026-10-04 00:13:04,359 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7, a2b3c4d5e6f8 -> c3d4e5f6g7h8, Add history column to mental_models
+2026-10-04 00:13:04,359 - INFO - alembic.runtime.migration - Running upgrade c3d4e5f6g7h8 -> d5e6f7a8b9c0, Add internal_id to banks and per-(bank, fact_type) partial vector indexes
+2026-10-04 00:13:04,362 - INFO - alembic.runtime.migration - Running upgrade d5e6f7a8b9c0 -> d4e5f6g7h8i9, Recreate idx_memory_units_source_memory_ids GIN index with fastupdate=off
+2026-10-04 00:13:04,364 - INFO - alembic.runtime.migration - Running upgrade d4e5f6g7h8i9 -> e5f6g7h8i9j0, Add CASCADE DELETE FK from async_operations and webhooks to banks.
+2026-10-04 00:13:04,366 - INFO - alembic.runtime.migration - Running upgrade e5f6g7h8i9j0 -> f6g7h8i9j0k1, chunk_fk_cascade_delete
+2026-10-04 00:13:04,367 - INFO - alembic.runtime.migration - Running upgrade f6g7h8i9j0k1 -> g7h8i9j0k1l2, backsweep_orphan_memory_units
+2026-10-04 00:13:04,368 - INFO - alembic.runtime.migration - Running upgrade g7h8i9j0k1l2 -> a3b4c5d6e7f8, Add consolidation_failed_at column to memory_units for tracking persistent LLM failures.
+2026-10-04 00:13:04,369 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2h3i4j5k6l7, remove_opinion_fact_type
+2026-10-04 00:13:04,370 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8 -> b3c4d5e6f7a8, add content_hash to chunks table for delta retain
+2026-10-04 00:13:04,371 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7a8 -> c5d6e7f8a9b0, Add bank_id column to memory_links for direct filtering
+2026-10-04 00:13:04,372 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8, c8e5f2a3b4d1 -> c2d3e4f5g6h7, Add audit_log table for feature usage tracking.
+2026-10-04 00:13:04,374 - INFO - alembic.runtime.migration - Running upgrade c2d3e4f5g6h7, c5d6e7f8a9b0 -> d6e7f8a9b0c1, Drop unused metadata column from documents table
+2026-10-04 00:13:04,374 - INFO - alembic.runtime.migration - Running upgrade d6e7f8a9b0c1 -> 2eee35aa3cfc, Recreate entities trigram index on LOWER(canonical_name) for case-insensitive matching
+2026-10-04 00:13:04,375 - INFO - alembic.runtime.migration - Running upgrade 2eee35aa3cfc -> a4b5c6d7e8f9, Fix per-bank vector indexes to match configured extension
+2026-10-04 00:13:04,375 - INFO - alembic.runtime.migration - Running upgrade a4b5c6d7e8f9, g2h3i4j5k6l7 -> h3i4j5k6l7m8, Merge 3 migration heads and add unit_entities composite index
+2026-10-04 00:13:04,376 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> a2v3w4x5y6z7, Add last_refreshed_source_query column to mental_models
+2026-10-04 00:13:04,376 - INFO - alembic.runtime.migration - Running upgrade a2v3w4x5y6z7 -> b3w4x5y6z7a8, Add structured_content JSONB column to mental_models
+2026-10-04 00:13:04,376 - INFO - alembic.runtime.migration - Running upgrade b3w4x5y6z7a8 -> c4x5y6z7a8b9, backsweep_orphan_observations_v2
+2026-10-04 00:13:04,377 - INFO - alembic.runtime.migration - Running upgrade c4x5y6z7a8b9, h3i4j5k6l7m8 -> 8c6fa6f7230b, Merge divergent migration heads for v0.5.3
+2026-10-04 00:13:04,377 - INFO - alembic.runtime.migration - Running upgrade 8c6fa6f7230b -> d5y6z7a8b9c0, Backfill mental_models.subtype for databases that ran h3c4d5e6f7g8 before the fix
+2026-10-04 00:13:04,379 - INFO - alembic.runtime.migration - Running upgrade d5y6z7a8b9c0 -> i4j5k6l7m8n9, Add 'cancelled' to async_operations status check constraint
+2026-10-04 00:13:04,379 - INFO - alembic.runtime.migration - Running upgrade i4j5k6l7m8n9 -> k6l7m8n9o0p1, No-op: observation_sources table is Oracle-only
+2026-10-04 00:13:04,379 - INFO - alembic.runtime.migration - Running upgrade k6l7m8n9o0p1 -> o1a2b3c4d5e6, oracle_baseline
+2026-10-04 00:13:04,380 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> b5d4e3f2a1c9, Backfill entity_cooccurrences.last_cooccurred from memory_units event time
+2026-10-04 00:13:04,380 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> 9f8e7d6c5b4a, Make memory_links.from_unit_id and memory_links.to_unit_id FKs deferrable.
+2026-10-04 00:13:04,382 - INFO - alembic.runtime.migration - Running upgrade 9f8e7d6c5b4a, b5d4e3f2a1c9 -> m3rg3h3ad5f6, Merge divergent heads from deferrable FK and cooccurrence backfill
+2026-10-04 00:13:04,382 - INFO - alembic.runtime.migration - Running upgrade m3rg3h3ad5f6 -> 86f7a033d372, Repair mental_models.subtype on databases stuck at m3rg3h3ad5f6
+2026-10-04 00:13:04,384 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> b8c9d0e1f2a3, Re-create vchord vector indexes with vector_cosine_ops
+2026-10-04 00:13:04,384 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> p4q5r6s7t8u9, Drop GENERATED expression on tsvector search_vector columns.
+2026-10-04 00:13:04,387 - INFO - alembic.runtime.migration - Running upgrade p4q5r6s7t8u9 -> e1b2c3d4f5a6, Drop indexes that are unused or redundant with composite indexes.
+2026-10-04 00:13:04,390 - INFO - alembic.runtime.migration - Running upgrade e1b2c3d4f5a6 -> e9b2c7d1f3a4, Drop materialized entity rows from memory_links.
+2026-10-04 00:13:04,391 - INFO - alembic.runtime.migration - Running upgrade e9b2c7d1f3a4 -> b5a4c3e2f1d8, Add graph_maintenance_queue table
+2026-10-04 00:13:04,392 - INFO - alembic.runtime.migration - Running upgrade b5a4c3e2f1d8, b8c9d0e1f2a3 -> c1d2e3f4a5b6, Merge graph_maintenance_queue and vchord_cosine_opclass heads.
+2026-10-04 00:13:04,393 - INFO - alembic.runtime.migration - Running upgrade c1d2e3f4a5b6 -> d3e4f5a6b7c8, Add llm_requests table for per-bank LLM request tracing.
+2026-10-04 00:13:04,395 - INFO - alembic.runtime.migration - Running upgrade d3e4f5a6b7c8 -> a7b8c9d0e1f2, Move mental-model and observation history into dedicated tables.
+2026-10-04 00:13:04,398 - INFO - alembic.runtime.migration - Running upgrade a7b8c9d0e1f2 -> e5f6a7b8c9d0, Add server-side routines for background maintenance sweeps.
+2026-10-04 00:13:04,398 - INFO - alembic.runtime.migration - Running upgrade e5f6a7b8c9d0 -> b2d4f6a8c1e3, Repair: install maintenance routines on the ``public`` / base-schema run.
+2026-10-04 00:13:04,399 - INFO - alembic.runtime.migration - Running upgrade b2d4f6a8c1e3 -> c9a1b2d3e4f5, Add invalidated_memory_units table for curation (edit/invalidate).
+2026-10-04 00:13:04,401 - INFO - alembic.runtime.migration - Running upgrade c9a1b2d3e4f5 -> c3e5a7b9d1f4, Repair: widen ``*_history.bank_id`` from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:13:04,402 - INFO - alembic.runtime.migration - Running upgrade c3e5a7b9d1f4 -> a1d3f5b7c9e2, Repair: widen the remaining live ``bank_id`` columns from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:13:04,404 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> 2071c7518f88, Add a composite index on memory_links(bank_id, link_type) (PostgreSQL).
+2026-10-04 00:13:04,405 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> d4f6a8c2e1b3, Drop the embedding column from the curation archive (invalidated_memory_units).
+2026-10-04 00:13:04,405 - INFO - alembic.runtime.migration - Running upgrade d4f6a8c2e1b3, 2071c7518f88 -> e1f2a3b4c5d6, Merge two divergent migration heads.
+2026-10-04 00:13:04,406 - INFO - alembic.runtime.migration - Running upgrade e1f2a3b4c5d6 -> c7e9f1a3b5d2, Make maintenance routines resilient to schemas that vanish mid-scan.
+2026-10-04 00:13:04,406 - INFO - alembic.runtime.migration - Running upgrade c7e9f1a3b5d2 -> f4d1c2b3a5e6, Add server-side routine for cron-scheduled mental model refresh.
+2026-10-04 00:13:04,406 - INFO - alembic.runtime.migration - Running upgrade f4d1c2b3a5e6 -> c3f7a1b9d2e4, Backfill search_vector for native-backend observations.
+2026-10-04 00:13:04,408 - INFO - alembic.runtime.migration - Running upgrade c3f7a1b9d2e4 -> b57a7c9e0d13, Add bank_stats_cache table for distributed get_bank_stats caching
+2026-10-04 00:13:04,408 - INFO - alembic.runtime.migration - Running upgrade b57a7c9e0d13 -> e7c3a9f1b2d5, Drop the search_vector column from the curation archive (invalidated_memory_units).
+2026-10-04 00:13:04,409 - INFO - alembic.runtime.migration - Running upgrade e7c3a9f1b2d5 -> a8c1e4f7b0d3, Add indexes for terminal cleanup and newest-first operation listing.
+2026-10-04 00:13:04,410 - INFO - alembic.runtime.migration - Running upgrade a8c1e4f7b0d3 -> b6d2f8a4c1e7, Install the maintenance discovery routines into the configured schema.
+2026-10-04 00:13:04,411 - INFO - alembic.runtime.migration - Running upgrade b6d2f8a4c1e7 -> d7b2f8a1c934, Add the ``schemas_with_expired_operations`` cross-tenant discovery routine.
+2026-10-04 00:13:04,411 - INFO - alembic.runtime.migration - Running upgrade d7b2f8a1c934 -> c7d1e9a4b3f2, Add ``causal_links`` to the curation archive (invalidated_memory_units).
+2026-10-04 00:13:04,412 - INFO - alembic.runtime.migration - Running upgrade c7d1e9a4b3f2 -> a1c9e7f3b2d8, Drop observation_history's FK to memory_units.
+2026-10-04 00:13:04,412 - INFO - alembic.runtime.migration - Running upgrade a1c9e7f3b2d8 -> a9b8c7d6e5f4, Add knowledge_pages table (knowledge-base hierarchy).
+2026-10-04 00:13:04,414 - INFO - alembic.runtime.migration - Running upgrade a9b8c7d6e5f4 -> e4a7c1b9d2f6, Drop the never-written `access_count` column from memory_units (and its archive).
+2026-10-04 00:13:04,414 - INFO - alembic.runtime.migration - Running upgrade e4a7c1b9d2f6 -> f2a6d8c4b1e9, Repair: drop the stale global memory_units vector index on per-bank backends.
+2026-10-04 00:13:04,415 - INFO - alembic.runtime.migration - Running upgrade f2a6d8c4b1e9 -> b3e8d1c6f4a9, Add entities.entity_kind and exclude label entities from the trigram index.
+2026-10-04 00:13:04,417 - INFO - alembic.runtime.migration - Running upgrade b3e8d1c6f4a9 -> d9c1a7b4e2f6, Add async_operations.serialization_key for per-document retain serialization.
+2026-10-04 00:13:04,417 - INFO - alembic.runtime.migration - Running upgrade d9c1a7b4e2f6 -> c4f7a91b2d38, Add entity_maintenance_queue table (+ seed it with every existing entity)
+2026-10-04 00:13:04,418 - INFO - alembic.runtime.migration - Running upgrade c4f7a91b2d38 -> e7c3a91f4b62, Add last_memory_seen_at to mental_models, splitting it from last_refreshed_at.
+2026-10-04 00:13:04,419 - INFO - alembic.runtime.migration - Running upgrade e7c3a91f4b62 -> c8b4e2a71f95, Make the cross-schema maintenance routines skip a schema under concurrent DDL.
+2026-10-04 00:13:04,420 - INFO - alembic.runtime.migration - Running upgrade c8b4e2a71f95 -> f2a7c9d4b168, Add a partial index for the cron-scheduled mental model discovery sweep.
+2026-10-04 00:13:04,420 - INFO - alembic.runtime.migration - Running upgrade f2a7c9d4b168 -> c4e8a1b7d2f6, Index memory_units(bank_id, updated_at) so the scoped staleness check is cheap.
+2026-10-04 00:13:04,422 - INFO - alembic.runtime.migration - Running upgrade c4e8a1b7d2f6 -> d1e2f3a4b5c6, Drop schema-v1 mental model structured_content
+2026-10-04 00:13:04,422 - INFO - alembic.runtime.migration - Running upgrade d1e2f3a4b5c6 -> e2f4a6c8b0d1, Add attachments and document_attachments (inline retain attachments).
+2026-10-04 00:13:04,425 - INFO - alembic.runtime.migration - Running upgrade e2f4a6c8b0d1 -> f3a5b7c9d1e2, Drop the unused memory_units_bm25 materialized view.
+2026-10-04 00:13:04,425 - INFO - alembic.runtime.migration - Running upgrade f3a5b7c9d1e2 -> a7c2e9f41b60, Give every attachment an owning document, and drop document_attachments.
+2026-10-04 00:13:04,427 - INFO - alembic.runtime.migration - Running upgrade a7c2e9f41b60 -> b8d3f1a6c2e4, Add last_refresh_failed_at column to mental_models
+2026-10-04 00:13:04,427 - INFO - alembic.runtime.migration - Running upgrade b8d3f1a6c2e4 -> c8d1e4f7a20b, Add bank_aliases: extra ids a bank also answers to.
+2026-10-04 00:13:04,428 - INFO - alembic.runtime.migration - Running upgrade c8d1e4f7a20b -> d4f8b1c6e903, Let one of a bank's aliases be the id shown in its place.
+2026-10-04 00:13:04,429 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> a6c4e8f1b203, Store per-request reasoning tokens alongside visible output tokens.
+2026-10-04 00:13:04,429 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> 7c2e5a9d1f40, Scope the entities trigram index by bank: GIN (bank_id, LOWER(canonical_name)).
+2026-10-04 00:13:04,882 - INFO - alembic.runtime.migration - Running upgrade 7c2e5a9d1f40, a6c4e8f1b203 -> e5b1c7d3a902, Merge divergent heads from the bank-scoped trigram index and reasoning tokens
+2026-10-04 00:13:04,883 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+2026-10-04 00:13:04,894 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:13:04,903 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:13:04,919 - INFO - hindsight_api.engine.memory_engine - Schema migrations completed
+2026-10-04 00:13:04,919 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:13:04,928 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=5, max=100, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 00:13:04,942 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend initialized
+2026-10-04 00:13:04,942 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 00:13:04,942 - INFO - root - Memory system initialized
+2026-10-04 00:13:04,942 - INFO - root - DB pool metrics configured
+2026-10-04 00:13:04,943 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+2026-10-04 00:13:04,943 - INFO - root - Worker id: [LOCAL-HOST] (source: hostname (default))
+2026-10-04 00:13:04,944 - INFO - root - Worker poller started (worker_id=192.168.0.113)
+2026-10-04 00:13:04,944 - INFO - root - Tenant extension started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:13:04,946 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] starting polling loop (max_slots=2, reservations=[consolidation=2], shared_pool=0)
+2026-10-04 00:13:05,449 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/2(avail=2)] | shared=0/0(avail=0) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1606 | my_active: none
+2026-10-04 00:13:24,930 - INFO - hindsight_api.engine.maintenance - Maintenance: retention took 0.010s
+2026-10-04 00:13:24,934 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.003s
+2026-10-04 00:13:24,937 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.003s
+2026-10-04 00:13:35,643 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/2(avail=2)] | shared=0/0(avail=0) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1606 | my_active: none
+2026-10-04 00:14:05,835 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/2(avail=2)] | shared=0/0(avail=0) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1606 | my_active: none
+2026-10-04 00:14:14,220 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-demo: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:14:14,226 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-knowledge: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:14:14,231 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-isolation: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:14:14,237 - INFO - hindsight_api.engine.memory_engine - Created parent operation 7670f0fe-63c8-471a-88b2-f9e7732ada84 with 1 child sub-batch(es)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-04 00:14:30,746 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] initiating graceful shutdown
+2026-10-04 00:14:30,746 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] graceful shutdown complete
+2026-10-04 00:14:30,746 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] polling loop stopped
+2026-10-04 00:14:30,748 - INFO - root - Worker poller stopped
+2026-10-04 00:14:30,748 - INFO - root - Tenant extension stopped
+2026-10-04 00:14:30,748 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 00:14:30,748 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend shutdown
+2026-10-04 00:14:30,751 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+2026-10-04 00:14:30,751 - INFO - hindsight_api.engine.memory_engine - Stopping pg0...
+2026-10-04 00:14:30,751 - INFO - hindsight_api.pg0 - Stopping embedded PostgreSQL (name: contextdb-research-20261004)...
+2026-10-04 00:14:30,900 - INFO - hindsight_api.pg0 - Embedded PostgreSQL stopped
+2026-10-04 00:14:30,900 - INFO - hindsight_api.engine.memory_engine - pg0 stopped
+2026-10-04 00:14:30,900 - INFO - root - Memory system closed
+2026-10-04 00:14:30,901 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+2026-10-04 00:14:30,901 - INFO - hindsight_api.api - MCP lifespans stopped
+2026-10-04 00:14:30,901 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18227]
+
+Received signal 15, shutting down...
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+  ▄▄       ▄▄
+ ▄ ▀▄ ▄▄▄ ▄▀ ▄
+▀▀▄▄▄▄▀▀▀▄▄▄▄▀▀
+   ▄▄▄ ▄ ▄▄▄
+ ▄▀ ▀▀▄▄▄▀  ▀▄ 
+
+  Hindsight: Agent Memory That Learns
+
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Database: pg0://contextdb-research-20261004:55432 (schema: public)
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Reranker: provider=rrf
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 00:14:38,604 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:14:38,604 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:14:38,604 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:14:38,604 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:14:38,604 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:14:38,786 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+2026-10-04 00:14:38,847 - INFO - hindsight_api.api - HTTP REST API enabled
+2026-10-04 00:14:38,847 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+uvloop available, will use for event loop
+Starting Hindsight API...
+  Version: v0.10.2
+  URL: http://127.0.0.1:8888
+  Database: pg0://contextdb-research-20261004:55432
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+  Extensions: pgvector (vector) / native (text)
+  MCP: enabled at /mcp
+
+INFO:     Started server process [18626]
+INFO:     Waiting for application startup.
+2026-10-04 00:14:38,865 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:14:38,866 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:14:38,866 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+2026-10-04 00:14:38,866 - INFO - root - Metrics initialized - available at /metrics endpoint
+
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00<00:00, 1483.66it/s]
+2026-10-04 00:14:40,562 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:14:40,562 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:14:41,877 - WARNING - huggingface_hub.utils._http - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:14:44,256 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:14:44,259 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:14:44,295 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:14:44,315 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=contextdb-research-20261004, port=55432)...
+2026-10-04 00:14:44,519 - INFO - hindsight_api.pg0 - PostgreSQL started: postgresql://hindsight:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:14:47,743 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 00:14:47,743 - INFO - hindsight_api.engine.memory_engine - Running database migrations...
+2026-10-04 00:14:47,744 - INFO - hindsight_api.engine.memory_engine - Running migrations on 1 schema(s)...
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.schemas
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.tables
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.types
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.constraints
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.defaults
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.comments
+2026-10-04 00:14:47,815 - INFO - alembic.runtime.plugins - setup plugin alembic.ext.checkconstraint_byname
+2026-10-04 00:14:47,858 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 00:14:47,858 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:14:47,858 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:14:47,864 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:14:47,864 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:14:47,886 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+2026-10-04 00:14:47,893 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:14:47,900 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:14:47,918 - INFO - hindsight_api.engine.memory_engine - Schema migrations completed
+2026-10-04 00:14:47,918 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:14:47,926 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=5, max=100, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 00:14:47,930 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend initialized
+2026-10-04 00:14:47,930 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 00:14:47,930 - INFO - root - Memory system initialized
+2026-10-04 00:14:47,930 - INFO - root - DB pool metrics configured
+2026-10-04 00:14:47,930 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+2026-10-04 00:14:47,930 - INFO - root - Worker id: [LOCAL-HOST] (source: hostname (default))
+2026-10-04 00:14:47,931 - INFO - root - Worker poller started (worker_id=192.168.0.113)
+2026-10-04 00:14:47,931 - INFO - root - Tenant extension started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:14:47,937 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)
+2026-10-04 00:14:47,944 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: default)
+2026-10-04 00:14:47,946 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Starting background batch retain for bank_id=huawei-contextdb-demo, 1 items, operation_id=1248b8d5-d982-4131-9170-5f6a1a1733f6
+2026-10-04 00:14:48,449 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=0/1(avail=1)] | shared=1/1(avail=0) | global: pending=1 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: retain:huawei-contextdb-demo(1)
+2026-10-04 00:14:48,449 - INFO - hindsight_api.worker.poller - [PENDING_BREAKDOWN] batch_retain: total=1 claimable=0 payload_null=1 retry_blocked=0 assigned=0
+2026-10-04 00:14:48,449 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=1248b8d5-d982-4131-9170-5f6a1a1733f6 type=batch_retain op_type=retain bank=huawei-contextdb-demo age=1s stage=llm.codex.retain_extract_facts.attempt=1/4 stage_age=0s
+2026-10-04 00:15:13,839 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.010s
+2026-10-04 00:15:13,864 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.025s
+2026-10-04 00:15:13,866 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.037s
+2026-10-04 00:15:13,874 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 16 links in 0.007s
+2026-10-04 00:15:13,875 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: huawei-contextdb-demo
+Batch size: 1 content items, 212 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 4 facts, 1 chunks from 1 contents in 25.833s
+  Generate embeddings: 4 embeddings in 0.042s
+[streaming] Embeddings: 4 texts in 1 backend request(s) (avg 4.0, max 4 texts per request)
+[streaming] Consumer batch 1: processing 4 facts from 1 chunks
+[streaming] Document incident-2048-v1 tracked (full content)
+  Store chunks: 1 chunks in 0.002s
+  Insert facts: 4 units in 0.000s
+  Insert unit_entities: 16 pairs in 0.001s
+  Temporal links: 24 links in 0.005s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 1 links in 0.000s
+[streaming] Checkpoint: 4 facts committed, ANN pass next
+[streaming] Final ANN: loaded 4 units with embeddings in 0.000s
+      [8.1] ANN search (Phase 1): 4 units → 16 links in 0.006s
+[streaming] Final ANN: 16 total semantic links
+[streaming] Final ANN pass: 0.007s for 4 units
+============================================================
+STREAMING RETAIN COMPLETE: 4 units across 1 batches in 25.926s
+Document: incident-2048-v1
+============================================================
+
+2026-10-04 00:15:13,877 - INFO - hindsight_api.engine.memory_engine - consolidation task queued for bank_id=huawei-contextdb-demo, operation_id=0ca88930-3871-4182-bf05-eef05175e7d0
+2026-10-04 00:15:13,880 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=huawei-contextdb-demo store=PostgresMemories docs=1 wall=25.933s 0.0KB/s | embed=0.042s/1c/0% pg.acquire=0.006s/20c/0%
+2026-10-04 00:15:13,880 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Completed background batch retain for bank_id=huawei-contextdb-demo
+2026-10-04 00:15:13,881 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 1248b8d5-d982-4131-9170-5f6a1a1733f6
+2026-10-04 00:15:13,881 - INFO - hindsight_api.engine.memory_engine - Updated parent operation 7670f0fe-63c8-471a-88b2-f9e7732ada84 to status 'completed' (all children done)
+2026-10-04 00:15:14,116 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (1 consolidation): consolidation:1 (schemas: default)
+2026-10-04 00:15:14,149 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=huawei-contextdb-demo total_unconsolidated=4
+2026-10-04 00:15:14,214 - INFO - hindsight_api.engine.memories.postgres - Using LinkExpansion graph retriever
+2026-10-04 00:15:18,650 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=1/1(avail=0)] | shared=0/1(avail=1) | global: pending=0 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: consolidation:huawei-contextdb-demo(1)
+2026-10-04 00:15:18,650 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=0ca88930-3871-4182-bf05-eef05175e7d0 type=consolidation op_type=consolidation bank=huawei-contextdb-demo age=5s stage=llm.codex.consolidation.attempt=1/4 stage_age=4s
+2026-10-04 00:15:35,547 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=huawei-contextdb-demo llm_batch #1 (4 memories, 1 llm calls) | processed=4/4 | recall=0.072s, llm=21.256s, embedding=0.037s, db_write=0.003s | created=4 updated=0 skipped=0 | input_tokens=~3226 | avg=5.348s/memory
+2026-10-04 00:15:35,552 - INFO - hindsight_api.engine.consolidation.consolidator - 
+============================================================
+CONSOLIDATION for bank huawei-contextdb-demo
+[1] Found 4 pending memories to consolidate
+[3] Results: 4 memories -> 4 actions (4 created, 0 updated, 0 merged, 0 skipped)
+[4] Timing breakdown: recall=0.072s, llm=21.256s, embedding=0.037s (5 calls, avg=7ms), db_write=0.003s (5 calls, avg=1ms), avg_obs=0.0, avg_prompt_tokens=~3227
+============================================================
+CONSOLIDATION COMPLETE: 21.406s total
+============================================================
+2026-10-04 00:15:35,552 - INFO - hindsight_api.engine.memory_engine - [CONSOLIDATION] bank=huawei-contextdb-demo completed: 4 processed
+2026-10-04 00:15:35,552 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 0ca88930-3871-4182-bf05-eef05175e7d0
+2026-10-04 00:15:42,476 - INFO - hindsight_api.engine.maintenance - Maintenance: retention took 0.010s
+2026-10-04 00:15:42,478 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.002s
+2026-10-04 00:15:42,479 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.001s
+2026-10-04 00:15:48,839 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:16:05,784 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-demo: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:16:05,788 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-knowledge: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:16:05,790 - INFO - hindsight_api.config_resolver - Updated bank config for huawei-contextdb-isolation: ['reflect_mission', 'retain_extraction_mode', 'enable_observations']
+2026-10-04 00:16:05,794 - INFO - hindsight_api.engine.memory_engine - Created parent operation def5cc0b-c4d4-4198-afe8-a8f65ccafed5 with 1 child sub-batch(es)
+2026-10-04 00:16:05,958 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: default)
+2026-10-04 00:16:05,959 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Starting background batch retain for bank_id=huawei-contextdb-demo, 1 items, operation_id=c3efd782-02d2-4e63-83b1-1b061d9428b6
+2026-10-04 00:16:05,969 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: huawei-contextdb-demo
+Batch size: 1 content items, 212 chars
+============================================================
+[delta] Chunked new content: 1 chunks in 0.000s
+[delta] Chunk diff: 1 unchanged, 0 changed, 0 new, 0 removed
+[delta] No chunk changes detected — updating document metadata only
+DELTA RETAIN (no changes): metadata updated in 0.009s
+
+2026-10-04 00:16:05,972 - INFO - hindsight_api.engine.memory_engine - consolidation task queued for bank_id=huawei-contextdb-demo, operation_id=59ea5d18-9495-46bf-a862-335344ed8b27
+2026-10-04 00:16:05,973 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=huawei-contextdb-demo store=PostgresMemories docs=1 wall=0.014s 14.6KB/s | pg.acquire=0.002s/10c/15%
+2026-10-04 00:16:05,973 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Completed background batch retain for bank_id=huawei-contextdb-demo
+2026-10-04 00:16:05,974 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: c3efd782-02d2-4e63-83b1-1b061d9428b6
+2026-10-04 00:16:05,975 - INFO - hindsight_api.engine.memory_engine - Updated parent operation def5cc0b-c4d4-4198-afe8-a8f65ccafed5 to status 'completed' (all children done)
+2026-10-04 00:16:06,472 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (1 consolidation): consolidation:1 (schemas: default)
+2026-10-04 00:16:06,474 - INFO - hindsight_api.engine.memory_engine - [CONSOLIDATION] bank=huawei-contextdb-demo completed: 0 processed
+2026-10-04 00:16:06,475 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 59ea5d18-9495-46bf-a862-335344ed8b27
+2026-10-04 00:16:07,622 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目的负责人是谁？...
+2026-10-04 00:16:07,652 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-67622-49e113] Query: '海星项目的负责人是谁？...' (budget=1000, max_tokens=500)
+  [1] Generate query embedding: 0.022s
+  [2] Parallel retrieval (3 fact_types): semantic=9(0.000s), bm25=0(0.000s), graph=1(0.000s), temporal_extraction=0.001s | store=0.006s in 0.006s
+  [3] RRF merge: 9 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 9 candidates scored in 0.000s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 9 results
+  [6] Token filtering: 9 results, 499/500 tokens in 0.000s
+  [phases] generate_query_embedding=22ms, parallel_retrieval=7ms, reranking=0ms, token_filtering=0ms, entity_build=0ms, combined_scoring=0ms, result_serialization=0ms, rrf_merge=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=29ms of 30ms
+  [phases:subsets] store_recall=6ms, retrieval_store_recall=6ms, retrieval_temporal_extraction=1ms, semaphore_wait=0ms
+[RECALL huawei-c-67622-49e113] Complete: 9 facts (499 tok), 0 chunks (0 tok), 0 entities (0 tok) | observation=5, world=4 | 0.030s
+2026-10-04 00:16:08,833 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 00:16:08,845 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.012s
+2026-10-04 00:16:08,845 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.012s
+2026-10-04 00:16:08,851 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.006s
+2026-10-04 00:16:08,851 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: huawei-contextdb-knowledge
+Batch size: 1 content items, 133 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.000s
+  Generate embeddings: 1 embeddings in 0.012s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document runbook-17-v1 tracked (full content)
+  Store chunks: 1 chunks in 0.004s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.001s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.001s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.003s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.006s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.034s
+Document: runbook-17-v1
+============================================================
+
+2026-10-04 00:16:08,852 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=huawei-contextdb-knowledge store=PostgresMemories docs=1 wall=0.038s 3.5KB/s | embed=0.012s/1c/32% pg.acquire=0.003s/10c/7%
+2026-10-04 00:16:08,854 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目连接耗尽的原因、修复措施和负责人是什么？...
+2026-10-04 00:16:08,867 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-68854-a4b3d0] Query: '海星项目连接耗尽的原因、修复措施和负责人是什么？...' (budget=100, max_tokens=1200)
+  [1] Generate query embedding: 0.003s
+  [2] Parallel retrieval (3 fact_types): semantic=9(0.000s), bm25=0(0.000s), graph=1(0.000s), temporal_extraction=0.000s | store=0.005s in 0.005s
+  [3] RRF merge: 9 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 9 candidates scored in 0.000s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 9 results
+  [6] Token filtering: 9 results, 499/1200 tokens in 0.000s
+  [phases] parallel_retrieval=6ms, generate_query_embedding=3ms, entity_build=1ms, chunk_fetch=1ms, combined_scoring=0ms, result_serialization=0ms, reranking=0ms, token_filtering=0ms, rrf_merge=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=12ms of 12ms
+  [phases:subsets] store_recall=5ms, retrieval_store_recall=5ms, retrieval_temporal_extraction=0ms, semaphore_wait=0ms
+[RECALL huawei-c-68854-a4b3d0] Complete: 9 facts (499 tok), 1 chunks (147 tok), 11 entities (0 tok) | observation=5, world=4 | 0.012s
+2026-10-04 00:16:08,872 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目 INC-2048 林岚 连接池...
+2026-10-04 00:16:08,889 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-68872-3b592e] Query: '海星项目 INC-2048 林岚 连接池...' (budget=100, max_tokens=1200)
+  [1] Generate query embedding: 0.002s
+  [2] Parallel retrieval (3 fact_types): semantic=0(0.000s), bm25=0(0.000s), graph=0(0.000s), temporal_extraction=0.012s | store=0.002s in 0.014s
+  [3] RRF merge: 0 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 0 candidates scored in 0.000s
+  [5] Truncated to top 0 results
+  [6] Token filtering: 0 results, 0/1200 tokens in 0.000s
+  [phases] parallel_retrieval=14ms, generate_query_embedding=2ms, reranking=0ms, combined_scoring=0ms, rrf_merge=0ms, token_filtering=0ms, hydrate_results=0ms, entity_build=0ms, result_serialization=0ms, backend_acquisition=0ms | accounted=17ms of 17ms
+  [phases:subsets] retrieval_temporal_extraction=12ms, store_recall=2ms, retrieval_store_recall=2ms, semaphore_wait=0ms
+[RECALL huawei-c-68872-3b592e] Complete: 0 facts (0 tok), 0 chunks (0 tok), 0 entities (0 tok) |  | 0.017s
+2026-10-04 00:16:08,895 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 是否可以直接终止生产连接？...
+2026-10-04 00:16:08,905 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-68895-db9fb3] Query: '是否可以直接终止生产连接？...' (budget=100, max_tokens=1000)
+  [1] Generate query embedding: 0.003s
+  [2] Parallel retrieval (3 fact_types): semantic=1(0.000s), bm25=0(0.000s), graph=0(0.000s), temporal_extraction=0.000s | store=0.004s in 0.005s
+  [3] RRF merge: 1 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 1 candidates scored in 0.000s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 1 results
+  [6] Token filtering: 1 results, 65/1000 tokens in 0.000s
+  [phases] parallel_retrieval=5ms, generate_query_embedding=3ms, entity_build=1ms, reranking=0ms, combined_scoring=0ms, token_filtering=0ms, rrf_merge=0ms, result_serialization=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=9ms of 10ms
+  [phases:subsets] store_recall=4ms, retrieval_store_recall=4ms, retrieval_temporal_extraction=0ms, semaphore_wait=0ms
+[RECALL huawei-c-68895-db9fb3] Complete: 1 facts (65 tok), 0 chunks (0 tok), 0 entities (0 tok) | world=1 | 0.010s
+2026-10-04 00:16:08,908 - INFO - hindsight_api.engine.memory_engine - [REFLECT huawei-c-68908] Starting agentic reflect for query: 根据海星项目INC-2048的复盘，用中文简述原因、处理措施、复测连接数和负责人。没有的事实不要补充...
+2026-10-04 00:16:19,052 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:16:43,413 - INFO - hindsight_api.engine.reflect.agent - [REFLECT huawei-c-68911] done | query='根据海星项目INC-2048的复盘，用中文简述原因、处理措施、复测连接数和负责人。没有的事实不要补充...' | iterations=5 | llm=[agent_1=5727ms, agent_2=6181ms, agent_3=4922ms, agent_4=7231ms, closing_done=10305ms] (34366ms) | tools=[search_observations((query='海星 INC-2048 复盘 原因 处理 复测连接数 负责人', max_tokens=2500))=16ms/1945c, recall((query='INC-2048 海星 连接归还 120 85 林岚', max_tokens=2000, max_chunk_tokens=1000))=41ms/2196c, search_observations((query='海星 INC-2048 原因 处理措施 复测连接数 负责人', max_tokens=2000))=35ms/1944c, recall((query='海星 INC-2048 复盘 连接归还 复测 负责人', max_tokens=2000, max_chunk_tokens=1000))=34ms/2196c] (126ms) | answer='根据 **2026年10月3日海星项目 INC-2048 复盘**：
+
+- **原因**：应用未及时归还空闲连接。发布后数据库连接数达到 **480**，当时应用连接池上限为 **500**。
+- *...' | total=34501ms
+2026-10-04 00:16:43,416 - INFO - hindsight_api.engine.memory_engine - [REFLECT huawei-c-68908] Complete: 304 chars, 5 iterations, 4 tool calls | 34.508s
+2026-10-04 00:16:43,450 - INFO - hindsight_api.engine.memory_engine - [MENTAL_MODELS] Created pinned mental model '连接池排查经验' for bank huawei-contextdb-demo
+2026-10-04 00:16:43,454 - INFO - hindsight_api.engine.memory_engine - refresh_mental_model task queued for bank_id=huawei-contextdb-demo, operation_id=9e2c2aa0-678a-4a43-9dc8-193ede8d3817
+2026-10-04 00:16:43,811 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (0 consolidation): refresh_mental_model:1 (schemas: default)
+2026-10-04 00:16:43,812 - INFO - hindsight_api.engine.memory_engine - [REFRESH_MENTAL_MODEL_TASK] Starting for bank_id=huawei-contextdb-demo, mental_model_id=mm-914f5d8f3279467d882e01a5cf65635c
+2026-10-04 00:16:43,817 - INFO - hindsight_api.engine.memory_engine - [REFLECT huawei-c-3817] Starting agentic reflect for query: 海星项目INC-2048给数据库连接池排查带来哪些经验？保留证据和数字。...
+2026-10-04 00:16:49,359 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=0/1(avail=1)] | shared=1/1(avail=0) | global: pending=0 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: refresh_mental_model:huawei-contextdb-demo(1)
+2026-10-04 00:16:49,359 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=9e2c2aa0-678a-4a43-9dc8-193ede8d3817 type=refresh_mental_model op_type=refresh_mental_model bank=huawei-contextdb-demo age=6s stage=llm.codex.tools.attempt=1/2 stage_age=0s
+2026-10-04 00:17:19,544 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=0/1(avail=1)] | shared=1/1(avail=0) | global: pending=0 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: refresh_mental_model:huawei-contextdb-demo(1)
+2026-10-04 00:17:19,547 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=9e2c2aa0-678a-4a43-9dc8-193ede8d3817 type=refresh_mental_model op_type=refresh_mental_model bank=huawei-contextdb-demo age=36s stage=llm.codex.tools.attempt=1/2 stage_age=3s
+2026-10-04 00:17:49,683 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=0/1(avail=1)] | shared=1/1(avail=0) | global: pending=0 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: refresh_mental_model:huawei-contextdb-demo(1)
+2026-10-04 00:17:49,686 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=9e2c2aa0-678a-4a43-9dc8-193ede8d3817 type=refresh_mental_model op_type=refresh_mental_model bank=huawei-contextdb-demo age=66s stage=llm.codex.tools.attempt=1/2 stage_age=13s
+2026-10-04 00:18:19,869 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=1/2 | reserved: [consolidation=0/1(avail=1)] | shared=1/1(avail=0) | global: pending=0 (queried=1/1 schemas: default) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: refresh_mental_model:huawei-contextdb-demo(1)
+2026-10-04 00:18:19,870 - INFO - hindsight_api.worker.poller - [WORKER_TASK] op=9e2c2aa0-678a-4a43-9dc8-193ede8d3817 type=refresh_mental_model op_type=refresh_mental_model bank=huawei-contextdb-demo age=96s stage=llm.codex.tools.attempt=1/2 stage_age=43s
+2026-10-04 00:18:26,538 - INFO - hindsight_api.engine.reflect.agent - [REFLECT huawei-c-3820] done | query='海星项目INC-2048给数据库连接池排查带来哪些经验？保留证据和数字。...' | iterations=10 | llm=[agent_1=5022ms, agent_2=6138ms, agent_3=6191ms, agent_4=4831ms, agent_5=5366ms, agent_6=5227ms, agent_7=6041ms, agent_8=7306ms, agent_9=6423ms, closing_done=49725ms] (102270ms) | tools=[search_observations((query='海星 INC-2048 数据库 连接池 排查', max_tokens=6500))=34ms/1937c, search_observations((query='海星项目 INC-2048 连接池 480 500 120 ...', max_tokens=3000))=41ms/1967c, search_observations((query='INC-2048 连接池 排查 复测 连接归还', max_tokens=3000))=79ms/1938c, search_observations((query='海星项目 INC-2048 连接池 连接归还 复测 pg_s...', max_tokens=3000))=27ms/1957c, search_observations((query='海星项目 INC-2048 连接池 480 500 120 ...', max_tokens=3000))=46ms/1964c, search_observations((query='海星项目 INC-2048 连接池 排查 归还 复测', max_tokens=3000))=37ms/1941c, search_observations((query='海星 INC-2048 连接池 连接归还 480 500 1...', max_tokens=3000))=39ms/1950c, search_observations((query='海星 INC-2048 连接池 排查 480 500 120...', max_tokens=3000))=48ms/1948c, search_observations((query='海星 INC-2048 连接池 排查 归还 pg_stat_...', max_tokens=3000))=62ms/1953c] (413ms) | answer='## 连接池排查经验
+
+**INC-2048的核心经验是：连接数高不等于CPU不足，应先检查连接池指标与 `pg_stat_activity`，再核查连接归还行为，而不是直接扩容。** 本例发现的问题...' | total=102718ms
+2026-10-04 00:18:26,539 - INFO - hindsight_api.engine.memory_engine - [REFLECT huawei-c-3817] Complete: 1441 chars, 10 iterations, 9 tool calls | 102.722s
+2026-10-04 00:18:26,652 - INFO - hindsight_api.engine.memory_engine - [REFRESH_MENTAL_MODEL_TASK] Completed for bank_id=huawei-contextdb-demo, mental_model_id=mm-914f5d8f3279467d882e01a5cf65635c
+2026-10-04 00:18:26,653 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 9e2c2aa0-678a-4a43-9dc8-193ede8d3817
+2026-10-04 00:18:36,212 - INFO - hindsight_api.engine.memory_engine - clone_bank task queued for bank_id=huawei-contextdb-demo, operation_id=b115020d-3ee5-4c80-b61e-0417faedc64d
+2026-10-04 00:18:36,469 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (0 consolidation): clone_bank:1 (schemas: default)
+2026-10-04 00:18:36,475 - INFO - hindsight_api.engine.transfer.export - [transfer] Exported bank huawei-contextdb-demo (data=True, bank_config=False, history=False): 1 document(s), 5 observation(s), 0 attachment(s), 8 operation(s), 1 mental model(s), 2 knowledge page(s), 0 directive(s), 0 webhook(s), 9438 byte(s)
+2026-10-04 00:18:36,569 - INFO - hindsight_api.engine.transfer.importer - [transfer] Imported 1 document(s), 4 fact(s), 5 observation(s) into bank huawei-contextdb-clone (0 docs skipped, 0 observations skipped, 0 mental model(s), 0 knowledge page(s))
+2026-10-04 00:18:36,628 - INFO - hindsight_api.engine.transfer.importer - [transfer] Imported bank huawei-contextdb-clone (data=True, bank_config=False, history=False): 1 doc(s), 4 fact(s), 5 observation(s), 0 attachment(s), 7 operation(s), 0 queue row(s), 0 invalidated fact(s), 1 mental model(s), 1 mm-history row(s), 2 knowledge page(s), 0 directive(s), 0 webhook(s), 0 history row(s)
+2026-10-04 00:18:36,629 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: b115020d-3ee5-4c80-b61e-0417faedc64d
+2026-10-04 00:18:50,062 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:19:20,243 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:19:50,426 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=4 limits=5-100 idle=4 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:20:20,613 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:20:33,229 - INFO - hindsight_api.engine.memories.pg.writes - [OBSERVATIONS] Deleted 5 observations, reset 0 source memories for re-consolidation in bank huawei-contextdb-clone
+2026-10-04 00:20:33,237 - INFO - hindsight_api.engine.memory_engine - consolidation task queued for bank_id=huawei-contextdb-clone, operation_id=551bbce2-5fed-4634-b97e-b3ba888f38e3
+2026-10-04 00:20:33,241 - INFO - hindsight_api.engine.memory_engine - refresh_mental_model task queued for bank_id=huawei-contextdb-clone, operation_id=d8226f33-64ec-4f35-b3ec-c3f5078cc5f2
+2026-10-04 00:20:33,241 - INFO - hindsight_api.engine.memory_engine - [MENTAL_MODELS] Scheduled 1 refresh(es) in bank huawei-contextdb-clone: their grounding cites memories that no longer exist
+2026-10-04 00:20:33,243 - INFO - hindsight_api.engine.memory_engine - graph_maintenance task queued for bank_id=huawei-contextdb-clone, operation_id=f37d4a58-bef0-4275-bfad-51339e8cc6b9
+2026-10-04 00:20:33,245 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目负责人和连接池...
+2026-10-04 00:20:33,276 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-33245-f18cf9] Query: '海星项目负责人和连接池...' (budget=100, max_tokens=1000)
+  [1] Generate query embedding: 0.021s
+  [2] Parallel retrieval (3 fact_types): semantic=0(0.000s), bm25=0(0.000s), graph=0(0.000s), temporal_extraction=0.001s | store=0.008s in 0.009s
+  [3] RRF merge: 0 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 0 candidates scored in 0.000s
+  [5] Truncated to top 0 results
+  [6] Token filtering: 0 results, 0/1000 tokens in 0.000s
+  [phases] generate_query_embedding=21ms, parallel_retrieval=10ms, reranking=0ms, rrf_merge=0ms, token_filtering=0ms, combined_scoring=0ms, hydrate_results=0ms, result_serialization=0ms, backend_acquisition=0ms, entity_build=0ms | accounted=30ms of 31ms
+  [phases:subsets] store_recall=8ms, retrieval_store_recall=8ms, retrieval_temporal_extraction=1ms, semaphore_wait=0ms
+[RECALL huawei-c-33245-f18cf9] Complete: 0 facts (0 tok), 0 chunks (0 tok), 0 entities (0 tok) |  | 0.031s
+2026-10-04 00:20:33,706 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 2 tasks (1 consolidation): consolidation:1, refresh_mental_model:1 (schemas: default)
+2026-10-04 00:20:33,707 - INFO - hindsight_api.engine.memory_engine - [REFRESH_MENTAL_MODEL_TASK] Starting for bank_id=huawei-contextdb-clone, mental_model_id=mm-914f5d8f3279467d882e01a5cf65635c
+2026-10-04 00:20:33,708 - INFO - hindsight_api.engine.memory_engine - [CONSOLIDATION] bank=huawei-contextdb-clone completed: 0 processed
+2026-10-04 00:20:33,709 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 551bbce2-5fed-4634-b97e-b3ba888f38e3
+2026-10-04 00:20:33,711 - INFO - hindsight_api.engine.memory_engine - [MENTAL_MODELS] Refresh for mm-914f5d8f3279467d882e01a5cf65635c: nothing in scope to reflect over (mode=delta, window opens 2026-10-03T16:16:43.446952+00:00); skipping the reflect loop
+2026-10-04 00:20:33,712 - INFO - hindsight_api.engine.memory_engine - [MENTAL_MODELS] Refresh for mm-914f5d8f3279467d882e01a5cf65635c (delta): no new facts found, preserving content
+2026-10-04 00:20:33,714 - INFO - hindsight_api.engine.memory_engine - [REFRESH_MENTAL_MODEL_TASK] Completed for bank_id=huawei-contextdb-clone, mental_model_id=mm-914f5d8f3279467d882e01a5cf65635c
+2026-10-04 00:20:33,714 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: d8226f33-64ec-4f35-b3ec-c3f5078cc5f2
+2026-10-04 00:20:34,213 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] claimed 1 tasks (0 consolidation): graph_maintenance:1 (schemas: default)
+2026-10-04 00:20:34,222 - INFO - hindsight_api.engine.graph_maintenance - [GRAPH_MAINT] bank=huawei-contextdb-clone done: {'relink_units_processed': 0, 'relink_links_added': 0, 'entities_examined': 11, 'orphan_entities_pruned': 11, 'stale_cooccurrences_pruned': 0, 'queues_drained': True}, elapsed=0.01s, operation_id=f37d4a58-bef0-4275-bfad-51339e8cc6b9
+2026-10-04 00:20:34,223 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: f37d4a58-bef0-4275-bfad-51339e8cc6b9
+2026-10-04 00:20:42,430 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.005s
+2026-10-04 00:20:42,432 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.001s
+2026-10-04 00:20:50,821 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:21:21,014 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:21:51,213 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+2026-10-04 00:22:21,405 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=[LOCAL-HOST] slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=4 limits=5-100 idle=4 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1327 | my_active: none
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-04 00:22:29,894 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] initiating graceful shutdown
+2026-10-04 00:22:29,894 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] graceful shutdown complete
+2026-10-04 00:22:29,894 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] polling loop stopped
+2026-10-04 00:22:29,896 - INFO - root - Worker poller stopped
+2026-10-04 00:22:29,896 - INFO - root - Tenant extension stopped
+2026-10-04 00:22:29,896 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 00:22:29,896 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend shutdown
+2026-10-04 00:22:29,901 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+2026-10-04 00:22:29,901 - INFO - hindsight_api.engine.memory_engine - Stopping pg0...
+2026-10-04 00:22:29,902 - INFO - hindsight_api.pg0 - Stopping embedded PostgreSQL (name: contextdb-research-20261004)...
+2026-10-04 00:22:30,032 - INFO - hindsight_api.pg0 - Embedded PostgreSQL stopped
+2026-10-04 00:22:30,032 - INFO - hindsight_api.engine.memory_engine - pg0 stopped
+2026-10-04 00:22:30,032 - INFO - root - Memory system closed
+2026-10-04 00:22:30,032 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+2026-10-04 00:22:30,033 - INFO - hindsight_api.api - MCP lifespans stopped
+2026-10-04 00:22:30,033 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18626]
+
+Received signal 15, shutting down...
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+  ▄▄       ▄▄
+ ▄ ▀▄ ▄▄▄ ▄▀ ▄
+▀▀▄▄▄▄▀▀▀▄▄▄▄▀▀
+   ▄▄▄ ▄ ▄▄▄
+ ▄▀ ▀▀▄▄▄▀  ▀▄ 
+
+  Hindsight: Agent Memory That Learns
+
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Database: pg0://contextdb-research-20261004:55432 (schema: public)
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Reranker: provider=rrf
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 00:23:04,556 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:23:04,556 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:23:04,556 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:23:04,557 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:23:04,557 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:23:04,737 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+2026-10-04 00:23:04,797 - INFO - hindsight_api.api - HTTP REST API enabled
+2026-10-04 00:23:04,797 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+uvloop available, will use for event loop
+Starting Hindsight API...
+  Version: v0.10.2
+  URL: http://127.0.0.1:8888
+  Database: pg0://contextdb-research-20261004:55432
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+  Extensions: pgvector (vector) / native (text)
+  MCP: enabled at /mcp
+
+INFO:     Started server process [19634]
+INFO:     Waiting for application startup.
+2026-10-04 00:23:04,815 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:23:04,816 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:23:04,816 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+2026-10-04 00:23:04,816 - INFO - root - Metrics initialized - available at /metrics endpoint
+2026-10-04 00:23:04,987 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:23:04,987 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 00:23:06,002 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:23:06,002 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:23:06,046 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:23:06,073 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=contextdb-research-20261004, port=55432)...
+2026-10-04 00:23:06,289 - INFO - hindsight_api.pg0 - PostgreSQL started: postgresql://hindsight:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:23:10,175 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 00:23:10,176 - INFO - hindsight_api.engine.memory_engine - Running database migrations...
+2026-10-04 00:23:10,176 - INFO - hindsight_api.engine.memory_engine - Running migrations on 1 schema(s)...
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.schemas
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.tables
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.types
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.constraints
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.defaults
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.comments
+2026-10-04 00:23:10,242 - INFO - alembic.runtime.plugins - setup plugin alembic.ext.checkconstraint_byname
+2026-10-04 00:23:10,282 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 00:23:10,282 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:23:10,282 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:23:10,288 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:23:10,288 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:23:10,311 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+2026-10-04 00:23:10,318 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:23:10,325 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:23:10,343 - INFO - hindsight_api.engine.memory_engine - Schema migrations completed
+2026-10-04 00:23:10,343 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:[REDACTED]@127.0.0.1:55432/hindsight
+2026-10-04 00:23:10,351 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=5, max=100, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 00:23:10,355 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend initialized
+2026-10-04 00:23:10,355 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 00:23:10,355 - INFO - root - Memory system initialized
+2026-10-04 00:23:10,355 - INFO - root - DB pool metrics configured
+2026-10-04 00:23:10,355 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+2026-10-04 00:23:10,355 - INFO - root - Worker id: contextdb-local (source: HINDSIGHT_API_WORKER_ID)
+2026-10-04 00:23:10,356 - INFO - root - Worker poller started (worker_id=contextdb-local)
+2026-10-04 00:23:10,356 - INFO - root - Tenant extension started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:23:10,360 - INFO - hindsight_api.worker.poller - Worker contextdb-local starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)
+2026-10-04 00:23:10,776 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目连接耗尽的原因、修复措施和负责人是什么？...
+2026-10-04 00:23:10,806 - INFO - hindsight_api.engine.memories.postgres - Using LinkExpansion graph retriever
+2026-10-04 00:23:10,831 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-90776-69a4b8] Query: '海星项目连接耗尽的原因、修复措施和负责人是什么？...' (budget=100, max_tokens=1200)
+  [1] Generate query embedding: 0.004s
+  [2] Parallel retrieval (3 fact_types): semantic=9(0.000s), bm25=0(0.000s), graph=1(0.000s), temporal_extraction=0.026s | store=0.019s in 0.045s
+  [3] RRF merge: 9 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 9 candidates scored in 0.001s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 9 results
+  [6] Token filtering: 9 results, 499/1200 tokens in 0.000s
+  [phases] parallel_retrieval=45ms, generate_query_embedding=4ms, chunk_fetch=2ms, entity_build=2ms, reranking=1ms, rrf_merge=0ms, token_filtering=0ms, combined_scoring=0ms, result_serialization=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=54ms of 55ms
+  [phases:subsets] retrieval_temporal_extraction=26ms, store_recall=19ms, retrieval_store_recall=19ms, semaphore_wait=0ms
+[RECALL huawei-c-90776-69a4b8] Complete: 9 facts (499 tok), 1 chunks (147 tok), 11 entities (0 tok) | observation=5, world=4 | 0.055s
+2026-10-04 00:23:10,837 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 海星项目 INC-2048 林岚 连接池...
+2026-10-04 00:23:10,861 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-90837-30e8c5] Query: '海星项目 INC-2048 林岚 连接池...' (budget=100, max_tokens=1200)
+  [1] Generate query embedding: 0.003s
+  [2] Parallel retrieval (3 fact_types): semantic=0(0.000s), bm25=0(0.000s), graph=0(0.000s), temporal_extraction=0.016s | store=0.005s in 0.021s
+  [3] RRF merge: 0 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 0 candidates scored in 0.000s
+  [5] Truncated to top 0 results
+  [6] Token filtering: 0 results, 0/1200 tokens in 0.000s
+  [phases] parallel_retrieval=21ms, generate_query_embedding=3ms, reranking=0ms, rrf_merge=0ms, token_filtering=0ms, combined_scoring=0ms, hydrate_results=0ms, backend_acquisition=0ms, result_serialization=0ms, entity_build=0ms | accounted=24ms of 24ms
+  [phases:subsets] retrieval_temporal_extraction=16ms, store_recall=5ms, retrieval_store_recall=5ms, semaphore_wait=0ms
+[RECALL huawei-c-90837-30e8c5] Complete: 0 facts (0 tok), 0 chunks (0 tok), 0 entities (0 tok) |  | 0.024s
+2026-10-04 00:23:10,862 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-local slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=99 pending_acquires=0 | proc: peak_rss_mb=1581 | my_active: none
+2026-10-04 00:23:10,869 - INFO - hindsight_api.engine.memory_engine - [RECALL huawei-c] Starting recall for query: 是否可以直接终止生产连接？...
+2026-10-04 00:23:10,883 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL huawei-c-90869-bb6509] Query: '是否可以直接终止生产连接？...' (budget=100, max_tokens=1000)
+  [1] Generate query embedding: 0.003s
+  [2] Parallel retrieval (3 fact_types): semantic=1(0.000s), bm25=0(0.000s), graph=0(0.000s), temporal_extraction=0.000s | store=0.009s in 0.009s
+  [3] RRF merge: 1 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 1 candidates scored in 0.000s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 1 results
+  [6] Token filtering: 1 results, 65/1000 tokens in 0.000s
+  [phases] parallel_retrieval=9ms, generate_query_embedding=3ms, entity_build=1ms, token_filtering=0ms, combined_scoring=0ms, reranking=0ms, result_serialization=0ms, rrf_merge=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=13ms of 13ms
+  [phases:subsets] store_recall=9ms, retrieval_store_recall=9ms, retrieval_temporal_extraction=0ms, semaphore_wait=0ms
+[RECALL huawei-c-90869-bb6509] Complete: 1 facts (65 tok), 0 chunks (0 tok), 0 entities (0 tok) | world=1 | 0.013s
+2026-10-04 00:23:41,060 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-local slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1581 | my_active: none
+2026-10-04 00:24:10,358 - INFO - hindsight_api.engine.maintenance - Maintenance: retention took 0.011s
+2026-10-04 00:24:10,361 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.003s
+2026-10-04 00:24:10,362 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.001s
+2026-10-04 00:24:11,249 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-local slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1581 | my_active: none

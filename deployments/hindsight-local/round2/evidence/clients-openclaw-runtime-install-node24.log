@@ -1,0 +1,10 @@
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm error code 1
+npm error path /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw-runtime/node_modules/openclaw
+npm error command failed
+npm error command sh -c node scripts/preinstall-package-manager-warning.mjs
+npm error [openclaw] error: this OpenClaw release requires Node >=24.16.0 <25 || >=26.1.0.
+npm error [openclaw] detected Node 23.11.0 (exec: /opt/homebrew/Cellar/node/23.11.0/bin/node).
+npm error [openclaw] install Node: https://nodejs.org/en/download
+npm error [openclaw] upgrade Node, then retry the OpenClaw update.
+npm error A complete log of this run can be found in: /Users/zhuqingping/.npm/_logs/2026-10-04T14_34_31_830Z-debug-0.log

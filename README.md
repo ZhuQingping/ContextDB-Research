@@ -11,6 +11,17 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 
 ## 报告索引
 
+### 本次本地部署与服务化核验
+
+2026-10-04，基于实际源码、真实 GPT 调用与官方资料重新核验。此前 Agent 报告仅作线索，不自动继承其结论。
+
+| 文档 | 说明 |
+|---|---|
+| [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
+| [华为云 ContextDB 首期服务化架构](hindsight/cloud-service-architecture.md) | 5 人 6–8 周范围、端到端职责、PG 服务单元扩展、接口开放与上线门槛 |
+| [首期竞争力与投入顺序](hindsight/cloud-service-priorities.md) | 三家竞品对照、接入／成本／数据库复盘场景的投入优先级 |
+| [核验依据](hindsight/cloud-service-evidence.md) | 固定源码和官方来源，纠正 Star 排名、榜单解释及历史多 PG 实验证明范围 |
+
 ### 决策与选型
 
 | 文档 | 说明 | 更新日期 |

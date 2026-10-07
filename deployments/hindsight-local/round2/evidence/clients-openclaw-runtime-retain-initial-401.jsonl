@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "⚠️ round2/glm-5.3-flash request failed (authentication failed, HTTP 401). Re-authenticate the provider and try again."
+  }
+}

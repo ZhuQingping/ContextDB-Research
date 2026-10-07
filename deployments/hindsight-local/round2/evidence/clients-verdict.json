@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "coding-tests-layout-fixed",
+      "passed": true,
+      "detail": {
+        "passed": 1288,
+        "total": 1288
+      }
+    },
+    {
+      "name": "openclaw-tests",
+      "passed": true,
+      "detail": {
+        "passed": 389,
+        "total": 389
+      }
+    },
+    {
+      "name": "hermes-plugin-unit",
+      "passed": true,
+      "detail": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "38",
+        "time": "7.160",
+        "timestamp": "2026-10-04T22:28:55.165418+08:00",
+        "hostname": "192.168.0.113"
+      }
+    },
+    {
+      "name": "codex-real-auto-recall",
+      "passed": true,
+      "detail": "    > 🧠 **From Hindsight memory** — Project CDB-AUTO-729’s failover approval code is **WILLOW-3815**. "
+    },
+    {
+      "name": "claude-real-auto-recall",
+      "passed": true,
+      "detail": "> 🧠 **From Hindsight memory** — \"Project CDB-CLAUDE-468 uses approval code BIRCH-6937 and pool limit 57.\"\n\nApproval code: **BIRCH-6937**\nPool limit: **57**"
+    },
+    {
+      "name": "hermes-real-runtime-auto-recall",
+      "passed": true,
+      "detail": {
+        "final_response": "Approval code: LARCH-2074. Pool limit: 47.",
+        "completed": true,
+        "api_calls": 1,
+        "error": null,
+        "seconds": 10.811267137527466
+      }
+    },
+    {
+      "name": "openclaw-real-cli-auto-recall",
+      "passed": true,
+      "detail": "Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634."
+    },
+    {
+      "name": "codex-bank-recall",
+      "passed": true,
+      "detail": {
+        "count": 5,
+        "texts": "Synthetic test project CDB-SYNTH-793 uses release code ORCHID-6842 and a maximum connection pool size of 73. Project CDB-AUTO-729 uses failover approval code WILLOW-3815, stated as a synthetic acceptance fact. Project CDB-AUTO-729 uses failover approval code WILLOW-3815, stated as a synthetic acceptance fact. Synthetic test project CDB-SYNTH-793 has a maximum connection pool size of 73. Synthetic test project CDB-SYNTH-793 uses release code ORCHID-6842."
+      }
+    },
+    {
+      "name": "claude-bank-recall",
+      "passed": true,
+      "detail": {
+        "count": 6,
+        "texts": "Project CDB-CLAUDE-468 uses approval code BIRCH-6937 and pool limit 57. | Synthetic acceptance fact. Project CDB-SYNTH-519 uses release code MAPLE-5271 and has a maximum connection pool size of 61. Project CDB-CLAUDE-468 uses approval code BIRCH-6937. Project CDB-SYNTH-519 has a maximum connection pool size of 61. Project CDB-SYNTH-519 uses release code MAPLE-5271. Project CDB-CLAUDE-468 has a pool limit of 57."
+      }
+    },
+    {
+      "name": "hermes-bank-recall",
+      "passed": true,
+      "detail": {
+        "count": 6,
+        "texts": "Synthetic acceptance fact: project CDB-HERMES-862 uses approval code LARCH-2074 and pool limit 47. The assistant reported approval code LARCH-2074 and pool limit 47 for project CDB-HERMES-862. | When: Sunday, October 4, 2026 | Involving: Hermes Agent (assistant) Project CDB-HERMES-862 uses approval code LARCH-2074. On October 4, 2026, Hermes Agent reported a pool limit of 47 for project CDB-HERMES-862. Project CDB-HERMES-862 has a pool limit of 47. On October 4, 2026, Hermes Agent reported approval code LARCH-2074 for project CDB-HERMES-862."
+      }
+    },
+    {
+      "name": "openclaw-bank-recall",
+      "passed": true,
+      "detail": {
+        "count": 4,
+        "texts": "Project CDB-CLAW-634 uses approval code FIR-8193 and pool limit 39. | Synthetic acceptance fact. The assistant reported approval code FIR-8193 and pool limit 39 for project CDB-CLAW-634, citing supplied memory. | When: Sunday, October 4, 2026 | Involving: AI assistant Project CDB-CLAW-634 uses approval code FIR-8193. Project CDB-CLAW-634 has a pool limit of 39."
+      }
+    }
+  ],
+  "scope": "synthetic smoke, localhost Hindsight, real clients/models; not full enterprise acceptance"
+}

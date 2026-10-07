@@ -1,0 +1,43 @@
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim
+configfile: pyproject.toml
+plugins: xdist-3.8.0, timeout-2.4.0, anyio-4.14.2, asyncio-1.3.0, rerunfailures-16.1
+timeout: 300.0s
+timeout method: signal
+timeout func_only: False
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/test_hnsw_indexes_store_owned.py::test_both_reports_print_before_the_single_non_zero_exit 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:34:33 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 22:34:33 - INFO - hindsight_api.migrations - Database URL: postgresql://***:***@127.0.0.1:15500/hindsight
+2026-10-04 22:34:33 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/alembic
+2026-10-04 22:34:33 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 22:34:33 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 22:34:33 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+2026-10-04 22:34:33 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:34:33 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+PASSED
+
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-cli-stdio-recheck/junit.xml -
+============================= slowest 10 durations =============================
+0.36s setup    tests/test_hnsw_indexes_store_owned.py::test_both_reports_print_before_the_single_non_zero_exit
+
+(2 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================== 1 passed in 1.28s ===============================

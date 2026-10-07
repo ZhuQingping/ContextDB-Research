@@ -1,0 +1,7 @@
+{
+  "fields": 493,
+  "bank_overridable": 51,
+  "env_constants": 493,
+  "source": "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/config.py",
+  "note": "Runtime clean-env from_env defaults, not shell credential values. Indexed LLM chain and extension prefix parameters are dynamic families; see docs/source."
+}

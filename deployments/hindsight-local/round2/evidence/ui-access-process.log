@@ -1,0 +1,11 @@
+Starting Hindsight Control Plane on http://127.0.0.1:9998
+API URL: http://127.0.0.1:8888
+▲ Next.js 16.3.4
+- Local:         http://localhost:9998
+- Network:       http://localhost:9998
+✓ Ready in 0ms
+✓ Running next.config took 5ms
+[Control Plane] Connecting to dataplane at: http://127.0.0.1:8888
+[Control Plane] No API key configured (public access)
+[Control Plane] Connecting to dataplane at: http://127.0.0.1:8888
+[Control Plane] No API key configured (public access)

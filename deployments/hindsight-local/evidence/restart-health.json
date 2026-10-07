@@ -1,0 +1,41 @@
+{
+  "started_at": "2026-10-03T16:23:10.674141+00:00",
+  "checks": [
+    {
+      "elapsed_s": 0.001,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 1.006,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 2.016,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 3.027,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 4.037,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 5.043,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 6.045,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 7.052,
+      "status": "connection-unavailable"
+    },
+    {
+      "elapsed_s": 8.061,
+      "status": 200
+    }
+  ]
+}

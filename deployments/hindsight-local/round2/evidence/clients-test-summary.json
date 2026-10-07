@@ -1,0 +1,16 @@
+[
+  {
+    "suite": "coding-tests-layout-fixed",
+    "numTotalTests": 1288,
+    "numPassedTests": 1288,
+    "numFailedTests": 0,
+    "success": true
+  },
+  {
+    "suite": "openclaw-tests",
+    "numTotalTests": 389,
+    "numPassedTests": 389,
+    "numFailedTests": 0,
+    "success": true
+  }
+]

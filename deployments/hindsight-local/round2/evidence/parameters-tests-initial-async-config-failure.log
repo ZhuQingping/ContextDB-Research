@@ -1,0 +1,541 @@
+Warning: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.env not found, tests may fail without proper configuration
+........................................................................ [ 19%]
+........................................................................ [ 39%]
+...FFFFFFFFFFFFF..FF..............FFFFF.........FF..s...............ssss [ 58%]
+sssssFFF..F...FFF.............s.......................................FF [ 78%]
+FFFFFFFFFFFFFFF...............................................sssFFFFFFF [ 97%]
+FFFF..FF                                                                 [100%]
+=================================== FAILURES ===================================
+________________ TestEncodeRetries.test_transient_then_success _________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestEncodeRetries.test_persistent_transient_failure_raises_after_attempt_cap _
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_____ TestEncodeRetries.test_auth_error_raises_immediately_with_no_retries _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______ TestEncodeRetries.test_other_client_errors_raise_immediately[400] _______
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______ TestEncodeRetries.test_other_client_errors_raise_immediately[403] _______
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______ TestEncodeRetries.test_other_client_errors_raise_immediately[404] _______
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______ TestEncodeRetries.test_other_client_errors_raise_immediately[422] _______
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_________ TestEncodeRetries.test_retries_disabled_by_zero_max_retries __________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_____ TestRetryBudget.test_budget_cuts_retries_short_and_bounds_wall_clock _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_____________ TestRetryBudget.test_budget_is_shared_across_batches _____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________ TestRetryBudget.test_budget_not_consumed_by_successful_batches ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______ TestInitializeRetries.test_initialize_retries_transient_failure ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______ TestInitializeRetries.test_initialize_does_not_retry_auth_failure _______
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestLiteLLMProxyEncodeRetries.test_proxy_5xx_is_retried_then_succeeds _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestLiteLLMProxyEncodeRetries.test_proxy_4xx_raises_immediately_without_retrying _
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________ test_query_and_document_inputs_are_prefixed_asymmetrically __________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________________ test_unset_prefixes_leave_inputs_untouched __________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________ test_encode_stays_unprefixed_when_prefixes_are_configured ___________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________________ test_prefixed_inputs_still_respect_batch_size _________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_____________ test_tei_sends_prefixed_inputs_to_the_embed_endpoint _____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______________ test_openai_encode_splits_on_configured_batch_size ______________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______________ test_openai_encode_passes_configured_dimensions ________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______ test_onnx_embeddings_mean_pooling_normalizes_and_filters_inputs ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_____________ test_onnx_embeddings_cls_pooling_and_normalize_false _____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________ test_onnx_embeddings_output_name_uses_pre_pooled_2d_output __________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______ test_onnx_embeddings_query_and_document_prefixes_are_asymmetric ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_________ test_onnx_embeddings_chunks_into_batches_and_preserves_order _________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______________ test_onnx_embeddings_single_batch_when_input_fits _______________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____________ test_onnx_embeddings_batching_does_not_change_vectors _____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_________ TestRemoteRerankerRetries.test_transient_status_then_success _________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestRemoteRerankerRetries.test_transient_service_responses_are_retried[500] __
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestRemoteRerankerRetries.test_transient_service_responses_are_retried[502] __
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestRemoteRerankerRetries.test_transient_service_responses_are_retried[503] __
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestRemoteRerankerRetries.test_transient_service_responses_are_retried[504] __
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestRemoteRerankerRetries.test_transient_service_responses_are_retried[408] __
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestRemoteRerankerRetries.test_permanent_client_errors_fail_fast[400] _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestRemoteRerankerRetries.test_permanent_client_errors_fail_fast[401] _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestRemoteRerankerRetries.test_permanent_client_errors_fail_fast[403] _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestRemoteRerankerRetries.test_permanent_client_errors_fail_fast[404] _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____ TestRemoteRerankerRetries.test_permanent_client_errors_fail_fast[422] _____
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________ TestRemoteRerankerRetries.test_exhausted_retries_propagate __________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+___________ TestRemoteRerankerRetries.test_no_policy_means_no_retry ____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________ TestRemoteRerankerRetries.test_budget_bounds_the_added_latency ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestFailoverChainAdvancesOnlyAfterRetries.test_primary_recovers_within_its_retries_and_no_fallback_is_touched _
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestFailoverChainAdvancesOnlyAfterRetries.test_chain_advances_once_the_primary_exhausts_its_retries _
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_ TestFailoverChainAdvancesOnlyAfterRetries.test_the_chain_itself_does_not_add_a_second_retry_layer _
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________________ test_dropped_connection_retries_then_succeeds _________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________________ test_bad_file_descriptor_retries_then_succeeds ________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+____________________ test_non_retryable_os_error_propagates ____________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+___________ test_persistent_dropped_connection_exhausts_retry_budget ___________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______________________ test_retry_on_too_many_requests ________________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_________________ test_retry_after_header_reaches_the_backoff __________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______________________ test_other_client_errors_fail_fast ______________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+___________ test_persistent_too_many_requests_exhausts_retry_budget ____________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+______________ test_initialize_probes_info_and_detects_dimension _______________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________ test_initialize_failure_is_reported_as_a_connection_error ___________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________________ test_encode_before_initialize_is_rejected ___________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+________ test_session_drops_idle_sockets_before_a_proxy_would[5.0-5.0] _________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+_______ test_session_drops_idle_sockets_before_a_proxy_would[60.0-15.0] ________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+=========================== short test summary info ============================
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_transient_then_success
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_persistent_transient_failure_raises_after_attempt_cap
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_auth_error_raises_immediately_with_no_retries
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_other_client_errors_raise_immediately[400]
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_other_client_errors_raise_immediately[403]
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_other_client_errors_raise_immediately[404]
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_other_client_errors_raise_immediately[422]
+FAILED tests/test_embedding_retry.py::TestEncodeRetries::test_retries_disabled_by_zero_max_retries
+FAILED tests/test_embedding_retry.py::TestRetryBudget::test_budget_cuts_retries_short_and_bounds_wall_clock
+FAILED tests/test_embedding_retry.py::TestRetryBudget::test_budget_is_shared_across_batches
+FAILED tests/test_embedding_retry.py::TestRetryBudget::test_budget_not_consumed_by_successful_batches
+FAILED tests/test_embedding_retry.py::TestInitializeRetries::test_initialize_retries_transient_failure
+FAILED tests/test_embedding_retry.py::TestInitializeRetries::test_initialize_does_not_retry_auth_failure
+FAILED tests/test_embedding_retry.py::TestLiteLLMProxyEncodeRetries::test_proxy_5xx_is_retried_then_succeeds
+FAILED tests/test_embedding_retry.py::TestLiteLLMProxyEncodeRetries::test_proxy_4xx_raises_immediately_without_retrying
+FAILED tests/test_embeddings_asymmetric_prefixes.py::test_query_and_document_inputs_are_prefixed_asymmetrically
+FAILED tests/test_embeddings_asymmetric_prefixes.py::test_unset_prefixes_leave_inputs_untouched
+FAILED tests/test_embeddings_asymmetric_prefixes.py::test_encode_stays_unprefixed_when_prefixes_are_configured
+FAILED tests/test_embeddings_asymmetric_prefixes.py::test_prefixed_inputs_still_respect_batch_size
+FAILED tests/test_embeddings_asymmetric_prefixes.py::test_tei_sends_prefixed_inputs_to_the_embed_endpoint
+FAILED tests/test_embeddings_openai_batch_size.py::test_openai_encode_splits_on_configured_batch_size
+FAILED tests/test_embeddings_openai_batch_size.py::test_openai_encode_passes_configured_dimensions
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_mean_pooling_normalizes_and_filters_inputs
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_cls_pooling_and_normalize_false
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_output_name_uses_pre_pooled_2d_output
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_query_and_document_prefixes_are_asymmetric
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_chunks_into_batches_and_preserves_order
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_single_batch_when_input_fits
+FAILED tests/test_onnx_embeddings.py::test_onnx_embeddings_batching_does_not_change_vectors
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_status_then_success
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_service_responses_are_retried[500]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_service_responses_are_retried[502]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_service_responses_are_retried[503]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_service_responses_are_retried[504]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_transient_service_responses_are_retried[408]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_permanent_client_errors_fail_fast[400]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_permanent_client_errors_fail_fast[401]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_permanent_client_errors_fail_fast[403]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_permanent_client_errors_fail_fast[404]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_permanent_client_errors_fail_fast[422]
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_exhausted_retries_propagate
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_no_policy_means_no_retry
+FAILED tests/test_reranker_retry.py::TestRemoteRerankerRetries::test_budget_bounds_the_added_latency
+FAILED tests/test_reranker_retry.py::TestFailoverChainAdvancesOnlyAfterRetries::test_primary_recovers_within_its_retries_and_no_fallback_is_touched
+FAILED tests/test_reranker_retry.py::TestFailoverChainAdvancesOnlyAfterRetries::test_chain_advances_once_the_primary_exhausts_its_retries
+FAILED tests/test_reranker_retry.py::TestFailoverChainAdvancesOnlyAfterRetries::test_the_chain_itself_does_not_add_a_second_retry_layer
+FAILED tests/test_tei_embeddings.py::test_dropped_connection_retries_then_succeeds
+FAILED tests/test_tei_embeddings.py::test_bad_file_descriptor_retries_then_succeeds
+FAILED tests/test_tei_embeddings.py::test_non_retryable_os_error_propagates
+FAILED tests/test_tei_embeddings.py::test_persistent_dropped_connection_exhausts_retry_budget
+FAILED tests/test_tei_embeddings.py::test_retry_on_too_many_requests - Failed...
+FAILED tests/test_tei_embeddings.py::test_retry_after_header_reaches_the_backoff
+FAILED tests/test_tei_embeddings.py::test_other_client_errors_fail_fast - Fai...
+FAILED tests/test_tei_embeddings.py::test_persistent_too_many_requests_exhausts_retry_budget
+FAILED tests/test_tei_embeddings.py::test_initialize_probes_info_and_detects_dimension
+FAILED tests/test_tei_embeddings.py::test_initialize_failure_is_reported_as_a_connection_error
+FAILED tests/test_tei_embeddings.py::test_encode_before_initialize_is_rejected
+FAILED tests/test_tei_embeddings.py::test_session_drops_idle_sockets_before_a_proxy_would[5.0-5.0]
+FAILED tests/test_tei_embeddings.py::test_session_drops_idle_sockets_before_a_proxy_would[60.0-15.0]
+59 failed, 295 passed, 14 skipped in 4.40s

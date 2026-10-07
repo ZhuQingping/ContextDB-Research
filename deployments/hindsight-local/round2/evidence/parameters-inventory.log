@@ -1,0 +1,11 @@
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+{"fields": 493, "bank_overridable": 51, "env_constants": 493, "source": "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/config.py", "note": "Runtime clean-env from_env defaults, not shell credential values. Indexed LLM chain and extension prefix parameters are dynamic families; see docs/source."}

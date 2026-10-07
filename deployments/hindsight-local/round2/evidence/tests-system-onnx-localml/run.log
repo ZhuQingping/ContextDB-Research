@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests
+configfile: pyproject.toml
+plugins: timeout-2.4.0, asyncio-1.4.0, anyio-4.15.1
+timeout: 300.0s
+timeout method: signal
+timeout func_only: False
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/test_76_onnx_embeddings.py::test_real_onnx_memory_lifecycle[cpu] 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:37:43 - INFO - httpx - HTTP Request: GET http://127.0.0.1:51066/health "HTTP/1.1 200 OK"
+PASSED                                                                   [100%]
+
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-system-onnx-localml/junit.xml -
+========================= 1 passed in 85.04s (0:01:25) =========================

@@ -1,0 +1,19 @@
+{
+  "checked_at_utc": "2026-10-07T03:01:56.249954+00:00",
+  "source_sha": "f7dd3f4fd7420f7beec60c32c965e5e5cf7be066",
+  "upstream_worktree_clean": true,
+  "markdown_files": 9,
+  "local_links_checked": 134,
+  "missing_links": [],
+  "python_scripts_checked": 25,
+  "syntax_errors": [],
+  "original_service_health": {
+    "api": {
+      "status": 200
+    },
+    "ui": {
+      "status": 200
+    }
+  },
+  "scope": "artifact/source/health checks, not product acceptance or an eight-hour soak"
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "../../.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=../../../../evidence/tests-static-keys/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-extensions/static-keys-tenant",
+  "started_utc": "2026-10-04T14:30:09.052886+00:00",
+  "finished_utc": "2026-10-04T14:30:18.235814+00:00",
+  "duration_seconds": 9.183,
+  "exit_code": 0
+}

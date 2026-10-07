@@ -1,0 +1,910 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>ContextDB V2.5 架构决策讨论稿</title><style>
+:root{--ink:#21384a;--muted:#536b7d;--line:#d9e2e9;--accent:#17657c;--paper:#fff;--tint:#f3f6f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--tint);color:var(--ink);font:16px/1.8 system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif}a{color:#12617f;text-underline-offset:3px}header{background:#183c50;color:#fff;padding:28px max(24px,calc((100vw - 1480px)/2))}header h1{margin:0 0 10px;font-size:28px;line-height:1.4}header p{margin:6px 0}header a{color:#d0effa}.badge{display:inline-block;background:#fff0ce;color:#665027;border-radius:14px;padding:3px 12px;font-size:13px}.layout{max-width:1530px;margin:auto;display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;padding:24px}aside{position:sticky;top:12px;align-self:start;max-height:96vh;overflow:auto;background:#fff;border:1px solid var(--line);padding:18px;border-radius:10px}aside a{display:block;margin:5px 0}aside ul{padding-left:17px}aside .toc{font-size:13px}label{display:block;font-size:14px;margin-top:12px}input,select,button{font:inherit;max-width:100%;border:1px solid #a7b8c4;border-radius:5px;padding:7px 9px;background:#fff;color:var(--ink)}input,select{width:100%}button{cursor:pointer;margin:8px 5px 0 0}main{min-width:0;overflow-wrap:anywhere}section{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px;margin:0 0 22px;scroll-margin-top:18px;overflow-wrap:anywhere}h1,h2,h3{line-height:1.45}h2{font-size:24px;border-bottom:2px solid #bdd1dd;padding-bottom:12px;margin:0 0 20px}h3{font-size:19px;color:#17576a;margin-top:26px}p{margin:12px 0}li{margin:9px 0}.table-wrap{overflow-x:auto;margin:18px 0}table{border-collapse:collapse;width:100%;min-width:660px;font-size:14px;line-height:1.7}th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top}th{background:#e9f0f5;text-align:left}tr:nth-child(even) td{background:#fbfcfd}code{font-size:.92em;background:#f0f4f6;padding:1px 4px;overflow-wrap:anywhere}blockquote{border-left:4px solid #b3c8d6;margin-left:0;padding-left:16px}.hint{font-size:13px;color:var(--muted)}.downloads{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}.source-note{font-size:13px}section[hidden]{display:none}.intro{border-top:4px solid var(--accent)}
+@media(max-width:850px){.layout{display:block;padding:12px}aside{position:static;max-height:none;margin-bottom:16px}aside .toc{max-height:220px;overflow:auto}section{padding:18px}header{padding:22px 18px}header h1{font-size:25px}h2{font-size:21px}}
+@media print{body{background:white;font-size:10.5pt;line-height:1.5}header{background:white;color:black;padding:0}header a{color:black}.layout{display:block;padding:0}aside,.downloads,button{display:none}section{border:0;padding:0;margin:0 0 20pt;page-break-before:auto}h2{font-size:15pt;break-after:avoid}h3{font-size:12pt;break-after:avoid}.table-wrap{overflow:visible}table{min-width:0;font-size:9pt}thead{display:table-header-group}tr{break-inside:avoid}a{color:black;text-decoration:none}p,li{orphans:3;widows:3}@page{size:A4;margin:18mm}}
+</style></head><body><nav style="display:flex;flex-wrap:wrap;gap:18px;padding:12px 20px;background:#e9f0f5;font:15px system-ui,sans-serif"><a href="https://github.com/RSIXDB/ContextArk/pull/44">全部内容 MR</a><a href="DESIGN-V2.html">完整架构</a><a href="DECISION-WORKBOOK.html">需审查决策的问题</a></nav><header><span class="badge">内部讨论 · 待人工填写 · PROPOSED</span><h1>ContextDB V2.5 架构决策讨论稿</h1><p>8组待决 · 43个具体问题 · 8项补充议题 · 16项已确认历史 · 8项仍待审的演进</p><p>编辑Markdown或Word，阅读本页；当前架构和验证状态按权威正文核对。</p><div class="downloads"><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DECISION-WORKBOOK.md">编辑Markdown</a><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DECISION-WORKBOOK.docx" download>下载可编辑Word</a><a href="DESIGN-V2.html">完整V2.5架构</a></div></header><div class="layout"><aside><strong>讨论导航</strong><label for="search">搜索问题或术语</label><input id="search" placeholder="例如：个人记忆、HC-05、RPO"><label for="view">阅读范围</label><select id="view"><option value="all">全部材料</option><option value="hc">当前待决</option><option value="extra">补充重要议题</option><option value="history">已决历史与方案演进</option><option value="guide">使用方法与汇总</option></select><button id="reset">显示全部</button><button id="print">打印当前视图</button><p id="count" class="hint" aria-live="polite"></p><div class="toc">
+<ul>
+<li><a href="#heading-1">1 先讨论哪些问题</a></li>
+<li><a href="#heading-2">2 本稿用到的术语</a></li>
+<li><a href="#heading-3-hc-01-pg">3 HC-01 PG究竟需要分离到哪一级</a></li>
+<li><a href="#heading-4-hc-02-bank">4 HC-02 Bank 个人记忆和后台加工分别归谁</a></li>
+<li><a href="#heading-5-hc-03">5 HC-03 隔离承诺要防护哪些主体</a></li>
+<li><a href="#heading-6-hc-04">6 HC-04 首期究竟交付什么以及允许怎样中断</a></li>
+<li><a href="#heading-7-hc-05-adapter">7 HC-05 Adapter 资格与结果持久分别走哪条路</a></li>
+<li><a href="#heading-8-hc-06">8 HC-06 失联 撤权在途与客户收费如何承诺</a></li>
+<li><a href="#heading-9-hc-07">9 HC-07 怎样验收性能以及保留和恢复到什么程度</a></li>
+<li><a href="#heading-10-hc-08">10 HC-08 运行版本 补丁维护和投入怎样批准</a></li>
+<li><a href="#heading-11">11 补充的重要讨论题</a><ul>
+<li><a href="#heading-sd-01">SD-01 共享粒度和跨团队发布</a></li>
+<li><a href="#heading-sd-02">SD-02 谁决定来源权威 冲突和时间语义</a></li>
+<li><a href="#heading-sd-03">SD-03 默认查询成本和宿主采用保证</a></li>
+<li><a href="#heading-sd-04-skill">SD-04 Skill由谁批准发布以及何时退役</a></li>
+<li><a href="#heading-sd-05">SD-05 首个交付形态 产品入口和数据出域边界</a></li>
+<li><a href="#heading-sd-06">SD-06 首期输入类型 连接器和自动摄取边界</a></li>
+<li><a href="#heading-sd-07">SD-07 运维处置和紧急访问的权限</a></li>
+<li><a href="#heading-sd-08">SD-08 首期兼容矩阵和后续扩展触发条件</a></li>
+</ul>
+</li>
+<li><a href="#heading-12">12 已经确认的事项和当时的分歧</a><ul>
+<li><a href="#heading-ad-01-hindsight">AD-01 选择Hindsight作为当前底座</a></li>
+<li><a href="#heading-ad-02-skill">AD-02 知识 记忆与轨迹到Skill三业务都要</a></li>
+<li><a href="#heading-ad-03">AD-03 以任务效果 时间和全周期成本评价</a></li>
+<li><a href="#heading-ad-04">AD-04 宿主保留执行循环 最终上下文与工具控制</a></li>
+<li><a href="#heading-ad-05-api-handler-worker">AD-05 API Handler Worker三功能集群必须拆开</a></li>
+<li><a href="#heading-ad-06-gateway">AD-06 Gateway承担完整入口治理职责</a></li>
+<li><a href="#heading-ad-07-subtenant">AD-07 Subtenant是成员或服务账号而不是项目</a></li>
+<li><a href="#heading-ad-08">AD-08 前三集群无状态 所有集群有扩展路径</a></li>
+<li><a href="#heading-ad-09-pg">AD-09 PG元数据和用户数据要明确分离</a></li>
+<li><a href="#heading-ad-10">AD-10 统一模型接入 计量 监控和管理</a></li>
+<li><a href="#heading-ad-11-obs">AD-11 同一份既有OBS原件先保存 再处理</a></li>
+<li><a href="#heading-ad-12-pass">AD-12 重大改变要单列审查 内容不能靠脚本PASS验收</a></li>
+<li><a href="#heading-ad-13">AD-13 性能保持和模块持续优化必须验证</a></li>
+<li><a href="#heading-ad-14">AD-14 自主闭源与必需功能的权利约束继续保留</a></li>
+<li><a href="#heading-ad-15">AD-15 完整正文唯一 历史和证据层级保留</a></li>
+<li><a href="#heading-ad-16">AD-16 历史公开阅读授权只覆盖指定两页</a></li>
+</ul>
+</li>
+<li><a href="#heading-13">13 反复修订但仍不能称为已接受的选择</a></li>
+<li><a href="#heading-14">14 会议结论和手工修改汇总</a></li>
+<li><a href="#heading-15">15 材料范围和证据边界</a></li>
+</ul>
+</div>
+</aside><main><section data-kind="guide" class="intro"><p>2026-10-03 · 讨论稿 v1 · Issue #13 / PR #44 · 整理者：Codex · 讨论主持人、各项决策人和实际负责人：待填写。</p>
+<p>本稿供业务、后端、数据库、平台、安全和宿主接入同事共同修改与讨论。它把现有8组人工待决问题展开，补出正文中容易被忽略的8项重要取舍，并回顾已经确认或反复修订过的事项。<strong>当前建议均为PROPOSED；尚无本轮人工选择。</strong> 讨论的产出是明确的取舍、适用范围、待补证据和责任人。</p>
+<p>架构依据仍是<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md">DESIGN-V2</a>，本稿基于提交<code>ade01c38293eaba1698d782b807d78f39048980e</code>的V2.5。既有决定以<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/README.md">ADR目录</a>及用户确认材料为依据；运行验证只登记在<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/VALIDATION-V2.md">VALIDATION-V2</a>。这里的修改意见、勾选或会议共识需明确记录其确认人和范围，再回写正文及适用ADR，不能自动把候选变成已接受架构。</p>
+<p><strong>编辑方法：</strong> 可直接修改本Markdown的建议和空白栏，也可在同源Word分发版开启修订、填写意见后保留回传。Markdown是仓内讨论稿源；人工改过的Word要保留，不应被重新导出覆盖。HTML用于阅读、检索和打印，不保存人工决定。本稿用于内部讨论。按用户追加要求，完整架构与决策问题提供可直接预览的HTML，沿用既有预览站的访问方式；Word、Markdown和其他证据仍在私仓。当前人工栏均未填写，后续成员意见或敏感内容不自动公开。</p>
+</section><section data-kind="guide"><p><a id="agenda"></a></p>
+<h2 id="heading-1">1 先讨论哪些问题</h2>
+<p>建议先讨论数据归属、安全边界、首期任务和故障政策，再判断技术方案，最后确认验收数字与投入。可以按下面顺序开两次会，也可以逐项异步填写；会议次数和时长不是项目承诺。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>议题</th>
+<th>需要形成的具体结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一轮</td>
+<td>HC-02、HC-03、HC-04、HC-06</td>
+<td>Bank和记忆归谁；防护谁；首期完成什么任务；故障与撤权时允许什么行为</td>
+</tr>
+<tr>
+<td>第二轮</td>
+<td>HC-01、HC-05及相应最小机制证据</td>
+<td>PG分离、Adapter资格与结果路径的候选选择、限制和反转条件</td>
+</tr>
+<tr>
+<td>定稿前</td>
+<td>HC-07、HC-08</td>
+<td>负载与验收线、保留/恢复要求、运行版本、补丁维护和投入</td>
+</tr>
+<tr>
+<td>穿插讨论</td>
+<td>SD-01—08补充议题</td>
+<td>把共享、来源权威、查询/宿主、Skill、部署、输入、运维和兼容能力写成明确合同</td>
+</tr>
+</tbody>
+</table></div>
+<p>HC编号沿用正文。SD仅是补充讨论题的索引，全部映射回原HC，不新建另一套已接受决定或验证状态。历史回顾中的AD表示已确认事项，RD表示反复修订但仍待接受的设计选择。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>记录状态</th>
+<th>填写含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>讨论中</td>
+<td>仍有分歧或缺少输入</td>
+</tr>
+<tr>
+<td>倾向某方案</td>
+<td>只确定研究/验证方向；写明前提</td>
+</tr>
+<tr>
+<td>有条件接受</td>
+<td>指定接受范围、必须满足的证据和限制；未满足前不能开放对应能力</td>
+</tr>
+<tr>
+<td>接受或修改既有决定</td>
+<td>明确确认人、日期、替代关系与生效范围，并回写权威正文/适用ADR</td>
+</tr>
+<tr>
+<td>暂缓</td>
+<td>写清首期如何响应不支持，以及重新讨论的触发条件</td>
+</tr>
+</tbody>
+</table></div>
+<p>机制、性能、业务效果仍分别看验证证据。人的选择不能把NOT_RUN改成PASS。</p>
+</section><section data-kind="guide"><p><a id="terms"></a></p>
+<h2 id="heading-2">2 本稿用到的术语</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>讨论时的含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tenant / Subtenant / Bank</td>
+<td>团队 / 团队内成员或服务账号 / 数据空间；账号、管理者和存储位置不是同一对象</td>
+</tr>
+<tr>
+<td>Unit</td>
+<td>可以整体放置、迁移的一组Bank；不是成员账号</td>
+</tr>
+<tr>
+<td>MetaPG / DataPG</td>
+<td>候选方案中的控制元数据库 / 业务数据PG；DataPG内还可保运行元数据</td>
+</tr>
+<tr>
+<td>C / R / U</td>
+<td>控制元数据 / 任务、守卫、引用等运行元数据 / 用户正文与工作内容；与“PG方案C”不是同一含义</td>
+</tr>
+<tr>
+<td>Adapter或L</td>
+<td>统一接入生成、embedding、rerank等模型能力的组件；是否独立部署仍待决定</td>
+</tr>
+<tr>
+<td>Build / Publication</td>
+<td>某次构建及其输出身份 / 哪些输出已经有资格被读取；构建开始不等于发布成功</td>
+</tr>
+<tr>
+<td>受理 / 可检索 / 派生就绪</td>
+<td>原件和任务已持久登记 / 相应版本能被搜索 / 观察、图或页等派生物具备对应就绪证据</td>
+</tr>
+<tr>
+<td>drain</td>
+<td>对已获资格或已经发送的在途调用完成取消、终止或终态核对；租期到期本身不证明进程停止</td>
+</tr>
+<tr>
+<td>RPO / RTO</td>
+<td>最多允许丢失多少已确认数据 / 故障后多久恢复到约定可服务状态</td>
+</tr>
+<tr>
+<td>PB0 / PB1 / PB2</td>
+<td>固定原生Hindsight性能基线 / 保持同等合同的诊断基线 / 目标架构；与业务效果B0/B1/B2分开</td>
+</tr>
+<tr>
+<td>oracle</td>
+<td>独立判断任务是否真的成功的依据，例如实际生成文件、工具作业终态或封存标准答案</td>
+</tr>
+</tbody>
+</table></div>
+</section><section data-kind="hc"><p><a id="hc-01"></a></p>
+<h2 id="heading-3-hc-01-pg">3 HC-01 PG究竟需要分离到哪一级</h2>
+<p><strong>要解决的问题。</strong> 元数据和用户内容分离已经是确认目标；仍需决定哪些数据必须跨物理数据库。例：Worker生成一批事实时，需要同时确认当前授权、执行代次和发布资格。如果这些状态与事实不在同一数据库，提交与失败恢复协议必须重新设计。</p>
+<p><strong>当前建议：选方案B作为待验证候选。</strong> 把平台控制与业务内容的负载、管理边界分开，同时保留DataPG内守卫、任务阶段与业务结果的同连接短事务。这个推荐是工程判断，尚无机制或性能通过证据。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>实际放置</th>
+<th>主要收益与代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 同库分schema</td>
+<td>C、R、U在同一database的不同schema/角色域</td>
+<td>本地事务直接；共享资源、故障、WAL和备份边界，不能称全部物理隔离</td>
+</tr>
+<tr>
+<td>B 控制库独立</td>
+<td>MetaPG放C；DataPG的rt放R、ud放U</td>
+<td>保留本地guard与结果事务；控制变更需apply/ack；R仍与U共物理DataPG</td>
+</tr>
+<tr>
+<td>C 全元数据另库</td>
+<td>C/R与U分开物理库</td>
+<td>符合更强的物理分离诉求；需重新论证跨库发布/协调、全部读门和恢复，不能沿用B的BEGIN合同</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-01.Q1 分离首先解决什么问题？</strong> 请选择并排序：数据访问权限、管理员职责、资源干扰、备份/恢复、客户要求或其他。当前建议先写目的，避免仅用“要隔离”替代具体边界。填写：【待填写】。</li>
+<li><strong>HC-01.Q2 能否接受R与U共DataPG？</strong> R只保typed状态/引用，正文、用户配置、自由文本诊断进入U或受控对象域。若连共同WAL、备份或数据库管理员也不可接受，B不能被当成已经满足要求。倾向：【待填写】。</li>
+<li><strong>HC-01.Q3 初始Unit按什么划分？</strong> 候选是一个团队一个Unit、按大团队的完整Bank组拆Unit，或细到Bank/成员。建议先按团队及实际容量拆完整Bank组；更细粒度需要解释目录、DDL、连接、共享与迁移成本。预期团队/Bank量：【待填写】。</li>
+<li><strong>HC-01.Q4 谁能开通schema与建索引？</strong> 建议普通Handler/Worker不持DDL权，由受控开通/索引任务执行；请确定运维角色及可接受的开通等待、索引维护窗口。角色与窗口：【待填写】。</li>
+<li><strong>HC-01.Q5 什么证据会使我们放弃B？</strong> 例如隔离目标不成立、共享事务仍造成不可接受争用、恢复不能闭合。请给出业务或安全触发条件；具体SQL正确性由探针证明。触发条件：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> 表/字段/FK分域、Publication、资格过程、恢复清单、连接预算及W-Control/W-C/W-I。定稿前至少需要真实PG的跨schema事务、角色拒绝、版本混读、共享锁和DDL探针。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-3">正文§3/5/8</a>、DG-03/04/07、MP-05/07、V-21/24。</p>
+<p><strong>讨论记录 HC-01</strong></p>
+<ul>
+<li>倾向/选择及改写建议：【待填写】。</li>
+<li>接受范围、前提和保留意见：【待填写】。</li>
+<li>需要补的证据与反转条件：【待填写】。</li>
+<li>决策人 / 技术负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-02"></a></p>
+<h2 id="heading-4-hc-02-bank">4 HC-02 Bank 个人记忆和后台加工分别归谁</h2>
+<p><strong>要解决的问题。</strong> Alice为团队上传规范、记录工作偏好，之后离职。哪些资料属于团队，哪些属于她本人？团队管理员可以管理账号，是否也能读取其私人记忆？CI账号只能上传资料时，后台模型能否读取旧知识来加工？这些是产品和数据权利问题，不能由schema或调用者ID代替决定。</p>
+<p><strong>当前建议：团队Bank归Tenant，管理权、读取权、调用归因分开。</strong> V2.5的记忆例子先明确为团队内工作记忆。独立个人所有权若为必需，应作为明确安全域及导出/保留合同进入范围，不能悄悄把Tenant从团队改成自然人。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>当前建议</th>
+<th>必须由团队确定的边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>团队规范、团队Skill</td>
+<td>组织归Tenant；Manager可移交，读取另授Grant</td>
+<td>管理者是否默认可读、谁可发布/导出、历史资料对新成员开放范围</td>
+</tr>
+<tr>
+<td>团队内个人工作记忆</td>
+<td>仍在团队安全域内，明确访问者和用途</td>
+<td>成员是否具有删除/导出权、管理员能否读、离职后保留什么</td>
+</tr>
+<tr>
+<td>独立个人资产</td>
+<td>单独确定所有权与安全域</td>
+<td>是否进入R1；加入/退出团队时如何授权、转移、保留，不能直接换tenant_id</td>
+</tr>
+<tr>
+<td>ingest-only服务账号</td>
+<td>仅上传；可由预授权processor在关联新operation中加工</td>
+<td>processor可读哪些旧知识、可用哪些模型/额度、谁能读取结果</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-02.Q1 Bank的组织所有者是什么？</strong> 团队、成员，还是需要两种显式类型？建议团队Bank先按Tenant-owned推进；若同时支持个人型Bank，分别写清生命周期。选择与理由：【待填写】。</li>
+<li><strong>HC-02.Q2 “个人记忆”究竟是哪种产品承诺？</strong> 团队工作资料中的个人偏好，还是用户可带走且独立于雇佣/团队关系的个人资产？两者不能共用一个模糊的“个人”标签。首期范围：【待填写】。</li>
+<li><strong>HC-02.Q3 管理权是否包含数据读取？</strong> 建议默认分权：能停账号/移交Manager，不自动取得所有私有内容。需要的管理员、审计员、支持人员读取例外：【待填写】。</li>
+<li><strong>HC-02.Q4 入职、离职、转组分别怎样处理？</strong> 请填写历史读权、未完成任务、原件/派生保留、导出、删除的规则。建议保团队资产归属，停止失效委托，保留原发起人审计；未明确的旧任务继续规则先暂停处理。具体规则：【待填写】。</li>
+<li><strong>HC-02.Q5 上传是否隐含授权自动加工？</strong> 建议由可审的ProcessingPolicy预先约定处理主体、raw/旧Bank读权、目标Bank、模型、预算和期限。没有该约定时仅保存原件或返回加工缺权。选择：【待填写】。</li>
+<li><strong>HC-02.Q6 新成员是否可以读取历史资料？</strong> 建议按来源受众合同决定，扩权前做存量证明；不能只改Bank读者列表就令所有旧来源自动共享。需要的历史开放方式：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> IAM/Grant、M资产定义、Source受众、processor、费用归因、成员离职与导出/删除。共享粒度及跨Tenant发布另见SD-01，Skill发布权另见SD-04。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-7">正文§3/7</a>、KD-09、V-20/24。</p>
+<p><strong>讨论记录 HC-02</strong></p>
+<ul>
+<li>团队Bank / 团队工作记忆 / 独立个人资产各自规则：【待填写】。</li>
+<li>自动加工授权及成员离职后的处理规则：【待填写】。</li>
+<li>例外、所需证据与反转条件：【待填写】。</li>
+<li>决策人 / 业务数据负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-03"></a></p>
+<h2 id="heading-5-hc-03">5 HC-03 隔离承诺要防护哪些主体</h2>
+<p><strong>要解决的问题。</strong> “数据隔离”至少可能指应用不串租、一个租户运行进程被攻破不影响其他租户、平台/DB管理员也不能读明文。它们需要的身份、进程、数据库和加密方案不同。不能把schema分开或磁盘加密直接解释成全部满足。</p>
+<p><strong>当前建议：先确认威胁范围和密钥权利，再确定默认档。</strong> 本稿不替用户选择共享档或专用档。更强保护档也需要负例和运维/恢复验证，不因名称更强就算通过。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候选档位</th>
+<th>要评估的保护边界</th>
+<th>主要代价与限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>共享逻辑档</td>
+<td>可信平台运行时中的正确认证、授权、资源归属和配额</td>
+<td>成本与复用方便；不承诺抵御被攻破共享runtime所持DB权限范围</td>
+</tr>
+<tr>
+<td>专用身份/进程/PG档</td>
+<td>收窄租户之间的凭据、计算或数据库故障影响</td>
+<td>实例、连接、升级、观测与资源成本提高；边界取决于实际配置和负例</td>
+</tr>
+<tr>
+<td>管理员也不可信的更强档</td>
+<td>考虑应用/客户端加密或其他受信边界</td>
+<td>会影响搜索、图/模型加工、排障和key恢复；能力与费用待专项论证</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-03.Q1 平台运维和DB管理员是否在可信边界内？</strong> 如果不信任，需要保护哪些资产：原件、派生事实、模型输入/输出、索引、备份或审计？填写：【待填写】。</li>
+<li><strong>HC-03.Q2 必须抵御单租户进程被攻破吗？</strong> 若必须，隔离范围要精确到身份、进程和DB授权；共享应用只靠WHERE tenant_id不满足这项承诺。必需范围：【待填写】。</li>
+<li><strong>HC-03.Q3 密钥由谁控制？</strong> 平台托管、客户自管，还是混合？谁能轮换、恢复旧备份、吊销和申请临时排障权限？建议密钥恢复材料与数据备份分权保全。规则：【待填写】。</li>
+<li><strong>HC-03.Q4 哪些内容可以交外部模型？</strong> 请区分生成、embedding、rerank，按数据类别确定允许目的地、地区和凭据；模型可访问不等于来源允许外发。政策输入：【待填写】。</li>
+<li><strong>HC-03.Q5 key不可用或安全水位无法核对时，可接受怎样的不可用范围？</strong> 当前建议相应内容/恢复能力保持隔离，不假报成功；恢复流程和时限由HC-07确定。填写：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> 默认交付档、schema/角色/进程池、模型路由、备份、运维支持和真实敏感数据的进入条件。当前只有候选矩阵，误路由、越权、进程失陷、key恢复和内容注入负例均NOT_RUN。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-14">正文§14.1</a>、PX-03/08、V-05/11/15。</p>
+<p><strong>讨论记录 HC-03</strong></p>
+<ul>
+<li>可信主体与必须防护的主体：【待填写】。</li>
+<li>默认档、可选加强档及明确不承诺的范围：【待填写】。</li>
+<li>密钥/外发/排障政策与证据要求：【待填写】。</li>
+<li>决策人 / 安全负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-04"></a></p>
+<h2 id="heading-6-hc-04">6 HC-04 首期究竟交付什么以及允许怎样中断</h2>
+<p><strong>要解决的问题。</strong> 三业务都要覆盖是已确认目标；首期支持哪些具体任务、接口和故障行为仍需要选定。三业务各一个可核闭环，不等于首期全量连接器、任意宿主、自动Skill发布和生产级在线迁移都已经批准。</p>
+<p><strong>当前建议：采用R1a—R1d分阶段范围。</strong> 从第一条技术链就包含身份、原件、任务和模型费用边界，随后分别证明K/M/S，再做最小公平/迁移/恢复与退出。每条业务用实际终态判断成功。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>首期部分</th>
+<th>当前建议的最小结果</th>
+<th>需填写的真实任务和独立判定依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1a 技术链</td>
+<td>G受理→原件→PG任务→W/L→合法发布→单Bank读取；含kill和拒权</td>
+<td>环境、接口、任务与负责人：【待填写】</td>
+</tr>
+<tr>
+<td>R1b 企业知识</td>
+<td>两份缺一不可的规则/例外，共享查询、更新/撤源/撤权，一个宿主采用记录</td>
+<td>客户/团队、题族、正确答案和拒绝条件：【待填写】</td>
+</tr>
+<tr>
+<td>R1c 记忆与Skill</td>
+<td>条件/迟到/未来/历史记忆；轨迹→冻结候选→独立Trial→显式Release</td>
+<td>记忆范围、宿主、工具族和真实工具终态：【待填写】</td>
+</tr>
+<tr>
+<td>R1d 耐久与保持</td>
+<td>最小公平/配额、单Unit离线迁移/恢复/退出、四类性能负载</td>
+<td>可停机窗口、恢复目标、资源与质量阈值：【待填写】</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-04.Q1 首批真正要服务谁、解决什么任务？</strong> 请为K/M/S各给一条正常场景和两条变化/失败场景，并指定能判断结果的人或系统。不要只填“问答准确”“生成Skill”。填写：【待填写】。</li>
+<li><strong>HC-04.Q2 第一个受支持宿主和工具环境是什么？</strong> 要求能看到最终模型输入或真实工具终态，才能检验采用；未知宿主只能声明服务返回级能力。候选与版本：【待填写】。</li>
+<li><strong>HC-04.Q3 跨PG联检是否是R1必须？</strong> 选项是先同兼容执行组、跨组明确不支持，或首期包含有界两分片。当前建议至少做两执行者机制证据，再确定实际开放范围。选择：【待填写】。</li>
+<li><strong>HC-04.Q4 更新时必须保持读服务吗？</strong> 推荐不可变构件和版本发布；旧版本只有仍符合请求时间/授权/来源合同才可读取。冻结原位重建是停读备选，不能把过期旧内容伪装当前答案。允许的窗口和返回方式：【待填写】。</li>
+<li><strong>HC-04.Q5 迁移和恢复的首期深度是什么？</strong> 推荐单Unit离线演练作为R1必需子门；在线搬迁、多home自动迁移、生产RTO另验。是否有首期必须不停机的业务：【待填写】。</li>
+<li><strong>HC-04.Q6 哪些能力必须显式后置？</strong> 候选：混源细粒度ACL、全连接器、任意宿主、自动Skill发布、自动多home迁移、外部图/store替换。每个后置项需说明当前接口怎样返回未支持。清单：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> API能力矩阵、受支持输入/宿主、WBS顺序、测试数据与投入。它不会取消三功能集群和三业务总体目标。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-13">正文§1/9/13</a>、V-01—04/12/13/15/19。</p>
+<p><strong>讨论记录 HC-04</strong></p>
+<ul>
+<li>首期任务、宿主/工具、必须开放的能力：【待填写】。</li>
+<li>可用性窗口与明确后置项：【待填写】。</li>
+<li>独立验收依据、退出条件与责任人：【待填写】。</li>
+<li>决策人 / 产品及宿主负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-05"></a></p>
+<h2 id="heading-7-hc-05-adapter">7 HC-05 Adapter 资格与结果持久分别走哪条路</h2>
+<p><strong>要解决的问题。</strong> 统一模型接入、多租计量和管理是已确认目标。它是否独立部署、怎样取得当前数据资格、模型结果放在哪里，属于三个不同选择。将它们混成一个“统一Adapter”结论，会漏掉连接、权限、故障依赖和同步成本。</p>
+<p><strong>当前建议：独立L + DataPG受限资格过程 + 既有OBS的派生结果域。</strong> Worker不依赖在线Handler代做资格校验。原始输入仍只保存既有那份raw；模型输出属于派生结果，不是另建raw日志。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>选择维度</th>
+<th>当前候选</th>
+<th>备选与改变影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>部署</td>
+<td>独立L服务；H/W不持任意provider凭据/出网能力</td>
+<td>受控SDK或进程内本地执行；必须另证无旁路、全局预算和逐次计量</td>
+</tr>
+<tr>
+<td>资格</td>
+<td>L仅可执行DataPG限定过程，按Unit批量取得/消费资格</td>
+<td>独立资格服务；增加部署与调用跳数，也需计算其PG池；不能依赖全部在线H</td>
+</tr>
+<tr>
+<td>耐久结果</td>
+<td>模型完成→OBS派生Envelope校验→MetaPG登记result-ready</td>
+<td>受限DataPG结果writer；增加PG写入/连接和故障依赖，需要同语义对照</td>
+</tr>
+<tr>
+<td>在线结果模式</td>
+<td>需要终态可重取时durable；构建必须可恢复</td>
+<td>显式ephemeral可丢结果模式；不得隐式用于可恢复Build，丢失不能盲重发</td>
+</tr>
+<tr>
+<td>本地模型</td>
+<td>统一资格与资源治理，记录LocalExecutionAttempt</td>
+<td>不把本地CPU/GPU使用伪装provider token收费；进程内路径另验</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-05.Q1 是否接受独立L带来的服务边界和运维成本？</strong> 推荐接受为候选方向，定稿依据是完整调用覆盖、H停机后台可续及DG-05/07开销证据。倾向：【待填写】。</li>
+<li><strong>HC-05.Q2 L能否持有DataPG的限定EXECUTE凭据？</strong> 如果平台安全政策禁止，需选资格服务等替代，并重新计算连接/可用性。选择与限制：【待填写】。</li>
+<li><strong>HC-05.Q3 哪些结果必须恢复或重取？</strong> 分别填异步构建、在线Reflect、embedding/rerank、流式回答。建议异步构建采用durable；可丢在线结果只有在明确能力限制后启用。分类：【待填写】。</li>
+<li><strong>HC-05.Q4 结果持久成本是否可接受？</strong> OBS PUT、校验、登记、字节、保留和加密均要计入；首token与终态完成延迟分开。需要对照的替代路径和成本上限：【待填写】。</li>
+<li><strong>HC-05.Q5 cache、本地模型和重试如何纳管？</strong> Handler合格Bundle缓存可无L调用；L内部结果cache仍有资格/RPC/读取成本。建议保留原生合批，不叠加隐藏重试/并发；客户cache收费另由HC-06决定。要求：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> I-04/I-08/I-09、模型密钥、网络出口、PG/OBS池、恢复结果与成本观测。当前模型供应商、地区、价格及取消能力没有被本稿选定。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-16">正文§16</a>、DG-05/07、MP-06、V-23/24。</p>
+<p><strong>讨论记录 HC-05</strong></p>
+<ul>
+<li>部署 / 资格 / 结果存储分别选择：【待填写】。</li>
+<li>各类result_mode及可接受的同步成本：【待填写】。</li>
+<li>备选触发条件与验证责任：【待填写】。</li>
+<li>决策人 / 模型平台和DB负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-06"></a></p>
+<h2 id="heading-8-hc-06">8 HC-06 失联 撤权在途与客户收费如何承诺</h2>
+<p><strong>要解决的问题。</strong> 模型请求已经取得部分资格，随后控制库失联；另一个请求已发出但回包丢失；同时管理员撤销了来源权限。服务要返回什么状态，何时能说撤权生效，未知费用由谁承担？这些承诺会决定可用性和账务行为。</p>
+<p><strong>当前建议：权限或预算权威不可确认时不新调度；部分Unit消费不发送；UNKNOWN保留待核费用；未完成在途核对不报完整effective。</strong> 这会带来拒绝、等待和风险占用，需明确展示给调用者。有界继续只能使用已证明有效的持久份额和受控出口，不能无限缓存授权。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>故障窗口</th>
+<th>当前建议的对外行为</th>
+<th>需要人工决定的服务/费用政策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>尚未获准的新模型请求</td>
+<td>拒绝或有界等待，明确未调度</td>
+<td>等待时长、降级能力、通知方式</td>
+</tr>
+<tr>
+<td>只消费部分Unit资格或最终发送CAS未知</td>
+<td>不发送，查询/取消/对账，保留必要占用</td>
+<td>等待上限、人工介入条件及受影响范围</td>
+</tr>
+<tr>
+<td>已发但结果或费用未知</td>
+<td>显示未知并对账，不自动当零费用或重发同次请求</td>
+<td>客户账单何时出具、争议/调整规则、重试是否单独收费</td>
+</tr>
+<tr>
+<td>撤权时存在已消费或暂停sender</td>
+<td>拒新资格，核取消/终止/出口封禁或provider终态</td>
+<td>effective的范围与时点、允许的等待、无法终止时怎样提示</td>
+</tr>
+<tr>
+<td>无模型读取</td>
+<td>只有当前DataPG资格及有界入口份额仍可确认时继续</td>
+<td>哪些只读能力可用、缓存期限；不能借陈旧授权继续读</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-06.Q1 对控制面/MetaPG失联，优先拒绝、等待还是有界继续？</strong> 建议首期采用保守候选，分别列快读与新模型调用，不能用一个“系统可用”概括。各类选择：【待填写】。</li>
+<li><strong>HC-06.Q2 撤权回执要承诺哪一刻？</strong> 区分收到撤权、本地拒新、声明范围内生效、物理清理。已经发给外部的内容不能被本系统收回；租期到期也不能证明暂停sender不会恢复。所需承诺与等待：【待填写】。</li>
+<li><strong>HC-06.Q3 K/M/S各需要哪种来源撤回等级？</strong> L允许明确提示且仍获权的旧内容；G要求生效后的新使用排除撤源；P另加物理副本/保留清理收据。隐私删除和访问失权不能用L继续读取。逐业务选择：【待填写】。</li>
+<li><strong>HC-06.Q4 失败、兼容修复、重试、cache如何向客户收费？</strong> 供应商实际成本与客户收费分开；不能预设失败都免费或都收费。请填写收费对象、去重口径、退款/调整和账期：【待填写】。</li>
+<li><strong>HC-06.Q5 是否支持客户自带模型密钥？</strong> 需要分别确定provider付款者、平台服务收费、凭据轮换后旧调用归因、用量缺失时对账责任。规则：【待填写】。</li>
+<li><strong>HC-06.Q6 “硬预算上限”要保证到什么程度？</strong> 若远端调用无法限制执行/取消或取得可信成本上界，不能凭本地预留承诺外部永不超额。建议严格档禁用不能闭合的形态；可接受的能力限制：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> 发送许可、撤权drain、故障降级、额度、客户合同和对账流程。真实provider取消/费用语义仍需单独验证。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-16">正文§7/16</a>、DG-05/07、V-05/23/24。</p>
+<p><strong>讨论记录 HC-06</strong></p>
+<ul>
+<li>各故障类别的等待/拒绝/降级政策：【待填写】。</li>
+<li>K/M/S来源等级、撤权回执及在途边界：【待填写】。</li>
+<li>收费、BYOK、UNKNOWN与争议处理规则：【待填写】。</li>
+<li>决策人 / 业务财务和安全负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-07"></a></p>
+<h2 id="heading-9-hc-07">9 HC-07 怎样验收性能以及保留和恢复到什么程度</h2>
+<p><strong>要解决的问题。</strong> “性能不能明显退化”和“可恢复”已经进入验证要求，但还没有获接受的数值。同一个百分比不能同时解释毫秒级快读、模型重调用、大文件上传和混合后台负载；原件存在也不等于权限、受理账本和费用都可恢复。</p>
+<p><strong>当前建议：先锁任务/负载与测量口径，取得基线和新增工作量，再在正式比较前确认阈值。</strong> 数值栏留空，不使用10%/5%等讨论示例代填。测试包含全部失败、超时、正确拒绝、上传时间和维护成本，资源总额包含G/H/W/C/L/PG。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>负载</th>
+<th>必须比较的指标</th>
+<th>本轮待填写的验收线</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>快读、ID、小Bank、合格缓存</td>
+<td>p50/p95/p99、绝对附加延迟、错误/超时、每成功请求资源</td>
+<td>负载/并发：【待填写】；延迟/错误上限：【待填写】</td>
+</tr>
+<tr>
+<td>embedding/rerank/Reflect</td>
+<td>首token、总延迟、调用/轮数、合批率、费用、证据质量</td>
+<td>模型/预算：【待填写】；延迟/质量/成本线：【待填写】</td>
+</tr>
+<tr>
+<td>原件受理及构建</td>
+<td>请求开始→RawVerified→accepted→facts/派生就绪；字节、吞吐与复用率</td>
+<td>数据量/文件形态：【待填写】；时间/放大上限：【待填写】</td>
+</tr>
+<tr>
+<td>混合负载</td>
+<td>goodput、ready/blocked等待、锁/IO/WAL、维护份额、尾延迟及公平性</td>
+<td>租户/Bank分布：【待填写】；资源/公平/容量线：【待填写】</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-07.Q1 首批负载长什么样？</strong> 团队/主体/Bank数量、文档体积、读写比、更新/撤回频率、长任务、峰值并发和冷热比例。现有示例不是客户容量预测。填写：【待填写】。</li>
+<li><strong>HC-07.Q2 质量、时延、成本冲突时怎样排序？</strong> 建议以真实任务成功和硬授权条件为前提，分别选择可接受的时延、预算与可用性；不要用降低正确率掩盖性能损失。排序及硬门：【待填写】。</li>
+<li><strong>HC-07.Q3 各类数据允许丢多少、多久恢复？</strong> 分开填下面矩阵；恢复的终点要说明是只读、可写、可继续后台还是全部能力。不要把启动成功当恢复完成。</li>
+<li><strong>HC-07.Q4 保留多少历史版本和模型结果？</strong> 原件、人工资产、派生代、Trial、结果、审计/账单和备份分别定。建议按业务历史需求与恢复需求设上限；合法pin/清单仍引用的构件不能提前GC。规则：【待填写】。</li>
+<li><strong>HC-07.Q5 达到容量或预算上限时怎样响应？</strong> 当前建议有界背压/容量不足，不静默删仍被引用的数据，也不增加副本后复制整份额度。用户需要的提示和处理时限：【待填写】。</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>对象/事件</th>
+<th>可接受丢失范围 RPO</th>
+<th>恢复终点及RTO</th>
+<th>保留/删除与备份规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原始输入与已accepted回执/账本</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>权限、撤回、删除、放置安全事件</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>可重建事实/向量/图/知识页</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>人工profile/页/Skill及Trial权威</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>模型结果、已发尝试和未知费用</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>密钥与恢复授权材料</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>决定会影响：</strong> PB对照、容量、同步耐久成本、备份/恢复/GC、删除承诺和资源预算。要求RPO=0时，必须明确对应确认点和耐久副本策略；它不是默认存在的属性。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/VALIDATION-V2.md#performance-validation-register">性能登记</a>、DG-01/04/06/07、V-12/13/15/17/22/25/26。</p>
+<p><strong>讨论记录 HC-07</strong></p>
+<ul>
+<li>负载与资源总额、四类验收线：【待填写】。</li>
+<li>各类RPO/RTO、保留/删除和容量响应：【待填写】。</li>
+<li>尚缺的基线、测量负责人和正式锁定时间：【待填写】。</li>
+<li>决策人 / 业务性能及运维负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="hc"><p><a id="hc-08"></a></p>
+<h2 id="heading-10-hc-08">10 HC-08 运行版本 补丁维护和投入怎样批准</h2>
+<p><strong>要解决的问题。</strong> 当前固定源码证明了改造挂点，尚不能据此给出产品承诺或准确总工期。需要选择实际运行版本，确认哪些核心补丁由我们长期维护、怎样升级/退出，并把Agent执行、人审、模型和基础设施开销分别计量。</p>
+<p><strong>当前建议：保留eb021da为本轮核验锁；最终运行release另选。</strong> 先用代表性的受理/发布/模型传输改动、一次升级差额和一次退出往返校准投入，再决定首期实施预算。已有Hindsight底座选择不重复表决。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>需要确定的交付层</th>
+<th>当前建议</th>
+<th>需要拿到的证据或输入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上游与运行版本</td>
+<td>明确发布版本、commit、补丁、依赖和支持周期</td>
+<td>与核验SHA的差额、兼容矩阵、回滚/退出能力</td>
+</tr>
+<tr>
+<td>补丁边界</td>
+<td>集中在已列扩展点，逐真实入口核旁路</td>
+<td>改动面、可升级性、代表补丁及一次升级记录；不能假设上游一定接受贡献</td>
+</tr>
+<tr>
+<td>工作量</td>
+<td>Agent session、人审小时、返工、账单和日历等待分别记录</td>
+<td>实际首批速率与维护成本，不继承旧人周/月数作承诺</td>
+</tr>
+<tr>
+<td>发行组合</td>
+<td>保留自主闭源、必需功能不依赖商业授权的既有约束</td>
+<td>实际SBOM、模型/数据/插件和分发权利核查；根MIT不批准整栈</td>
+</tr>
+<tr>
+<td>执行范围</td>
+<td>明确批准的是探针、某模块、R1能力包还是发布</td>
+<td>环境、合成/真实数据、费用上限、责任人、停止条件；不能用一个“同意设计”代替所有范围</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>请逐项讨论。</strong></p>
+<ul>
+<li><strong>HC-08.Q1 最终版本选择看什么？</strong> 稳定发行、必需修复、维护节奏或已核验改造成本如何排序？不要把当前核验commit直接当已批准生产版本。选择标准：【待填写】。</li>
+<li><strong>HC-08.Q2 可以承担哪些长期核心补丁？</strong> 哪些必须有上游扩展点，哪些接受受控fork，何种升级/退出失败会触发缩范围或重开底座决定？边界：【待填写】。</li>
+<li><strong>HC-08.Q3 谁承接产品、技术与运维决策？</strong> 建议分别指定数据/业务、DB/内核、安全/模型、宿主/Skill、测试/发布职责；可一人兼任，不据此编造人力配置。姓名或待认领范围：【待填写】。</li>
+<li><strong>HC-08.Q4 当前愿意投入哪一阶段、多少资源？</strong> 分填Agent执行、人审、基础设施、模型调用预算与时间窗口；未知则明确等待何种估算。范围和上限：【待填写】。</li>
+<li><strong>HC-08.Q5 发行及部署边界是什么？</strong> 先明确SD-05的目标形态，再审对应组合；已有许可硬约束保持，具体核查由有责任的审阅者给出结果。填写：【待填写】。</li>
+</ul>
+<p><strong>决定会影响：</strong> R1开工和排期、实际版本束、维护与发行责任。当前产品实现、真实模型实跑和生产验证均NOT_RUN；本讨论稿不启动这些工作。参见<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-12">正文§11/12/14</a>、DG-08、MP-01—09、V-14/16/18。</p>
+<p><strong>讨论记录 HC-08</strong></p>
+<ul>
+<li>运行版本选择标准、补丁维护与退出条件：【待填写】。</li>
+<li>本次批准的工作范围、资源/费用/时间上限：【待填写】。</li>
+<li>各责任人与必须先补的证据：【待填写】。</li>
+<li>决策人 / 工程和发行负责人 / 日期：【待填写】。</li>
+</ul>
+</section><section data-kind="extra"><p><a id="additional"></a></p>
+<h2 id="heading-11">11 补充的重要讨论题</h2>
+<p>以下问题在V2.5正文中已有候选行为，或是这些行为隐含的产品取舍；在本次核对的材料中，未找到足够独立的人工接受记录。这里将它们显式拆出，避免团队只选PG方案后，就把其他产品政策默认接受。它们都归入原HC，建议本轮讨论，不代表新增必做功能。</p>
+<p><a id="sd-01"></a></p>
+<h3 id="heading-sd-01">SD-01 共享粒度和跨团队发布</h3>
+<p><strong>归属：HC-02/03/04；优先级：范围冻结前。</strong> 一个Bank同时放研发公开规范和仅负责人可看的事故记录，Bank统一ACL是否够用？两个Tenant需要共享同一份企业规范时，要求直接联合访问，还是由有权发布者发布/导入受控副本？</p>
+<p>选项为：A统一Bank受众，混合权限资料分Bank；B首期支持逐来源/文档ACL并覆盖派生和所有读取；C增加显式跨Tenant发布域。<strong>当前建议：A作为首期候选；B/C只有实际任务必需时提前进入范围。</strong> 代价是更多Bank、联检和管理；收益是权限规则更容易解释。若业务必须在同Bank混合权限，不能以A通过演示便声称需求满足。</p>
+<p>请填写：必须的共享场景、最细权限对象、历史成员读权、跨Tenant发布/撤回/归因规则：【待填写】。</p>
+<p>建议决策人：数据/业务与安全；验证关联：V-05/20/24、DG-03、MP-07/08；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-7">正文§3/7</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-02"></a></p>
+<h3 id="heading-sd-02">SD-02 谁决定来源权威 冲突和时间语义</h3>
+<p><strong>归属：HC-02/04/06；优先级：业务样例与接口定稿前。</strong> 两份规范互相矛盾、助手复述与用户原话不同、迟到旧事件和未来生效规则同时存在时，谁有权定优先级？“截至某天”是业务有效时间，还是系统当时已经知道的材料？</p>
+<p>选项为：有权配置明确来源优先级；人工维护冲突/替代关系；模型提出待审关系。<strong>当前建议：时间、权威、条件和supersedes共同选择；无法裁定则返回冲突/缺口，模型只提出候选。</strong> 不以最后到达或最大revision自动决定事实。历史“当时已知”若缺commit-derived水位证据，应明确未就绪。</p>
+<p>请填写：权威来源及负责人、谁能标注/覆盖替代关系、条件未知时的响应、冲突是否允许人工覆盖及审计、首期是否必须支持严格as_known：【待填写】。</p>
+<p>建议决策人：业务知识负责人；验证关联：V-02/03/06/10、MP-08；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-6">正文§5/6</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-03"></a></p>
+<h3 id="heading-sd-03">SD-03 默认查询成本和宿主采用保证</h3>
+<p><strong>归属：HC-04/05/06/07；优先级：首期对外接口冻结前。</strong> 一次查询允许服务自动增加多少轮模型调用？缺少必要例外证据时，返回部分结果还是拒绝肯定结论？最终宿主删掉条件或未采用返回证据时，服务承诺到哪里？</p>
+<p>选项为：调用者显式选择direct/hybrid/Reflect；预算内有界自动升级；固定策略。<strong>当前建议：明确总预算和停止码，只在有可命名证据缺口时有界升级；必要规则/例外不齐时返回缺口。</strong> 首期选一个可观测宿主验证最终输入；其他宿主按服务返回级能力声明，不能把ContextBundle返回当实际使用。</p>
+<p>请填写：默认策略、可自动追加的成本/轮数、complete/partial默认、首个宿主和版本、最终采用可观测性及失败行为：【待填写】。</p>
+<p>建议决策人：产品、检索与宿主；验证关联：V-06/07/10/17、DG-02、MP-02/03/09；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-6">正文§6/9</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-04"></a></p>
+<h3 id="heading-sd-04-skill">SD-04 Skill由谁批准发布以及何时退役</h3>
+<p><strong>归属：HC-02/04/06；优先级：Skill首期闭环冻结前。</strong> 一个Agent生成了看似成功的操作步骤，但真实工具任务失败；谁能把它从候选升为可用Skill？工具schema升级后，旧版本何时必须停用？</p>
+<p>选项为：人工编写/生成候选并人工Release；模型生成加独立Trial后人工Release；满足预定政策后自动Release。<strong>当前建议：R1采用冻结版本、独立工具oracle和显式人工发布；自动发布后置。</strong> 这是当前候选，三业务总目标已定并不自动批准这套发布政策。旧Trial不能批准新正文，工具/前提不兼容应拒用或退役。</p>
+<p>另需讨论人工编辑与分发权威：Skill正文由Git、文件还是平台编辑维护？若采用Git，commit可定位正文版本，Trial、Release和实际采用仍须分别有可核状态；不能把提交代码当作已经发布或验证。此为补充问题，未选定Git方案。</p>
+<p>请填写：正文编辑权威、候选作者、Trial执行者/判定者、Release权限、留出任务、共享范围、失败/版本变化退役规则、回滚后的复验要求：【待填写】。</p>
+<p>建议决策人：业务、Skill与宿主负责人；验证关联：V-04/07/14/16、MP-09；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-9">正文§9</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-05"></a></p>
+<h3 id="heading-sd-05">SD-05 首个交付形态 产品入口和数据出域边界</h3>
+<p><strong>归属：HC-03/04/05/08；优先级：部署和预算定稿前。</strong> 既有共识允许托管或自托管，但没有选择首个交付形态。平台托管、客户私有部署、离线环境，需要的运维、模型、OBS和key能力不同。</p>
+<p><strong>补充建议：先指定一个用于首期验证的参考部署组合，列清其他形态的支持状态。</strong> 不在本稿替用户选云厂商、地域或供应商价格。若离线/本地模型是首期硬要求，应从起点纳入模型与升级/运维合同，不能在云路径完成后才补一句支持离线。</p>
+<p>还需确认首期交付是开发者API/SDK/MCP服务，还是同时包含供业务人员操作的资料管理、Skill审阅、任务/费用管理界面。原生Hindsight管理UI不能自动算作产品控制面；所需界面与人工流程要进入HC-04/08范围和投入。</p>
+<p>请填写：交付形态、必需的使用/管理入口、网络/出网限制、允许的数据类别和模型目的地、谁运营PG/OBS/key/备份、是否需客户自带凭据、其他形态何时进入：【待填写】。</p>
+<p>建议决策人：产品、平台、安全与交付；验证关联：V-11/15/18/23、MP-05/06/07；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/brief.md">项目既有共识</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-14">正文§10/14/16</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-06"></a></p>
+<h3 id="heading-sd-06">SD-06 首期输入类型 连接器和自动摄取边界</h3>
+<p><strong>归属：HC-02/04/07；优先级：数据与受理接口冻结前。</strong> Text/File/Session都要沿原件先持久路径处理，但“支持文件”不能自动等于支持所有PDF、扫描件、表格、音视频或任意URL，也不能自动等于接管各业务系统的同步与删除。</p>
+<p><strong>补充建议：首期明确文本、一种代表性文件解析路径和版本化Session事件合同，按实际任务列支持矩阵；其他格式/连接器显式后置。</strong> 若真实任务必须OCR、表格或特定系统同步，就把它及其成本/删除传播纳入首期，而不是用普通文本结果代证。</p>
+<p>外部Git、Wiki或业务系统如为来源，需确认只读摄取还是还要回写；双向修改的冲突和原始权威不能由连接器自行决定。</p>
+<p>请填写：格式与体积上限、来源系统及只读/回写边界、全量/增量/删除同步、上传与加工授权、Session真实工具收据来源、解析失败/超限/重复输入的体验：【待填写】。</p>
+<p>建议决策人：业务接入、存储与后端；验证关联：V-01/08/25/26、DG-06、MP-04/08；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-5">正文§4/5/14</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-07"></a></p>
+<h3 id="heading-sd-07">SD-07 运维处置和紧急访问的权限</h3>
+<p><strong>归属：HC-02/03/06/07/08；优先级：真实数据/支持承诺前。</strong> 系统出现旧Worker、未知模型费用、恢复缺段或索引失败，谁可以暂停租户、冻结Unit、撤销key、重新受理、回滚发布？支持人员能看哪些诊断内容？</p>
+<p><strong>补充建议：把管理动作、内容读取、恢复放行和费用调整分成可审权限；指定实际责任角色和最小审计。</strong> 调试需要不自动授全库读取；紧急访问要有明确范围、记录和结束条件。用户选择的是运维权利和服务责任，是否真的能阻断旧写/旧发送仍需技术验证。</p>
+<p>请填写：各处置动作批准者/执行者、支持人员可见字段、紧急访问规则、对客户通知/升级机制、人工介入时限、恢复放行与费用调整责任：【待填写】。</p>
+<p>建议决策人：平台、安全、数据与财务负责人；验证关联：V-05/08/13/15/23/24、MP-04/05/06/07；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-11">正文§7/8/11/16</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+<p><a id="sd-08"></a></p>
+<h3 id="heading-sd-08">SD-08 首期兼容矩阵和后续扩展触发条件</h3>
+<p><strong>归属：HC-04/05/08；优先级：发行束与对外能力声明前。</strong> 更换embedding空间、parser/prompt、数据库扩展或外部图/store，哪些需要重建、并存版本、停机或重新验证？“可替换接口”不代表所有组合已经可用。</p>
+<p><strong>补充建议：先锁用于首期验证的release/schema/payload/profile/model/index组合，按能力声明未支持组合。</strong> 保留原生检索/图能力及明确扩展接口；是否引入外部图或其他store，应由具体任务收益、容量/机制差额及权利证据触发，不把其他研究线的候选当本架构已经选定。</p>
+<p>请填写：必须支持的版本/模型/数据库组合、升级窗口、旧客户端兼容期、重建/回滚要求、触发外部组件研究或替换的业务条件：【待填写】。</p>
+<p>建议决策人：架构、内核、检索与发行负责人；验证关联：V-14/16/18、DG-08、MP-03/05/06/08；依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-12">正文§10/11/12</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/research/graph-foundation-selection/README.md">图线范围</a>。<strong>讨论结果 / 前提 / 负责人 / 日期：【待填写】。</strong></p>
+</section><section data-kind="history"><p><a id="accepted-history"></a></p>
+<h2 id="heading-12">12 已经确认的事项和当时的分歧</h2>
+<p>本节记录确认范围，供内部成员理解来龙去脉。它不把所有历史讨论都说成多轮争执，也不把恢复原方案、作者修稿或脚本PASS升级为用户决定。确有用户纠正的事项注明纠正；只有当前材料能支持的范围才列USER_AGREED。日期以所链材料为准。</p>
+<p><a id="ad-01"></a></p>
+<h3 id="heading-ad-01-hindsight">AD-01 选择Hindsight作为当前底座</h3>
+<p><strong>已确认：USER_AGREED，2026-09-30。</strong> 先前存在Cognee/Hindsight等条件路线和各自不足，用户随后明确选择Hindsight，工作转入围绕所选底座校准目标、源码和架构。当前不因新会话重跑全部候选选型。</p>
+<p><strong>仍未随之决定：</strong> 最终release、全部Chat架构、生产能力或总投入。若必需三业务、安全/权利、升级/退出在可承担成本内不成立，才提交固定证据和替代方案重开决定。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0001-hindsight-foundation.md">ADR-0001</a>。</p>
+<p><a id="ad-02"></a></p>
+<h3 id="heading-ad-02-skill">AD-02 知识 记忆与轨迹到Skill三业务都要</h3>
+<p><strong>已确认：USER_AGREED，2026-09-21，后续架构继续保留。</strong> 历史云化估算曾以Memory和派生Knowledge为基线，将完整Session/Skill另计；当前设计不能因此遗漏Skill或仅交一个Memory产品。</p>
+<p><strong>仍未随之决定：</strong> R1每类做到哪一步、自动编译/自动发布、任意工具与连接器。三业务最小闭环是当前推荐，首期深度归HC-04。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/brief.md">项目共识</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0001-hindsight-foundation.md">ADR-0001</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/a2a096b994e78c6a1c1f57147953a8d2d29d1580/docs/architecture/hindsight/KEY-DESIGN-REVIEW.md#kd-05">V2.4历史KD-05</a>。</p>
+<p><a id="ad-03"></a></p>
+<h3 id="heading-ad-03">AD-03 以任务效果 时间和全周期成本评价</h3>
+<p><strong>已确认：USER_AGREED评价方向。</strong> 既往讨论从检索准确率和速度继续细化到任务级证据、调用轮数和总成本；组件多、向量多、单次召回漂亮，都不能单独表示业务有价值。</p>
+<p><strong>仍未随之决定：</strong> 每次都用Reflect、某个目录/图/模型方案一定更优，或固定性能数字。检索策略与基线归HC-04/07和SD-03。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/brief.md">项目共识</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/research/design-preparation/Q06-RETRIEVAL-PLAN.md">Q06</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-GOALS.md">目标G-004</a>。</p>
+<p><a id="ad-04"></a></p>
+<h3 id="heading-ad-04">AD-04 宿主保留执行循环 最终上下文与工具控制</h3>
+<p><strong>已确认：既有用户共识及ADR-0001边界。</strong> ContextDB负责保存、加工、检索和提供可用证据，宿主仍掌握最后编译的模型输入和工具执行。服务返回、真正入窗和业务成功是不同证据。</p>
+<p><strong>仍未随之决定：</strong> 所有宿主都能提供严格的最终使用保证，或服务永远不能执行自身有界Reflect。首个可观测宿主和采用级别归HC-04/06、SD-03。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/brief.md">项目共识</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0001-hindsight-foundation.md">ADR-0001</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-6">正文§6/9</a>。</p>
+<p><a id="ad-05"></a></p>
+<h3 id="heading-ad-05-api-handler-worker">AD-05 API Handler Worker三功能集群必须拆开</h3>
+<p><strong>已确认：USER_AGREED，2026-09-30；曾明确纠正并退回。</strong> V2.1曾把API/业务合并作为减少复杂度的起点，并把拆分与规模/SLO挂钩。用户明确“集群功能拆分是必须的”，该建议被撤回，旧内部PASS不构成接受。</p>
+<p><strong>仍未随之决定：</strong> 三套物理Kubernetes控制平面、固定主机/副本数量、区域、成本或生产故障隔离。减少实例数量与取消职责边界是不同取舍。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0002-functional-cluster-separation.md">ADR-0002</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/history-v2.1.json">V2.1退回历史</a>。</p>
+<p><a id="ad-06"></a></p>
+<h3 id="heading-ad-06-gateway">AD-06 Gateway承担完整入口治理职责</h3>
+<p><strong>已确认：H12/H16 USER_AGREED。</strong> 拆出Handler以后，Gateway仍负责认证、入口授权、限流/背压、监控/审计/trace和路由，不能被描述成只收请求的透明转发壳。业务读取、模型消费与提交处还要核当前资格。</p>
+<p><strong>仍未随之决定：</strong> 限流后端、份额参数、监控产品和缓存期限。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">要求H16</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>。</p>
+<p><a id="ad-07"></a></p>
+<h3 id="heading-ad-07-subtenant">AD-07 Subtenant是成员或服务账号而不是项目</h3>
+<p><strong>已确认：H13 USER_AGREED；有明确术语澄清。</strong> Tenant是团队，Subtenant是成员/服务账号的独立使用主体，Bank是数据空间。不能将Project/Workspace直接替代Subtenant，也不由三级对象推出三层嵌套schema。</p>
+<p><strong>仍未随之决定：</strong> Bank归谁、一个Unit多大、管理员读权和个人资产。归HC-01/02。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">H12/H13原记录</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>。</p>
+<p><a id="ad-08"></a></p>
+<h3 id="heading-ad-08">AD-08 前三集群无状态 所有集群有扩展路径</h3>
+<p><strong>已确认：H12 USER_AGREED。</strong> 无状态指运行实例不拥有独占耐久业务状态；PG、OBS和账本仍有持久状态，缓存/连接可以存在。PG只读副本不能被当作写扩展。H17另确认把N/M/K/S抽象图纳入文档，E用于计算执行域计数。</p>
+<p><strong>仍未随之决定：</strong> 自动伸缩阈值、所有组件首期全自动迁移、N/M/K/S数值及生产容量。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">H17</a>。</p>
+<p><a id="ad-09"></a></p>
+<h3 id="heading-ad-09-pg">AD-09 PG元数据和用户数据要明确分离</h3>
+<p><strong>已确认：H12 USER_AGREED目标。</strong> 需要从对象、授权、字段到schema和生命周期说明分离；task JSON、日志、用户配置中的正文不能因“元数据”名字而免分类。</p>
+<p><strong>仍未随之决定：</strong> 全部物理分库、方案B已经通过、schema就是安全边界。历史PG研究分工不是物理方案接受记录；HC-01/03继续决定这些取舍。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">要求分类表</a>。</p>
+<p><a id="ad-10"></a></p>
+<h3 id="heading-ad-10">AD-10 统一模型接入 计量 监控和管理</h3>
+<p><strong>已确认：H12 USER_AGREED目标。</strong> 设计要解释多租模型接入和费用，不只是画一个“外部LLM”端口。当前候选把逻辑调用、真实发送、用量观察、平台成本和客户账单分开处理。</p>
+<p><strong>仍未随之决定：</strong> 独立L部署、PG资格访问路径、OBS结果持久、BYOK、客户费率、失败重试收费。后半部分是候选合同，归HC-05/06。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-16">正文§16</a>。</p>
+<p><a id="ad-11"></a></p>
+<h3 id="heading-ad-11-obs">AD-11 同一份既有OBS原件先保存 再处理</h3>
+<p><strong>已确认：H14/H15 USER_AGREED；有连续澄清。</strong> 先前曾因原生默认文件后端而提出PG原件默认方案；用户随后确认使用既有S3类OBS，并澄清WAL/redo只是“先持久”的启发，不要增加另一份raw日志或第二套任务系统。</p>
+<p><strong>仍未随之决定：</strong> OBS厂商、保留、RPO/RTO，以及派生模型结果怎样保存。原件成功不等于PG已经受理，也不能从OBS扫描重造权限。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">H14/H15</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/a2a096b994e78c6a1c1f57147953a8d2d29d1580/docs/architecture/hindsight/KEY-DESIGN-REVIEW.md#kd-13">历史KD-06/13</a>。</p>
+<p><a id="ad-12"></a></p>
+<h3 id="heading-ad-12-pass">AD-12 重大改变要单列审查 内容不能靠脚本PASS验收</h3>
+<p><strong>已确认：H11/H16 USER_AGREED。</strong> 功能合并、权威存储、隔离、首期范围等改变，要说明原目标、理由、代价、备选和决定；普通措辞/链接修复由执行者完成。先前图/阅读深度被退回，也说明结构检查不替代用户内容接受。</p>
+<p><strong>仍未随之决定：</strong> 当前V2.5已经被接受或生产可以开启。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0002-functional-cluster-separation.md">ADR-0002</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">H16</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REVIEW-V2.md">当前AR台账</a>。</p>
+<p><a id="ad-13"></a></p>
+<h3 id="heading-ad-13">AD-13 性能保持和模块持续优化必须验证</h3>
+<p><strong>已确认：2026-10-03 USER_AGREED验证覆盖与分期。</strong> 设计定稿前需要能推翻关键假设的最小证据，后续模块改动要做适用回归。局部更快不能代替端到端质量、授权、状态和成本通过。</p>
+<p><strong>仍未随之决定：</strong> 示例10%/5%、附加毫秒数是SLO，或文档修订已经验证性能。具体数字归HC-07，DG/MP仍NOT_RUN。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/VALIDATION-V2.md#performance-validation-register">唯一性能验证登记及用户确认原话</a>。</p>
+<p><a id="ad-14"></a></p>
+<h3 id="heading-ad-14">AD-14 自主闭源与必需功能的权利约束继续保留</h3>
+<p><strong>已确认：既有用户约束，由当前架构沿用。</strong> 自主闭源、必需功能不依赖购买商业授权、Neo4j按用户约束排除。其他图引擎只是对应研究线的条件候选，没有被本次架构自动选择。</p>
+<p><strong>仍未随之决定：</strong> Hindsight根MIT能批准全部依赖、模型、数据、插件和交付方式。具体发行组合继续核验，归HC-08；本稿不重新作法律结论。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/research/graph-foundation-selection/README.md">图线当前用户约束</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0001-hindsight-foundation.md">ADR-0001</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md#sec-12">正文许可门</a>。</p>
+<p><a id="ad-15"></a></p>
+<h3 id="heading-ad-15">AD-15 完整正文唯一 历史和证据层级保留</h3>
+<p><strong>已确认：本轮V2.5修订的用户要求及仓库约定。</strong> DESIGN-V2保持唯一架构正文，相关图/HTML同源；新证据影响判断时同步修改，不只末尾追加相反意见。原始来源、失败、退回版本和不同实验cohort保留。</p>
+<p><strong>仍未随之决定：</strong> 生成页面可算新证据，或本讨论稿变成第二套当前架构。根据讨论形成的决定需回写权威材料。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/HANDOFF.md">V2.5交接</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/history-v2.4.json">分析基线</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/AGENTS.md">仓库约定</a>。</p>
+<p><a id="ad-16"></a></p>
+<h3 id="heading-ad-16">AD-16 历史公开阅读授权只覆盖指定两页</h3>
+<p><strong>已确认：H18当时先讨论项目用户访问，随后用户明确授权两份HTML公开预览。</strong> 仓库和其他证据未改可见性。V2.5最初修订未公开重发；用户随后明确要求完整架构和决策问题提供HTML直接预览，当前发布按这两个阅读入口执行。</p>
+<p><strong>对本稿的含义：</strong> 当前HTML阅读快照沿用既有预览站访问范围，仅包含完整架构、决策问题和必要配图；Word/Markdown/证据仍需仓库权限。成员填写的意见和未来敏感修改不自动公开，也不替用户发送给任何人员。依据：<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">H18</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/online/README.md">在线版本记录</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/delivery-v2.5.json">V2.5交付</a>。</p>
+</section><section data-kind="history"><p><a id="revisited"></a></p>
+<h2 id="heading-13">13 反复修订但仍不能称为已接受的选择</h2>
+<p>这些事项适合在讨论时回看，因为“恢复原方案”“作者选择了推荐路线”和“已经写入V2.5”容易被误记为用户接受。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>编号 / 事项</th>
+<th>历史变化</th>
+<th>当前候选与未决边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RD-01 控制面与双placement</td>
+<td>原设计独立控制面/双放置；一版弱化为同库起步或后置；后恢复其职责和映射</td>
+<td>当前保独立控制权威及两种位置映射；物理存储、自动化和容量由HC-01/04/07决定</td>
+</tr>
+<tr>
+<td>RD-02 默认隔离档</td>
+<td>曾把tenant专用进程升为R1参考默认；因未单列接受而撤回</td>
+<td>按shard/profile组织候选池，不表示共享档或专用档已经获接受；回HC-03</td>
+</tr>
+<tr>
+<td>RD-03 Bank全写串行</td>
+<td>V2.4以Bank短提交串行简化fence；审查指出吞吐/热点风险</td>
+<td>V2.5共享屏障+对象CAS，总锁序与全部写点仍需真实PG验证；HC-07决定性能容忍</td>
+</tr>
+<tr>
+<td>RD-04 版本发布与delta</td>
+<td>原位更新、代际发布和未变块复用之间曾缺完整身份合同；分析稿每代doc ID又有复用回源歧义</td>
+<td>V2.5稳定锚点+不可变构件+membership/overlay；发布/GC/放大仍NOT_RUN，HC-04/07审可用性和保留</td>
+</tr>
+<tr>
+<td>RD-05 ingest-only加工</td>
+<td>仅有上传权不能直接读旧Bank加工；单纯阻止全部后台又限制自动摄取</td>
+<td>当前允许预授权processor的新关联operation；原发起人不改写，权限/离职/收费仍HC-02/06待决</td>
+</tr>
+<tr>
+<td>RD-06 L资格与模型结果</td>
+<td>原统一Adapter描述不足以说明真实资格写方、H停机依赖、回包持久与MetaPG故障</td>
+<td>V2.5选定一条候选主线，独立服务/限定PG/OBS结果均未获人工接受；回HC-05/06</td>
+</tr>
+<tr>
+<td>RD-07 幂等与恢复回执</td>
+<td>正常重试找回原operation，不代表PITR丢账本后还能承诺同样结果</td>
+<td>当前给ACCEPTANCE_GAP和显式reaccept，安全/费用先核；RPO/保留/丢失处置回HC-06/07</td>
+</tr>
+<tr>
+<td>RD-08 版本和工期数字</td>
+<td>Chat采用发布SHA和既有估算，后固定eb021da核验并改为工作包校准</td>
+<td>核验版本不等于运行版本，历史人周/月份/Agent session区间不自动成为预算；回HC-08</td>
+</tr>
+</tbody>
+</table></div>
+<p>来源：<a href="https://github.com/RSIXDB/ContextArk/blob/a2a096b994e78c6a1c1f57147953a8d2d29d1580/docs/architecture/hindsight/KEY-DESIGN-REVIEW.md">V2.4历史关键审查</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REVIEW-RESPONSE.md">设计者裁决</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md">V2.5正文</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REVIEW-V2.md">19AR处理</a>。这一表记录设计演进，不新增验证PASS。</p>
+</section><section data-kind="guide"><p><a id="record"></a></p>
+<h2 id="heading-14">14 会议结论和手工修改汇总</h2>
+<p>可复制下表，为每个实际结论单独填一行。合并讨论多项时仍分别填写接受范围；不要用“整体同意”替代所有数值、权限与能力政策。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>议题编号</th>
+<th>结论及适用范围</th>
+<th>前提/未决证据</th>
+<th>确认人及日期</th>
+<th>需要改的正文/ADR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HC-xx / SD-xx</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>HC-xx / SD-xx</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>HC-xx / SD-xx</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+<tr>
+<td>HC-xx / SD-xx</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+<td>【待填写】</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>建议主持人结束时确认四件事：</strong> 哪些只是倾向；哪些有条件接受；哪些要补证据；哪些明确暂缓且有未支持行为。已有决定如要重开，写出新增证据或目标变化、被替代条目与影响，不删历史。已由用户确认的约束，需要用户或其明确授权的决策人确认变更；普通成员意见或多数倾向不会自行覆盖。</p>
+<p>回写顺序建议为：先保留本次人工修改和异议，再形成有确认人/日期的决定记录，更新DESIGN-V2及适用ADR，最后同步目标、图、接口/工作包、验证要求和派生页面。具体实施或付费工作按其单独范围推进。本稿不修改现有V/DG/MP/PX的运行状态。</p>
+</section><section data-kind="guide"><p><a id="evidence"></a></p>
+<h2 id="heading-15">15 材料范围和证据边界</h2>
+<p>本次核对了当前V2.5、HC/KD/AR/验证登记、ADR-0001—0003、H12—H18要求、V2.4关键审查、项目共识和直接相关研究约束。没有声称恢复全部历史聊天、证明所有技术机制，或向内部成员征求过实际意见。新增SD问题与推荐属于本轮INFERENCE/PROPOSED，供讨论修改。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>材料</th>
+<th>在本稿中支持什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/DESIGN-V2.md">DESIGN-V2</a>及<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/KEY-DESIGN-REVIEW.md">关键选择</a></td>
+<td>当前候选机制、既有HC及其影响；不是人工接受或运行证据</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0001-hindsight-foundation.md">ADR-0001</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0002-functional-cluster-separation.md">ADR-0002</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/decisions/ADR-0003-tenant-stateless-pg-model-goals.md">ADR-0003</a></td>
+<td>三项已接受决定的明确范围和未接受边界</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REQUIREMENTS-V2.3.md">REQUIREMENTS-V2.3</a></td>
+<td>H12—H18目标、术语与交付澄清；文件名保留历史</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/a2a096b994e78c6a1c1f57147953a8d2d29d1580/docs/architecture/hindsight/KEY-DESIGN-REVIEW.md">历史关键审查</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/history-v2.4.json">历史清单</a></td>
+<td>曾出现的方案变化与纠正；不把历史推荐迁为当前接受</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REVIEW-RESPONSE.md">REVIEW-RESPONSE</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/REVIEW-V2.md">REVIEW-V2</a></td>
+<td>设计者独立裁决与V2.5文本处理；机制/性能分别保留NOT_RUN</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/architecture/hindsight/VALIDATION-V2.md">VALIDATION-V2</a></td>
+<td>唯一验证要求/状态与已确认的性能验证分期</td>
+</tr>
+<tr>
+<td><a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/docs/brief.md">brief</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/research/design-preparation/Q06-RETRIEVAL-PLAN.md">Q06</a>、<a href="https://github.com/RSIXDB/ContextArk/blob/64adc1f215218bb8b39a29fe7af4500b9c6c4d35/research/graph-foundation-selection/README.md">图线当前约束</a></td>
+<td>三业务、宿主、效果/时间/成本和既有权利约束；不接受新的组件或具体部署</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>本稿尚未取得：</strong> 人工填写的选择、实际负责人承接、HC数字阈值、独立内容复审和任何新增产品探针/性能/业务/生产结果。内部讨论后保留具体分歧，不用少数勾选或文档检查替代这些结果。</p></section><p class="source-note">唯一讨论稿源 DECISION-WORKBOOK.md · SHA-256 42932e8a73571b5ec869672a2ad48acee665a1cad61e0d4d9269d3c67a4ebd28。Word为可编辑分发副本；未包含本轮人工填写的新接受记录。</p></main></div><script>
+const items=[...document.querySelectorAll('main section')], search=document.querySelector('#search'), view=document.querySelector('#view');
+function filter(){const q=search.value.trim().toLowerCase(),v=view.value;let n=0;for(const s of items){const ok=(!q||s.textContent.toLowerCase().includes(q))&&(v==='all'||s.dataset.kind===v);s.hidden=!ok;if(ok)n++;}document.querySelector('#count').textContent=`显示 ${n} / ${items.length} 节；本页不记录人工决定。`;}
+search.addEventListener('input',filter);view.addEventListener('change',filter);document.querySelector('#reset').onclick=()=>{search.value='';view.value='all';filter();};document.querySelector('#print').onclick=()=>window.print();document.querySelectorAll('aside a[href^="#"]').forEach(a=>a.onclick=()=>{search.value='';view.value='all';filter();});filter();
+</script><div style="font:13px/1.7 system-ui,sans-serif;padding:10px 20px;background:#edf4f8;color:#40596b;text-align:center">此站公开提供V2.5完整架构与决策问题HTML快照。Word、Markdown及补充证据仍需仓库权限；页面不收集成员意见。</div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a44d3076bed5e391',t:'MTc5MTA0MzUzNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

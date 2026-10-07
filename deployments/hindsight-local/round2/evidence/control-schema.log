@@ -1,0 +1,109 @@
+{
+  "exit_code": 0,
+  "schema": "round2_design_1791125260",
+  "database": "contextdb_round2_control",
+  "checks": 21,
+  "results": [
+    {
+      "check": "same-public-bank-name-in-different-workspaces",
+      "result": "pass"
+    },
+    {
+      "check": "cross-workspace-bank-grant",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "cross-workspace-subject-grant",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "one-placement-per-workspace",
+      "result": "pass",
+      "sqlstate": "23505"
+    },
+    {
+      "check": "one-workspace-per-cell-schema",
+      "result": "pass",
+      "sqlstate": "23505"
+    },
+    {
+      "check": "key-scope-pepper-expiry-roundtrip",
+      "result": "pass"
+    },
+    {
+      "check": "invalid-key-expiry",
+      "result": "pass",
+      "sqlstate": "23514"
+    },
+    {
+      "check": "empty-key-scopes",
+      "result": "pass",
+      "sqlstate": "23514"
+    },
+    {
+      "check": "invalid-pepper-version",
+      "result": "pass",
+      "sqlstate": "23514"
+    },
+    {
+      "check": "request-idempotency-unique",
+      "result": "pass",
+      "sqlstate": "23505"
+    },
+    {
+      "check": "request-cross-workspace-bank",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "ledger-cross-workspace-subject",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "ledger-cross-workspace-key",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "referenced-key-delete-restricted",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "revoked-key-tombstone-preserves-ledger-identity",
+      "result": "pass"
+    },
+    {
+      "check": "source-revision-unique",
+      "result": "pass",
+      "sqlstate": "23505"
+    },
+    {
+      "check": "publication-state-and-job-rollback-atomic",
+      "result": "pass"
+    },
+    {
+      "check": "publication-state-job-reference-commit",
+      "result": "pass"
+    },
+    {
+      "check": "publication-cross-workspace-source",
+      "result": "pass",
+      "sqlstate": "23503"
+    },
+    {
+      "check": "embedding-dimension-positive",
+      "result": "pass",
+      "sqlstate": "23514"
+    },
+    {
+      "check": "cell-artifact-version-fields",
+      "result": "pass"
+    }
+  ],
+  "fsync": "off",
+  "scope": "reference DDL/constraints/transaction logic; not production migration or power-loss durability; fixtures retained for review"
+}

@@ -1,0 +1,186 @@
+4:  pull_request:
+6:  workflow_dispatch:
+9:  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+10:  cancel-in-progress: true
+13:  detect-changes:
+315:  check-integration-lockfiles:
+331:  typecheck-api:
+376:  build-api-python-versions:
+419:  build-typescript-client:
+446:  build-hindsight-all-npm:
+471:      run: npm test --workspace=hindsight-all-npm
+476:  build-openclaw-integration:
+530:      run: npm test
+532:  smoke-openclaw-install:
+596:  test-coding-agents:
+626:      run: npm test
+632:  test-claude-code-integration:
+656:      run: python -m pytest tests/ -v
+658:  test-cursor-integration:
+682:      run: python -m pytest tests/ -v
+684:  test-zed-integration:
+708:      run: npm test
+710:  test-omo-integration:
+734:      run: python -m pytest tests/ -v
+736:  test-cline-integration:
+771:      run: uv run pytest tests -v
+773:  test-github-copilot-integration:
+810:      run: uv run pytest tests -v -m "not requires_real_llm"
+812:  test-codex-integration:
+836:      run: python -m pytest tests/ -v
+838:  test-cursor-cli-integration:
+873:      run: uv run pytest tests -v
+875:  test-zcode-integration:
+910:      run: uv run pytest tests -v
+912:  test-agent-plugin-integration:
+935:  build-ai-sdk-integration:
+960:      run: npm test
+966:  test-ai-sdk-integration-deno:
+996:      run: npm run test:deno
+998:  build-eliza-integration:
+1023:      run: npm test
+1029:  test-opencode-integration:
+1054:      run: npm test
+1060:  test-eve-integration:
+1085:      run: npm test
+1091:  test-n8n-integration:
+1116:      run: npm test
+1122:  test-zapier-integration:
+1151:      run: npm test
+1153:  test-hindsight-agent-sdk:
+1181:      run: npm test --workspace=hindsight-tools/hindsight-agent-sdk
+1186:  test-cloudflare-oauth-proxy-integration:
+1215:      run: npm test
+1217:  build-chat-integration:
+1242:      run: npm test
+1248:  test-paperclip-integration:
+1277:      run: npm test
+1279:  test-pipecat-integration:
+1314:      run: uv run pytest tests -v
+1316:  test-google-adk-integration:
+1351:      run: uv run pytest tests -v
+1353:  test-gemini-spark-integration:
+1384:      run: uv run pytest tests -v
+1386:  test-meta-muse-integration:
+1417:      run: uv run pytest tests -v
+1419:  test-grok-bot-integration:
+1440:      run: pip install pytest pydantic
+1444:      run: python -m pytest tests -v
+1446:  test-roo-code-integration:
+1482:      run: uv run pytest tests -v
+1484:  build-control-plane:
+1521:      run: npm test --workspace=hindsight-control-plane
+1551:  test-interfig:
+1580:      run: npm test --workspace=@vectorize-io/interfig
+1586:  build-docs:
+1627:  test-rust-cli:
+1693:      run: cargo test
+1781:  lint-helm-chart:
+1803:  test-standalone-start-script:
+1820:  build-docker-images:
+1926:  test-api:
+1935:    # Sharded with pytest-split. Splits the ~19-min pytest run across 3
+2025:      run: uv run --with pytest-split pytest tests -v -m "not hs_llm_mat and not hs_llm_core" --splits 3 --group ${{ matrix.shard }}
+2027:  test-api-llm-core:
+2116:      run: uv run pytest tests -v -m "hs_llm_core" --timeout 600 --reruns 2 --reruns-delay 5
+2118:  test-api-llm-acceptance:
+2221:      run: uv run pytest tests -v -m "hs_llm_mat" --timeout 600
+2223:  test-api-oracle:
+2364:      run: uv run pytest tests -v -m oracle -n0
+2366:  test-python-client:
+2470:      run: uv run pytest tests -v
+2478:  test-typescript-client:
+2587:      run: npm test
+2608:  test-python-client-oracle:
+2781:      run: uv run pytest tests -v -n0
+2789:  test-typescript-client-oracle:
+2962:      run: npm test
+2970:  test-typescript-client-deno:
+3085:      run: npm run test:deno
+3093:  build-rust-cli-arm64:
+3125:  test-rust-client:
+3233:      run: cargo test --lib
+3241:  test-go-client:
+3347:      run: go test -v -tags=integration
+3355:  test-openclaw-integration:
+3480:      run: npm run test:integration
+3488:  test-integration:
+3587:      run: uv run pytest tests/ -v
+3595:  test-system:
+3639:      run: uv run pytest tests -v
+3641:  test-ag2-integration:
+3676:      run: uv run pytest tests -v
+3678:  test-aider-integration:
+3715:      run: uv run pytest tests -v -m "not requires_real_llm"
+3717:  test-autogen-integration:
+3754:      run: uv run pytest tests -v -m "not requires_real_llm"
+3756:  test-composio-integration:
+3797:      run: uv run pytest tests -v -m "not requires_real_llm"
+3799:  test-continue-integration:
+3836:      run: uv run pytest tests -v -m "not requires_real_llm"
+3838:  test-smolagents-integration:
+3873:      run: uv run pytest tests -v
+3875:  test-dify-integration:
+3904:      run: uv pip install --system -e . pytest pytest-mock
+3908:      run: pytest tests -v
+3910:  test-flowise-integration:
+3939:      run: npm test
+3941:  test-obsidian-integration:
+3974:      run: npm test
+3976:  test-agent-framework-integration:
+4017:      run: uv run pytest tests -v -m "not requires_real_llm"
+4019:  test-copilot-cli-integration:
+4054:      run: uv run pytest tests -v
+4056:  test-extension-supabase-tenant:
+4091:      run: uv run pytest tests -v
+4103:  test-extension-static-keys-tenant:
+4138:      run: uv run pytest tests -v
+4150:  test-crewai-integration:
+4185:      run: uv run pytest tests -v
+4187:  test-vapi-integration:
+4223:      run: uv run pytest tests -v
+4225:  test-superagent-integration:
+4262:      run: uv run pytest tests -v -m "not requires_real_llm"
+4264:  test-litellm-integration:
+4301:      run: uv run pytest tests -v -m "not requires_real_llm"
+4303:  test-pydantic-ai-integration:
+4338:      run: uv run pytest tests -v
+4340:  test-hermes-integration:
+4371:      run: uv run pytest tests -v
+4373:  test-langgraph-integration:
+4410:      run: uv run pytest tests -v -m "not requires_real_llm"
+4412:  test-llamaindex-integration:
+4449:      run: uv run pytest tests -v -m "not requires_real_llm"
+4451:  test-haystack-integration:
+4488:      run: uv run pytest tests -v -m "not requires_real_llm"
+4490:  test-openai-agents-integration:
+4527:      run: uv run pytest tests -v -m "not requires_real_llm"
+4529:  test-openhands-integration:
+4566:      run: uv run pytest tests -v -m "not requires_real_llm"
+4568:  test-devin-desktop-integration:
+4605:      run: uv run pytest tests -v -m "not requires_real_llm"
+4607:  test-claude-agent-sdk-integration:
+4643:      run: uv run pytest tests -v -m "not requires_real_llm"
+4645:  test-agentcore-integration:
+4680:      run: uv run pytest tests -v
+4682:  test-pip-slim:
+4751:  verify-embed-control-center-bundle:
+4794:  test-embed:
+4851:      run: uv run pytest tests/ -v
+4857:  test-embed-windows:
+4928:      run: uv run pytest tests/ -v
+5065:  test-hermes-compat:
+5122:  test-hindsight-all:
+5184:      run: npm test --workspace=hindsight-control-plane
+5211:      run: uv run pytest tests/ -v
+5213:  test-doc-examples:
+5366:  test-upgrade:
+5438:      run: uv run pytest upgrade_tests/ -v --tb=short
+5462:  check-unused-code:
+5506:  verify-generated-files:
+5594:  check-openapi-compatibility:
+5659:  check-cli-coverage:
+5699:  check-client-coverage:
+5738:  test-dev:
+5768:      run: uv run pytest tests/ -v
+5773:  report-pr-status:

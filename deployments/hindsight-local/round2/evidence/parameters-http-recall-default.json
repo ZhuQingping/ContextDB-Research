@@ -1,0 +1,7 @@
+{
+  "request_model_default": 4096,
+  "live_openapi_default": 4096,
+  "handler_source": "api/http.py:6144 passes request.max_tokens explicitly to recall_async",
+  "bank_config_recall_max_tokens": "Used in internal model-refresh retrieval memory_engine.py:15289; not a cap on HTTP RecallRequest",
+  "exit_code": 0
+}

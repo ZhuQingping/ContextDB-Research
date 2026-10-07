@@ -1,0 +1,28 @@
+{
+  "command": [
+    "env",
+    "-u",
+    "http_proxy",
+    "-u",
+    "https_proxy",
+    "-u",
+    "all_proxy",
+    "-u",
+    "ALL_PROXY",
+    "-u",
+    "HTTPS_PROXY",
+    "../.venv/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "tests/test_aiohttp_session.py",
+    "-q",
+    "--junitxml=../../../evidence/tests-proxy-cleanenv/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim",
+  "started_utc": "2026-10-04T14:34:14.651372+00:00",
+  "finished_utc": "2026-10-04T14:34:18.172432+00:00",
+  "duration_seconds": 3.521,
+  "exit_code": 0
+}

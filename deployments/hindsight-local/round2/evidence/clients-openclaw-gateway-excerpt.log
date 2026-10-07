@@ -1,0 +1,40 @@
+2026-10-04T22:37:22.236+08:00 [gateway] shutdown budget at startup: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-10-04T22:37:24.442+08:00 [38;5;103mhindsight:[0m plugin entry invoked
+2026-10-04T22:37:24.442+08:00 [plugins] [38;5;103mhindsight:[0m registering plugin service
+2026-10-04T22:37:24.443+08:00 [plugins] [38;5;103mhindsight:[0m registering agent hooks
+2026-10-04T22:37:24.443+08:00 [plugins] [38;5;103mhindsight:[0m agent hooks registered
+2026-10-04T22:37:24.475+08:00 [gateway] [plugins] typed hook "before_prompt_build" blocked because non-bundled plugins must set plugins.entries.hindsight-openclaw.hooks.allowConversationAccess=true (plugin=hindsight-openclaw, source=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw/dist/index.js)
+2026-10-04T22:37:24.475+08:00 [gateway] [plugins] typed hook "agent_end" blocked because non-bundled plugins must set plugins.entries.hindsight-openclaw.hooks.allowConversationAccess=true (plugin=hindsight-openclaw, source=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/openclaw/dist/index.js)
+2026-10-04T22:37:25.125+08:00 [plugins] [38;5;103mhindsight:[0m service.start invoked
+2026-10-04T22:37:25.157+08:00 [plugins] [38;5;103mhindsight:[0m initialized (mode: external API, bank: round2-client-openclaw, autoRecall: true, autoRetain: true)
+2026-10-04T22:37:25.214+08:00 [gateway] ready
+2026-10-04T22:37:38.814+08:00 [38;5;103mhindsight:[0m plugin entry invoked
+2026-10-04T22:37:38.816+08:00 [plugins] [38;5;103mhindsight:[0m registering plugin service
+2026-10-04T22:37:38.816+08:00 [plugins] [38;5;103mhindsight:[0m registering agent hooks
+2026-10-04T22:37:38.816+08:00 [plugins] [38;5;103mhindsight:[0m agent hooks registered
+2026-10-04T22:37:49.471+08:00 [admission] closed: stop (SIGTERM)
+2026-10-04T22:37:49.471+08:00 [gateway] received SIGTERM; shutting down
+2026-10-04T22:37:49.472+08:00 [gateway] shutdown budget at shutdown: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-10-04T22:37:49.564+08:00 [shutdown] completed cleanly in 85ms
+2026-10-04T22:38:02.215+08:00 [gateway] shutdown budget at startup: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-10-04T22:38:04.027+08:00 [38;5;103mhindsight:[0m plugin entry invoked
+2026-10-04T22:38:04.028+08:00 [plugins] [38;5;103mhindsight:[0m registering plugin service
+2026-10-04T22:38:04.028+08:00 [plugins] [38;5;103mhindsight:[0m registering agent hooks
+2026-10-04T22:38:04.028+08:00 [plugins] [38;5;103mhindsight:[0m agent hooks registered
+2026-10-04T22:38:04.658+08:00 [plugins] [38;5;103mhindsight:[0m service.start invoked
+2026-10-04T22:38:04.679+08:00 [plugins] [38;5;103mhindsight:[0m initialized (mode: external API, bank: round2-client-openclaw, autoRecall: true, autoRetain: true)
+2026-10-04T22:38:04.721+08:00 [gateway] ready
+2026-10-04T22:39:01.871+08:00 [38;5;103mhindsight:[0m plugin entry invoked
+2026-10-04T22:39:01.871+08:00 [plugins] [38;5;103mhindsight:[0m registering plugin service
+2026-10-04T22:39:01.871+08:00 [plugins] [38;5;103mhindsight:[0m registering agent hooks
+2026-10-04T22:39:01.872+08:00 [plugins] [38;5;103mhindsight:[0m agent hooks registered
+2026-10-04T22:39:02.246+08:00 [plugins] [38;5;103mhindsight:[0m Skipping recall on session 'agent:main:explicit:round2-claw-retain': missing stable message provider
+2026-10-04T22:39:06.785+08:00 [plugins] [38;5;103mhindsight:[0m Skipping retain on session 'agent:main:explicit:round2-claw-retain': missing stable message provider
+2026-10-04T22:39:26.251+08:00 [plugins] [38;5;103mhindsight:[0m waitForReady called before service.start() — attempting lazy initialization fallback
+2026-10-04T22:39:48.423+08:00 [plugins] [38;5;103mhindsight:[0m injecting 1 memories into context (bank: round2-client-openclaw)
+2026-10-04T22:39:54.142+08:00 Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634.
+2026-10-04T22:40:01.391+08:00 [admission] closed: stop (SIGTERM)
+2026-10-04T22:40:01.391+08:00 [gateway] received SIGTERM; shutting down
+2026-10-04T22:40:01.392+08:00 [gateway] shutdown budget at shutdown: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-10-04T22:40:01.410+08:00 [plugins] [38;5;103mhindsight:[0m 1 recalls (1 memories injected), 2 retains (4 messages captured) in 117s (bank: round2-client-openclaw)
+2026-10-04T22:40:01.513+08:00 [shutdown] completed cleanly in 118ms

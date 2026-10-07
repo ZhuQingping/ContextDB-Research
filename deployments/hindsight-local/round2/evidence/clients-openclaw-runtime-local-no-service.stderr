@@ -1,0 +1,19 @@
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[provider-transport-fetch] [model-fetch] response provider=round2 api=anthropic-messages model=glm-5.3-flash status=200 elapsedMs=3193 dispatcher=new contentType=text/event-stream; charset=utf-8
+[agents/agent-command] [agent] run 7ff0b8d2-11c0-4c76-9726-2b90fe191463 ended with stopReason=stop
+[session-sqlite] reclamation worker retired reason=revoked kind=maintenance-plan ageMs=7569 opsServed=3

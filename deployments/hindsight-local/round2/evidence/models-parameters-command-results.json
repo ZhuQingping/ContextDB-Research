@@ -1,0 +1,12 @@
+[
+  {
+    "command": "deployments/hindsight-local/.venv/bin/python deployments/hindsight-local/round2/scripts/parameters_inventory.py",
+    "exit_code": 0,
+    "scope": "clean-env config extraction"
+  },
+  {
+    "command": "deployments/hindsight-local/round2/.venv-parameters/bin/python deployments/hindsight-local/round2/scripts/models_local.py",
+    "exit_code": 0,
+    "scope": "real local model execution and loopback HTTP parity; not MaaS"
+  }
+]

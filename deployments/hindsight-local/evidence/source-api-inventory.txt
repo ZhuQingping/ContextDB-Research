@@ -1,0 +1,99 @@
+GET /health | health_endpoint_health_get | Health check endpoint
+GET /health/ready | get_readiness | Readiness probe
+GET /health/live | get_liveness | Liveness probe
+GET /version | get_version | Get API version and feature flags
+GET /metrics | metrics_endpoint_metrics_get | Prometheus metrics endpoint
+GET /v1/default/banks/{bank_id}/graph | get_graph | Get memory graph data
+GET /v1/default/banks/{bank_id}/memories/list | list_memories | List memory units
+POST /v1/default/banks/{bank_id}/memories/dry-run-extract | dry_run_extract_memories | Dry-run fact extraction (preview, no persistence)
+POST /v1/default/banks/{bank_id}/prompts/preview | preview_prompt | Preview an operation's prompts (no LLM call)
+GET /v1/default/banks/{bank_id}/memories/{memory_id} | get_memory | Get memory unit
+PATCH /v1/default/banks/{bank_id}/memories/{memory_id} | update_memory | Curate memory unit
+GET /v1/default/banks/{bank_id}/memories/{memory_id}/history | get_observation_history | Get observation history
+POST /v1/default/banks/{bank_id}/memories/recall | recall_memories | Recall memory
+POST /v1/default/banks/{bank_id}/reflect | reflect | Reflect and generate answer
+GET /v1/default/banks | list_banks | List memory banks
+GET /v1/default/banks/{bank_id}/stats | get_agent_stats | Get statistics for memory bank
+POST /v1/default/banks/{bank_id}/health/llm | test_bank_llm | Test the bank's LLM connectivity
+GET /v1/default/banks/{bank_id}/stats/memories-timeseries | get_memories_timeseries | Memory ingestion time-series
+GET /v1/default/banks/{bank_id}/entities | list_entities | List entities
+GET /v1/default/banks/{bank_id}/entities/graph | get_entity_graph | Get entity co-occurrence graph
+GET /v1/default/banks/{bank_id}/entities/{entity_id} | get_entity | Get entity details
+POST /v1/default/banks/{bank_id}/entities/{entity_id}/regenerate | regenerate_entity_observations | Regenerate entity observations (deprecated)
+GET /v1/default/banks/{bank_id}/mental-models | list_mental_models | List mental models
+POST /v1/default/banks/{bank_id}/mental-models | create_mental_model | Create mental model
+GET /v1/default/banks/{bank_id}/mental-models/{mental_model_id} | get_mental_model | Get mental model
+PATCH /v1/default/banks/{bank_id}/mental-models/{mental_model_id} | update_mental_model | Update mental model
+DELETE /v1/default/banks/{bank_id}/mental-models/{mental_model_id} | delete_mental_model | Delete mental model
+GET /v1/default/banks/{bank_id}/mental-models/{mental_model_id}/history | get_mental_model_history | Get mental model history
+POST /v1/default/banks/{bank_id}/mental-models/{mental_model_id}/refresh | refresh_mental_model | Refresh mental model
+POST /v1/default/banks/{bank_id}/mental-models/{mental_model_id}/dry-run-refresh | dry_run_refresh_mental_model | Dry-run mental model refresh (preview, no persistence)
+POST /v1/default/banks/{bank_id}/mental-models/{mental_model_id}/clear | clear_mental_model | Clear mental model content
+GET /v1/default/banks/{bank_id}/knowledge-base/tree | get_knowledge_base_tree | Get the knowledge-base tree
+POST /v1/default/banks/{bank_id}/knowledge-base/folders | create_knowledge_folder | Create a knowledge-base folder
+POST /v1/default/banks/{bank_id}/knowledge-base/pages | create_knowledge_page | Create a knowledge-base page
+GET /v1/default/banks/{bank_id}/knowledge-base/export | export_knowledge_base | Export the knowledge base as a markdown bundle
+GET /v1/default/banks/{bank_id}/knowledge-base/search | search_knowledge_base | Hybrid search over knowledge pages (BM25 + vector)
+GET /v1/default/banks/{bank_id}/knowledge-base/pages/{page_id} | get_knowledge_page | Get a knowledge-base page
+PATCH /v1/default/banks/{bank_id}/knowledge-base/nodes/{node_id} | update_knowledge_node | Rename/move a knowledge-base node or update a page's options
+DELETE /v1/default/banks/{bank_id}/knowledge-base/nodes/{node_id} | delete_knowledge_node | Delete a knowledge-base node
+GET /v1/default/banks/{bank_id}/directives | list_directives | List directives
+POST /v1/default/banks/{bank_id}/directives | create_directive | Create directive
+GET /v1/default/banks/{bank_id}/directives/{directive_id} | get_directive | Get directive
+PATCH /v1/default/banks/{bank_id}/directives/{directive_id} | update_directive | Update directive
+DELETE /v1/default/banks/{bank_id}/directives/{directive_id} | delete_directive | Delete directive
+GET /v1/default/banks/{bank_id}/documents | list_documents | List documents
+GET /v1/default/banks/{bank_id}/documents/{document_id}/chunks | list_document_chunks | List document chunks
+POST /v1/default/banks/{bank_id}/documents/{document_id}/reprocess | reprocess_document | Reprocess document
+GET /v1/default/banks/{bank_id}/documents/{document_id} | get_document | Get document details
+PATCH /v1/default/banks/{bank_id}/documents/{document_id} | update_document | Update document
+DELETE /v1/default/banks/{bank_id}/documents/{document_id} | delete_document | Delete a document
+GET /v1/default/banks/{bank_id}/tags | list_tags | List tags
+GET /v1/default/chunks/{chunk_id} | get_chunk | Get chunk details
+GET /v1/default/banks/{bank_id}/operations | list_operations | List async operations
+GET /v1/default/banks/{bank_id}/operations/{operation_id} | get_operation_status | Get operation status
+DELETE /v1/default/banks/{bank_id}/operations/{operation_id} | cancel_operation | Cancel a pending or in-flight async operation
+POST /v1/default/banks/{bank_id}/operations/{operation_id}/retry | retry_operation | Retry a failed async operation
+DELETE /v1/default/banks/{bank_id}/operations/{operation_id}/delete | delete_operation | Delete a terminal async operation
+GET /v1/default/banks/{bank_id}/profile | get_bank_profile | Get memory bank profile (removed — use GET .../config)
+PUT /v1/default/banks/{bank_id}/profile | update_bank_disposition | Update memory bank disposition (removed — use PATCH .../config)
+POST /v1/default/banks/{bank_id}/background | add_bank_background | Add/merge memory bank background (removed — use PATCH .../config)
+GET /v1/default/banks/{bank_id}/aliases | list_bank_aliases | List the bank's aliases
+POST /v1/default/banks/{bank_id}/aliases | create_bank_alias | Add an alias to the bank
+PATCH /v1/default/banks/{bank_id}/aliases/{alias} | set_bank_alias_primary | Show this alias in place of the bank id
+DELETE /v1/default/banks/{bank_id}/aliases/{alias} | delete_bank_alias | Remove an alias from the bank
+PUT /v1/default/banks/{bank_id} | create_or_update_bank | Create or update memory bank
+PATCH /v1/default/banks/{bank_id} | update_bank | Partial update memory bank
+DELETE /v1/default/banks/{bank_id} | delete_bank | Delete memory bank
+POST /v1/default/banks/{bank_id}/import | import_bank_template | Import bank template
+GET /v1/default/banks/{bank_id}/export | export_bank_template | Export bank template
+GET /v1/default/banks/{bank_id}/document-transfer | export_documents_sync_removed | Export documents (removed — use POST .../document-transfer/export)
+POST /v1/default/banks/{bank_id}/document-transfer | import_documents | Import documents (async)
+POST /v1/default/banks/{bank_id}/document-transfer/export | export_documents | Export documents (async)
+POST /v1/default/banks/{bank_id}/transfer/export | export_bank_transfer | Export a bank (async)
+POST /v1/default/banks/{bank_id}/transfer/import | import_bank_transfer | Import a bank (async)
+POST /v1/default/banks/{bank_id}/clone | clone_bank | Clone a bank (async)
+GET /v1/default/banks/{bank_id}/attachments/{attachment_id} | get_bank_attachment | Fetch an attachment retained inline with a document
+GET /v1/default/files/download/{key} | download_file | Download a stored file (async export archive)
+GET /v1/bank-template-schema | get_bank_template_schema | Get bank template JSON Schema
+DELETE /v1/default/banks/{bank_id}/observations | clear_observations | Clear all observations
+GET /v1/default/banks/{bank_id}/observations/scopes | list_observation_scopes | List observation scopes
+POST /v1/default/banks/{bank_id}/consolidation-strategies/preview | preview_consolidation_strategies | Preview consolidation strategies
+POST /v1/default/banks/{bank_id}/consolidation/recover | recover_consolidation | Recover failed consolidation
+DELETE /v1/default/banks/{bank_id}/memories/{memory_id}/observations | clear_memory_observations | Clear observations for a memory
+GET /v1/default/banks/{bank_id}/config | get_bank_config | Get bank configuration
+PATCH /v1/default/banks/{bank_id}/config | update_bank_config | Update bank configuration
+DELETE /v1/default/banks/{bank_id}/config | reset_bank_config | Reset bank configuration
+POST /v1/default/banks/{bank_id}/consolidate | trigger_consolidation | Trigger consolidation
+POST /v1/default/banks/{bank_id}/webhooks | create_webhook | Register webhook
+GET /v1/default/banks/{bank_id}/webhooks | list_webhooks | List webhooks
+DELETE /v1/default/banks/{bank_id}/webhooks/{webhook_id} | delete_webhook | Delete webhook
+PATCH /v1/default/banks/{bank_id}/webhooks/{webhook_id} | update_webhook | Update webhook
+GET /v1/default/banks/{bank_id}/webhooks/{webhook_id}/deliveries | list_webhook_deliveries | List webhook deliveries
+POST /v1/default/banks/{bank_id}/memories | retain_memories | Retain memories
+DELETE /v1/default/banks/{bank_id}/memories | clear_bank_memories | Clear memory bank memories
+POST /v1/default/banks/{bank_id}/files/retain | file_retain | Convert files to memories
+GET /v1/default/banks/{bank_id}/audit-logs | list_audit_logs | List audit logs
+GET /v1/default/banks/{bank_id}/audit-logs/stats | audit_log_stats | Audit log statistics
+GET /v1/default/banks/{bank_id}/llm-requests | list_llm_requests | List LLM request traces
+GET /v1/default/banks/{bank_id}/llm-requests/stats | llm_request_stats | LLM request statistics

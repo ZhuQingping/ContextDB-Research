@@ -1,0 +1,14 @@
+{
+  "command": [
+    "npx",
+    "--yes",
+    "--package=node@24",
+    "--call",
+    "npm run build --workspace=hindsight-control-plane"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source",
+  "started_utc": "2026-10-04T14:39:27.531245+00:00",
+  "finished_utc": "2026-10-04T14:39:44.661538+00:00",
+  "duration_seconds": 17.13,
+  "exit_code": 0
+}

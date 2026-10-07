@@ -1,0 +1,5 @@
+{"ts":"2026-10-04T14:31:45.855Z","harness":"codex","event":"inject_recall","ms":150,"count":3}
+{"ts":"2026-10-04T14:31:45.861Z","harness":"codex","event":"pages_ok","ms":4,"count":0}
+{"ts":"2026-10-04T14:34:29.631Z","harness":"codex","event":"retain_ok","ms":29,"turns":2,"session":"01a10756-4e43-7c71-8c8b-61a6c3b717c2"}
+{"ts":"2026-10-04T14:34:49.334Z","harness":"codex","event":"inject_recall","ms":54,"count":4}
+{"ts":"2026-10-04T14:34:49.339Z","harness":"codex","event":"pages_ok","ms":4,"count":0}

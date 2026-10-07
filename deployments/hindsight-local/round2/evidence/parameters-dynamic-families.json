@@ -1,0 +1,23 @@
+{
+  "LLM": {
+    "pattern": "HINDSIGHT_API_{OP_}LLM_{n}_{FIELD}",
+    "operations": [
+      "",
+      "RETAIN",
+      "REFLECT",
+      "CONSOLIDATION",
+      "MENTAL_MODEL_REFRESH"
+    ],
+    "source_line": 2613
+  },
+  "reranker": {
+    "pattern": "HINDSIGHT_API_RERANKER_{n}_{FIELD}",
+    "source_line": 2819
+  },
+  "worker_reservations": {
+    "pattern": "HINDSIGHT_API_WORKER_{TYPE}_RESERVED_SLOTS",
+    "legacy": "HINDSIGHT_API_WORKER_{TYPE}_MAX_SLOTS",
+    "source_line": 962
+  },
+  "extension": "Extension-specific environment prefixes depend on configured plugin; not a closed global list."
+}

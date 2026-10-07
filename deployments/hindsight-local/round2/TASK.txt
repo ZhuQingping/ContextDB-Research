@@ -1,0 +1,13 @@
+任务：2026-10-04 夜间 Hindsight 服务化研究与本地验证。
+场景：feature-development（设计）、quality-hardening（验证）、external-docs（研究交付）。
+工作流：workflow-intake / workflow-night-run / workflow-dispatch。
+允许：读源码、联网核验官方资料、安装隔离测试依赖、运行本地测试、使用已授权的本机模型凭据处理合成数据、写研究报告和验证脚本。
+允许写入：hindsight/Huawei ContextDB Service Develop.md；hindsight/cloud-service-architecture.md；hindsight/cloud-service-priorities.md；deployments/hindsight-local/round2/**。各代理仅写各自 evidence/reports/scripts 子文件。
+生产代码编辑：DENIED；验证脚本及文档编辑：GRANTED（任务明确要求本地验证、文档和落地计划）。
+禁止：修改 Hindsight 原源码、全局客户端配置、原始凭据；提交/推送/发布；生产资源和真实客户数据；重写已有用户更改。
+源码：/Users/zhuqingping/Work/Database/Context/hindsight，commit f7dd3f4fd7420f7beec60c32c965e5e5cf7be066。
+隔离：源码只读，各代理单独 artifact 目录；测试使用独立 PG/Bank/端口，不影响 8888/9999/55432 主演示服务。
+验证：记录命令、退出码、JUnit/JSON、版本、耗时；测试失败保持真实，不能改测试掩盖；假模型通过与真实模型/真实客户端通过分开。
+停止边界：需要新付费资源、新账户授权或不可逆操作时不执行；继续其他独立工作并记录缺口。
+晨间验收：逐问题结论与证据；参数清单与推荐；流水线可运行命令；客户端兼容矩阵；HLD/LLD与5人任务计划；未验证事项及明确上线门槛。
+不以执行时长充当测试通过或完整性证明；不承诺未测客户端、MaaS、RDS/OBS或准确率。

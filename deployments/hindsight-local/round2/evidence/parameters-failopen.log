@@ -1,0 +1,70 @@
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+Failed to check permissions for bank round2-params-fault: synthetic policy dependency timeout
+Failed to check permissions for bank round2-params-fault: synthetic policy dependency unavailable
+{
+  "real_source": "ConfigResolver.update_bank_config and validate_bank_config_updates",
+  "database": "recording backend fixture, NOT PostgreSQL; validates whether real resolver invokes persistence",
+  "exit_code": 0,
+  "cases": [
+    {
+      "fault_or_policy": "timeout",
+      "outcome": "allowed",
+      "persistence_called": true,
+      "writes": [
+        {
+          "updates": {
+            "retain_mission": "synthetic update"
+          },
+          "bank": "round2-params-fault"
+        }
+      ],
+      "error": null
+    },
+    {
+      "fault_or_policy": "runtime_error",
+      "outcome": "allowed",
+      "persistence_called": true,
+      "writes": [
+        {
+          "updates": {
+            "retain_mission": "synthetic update"
+          },
+          "bank": "round2-params-fault"
+        }
+      ],
+      "error": null
+    },
+    {
+      "fault_or_policy": "empty_set",
+      "outcome": "rejected",
+      "persistence_called": false,
+      "writes": [],
+      "error": "ValueError: Not allowed to modify fields: ['retain_mission']. Your permissions do not allow any config modifications."
+    },
+    {
+      "fault_or_policy": "value_error",
+      "outcome": "rejected",
+      "persistence_called": false,
+      "writes": [],
+      "error": "ValueError: synthetic authorization denied"
+    },
+    {
+      "fault_or_policy": "allow",
+      "outcome": "allowed",
+      "persistence_called": true,
+      "writes": [
+        {
+          "updates": {
+            "retain_mission": "synthetic update"
+          },
+          "bank": "round2-params-fault"
+        }
+      ],
+      "error": null
+    }
+  ]
+}

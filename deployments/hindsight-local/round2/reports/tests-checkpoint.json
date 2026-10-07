@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-04T23:01:40.419645",
+  "status": "completed; summarized and temporary PG stopped",
+  "exec_session": 92447,
+  "processes": [
+    "26231 26226        21:14 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python",
+    "26303 26231        21:06 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python",
+    "26304 26231        21:06 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python",
+    "26403 26303        20:43 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python",
+    "26404 26304        20:43 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python"
+  ],
+  "passed_so_far": 9234,
+  "failure_nodes": [
+    "[gw1] FAILED tests/test_load_large_batch.py::TestLargeBatchRetain::test_db_connection_pool_under_load@load_batch_tests ",
+    "[gw0] FAILED tests/test_bank_aliases.py::test_only_a_bank_found_via_an_alias_is_labelled_with_one "
+  ],
+  "last_log_lines": [
+    "tests/test_source_text_tag_scope.py::test_recall_chunks_still_include_the_readers_own_documents ",
+    "[gw1] PASSED tests/test_source_text_tag_scope.py::test_recall_chunks_do_not_carry_a_hidden_document[tag_groups] ",
+    "[gw0] PASSED tests/test_source_text_tag_scope.py::test_recall_chunks_still_include_the_readers_own_documents ",
+    "tests/test_source_text_tag_scope.py::test_recall_chunks_reach_a_reader_the_document_allows[writer] ",
+    "tests/test_source_text_tag_scope.py::test_recall_chunks_reach_a_reader_the_document_allows[unfiltered] "
+  ],
+  "next_steps": [],
+  "final_passed": 10477,
+  "final_failed": 2,
+  "final_skipped": 185,
+  "final_xfailed": 5
+}

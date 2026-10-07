@@ -1,0 +1,50 @@
+Warning: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.env not found, tests may fail without proper configuration
+
+==================================== ERRORS ====================================
+________________ ERROR collecting tests/test_embedding_retry.py ________________
+ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.parameters-tests/tests/test_embedding_retry.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_embedding_retry.py:34: in <module>
+    from tests.aiohttp_stub import stub_server
+E   ModuleNotFoundError: No module named 'tests.aiohttp_stub'
+________ ERROR collecting tests/test_embeddings_asymmetric_prefixes.py _________
+ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.parameters-tests/tests/test_embeddings_asymmetric_prefixes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_embeddings_asymmetric_prefixes.py:21: in <module>
+    from tests.aiohttp_stub import stub_server
+E   ModuleNotFoundError: No module named 'tests.aiohttp_stub'
+_______________ ERROR collecting tests/test_tei_cross_encoder.py _______________
+ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.parameters-tests/tests/test_tei_cross_encoder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_tei_cross_encoder.py:28: in <module>
+    from tests.aiohttp_stub import stub_server
+E   ModuleNotFoundError: No module named 'tests.aiohttp_stub'
+________________ ERROR collecting tests/test_tei_embeddings.py _________________
+ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.parameters-tests/tests/test_tei_embeddings.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_tei_embeddings.py:21: in <module>
+    from tests.aiohttp_stub import Handler, stub_server
+E   ModuleNotFoundError: No module named 'tests.aiohttp_stub'
+=========================== short test summary info ============================
+ERROR tests/test_embedding_retry.py
+ERROR tests/test_embeddings_asymmetric_prefixes.py
+ERROR tests/test_tei_cross_encoder.py
+ERROR tests/test_tei_embeddings.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!
+4 errors in 1.06s

@@ -1,0 +1,223 @@
+{
+  "kind": "proposed-release-gates-not-deployed-ci",
+  "upstream_commit": "f7dd3f4fd7420f7beec60c32c965e5e5cf7be066",
+  "policy": {
+    "release_success": "Every required stage for the declared product capability matrix has evidence for the same artifact digest; NOT_RUN, BLOCKED, failed, error or unexplained skip cannot count as success.",
+    "skip_policy": "List every skip/xfail and map it to unsupported capability or an explicitly required alternative stage; do not turn missing credentials into a green release.",
+    "test_failure_policy": "Keep first failure and rerun evidence. Classify environment, fixture interference or product issue. An isolated rerun does not erase the full-suite failure.",
+    "baseline": "Record upstream/product commits, lockfiles, image digest, Linux/Python/PG/extensions, model revisions and effective config.",
+    "database_isolation": "One fresh PG per CI job/shard; xdist workers in upstream currently share the job DB. Tests touching global lists/schema/DDL need explicit serial groups or isolated databases. Keep upstream 3-shard/-n8 comparison separately from this Mac -n2 run."
+  },
+  "stages": [
+    {
+      "id": "S0-build-environment",
+      "depends_on": [],
+      "when": "every PR and release",
+      "gate": "Pinned dependencies and approved image build; provision local-model snapshots before offline tests. Linux target still requires validation.",
+      "entrypoint_templates": [
+        "uv sync --frozen --extra embedded-db --extra local-ml",
+        "npm ci --workspace=hindsight-control-plane --workspace=hindsight-clients/typescript"
+      ],
+      "planned_checks": [],
+      "executed_command_records": []
+    },
+    {
+      "id": "S1-static-contracts",
+      "depends_on": [
+        "S0-build-environment"
+      ],
+      "when": "every PR",
+      "gate": "0 unexpected error; client/CLI manifest skips explicitly reviewed. Coverage check is not runtime coverage.",
+      "local_evidence": [
+        "tests-ruff",
+        "tests-ty",
+        "tests-client-coverage",
+        "tests-cli-coverage"
+      ],
+      "not_run": [
+        "base-to-candidate OpenAPI compatibility: no code change candidate in this task"
+      ],
+      "entrypoint_templates": [
+        "ruff check hindsight_api",
+        "ty check hindsight_api",
+        "client-coverage-check",
+        "cli-coverage-check",
+        "cd hindsight-dev && uv run check-openapi-compatibility \"$CONTEXTDB_BASE_SPEC\" ../hindsight-docs/static/openapi.json"
+      ],
+      "planned_checks": [],
+      "executed_command_records": [
+        "../evidence/tests-ruff/command.json",
+        "../evidence/tests-ty/command.json",
+        "../evidence/tests-client-coverage/command.json",
+        "../evidence/tests-cli-coverage/command.json"
+      ]
+    },
+    {
+      "id": "S2-api-unit-pg-integration",
+      "depends_on": [
+        "S0-build-environment"
+      ],
+      "when": "every API/service-layer PR",
+      "gate": "0 unresolved failures/errors; every skip/xfail explained. Use new database per shard. Pin TZ=UTC, cached model revisions and subprocess proxy environment.",
+      "local_variant": "scripts/tests_full_localml.sh: -n2, no shard split, HF_HUB_OFFLINE=1, -s; excludes two unmarked real-LLM files, Docker S3 file and one Copilot-login case. These exclusions are requirements for S6/S7 or unsupported capability decisions, not passes.",
+      "local_evidence": [
+        "tests-api-nonllm",
+        "tests-api-localml-offline",
+        "tests-localml-issues-isolated",
+        "tests-localml-issue-files"
+      ],
+      "not_run": [
+        "exact upstream Linux 3-shard/-n8 topology"
+      ],
+      "entrypoint_templates": [
+        "uv run --with pytest-split pytest tests -m 'not hs_llm_mat and not hs_llm_core' --splits 3 --group <1..3> --junitxml=api.xml"
+      ],
+      "planned_checks": [],
+      "executed_command_records": [
+        "../evidence/tests-api-nonllm/command.json",
+        "../evidence/tests-localml-issues-isolated/command.json",
+        "../evidence/tests-localml-issue-files/command.json"
+      ]
+    },
+    {
+      "id": "S3-system-blackbox",
+      "depends_on": [
+        "S0-build-environment"
+      ],
+      "when": "every API/service-layer PR",
+      "gate": "0 fail/error; explicitly set HINDSIGHT_TEST_ONNX_MODEL_DIR and install local-onnx if claiming CPU ONNX capability. Never substitute stub results for model quality.",
+      "local_evidence": [
+        "tests-system",
+        "tests-system-onnx-localml"
+      ],
+      "not_run": [
+        "CUDA ONNX"
+      ],
+      "entrypoint_templates": [
+        "cd hindsight-system-tests && uv run pytest tests -v --junitxml=system.xml"
+      ],
+      "planned_checks": [],
+      "executed_command_records": [
+        "../evidence/tests-system/command.json",
+        "../evidence/tests-system-onnx-localml/command.json"
+      ]
+    },
+    {
+      "id": "S4-sdk-ui-artifacts",
+      "depends_on": [
+        "S1-static-contracts",
+        "S3-system-blackbox"
+      ],
+      "when": "every supported SDK/UI change and release",
+      "gate": "Build and unit tests pass; published SDK runtime suite must run against the release candidate test endpoint. Browser smoke verifies login, bank creation, retain/recall and task status. No localhost production endpoint defaults.",
+      "local_evidence": [
+        "tests-python-sdk-unit-retry",
+        "tests-typescript-build",
+        "tests-ui-utc",
+        "tests-ui-i18n",
+        "tests-ui-build"
+      ],
+      "not_run": [
+        "all Python/TS SDK real-provider integration tests",
+        "Rust/Go client suites",
+        "new-build browser E2E"
+      ],
+      "entrypoint_templates": [
+        "npm run build --workspace=hindsight-clients/typescript",
+        "TZ=UTC npm test --workspace=hindsight-control-plane",
+        "npm run i18n:check --workspace=hindsight-control-plane",
+        "npm run build --workspace=hindsight-control-plane"
+      ],
+      "planned_checks": [],
+      "executed_command_records": [
+        "../evidence/tests-python-sdk-unit-retry/command.json",
+        "../evidence/tests-typescript-build/command.json",
+        "../evidence/tests-ui-utc/command.json",
+        "../evidence/tests-ui-i18n/command.json",
+        "../evidence/tests-ui-build/command.json"
+      ]
+    },
+    {
+      "id": "S5-cloud-service-contracts",
+      "depends_on": [
+        "S2-api-unit-pg-integration",
+        "S3-system-blackbox"
+      ],
+      "when": "every cloud wrapper/auth/queue change and release",
+      "gate": "Cross-tenant accesses all denied; invalid/revoked keys denied; no body/header tenant spoofing; pending operations survive API/Worker restarts; deletion contract and quota accounting verified. Gateway prototype passing is not production IAM passing.",
+      "local_evidence": [
+        "tests-static-keys",
+        "Parent task gateway and split-worker probe artifacts"
+      ],
+      "not_run": [
+        "Huawei Cloud IAM/gateway/RDS/OBS production integration"
+      ],
+      "planned_checks": [
+        "Run product-owned tenant/auth/Bank-ACL/idempotency/quota/delete/worker-restart tests against candidate gateway+API+Worker+PG"
+      ],
+      "executed_command_records": [
+        "../evidence/tests-static-keys/command.json"
+      ]
+    },
+    {
+      "id": "S6-real-model-and-client-nightly",
+      "depends_on": [
+        "S3-system-blackbox",
+        "S5-cloud-service-contracts"
+      ],
+      "when": "nightly; mandatory for release/model/prompt/client changes",
+      "gate": "Credentials/model/client missing => BLOCKED, not green skip. Define and approve quality/cost/latency thresholds from measured baseline; report repetitions and retrieval-vs-reasoning failures separately.",
+      "local_evidence": [
+        "Parent client agent real-client probe artifacts; this agent did not repeat paid LLM calls"
+      ],
+      "not_run": [
+        "full upstream real-LLM matrix",
+        "standard quality evals / AMB scores",
+        "Huawei MaaS model acceptance"
+      ],
+      "entrypoint_templates": [
+        "pytest tests -m hs_llm_core --timeout 600",
+        "pytest tests -m hs_llm_mat --timeout 600 (declared supported providers)"
+      ],
+      "planned_checks": [
+        "Run hindsight-system-evals with pinned corpus, provider and independent judge",
+        "Run real Claude/Codex/Hermes/OpenClaw sessions on fresh isolated client homes and release candidate endpoint"
+      ],
+      "executed_command_records": []
+    },
+    {
+      "id": "S7-release-upgrade-recovery",
+      "depends_on": [
+        "S1-static-contracts",
+        "S2-api-unit-pg-integration",
+        "S3-system-blackbox",
+        "S4-sdk-ui-artifacts",
+        "S5-cloud-service-contracts",
+        "S6-real-model-and-client-nightly"
+      ],
+      "when": "every upstream upgrade and release",
+      "gate": "Same artifact digest passes all required stages. Accepted operations/data meet stated RPO. Local pg0 default fsync-off restart evidence cannot prove power-loss durability. OBS/S3 compatibility requires actual service verification.",
+      "not_run": [
+        "historical-release upgrade suite",
+        "production RDS failover/PITR/OBS",
+        "multi-hour capacity/soak",
+        "production release"
+      ],
+      "entrypoint_templates": [
+        "hindsight-dev upgrade_tests"
+      ],
+      "planned_checks": [
+        "Generate OpenAPI/SDK/docs and verify no unexpected diff",
+        "Run restore, schema migration, rollback and claimed RPO/RTO fault tests on production-equivalent RDS/OBS",
+        "Run production-equivalent load/soak and cost-budget tests"
+      ],
+      "executed_command_records": []
+    }
+  ],
+  "command_semantics": "Stage entrypoint_templates are documented upstream entrypoints requiring cwd/input/secrets from tests-ci-runbook.md, not claims of execution. English descriptions are planned_checks. Exact executed argv/cwd/exit/time live only in evidence/*/command.json.",
+  "entrypoint_evidence": {
+    "check-openapi-compatibility": "hindsight-dev/pyproject.toml:38; .github/workflows/test.yml check-openapi-compatibility job",
+    "npm_workspace_install": "evidence/tests-ui-install/command.json (executed npm ci --workspace=hindsight-control-plane --workspace=hindsight-clients/typescript --ignore-scripts --no-audit --no-fund)",
+    "npm_workspace_build": "evidence/tests-typescript-build/command.json and tests-ui-build/command.json"
+  }
+}

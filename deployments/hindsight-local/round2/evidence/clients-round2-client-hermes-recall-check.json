@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "id": "4f230f4c-dc60-493d-b0d0-5ad0df6411a2",
+      "text": "Synthetic acceptance fact: project CDB-HERMES-862 uses approval code LARCH-2074 and pool limit 47.",
+      "type": "world",
+      "entities": [
+        "pool limit",
+        "CDB-HERMES-862",
+        "LARCH-2074"
+      ],
+      "context": "conversation between Hermes Agent and the User",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:34:28+00:00",
+      "document_id": "20261004_223417_fd821f",
+      "metadata": {
+        "platform": "cli",
+        "session_id": "20261004_223417_fd821f",
+        "turn_index": "1",
+        "retained_at": "2026-10-04T14:34:28.821Z",
+        "message_count": "2",
+        "agent_identity": "default"
+      },
+      "chunk_id": "round2-client-hermes_20261004~5F223417~5Ffd821f_0",
+      "tags": [
+        "session:20261004_223417_fd821f"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 1.0999999326908738,
+        "reranker": null,
+        "semantic": 0.8738224581585865,
+        "keyword": 0.699999988079071
+      },
+      "attachments": null
+    }
+  ],
+  "trace": null,
+  "entities": {
+    "pool limit": {
+      "entity_id": "87cdb167-d229-4c0b-9a6b-79020ba9280e",
+      "canonical_name": "pool limit",
+      "observations": []
+    },
+    "CDB-HERMES-862": {
+      "entity_id": "caa9ef75-87a4-4ab5-9c52-8bde0870f8c0",
+      "canonical_name": "CDB-HERMES-862",
+      "observations": []
+    },
+    "LARCH-2074": {
+      "entity_id": "dbcd691f-81be-4d35-9cb6-7fc5258a6335",
+      "canonical_name": "LARCH-2074",
+      "observations": []
+    }
+  },
+  "chunks": null,
+  "source_facts": null,
+  "source_facts_truncated": null
+}

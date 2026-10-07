@@ -1,0 +1,58 @@
+[
+  {
+    "name": "ready-read-authorized",
+    "passed": true
+  },
+  {
+    "name": "concurrent-publish-only-one-winner",
+    "passed": true
+  },
+  {
+    "name": "exactly-one-durable-job",
+    "passed": true
+  },
+  {
+    "name": "publishing-blocks-new-read",
+    "passed": true
+  },
+  {
+    "name": "publishing-invalidates-inflight-read",
+    "passed": true
+  },
+  {
+    "name": "restart-keeps-query-gate-closed",
+    "passed": true
+  },
+  {
+    "name": "restart-keeps-pending-job",
+    "passed": true
+  },
+  {
+    "name": "failed-publication-remains-closed",
+    "passed": true
+  },
+  {
+    "name": "verified-publication-reopens",
+    "passed": true
+  },
+  {
+    "name": "old-ticket-never-becomes-valid-again",
+    "passed": true
+  },
+  {
+    "name": "retract-blocks-new-read",
+    "passed": true
+  },
+  {
+    "name": "retract-blocks-inflight-result",
+    "passed": true
+  },
+  {
+    "name": "rollback-restores-resource-state",
+    "passed": true
+  },
+  {
+    "name": "rollback-leaves-no-job",
+    "passed": true
+  }
+]

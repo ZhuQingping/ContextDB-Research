@@ -1,0 +1,11 @@
+Hindsight CLI OpenAPI coverage check
+  Spec:             hindsight-docs/static/openapi.json
+  Manifest:         hindsight-cli/.openapi-coverage.toml
+  Operations:       99
+    implemented:    73
+    skipped:        26
+  Request params:   126
+    covered:        67
+    skipped:        59
+
+OK: all 99 operations and 126 request params covered.

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "env",
+    "UV_PROJECT_ENVIRONMENT=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv",
+    "uv",
+    "sync",
+    "--python",
+    "3.12",
+    "--frozen",
+    "--extra",
+    "embedded-db",
+    "--extra",
+    "local-ml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim",
+  "started_utc": "2026-10-04T14:35:35.854836+00:00",
+  "finished_utc": "2026-10-04T14:35:57.464205+00:00",
+  "duration_seconds": 21.609,
+  "exit_code": 0
+}

@@ -1,0 +1,76 @@
+{
+  "bank_id": "round2-client-openclaw",
+  "total": 3,
+  "limit": 20,
+  "offset": 0,
+  "operations": [
+    {
+      "id": "260795a0-bd47-4a1f-8cee-118c3e3844e8",
+      "task_type": "consolidation",
+      "operation_id": "260795a0-bd47-4a1f-8cee-118c3e3844e8",
+      "operation_type": "consolidation",
+      "items_count": 0,
+      "document_id": null,
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:39:42.694611+00:00",
+      "updated_at": "2026-10-04T14:39:43.092787+00:00",
+      "status": "processing",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "consolidating",
+        "at": "2026-10-04T14:39:43.092314+00:00",
+        "processed": 0,
+        "total": 1,
+        "detail": null
+      }
+    },
+    {
+      "id": "33a72453-e8ed-4be0-b153-23c003691f1f",
+      "task_type": "batch_retain",
+      "operation_id": "33a72453-e8ed-4be0-b153-23c003691f1f",
+      "operation_type": "batch_retain",
+      "items_count": 1,
+      "document_id": "openclaw:agent:main:webchat:direct:round2-claw-retain",
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:39:36.485637+00:00",
+      "updated_at": "2026-10-04T14:39:42.696506+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": null
+    },
+    {
+      "id": "b6f0bcdd-f5d1-4836-87c0-b50929be63e6",
+      "task_type": "retain",
+      "operation_id": "b6f0bcdd-f5d1-4836-87c0-b50929be63e6",
+      "operation_type": "retain",
+      "items_count": 1,
+      "document_id": "openclaw:agent:main:webchat:direct:round2-claw-retain",
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:39:36.485637+00:00",
+      "updated_at": "2026-10-04T14:39:42.696506+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "storing",
+        "at": "2026-10-04T14:39:42.688871+00:00",
+        "processed": 1,
+        "total": 1,
+        "detail": {
+          "facts_committed": 1
+        }
+      }
+    }
+  ]
+}

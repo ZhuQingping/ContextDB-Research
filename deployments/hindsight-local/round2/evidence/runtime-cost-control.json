@@ -1,0 +1,67 @@
+{
+  "checked_at_utc": "2026-10-04T15:06:21.507029+00:00",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "low",
+  "llm_concurrency": "1",
+  "automatic_consolidation_default": "false",
+  "embedding": "local ONNX multilingual-e5-small",
+  "reranking": "RRF, no model inference",
+  "startup_model_probe_passed": true,
+  "startup_model_probe_log": [
+    "2026-10-04 23:05:45,129 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-5.6-luna"
+  ],
+  "api_health": {
+    "status": "healthy",
+    "database": "connected",
+    "db_acquire_ms": 0.3,
+    "db_pool_waiting": 0,
+    "db_pool_in_use": 0,
+    "db_pool_max": 100,
+    "db_pool_idle": 5
+  },
+  "bank_count": 8,
+  "bank_settings": [
+    {
+      "bank_id": "round2-client-openclaw",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "round2-client-claude",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "round2-client-hermes",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "round2-client-codex",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "huawei-contextdb-clone",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "huawei-contextdb-knowledge",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "huawei-contextdb-demo",
+      "effective_auto_consolidation": false,
+      "override": null
+    },
+    {
+      "bank_id": "huawei-contextdb-isolation",
+      "effective_auto_consolidation": false,
+      "override": null
+    }
+  ],
+  "api_pid": 53586,
+  "scope": "Runtime cost-control change; prior client tests used earlier model. Concurrency and defaults are not a hard token or spending cap."
+}

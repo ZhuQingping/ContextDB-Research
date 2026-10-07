@@ -1,0 +1,149 @@
+{
+  "schema": "round2_priv_1791125614",
+  "role": "round2_run_1791125614",
+  "checks": [
+    {
+      "phase": "admin-precreate",
+      "name": "precreate",
+      "status": 200,
+      "response": {
+        "bank_id": "round2-precreated",
+        "name": "round2-precreated",
+        "disposition": {
+          "skepticism": 3,
+          "literalism": 3,
+          "empathy": 3
+        },
+        "mission": "",
+        "background": ""
+      }
+    },
+    {
+      "phase": "dml-runtime",
+      "name": "configure",
+      "status": 200,
+      "response": {
+        "bank_id": "round2-precreated",
+        "config": {
+          "knowledge_page_default_trigger": null,
+          "consolidation_source_facts_max_tokens_per_observation": 256,
+          "consolidation_source_facts_max_tokens": 4096,
+          "entities_allow_free_form": true,
+          "recall_budget_fixed_mid": 300,
+          "observation_scope_limits": null,
+          "retain_mission": null,
+          "recall_budget_max": 2000,
+          "retain_strategies": null,
+          "retain_max_attachments_per_chunk": 8,
+          "entity_labels": null,
+          "enable_auto_consolidation": false,
+          "enable_graph_retrieval": true,
+          "retain_default_strategy": null,
+          "mcp_enabled_tools": null,
+          "retain_chunk_size": 3000,
+          "disposition_empathy": null,
+          "retain_custom_instructions": null,
+          "disposition_literalism": null,
+          "disposition_skepticism": null,
+          "enable_observations": false,
+          "recall_budget_adaptive_mid": 0.075,
+          "consolidation_strategies": null,
+          "recall_budget_fixed_high": 1000,
+          "llm_gemini_safety_settings": null,
+          "retain_structured_chunk_size": null,
+          "store_document_text": true,
+          "recall_budget_fixed_low": 100,
+          "mental_model_min_refresh_interval_seconds": 0,
+          "retain_chunk_batch_size": 100,
+          "recall_budget_adaptive_high": 0.25,
+          "max_observations_per_scope": -1,
+          "audit_log_enabled": false,
+          "memory_defense": null,
+          "recall_budget_adaptive_low": 0.025,
+          "observations_mission": null,
+          "recall_chunks_max_tokens": 1000,
+          "recall_budget_min": 20,
+          "enable_temporal_retrieval": true,
+          "reflect_mission": null,
+          "recall_budget_function": "fixed",
+          "reflect_default_options": null,
+          "enable_text_search": true,
+          "enable_reranking": true,
+          "consolidation_llm_parallelism": 4,
+          "consolidation_llm_batch_size": 8,
+          "reflect_source_facts_max_tokens": -1,
+          "consolidation_max_memories_per_round": 100,
+          "retain_extraction_mode": "chunks",
+          "recall_max_tokens": 2048,
+          "recall_include_chunks": true
+        },
+        "overrides": {
+          "enable_observations": false,
+          "retain_extraction_mode": "chunks",
+          "enable_auto_consolidation": false
+        }
+      }
+    },
+    {
+      "phase": "dml-runtime",
+      "name": "retain",
+      "status": 200,
+      "response": {
+        "success": true,
+        "bank_id": "round2-precreated",
+        "items_count": 1,
+        "async": false,
+        "operation_id": null,
+        "operation_ids": null,
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "cached_tokens": 0,
+          "thoughts_tokens": 0
+        }
+      }
+    },
+    {
+      "phase": "dml-runtime",
+      "name": "recall",
+      "status": 200,
+      "response": {
+        "results": [
+          {
+            "id": "8c6806f6-8ef0-476a-83dc-ccfb6b70b7a8",
+            "text": "Synthetic ZX8932 connection pool reduced from 200 to 50.",
+            "type": "world",
+            "entities": null,
+            "context": "",
+            "occurred_start": null,
+            "occurred_end": null,
+            "mentioned_at": "2026-10-04T14:54:49.961881+00:00",
+            "document_id": "precreated-doc",
+            "metadata": {},
+            "chunk_id": "round2-precreated_precreated-doc_0",
+            "tags": [],
+            "source_fact_ids": null,
+            "scores": {
+              "final": 1.0999999991738203,
+              "reranker": null,
+              "semantic": 0.894380476903334,
+              "keyword": 0.30000001192092896
+            },
+            "attachments": null
+          }
+        ],
+        "trace": null,
+        "entities": null,
+        "chunks": null,
+        "source_facts": null,
+        "source_facts_truncated": null
+      }
+    }
+  ],
+  "temporary_api_stopped": true,
+  "all_http_checks_passed": true,
+  "fsync": "off",
+  "scope": "privileged precreation followed by no-DDL runtime on one synthetic bank",
+  "recall_contains_canary": true
+}

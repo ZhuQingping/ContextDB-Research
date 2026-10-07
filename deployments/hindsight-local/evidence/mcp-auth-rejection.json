@@ -1,0 +1,4 @@
+{
+  "status": 401,
+  "body": "{\"error\": \"Authentication failed: Missing Authorization header. Expected: Bearer <api_key>\"}"
+}

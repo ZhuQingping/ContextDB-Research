@@ -1,0 +1,7 @@
+
+> @vectorize-io/hindsight-coding-agents@0.8.0 test
+> vitest run --exclude '**/*.e2e.test.ts' --reporter=json --outputFile=../../evidence/clients-coding-tests.json
+
+(node:6103) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+JSON report written to /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/clients-coding-tests.json

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "api-only-ready",
+    "passed": true,
+    "pid": 26323,
+    "schema": "round2_split_3685d7ba"
+  },
+  {
+    "name": "create-bank",
+    "passed": true
+  },
+  {
+    "name": "accepted-queued-without-worker",
+    "passed": true
+  },
+  {
+    "name": "no-inline-worker-task-remains-pending",
+    "passed": true,
+    "status": "pending"
+  },
+  {
+    "name": "separate-worker-ready",
+    "passed": true,
+    "worker_pid": 26355,
+    "api_pid": 26323
+  },
+  {
+    "name": "queued-task-completed-by-separate-worker",
+    "passed": true,
+    "status": "completed"
+  },
+  {
+    "name": "api-recall-works-with-worker-stopped",
+    "passed": true
+  },
+  {
+    "name": "accepted-queued-during-worker-outage",
+    "passed": true
+  },
+  {
+    "name": "task-durable-while-worker-down",
+    "passed": true,
+    "status": "pending"
+  },
+  {
+    "name": "restarted-worker-drains-pending-task",
+    "passed": true,
+    "status": "completed"
+  },
+  {
+    "name": "worker-metrics-available",
+    "passed": true
+  },
+  {
+    "name": "api-survived-worker-restart",
+    "passed": true
+  }
+]

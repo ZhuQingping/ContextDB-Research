@@ -1,0 +1,468 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+  ▄▄       ▄▄
+ ▄ ▀▄ ▄▄▄ ▄▀ ▄
+▀▀▄▄▄▄▀▀▀▄▄▄▄▀▀
+   ▄▄▄ ▄ ▄▄▄
+ ▄▀ ▀▀▄▄▄▀  ▀▄ 
+
+  Hindsight: Agent Memory That Learns
+
+2026-10-04 00:16:52,274 - INFO - hindsight_api.config - Database: pg0://contextdb-research-cell-b:55433 (schema: public)
+2026-10-04 00:16:52,274 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:16:52,274 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:16:52,274 - INFO - hindsight_api.config - Reranker: provider=rrf
+2026-10-04 00:16:52,274 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 00:16:52,989 - INFO - hindsight_api.extensions.loader - Loading extension from HINDSIGHT_API_TENANT_EXTENSION=hindsight_ext_static_keys_tenant:StaticKeysTenantExtension
+2026-10-04 00:16:52,991 - INFO - hindsight_api.extensions.loader - Loaded extension StaticKeysTenantExtension with config keys: ['users']
+2026-10-04 00:16:52,991 - INFO - root - Loaded tenant extension: StaticKeysTenantExtension
+2026-10-04 00:16:52,991 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:16:52,991 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:16:52,991 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:16:52,991 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:16:52,991 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: [REDACTED]
+2026-10-04 00:16:53,174 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+2026-10-04 00:16:53,235 - INFO - hindsight_api.api - HTTP REST API enabled
+2026-10-04 00:16:53,236 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+uvloop available, will use for event loop
+Starting Hindsight API...
+  Version: v0.10.2
+  URL: http://127.0.0.1:8890
+  Database: pg0://contextdb-research-cell-b:55433
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+  Extensions: pgvector (vector) / native (text)
+  MCP: enabled at /mcp
+
+INFO:     Started server process [18874]
+INFO:     Waiting for application startup.
+2026-10-04 00:16:53,254 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:16:53,254 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 00:16:53,254 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+2026-10-04 00:16:53,255 - INFO - root - Metrics initialized - available at /metrics endpoint
+
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00<00:00, 1672.37it/s]
+2026-10-04 00:16:54,913 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:16:54,913 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:16:55,226 - WARNING - huggingface_hub.utils._http - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-04 00:17:00,139 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:17:00,141 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:17:00,194 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:17:00,216 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=contextdb-research-cell-b, port=55433)...
+2026-10-04 00:17:00,795 - INFO - hindsight_api.pg0 - PostgreSQL started: postgresql://hindsight:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:03,979 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 00:17:03,980 - INFO - hindsight_api.engine.memory_engine - Running database migrations...
+2026-10-04 00:17:03,980 - INFO - hindsight_api.engine.memory_engine - Running migrations on 2 schema(s)...
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.schemas
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.tables
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.types
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.constraints
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.defaults
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.autogenerate.comments
+2026-10-04 00:17:04,043 - INFO - alembic.runtime.plugins - setup plugin alembic.ext.checkconstraint_byname
+2026-10-04 00:17:04,073 - INFO - hindsight_api.migrations - pgvector extension not found, attempting to install...
+2026-10-04 00:17:04,080 - INFO - hindsight_api.migrations - pgvector extension installed in public schema
+2026-10-04 00:17:04,080 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'user_team_a'...
+2026-10-04 00:17:04,080 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:04,080 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:17:04,087 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:17:04,087 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:17:04,109 - INFO - alembic.runtime.migration - Running upgrade  -> 5a366d414dce, initial_schema
+2026-10-04 00:17:04,127 - INFO - alembic.runtime.migration - Running upgrade 5a366d414dce -> b7c4d8e9f1a2, add_chunks_table
+2026-10-04 00:17:04,129 - INFO - alembic.runtime.migration - Running upgrade b7c4d8e9f1a2 -> c8e5f2a3b4d1, add_retain_params_to_documents
+2026-10-04 00:17:04,130 - INFO - alembic.runtime.migration - Running upgrade c8e5f2a3b4d1 -> d9f6a3b4c5e2, Rename fact_type 'bank' to 'experience'
+2026-10-04 00:17:04,130 - INFO - alembic.runtime.migration - Running upgrade d9f6a3b4c5e2 -> rename_personality, rename_personality_to_disposition
+2026-10-04 00:17:04,133 - INFO - alembic.runtime.migration - Running upgrade rename_personality -> e0a1b2c3d4e5, disposition_to_3_traits
+2026-10-04 00:17:04,133 - INFO - alembic.runtime.migration - Running upgrade e0a1b2c3d4e5 -> f1a2b3c4d5e6, add_memory_links_from_type_weight_index
+2026-10-04 00:17:04,134 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2a3b4c5d6e7, add_tags_column
+2026-10-04 00:17:04,134 - INFO - alembic.runtime.migration - Running upgrade g2a3b4c5d6e7 -> h3c4d5e6f7g8, mental_models_v4
+2026-10-04 00:17:04,139 - INFO - alembic.runtime.migration - Running upgrade h3c4d5e6f7g8 -> i4d5e6f7g8h9, delete_opinions
+2026-10-04 00:17:04,139 - INFO - alembic.runtime.migration - Running upgrade i4d5e6f7g8h9 -> j5e6f7g8h9i0, mental_model_versions
+2026-10-04 00:17:04,142 - INFO - alembic.runtime.migration - Running upgrade j5e6f7g8h9i0 -> k6f7g8h9i0j1, add_directive_subtype
+2026-10-04 00:17:04,142 - INFO - alembic.runtime.migration - Running upgrade k6f7g8h9i0j1 -> l7g8h9i0j1k2, add_worker_columns
+2026-10-04 00:17:04,143 - INFO - alembic.runtime.migration - Running upgrade l7g8h9i0j1k2 -> m8h9i0j1k2l3, mental_model_id_to_text
+2026-10-04 00:17:04,144 - INFO - alembic.runtime.migration - Running upgrade m8h9i0j1k2l3 -> n9i0j1k2l3m4, learnings_and_pinned_reflections
+2026-10-04 00:17:04,149 - INFO - alembic.runtime.migration - Running upgrade n9i0j1k2l3m4 -> o0j1k2l3m4n5, migrate_mental_models_data
+2026-10-04 00:17:04,150 - INFO - alembic.runtime.migration - Running upgrade o0j1k2l3m4n5 -> p1k2l3m4n5o6, new_knowledge_architecture
+2026-10-04 00:17:04,155 - INFO - alembic.runtime.migration - Running upgrade p1k2l3m4n5o6 -> q2l3m4n5o6p7, fix_mental_model_fact_type
+2026-10-04 00:17:04,155 - INFO - alembic.runtime.migration - Running upgrade q2l3m4n5o6p7 -> r3m4n5o6p7q8, Add reflect_response JSONB column to reflections
+2026-10-04 00:17:04,155 - INFO - alembic.runtime.migration - Running upgrade r3m4n5o6p7q8 -> s4n5o6p7q8r9, Add consolidated_at column to memory_units for incremental consolidation tracking.
+2026-10-04 00:17:04,155 - INFO - alembic.runtime.migration - Running upgrade s4n5o6p7q8r9 -> t5o6p7q8r9s0, Rename mental_model fact_type to observation and reflections table to mental_models
+2026-10-04 00:17:04,157 - INFO - alembic.runtime.migration - Running upgrade t5o6p7q8r9s0 -> u6p7q8r9s0t1, Change mental_models.id from UUID to TEXT
+2026-10-04 00:17:04,159 - INFO - alembic.runtime.migration - Running upgrade u6p7q8r9s0t1 -> v7q8r9s0t1u2, Add max_tokens and trigger columns to mental_models
+2026-10-04 00:17:04,159 - INFO - alembic.runtime.migration - Running upgrade v7q8r9s0t1u2 -> w8r9s0t1u2v3, Fix mental_models primary key to be scoped per bank
+2026-10-04 00:17:04,159 - INFO - alembic.runtime.migration - Running upgrade w8r9s0t1u2v3 -> x9s0t1u2v3w4, Add config JSONB column to banks table for hierarchical configuration
+2026-10-04 00:17:04,160 - INFO - alembic.runtime.migration - Running upgrade x9s0t1u2v3w4 -> y0t1u2v3w4x5, Add GIN index on async_operations.result_metadata for parent_operation_id queries
+2026-10-04 00:17:04,160 - INFO - alembic.runtime.migration - Running upgrade y0t1u2v3w4x5 -> a1b2c3d4e5f6, Add file_storage table for BYTEA-based file storage
+2026-10-04 00:17:04,161 - INFO - alembic.runtime.migration - Running upgrade a1b2c3d4e5f6 -> z1u2v3w4x5y6, Add observation_scopes column to memory_units table
+2026-10-04 00:17:04,161 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> aa2b3c4d5e6f, Make event_date nullable in memory_units to support timestamp-free content
+2026-10-04 00:17:04,161 - INFO - alembic.runtime.migration - Running upgrade aa2b3c4d5e6f -> a2b3c4d5e6f7, Add text_signals column to memory_units for enriched BM25 indexing.
+2026-10-04 00:17:04,164 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7 -> b4c5d6e7f8a9, Backfill observation_scopes column if missing.
+2026-10-04 00:17:04,164 - INFO - alembic.runtime.migration - Running upgrade b4c5d6e7f8a9 -> c1a2b3d4e5f6, Enable pg_trgm extension and add GIN trigram index on entities.canonical_name
+2026-10-04 00:17:04,171 - INFO - alembic.runtime.migration - Running upgrade c1a2b3d4e5f6 -> b3c4d5e6f7g8, Add partial indexes on memory_units temporal date fields for fast temporal retrieval
+2026-10-04 00:17:04,173 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7g8 -> d2e3f4a5b6c7, Add covering and composite indexes to speed up link expansion graph retrieval.
+2026-10-04 00:17:04,174 - INFO - alembic.runtime.migration - Running upgrade d2e3f4a5b6c7 -> e4f5a6b7c8d9, Add webhooks table and next_retry_at to async_operations.
+2026-10-04 00:17:04,175 - INFO - alembic.runtime.migration - Running upgrade e4f5a6b7c8d9 -> f7g8h9i0j1k2, Add http_config JSONB column to webhooks table.
+2026-10-04 00:17:04,176 - INFO - alembic.runtime.migration - Running upgrade f7g8h9i0j1k2 -> a2b3c4d5e6f8, Add GIN index on source_memory_ids for observation lookup performance
+2026-10-04 00:17:04,176 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7, a2b3c4d5e6f8 -> c3d4e5f6g7h8, Add history column to mental_models
+2026-10-04 00:17:04,177 - INFO - alembic.runtime.migration - Running upgrade c3d4e5f6g7h8 -> d5e6f7a8b9c0, Add internal_id to banks and per-(bank, fact_type) partial vector indexes
+2026-10-04 00:17:04,178 - INFO - alembic.runtime.migration - Running upgrade d5e6f7a8b9c0 -> d4e5f6g7h8i9, Recreate idx_memory_units_source_memory_ids GIN index with fastupdate=off
+2026-10-04 00:17:04,180 - INFO - alembic.runtime.migration - Running upgrade d4e5f6g7h8i9 -> e5f6g7h8i9j0, Add CASCADE DELETE FK from async_operations and webhooks to banks.
+2026-10-04 00:17:04,181 - INFO - alembic.runtime.migration - Running upgrade e5f6g7h8i9j0 -> f6g7h8i9j0k1, chunk_fk_cascade_delete
+2026-10-04 00:17:04,183 - INFO - alembic.runtime.migration - Running upgrade f6g7h8i9j0k1 -> g7h8i9j0k1l2, backsweep_orphan_memory_units
+2026-10-04 00:17:04,183 - INFO - alembic.runtime.migration - Running upgrade g7h8i9j0k1l2 -> a3b4c5d6e7f8, Add consolidation_failed_at column to memory_units for tracking persistent LLM failures.
+2026-10-04 00:17:04,184 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2h3i4j5k6l7, remove_opinion_fact_type
+2026-10-04 00:17:04,185 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8 -> b3c4d5e6f7a8, add content_hash to chunks table for delta retain
+2026-10-04 00:17:04,185 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7a8 -> c5d6e7f8a9b0, Add bank_id column to memory_links for direct filtering
+2026-10-04 00:17:04,185 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8, c8e5f2a3b4d1 -> c2d3e4f5g6h7, Add audit_log table for feature usage tracking.
+2026-10-04 00:17:04,187 - INFO - alembic.runtime.migration - Running upgrade c2d3e4f5g6h7, c5d6e7f8a9b0 -> d6e7f8a9b0c1, Drop unused metadata column from documents table
+2026-10-04 00:17:04,187 - INFO - alembic.runtime.migration - Running upgrade d6e7f8a9b0c1 -> 2eee35aa3cfc, Recreate entities trigram index on LOWER(canonical_name) for case-insensitive matching
+2026-10-04 00:17:04,188 - INFO - alembic.runtime.migration - Running upgrade 2eee35aa3cfc -> a4b5c6d7e8f9, Fix per-bank vector indexes to match configured extension
+2026-10-04 00:17:04,188 - INFO - alembic.runtime.migration - Running upgrade a4b5c6d7e8f9, g2h3i4j5k6l7 -> h3i4j5k6l7m8, Merge 3 migration heads and add unit_entities composite index
+2026-10-04 00:17:04,188 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> a2v3w4x5y6z7, Add last_refreshed_source_query column to mental_models
+2026-10-04 00:17:04,188 - INFO - alembic.runtime.migration - Running upgrade a2v3w4x5y6z7 -> b3w4x5y6z7a8, Add structured_content JSONB column to mental_models
+2026-10-04 00:17:04,189 - INFO - alembic.runtime.migration - Running upgrade b3w4x5y6z7a8 -> c4x5y6z7a8b9, backsweep_orphan_observations_v2
+2026-10-04 00:17:04,189 - INFO - alembic.runtime.migration - Running upgrade c4x5y6z7a8b9, h3i4j5k6l7m8 -> 8c6fa6f7230b, Merge divergent migration heads for v0.5.3
+2026-10-04 00:17:04,189 - INFO - alembic.runtime.migration - Running upgrade 8c6fa6f7230b -> d5y6z7a8b9c0, Backfill mental_models.subtype for databases that ran h3c4d5e6f7g8 before the fix
+2026-10-04 00:17:04,190 - INFO - alembic.runtime.migration - Running upgrade d5y6z7a8b9c0 -> i4j5k6l7m8n9, Add 'cancelled' to async_operations status check constraint
+2026-10-04 00:17:04,191 - INFO - alembic.runtime.migration - Running upgrade i4j5k6l7m8n9 -> k6l7m8n9o0p1, No-op: observation_sources table is Oracle-only
+2026-10-04 00:17:04,191 - INFO - alembic.runtime.migration - Running upgrade k6l7m8n9o0p1 -> o1a2b3c4d5e6, oracle_baseline
+2026-10-04 00:17:04,191 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> b5d4e3f2a1c9, Backfill entity_cooccurrences.last_cooccurred from memory_units event time
+2026-10-04 00:17:04,192 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> 9f8e7d6c5b4a, Make memory_links.from_unit_id and memory_links.to_unit_id FKs deferrable.
+2026-10-04 00:17:04,193 - INFO - alembic.runtime.migration - Running upgrade 9f8e7d6c5b4a, b5d4e3f2a1c9 -> m3rg3h3ad5f6, Merge divergent heads from deferrable FK and cooccurrence backfill
+2026-10-04 00:17:04,193 - INFO - alembic.runtime.migration - Running upgrade m3rg3h3ad5f6 -> 86f7a033d372, Repair mental_models.subtype on databases stuck at m3rg3h3ad5f6
+2026-10-04 00:17:04,194 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> b8c9d0e1f2a3, Re-create vchord vector indexes with vector_cosine_ops
+2026-10-04 00:17:04,194 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> p4q5r6s7t8u9, Drop GENERATED expression on tsvector search_vector columns.
+2026-10-04 00:17:04,196 - INFO - alembic.runtime.migration - Running upgrade p4q5r6s7t8u9 -> e1b2c3d4f5a6, Drop indexes that are unused or redundant with composite indexes.
+2026-10-04 00:17:04,198 - INFO - alembic.runtime.migration - Running upgrade e1b2c3d4f5a6 -> e9b2c7d1f3a4, Drop materialized entity rows from memory_links.
+2026-10-04 00:17:04,199 - INFO - alembic.runtime.migration - Running upgrade e9b2c7d1f3a4 -> b5a4c3e2f1d8, Add graph_maintenance_queue table
+2026-10-04 00:17:04,199 - INFO - alembic.runtime.migration - Running upgrade b5a4c3e2f1d8, b8c9d0e1f2a3 -> c1d2e3f4a5b6, Merge graph_maintenance_queue and vchord_cosine_opclass heads.
+2026-10-04 00:17:04,200 - INFO - alembic.runtime.migration - Running upgrade c1d2e3f4a5b6 -> d3e4f5a6b7c8, Add llm_requests table for per-bank LLM request tracing.
+2026-10-04 00:17:04,201 - INFO - alembic.runtime.migration - Running upgrade d3e4f5a6b7c8 -> a7b8c9d0e1f2, Move mental-model and observation history into dedicated tables.
+2026-10-04 00:17:04,204 - INFO - alembic.runtime.migration - Running upgrade a7b8c9d0e1f2 -> e5f6a7b8c9d0, Add server-side routines for background maintenance sweeps.
+2026-10-04 00:17:04,204 - INFO - alembic.runtime.migration - Running upgrade e5f6a7b8c9d0 -> b2d4f6a8c1e3, Repair: install maintenance routines on the ``public`` / base-schema run.
+2026-10-04 00:17:04,204 - INFO - alembic.runtime.migration - Running upgrade b2d4f6a8c1e3 -> c9a1b2d3e4f5, Add invalidated_memory_units table for curation (edit/invalidate).
+2026-10-04 00:17:04,206 - INFO - alembic.runtime.migration - Running upgrade c9a1b2d3e4f5 -> c3e5a7b9d1f4, Repair: widen ``*_history.bank_id`` from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:17:04,207 - INFO - alembic.runtime.migration - Running upgrade c3e5a7b9d1f4 -> a1d3f5b7c9e2, Repair: widen the remaining live ``bank_id`` columns from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:17:04,208 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> 2071c7518f88, Add a composite index on memory_links(bank_id, link_type) (PostgreSQL).
+2026-10-04 00:17:04,209 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> d4f6a8c2e1b3, Drop the embedding column from the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,209 - INFO - alembic.runtime.migration - Running upgrade d4f6a8c2e1b3, 2071c7518f88 -> e1f2a3b4c5d6, Merge two divergent migration heads.
+2026-10-04 00:17:04,210 - INFO - alembic.runtime.migration - Running upgrade e1f2a3b4c5d6 -> c7e9f1a3b5d2, Make maintenance routines resilient to schemas that vanish mid-scan.
+2026-10-04 00:17:04,210 - INFO - alembic.runtime.migration - Running upgrade c7e9f1a3b5d2 -> f4d1c2b3a5e6, Add server-side routine for cron-scheduled mental model refresh.
+2026-10-04 00:17:04,210 - INFO - alembic.runtime.migration - Running upgrade f4d1c2b3a5e6 -> c3f7a1b9d2e4, Backfill search_vector for native-backend observations.
+2026-10-04 00:17:04,211 - INFO - alembic.runtime.migration - Running upgrade c3f7a1b9d2e4 -> b57a7c9e0d13, Add bank_stats_cache table for distributed get_bank_stats caching
+2026-10-04 00:17:04,212 - INFO - alembic.runtime.migration - Running upgrade b57a7c9e0d13 -> e7c3a9f1b2d5, Drop the search_vector column from the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,212 - INFO - alembic.runtime.migration - Running upgrade e7c3a9f1b2d5 -> a8c1e4f7b0d3, Add indexes for terminal cleanup and newest-first operation listing.
+2026-10-04 00:17:04,213 - INFO - alembic.runtime.migration - Running upgrade a8c1e4f7b0d3 -> b6d2f8a4c1e7, Install the maintenance discovery routines into the configured schema.
+2026-10-04 00:17:04,214 - INFO - alembic.runtime.migration - Running upgrade b6d2f8a4c1e7 -> d7b2f8a1c934, Add the ``schemas_with_expired_operations`` cross-tenant discovery routine.
+2026-10-04 00:17:04,214 - INFO - alembic.runtime.migration - Running upgrade d7b2f8a1c934 -> c7d1e9a4b3f2, Add ``causal_links`` to the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,214 - INFO - alembic.runtime.migration - Running upgrade c7d1e9a4b3f2 -> a1c9e7f3b2d8, Drop observation_history's FK to memory_units.
+2026-10-04 00:17:04,215 - INFO - alembic.runtime.migration - Running upgrade a1c9e7f3b2d8 -> a9b8c7d6e5f4, Add knowledge_pages table (knowledge-base hierarchy).
+2026-10-04 00:17:04,216 - INFO - alembic.runtime.migration - Running upgrade a9b8c7d6e5f4 -> e4a7c1b9d2f6, Drop the never-written `access_count` column from memory_units (and its archive).
+2026-10-04 00:17:04,217 - INFO - alembic.runtime.migration - Running upgrade e4a7c1b9d2f6 -> f2a6d8c4b1e9, Repair: drop the stale global memory_units vector index on per-bank backends.
+2026-10-04 00:17:04,217 - INFO - alembic.runtime.migration - Running upgrade f2a6d8c4b1e9 -> b3e8d1c6f4a9, Add entities.entity_kind and exclude label entities from the trigram index.
+2026-10-04 00:17:04,219 - INFO - alembic.runtime.migration - Running upgrade b3e8d1c6f4a9 -> d9c1a7b4e2f6, Add async_operations.serialization_key for per-document retain serialization.
+2026-10-04 00:17:04,219 - INFO - alembic.runtime.migration - Running upgrade d9c1a7b4e2f6 -> c4f7a91b2d38, Add entity_maintenance_queue table (+ seed it with every existing entity)
+2026-10-04 00:17:04,220 - INFO - alembic.runtime.migration - Running upgrade c4f7a91b2d38 -> e7c3a91f4b62, Add last_memory_seen_at to mental_models, splitting it from last_refreshed_at.
+2026-10-04 00:17:04,221 - INFO - alembic.runtime.migration - Running upgrade e7c3a91f4b62 -> c8b4e2a71f95, Make the cross-schema maintenance routines skip a schema under concurrent DDL.
+2026-10-04 00:17:04,221 - INFO - alembic.runtime.migration - Running upgrade c8b4e2a71f95 -> f2a7c9d4b168, Add a partial index for the cron-scheduled mental model discovery sweep.
+2026-10-04 00:17:04,221 - INFO - alembic.runtime.migration - Running upgrade f2a7c9d4b168 -> c4e8a1b7d2f6, Index memory_units(bank_id, updated_at) so the scoped staleness check is cheap.
+2026-10-04 00:17:04,222 - INFO - alembic.runtime.migration - Running upgrade c4e8a1b7d2f6 -> d1e2f3a4b5c6, Drop schema-v1 mental model structured_content
+2026-10-04 00:17:04,222 - INFO - alembic.runtime.migration - Running upgrade d1e2f3a4b5c6 -> e2f4a6c8b0d1, Add attachments and document_attachments (inline retain attachments).
+2026-10-04 00:17:04,224 - INFO - alembic.runtime.migration - Running upgrade e2f4a6c8b0d1 -> f3a5b7c9d1e2, Drop the unused memory_units_bm25 materialized view.
+2026-10-04 00:17:04,225 - INFO - alembic.runtime.migration - Running upgrade f3a5b7c9d1e2 -> a7c2e9f41b60, Give every attachment an owning document, and drop document_attachments.
+2026-10-04 00:17:04,226 - INFO - alembic.runtime.migration - Running upgrade a7c2e9f41b60 -> b8d3f1a6c2e4, Add last_refresh_failed_at column to mental_models
+2026-10-04 00:17:04,227 - INFO - alembic.runtime.migration - Running upgrade b8d3f1a6c2e4 -> c8d1e4f7a20b, Add bank_aliases: extra ids a bank also answers to.
+2026-10-04 00:17:04,228 - INFO - alembic.runtime.migration - Running upgrade c8d1e4f7a20b -> d4f8b1c6e903, Let one of a bank's aliases be the id shown in its place.
+2026-10-04 00:17:04,228 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> a6c4e8f1b203, Store per-request reasoning tokens alongside visible output tokens.
+2026-10-04 00:17:04,228 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> 7c2e5a9d1f40, Scope the entities trigram index by bank: GIN (bank_id, LOWER(canonical_name)).
+2026-10-04 00:17:04,237 - INFO - alembic.runtime.migration - Running upgrade 7c2e5a9d1f40, a6c4e8f1b203 -> e5b1c7d3a902, Merge divergent heads from the bank-scoped trigram index and reasoning tokens
+2026-10-04 00:17:04,238 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'user_team_a'
+2026-10-04 00:17:04,244 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:17:04,249 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:17:04,265 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'user_team_b'...
+2026-10-04 00:17:04,265 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:04,265 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:17:04,270 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:17:04,270 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:17:04,282 - INFO - alembic.runtime.migration - Running upgrade  -> 5a366d414dce, initial_schema
+2026-10-04 00:17:04,300 - INFO - alembic.runtime.migration - Running upgrade 5a366d414dce -> b7c4d8e9f1a2, add_chunks_table
+2026-10-04 00:17:04,303 - INFO - alembic.runtime.migration - Running upgrade b7c4d8e9f1a2 -> c8e5f2a3b4d1, add_retain_params_to_documents
+2026-10-04 00:17:04,303 - INFO - alembic.runtime.migration - Running upgrade c8e5f2a3b4d1 -> d9f6a3b4c5e2, Rename fact_type 'bank' to 'experience'
+2026-10-04 00:17:04,304 - INFO - alembic.runtime.migration - Running upgrade d9f6a3b4c5e2 -> rename_personality, rename_personality_to_disposition
+2026-10-04 00:17:04,306 - INFO - alembic.runtime.migration - Running upgrade rename_personality -> e0a1b2c3d4e5, disposition_to_3_traits
+2026-10-04 00:17:04,307 - INFO - alembic.runtime.migration - Running upgrade e0a1b2c3d4e5 -> f1a2b3c4d5e6, add_memory_links_from_type_weight_index
+2026-10-04 00:17:04,307 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2a3b4c5d6e7, add_tags_column
+2026-10-04 00:17:04,308 - INFO - alembic.runtime.migration - Running upgrade g2a3b4c5d6e7 -> h3c4d5e6f7g8, mental_models_v4
+2026-10-04 00:17:04,312 - INFO - alembic.runtime.migration - Running upgrade h3c4d5e6f7g8 -> i4d5e6f7g8h9, delete_opinions
+2026-10-04 00:17:04,313 - INFO - alembic.runtime.migration - Running upgrade i4d5e6f7g8h9 -> j5e6f7g8h9i0, mental_model_versions
+2026-10-04 00:17:04,314 - INFO - alembic.runtime.migration - Running upgrade j5e6f7g8h9i0 -> k6f7g8h9i0j1, add_directive_subtype
+2026-10-04 00:17:04,315 - INFO - alembic.runtime.migration - Running upgrade k6f7g8h9i0j1 -> l7g8h9i0j1k2, add_worker_columns
+2026-10-04 00:17:04,316 - INFO - alembic.runtime.migration - Running upgrade l7g8h9i0j1k2 -> m8h9i0j1k2l3, mental_model_id_to_text
+2026-10-04 00:17:04,317 - INFO - alembic.runtime.migration - Running upgrade m8h9i0j1k2l3 -> n9i0j1k2l3m4, learnings_and_pinned_reflections
+2026-10-04 00:17:04,322 - INFO - alembic.runtime.migration - Running upgrade n9i0j1k2l3m4 -> o0j1k2l3m4n5, migrate_mental_models_data
+2026-10-04 00:17:04,323 - INFO - alembic.runtime.migration - Running upgrade o0j1k2l3m4n5 -> p1k2l3m4n5o6, new_knowledge_architecture
+2026-10-04 00:17:04,327 - INFO - alembic.runtime.migration - Running upgrade p1k2l3m4n5o6 -> q2l3m4n5o6p7, fix_mental_model_fact_type
+2026-10-04 00:17:04,327 - INFO - alembic.runtime.migration - Running upgrade q2l3m4n5o6p7 -> r3m4n5o6p7q8, Add reflect_response JSONB column to reflections
+2026-10-04 00:17:04,327 - INFO - alembic.runtime.migration - Running upgrade r3m4n5o6p7q8 -> s4n5o6p7q8r9, Add consolidated_at column to memory_units for incremental consolidation tracking.
+2026-10-04 00:17:04,327 - INFO - alembic.runtime.migration - Running upgrade s4n5o6p7q8r9 -> t5o6p7q8r9s0, Rename mental_model fact_type to observation and reflections table to mental_models
+2026-10-04 00:17:04,329 - INFO - alembic.runtime.migration - Running upgrade t5o6p7q8r9s0 -> u6p7q8r9s0t1, Change mental_models.id from UUID to TEXT
+2026-10-04 00:17:04,331 - INFO - alembic.runtime.migration - Running upgrade u6p7q8r9s0t1 -> v7q8r9s0t1u2, Add max_tokens and trigger columns to mental_models
+2026-10-04 00:17:04,331 - INFO - alembic.runtime.migration - Running upgrade v7q8r9s0t1u2 -> w8r9s0t1u2v3, Fix mental_models primary key to be scoped per bank
+2026-10-04 00:17:04,331 - INFO - alembic.runtime.migration - Running upgrade w8r9s0t1u2v3 -> x9s0t1u2v3w4, Add config JSONB column to banks table for hierarchical configuration
+2026-10-04 00:17:04,332 - INFO - alembic.runtime.migration - Running upgrade x9s0t1u2v3w4 -> y0t1u2v3w4x5, Add GIN index on async_operations.result_metadata for parent_operation_id queries
+2026-10-04 00:17:04,332 - INFO - alembic.runtime.migration - Running upgrade y0t1u2v3w4x5 -> a1b2c3d4e5f6, Add file_storage table for BYTEA-based file storage
+2026-10-04 00:17:04,333 - INFO - alembic.runtime.migration - Running upgrade a1b2c3d4e5f6 -> z1u2v3w4x5y6, Add observation_scopes column to memory_units table
+2026-10-04 00:17:04,333 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> aa2b3c4d5e6f, Make event_date nullable in memory_units to support timestamp-free content
+2026-10-04 00:17:04,333 - INFO - alembic.runtime.migration - Running upgrade aa2b3c4d5e6f -> a2b3c4d5e6f7, Add text_signals column to memory_units for enriched BM25 indexing.
+2026-10-04 00:17:04,336 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7 -> b4c5d6e7f8a9, Backfill observation_scopes column if missing.
+2026-10-04 00:17:04,337 - INFO - alembic.runtime.migration - Running upgrade b4c5d6e7f8a9 -> c1a2b3d4e5f6, Enable pg_trgm extension and add GIN trigram index on entities.canonical_name
+2026-10-04 00:17:04,341 - INFO - alembic.runtime.migration - Running upgrade c1a2b3d4e5f6 -> b3c4d5e6f7g8, Add partial indexes on memory_units temporal date fields for fast temporal retrieval
+2026-10-04 00:17:04,342 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7g8 -> d2e3f4a5b6c7, Add covering and composite indexes to speed up link expansion graph retrieval.
+2026-10-04 00:17:04,343 - INFO - alembic.runtime.migration - Running upgrade d2e3f4a5b6c7 -> e4f5a6b7c8d9, Add webhooks table and next_retry_at to async_operations.
+2026-10-04 00:17:04,345 - INFO - alembic.runtime.migration - Running upgrade e4f5a6b7c8d9 -> f7g8h9i0j1k2, Add http_config JSONB column to webhooks table.
+2026-10-04 00:17:04,345 - INFO - alembic.runtime.migration - Running upgrade f7g8h9i0j1k2 -> a2b3c4d5e6f8, Add GIN index on source_memory_ids for observation lookup performance
+2026-10-04 00:17:04,346 - INFO - alembic.runtime.migration - Running upgrade a2b3c4d5e6f7, a2b3c4d5e6f8 -> c3d4e5f6g7h8, Add history column to mental_models
+2026-10-04 00:17:04,346 - INFO - alembic.runtime.migration - Running upgrade c3d4e5f6g7h8 -> d5e6f7a8b9c0, Add internal_id to banks and per-(bank, fact_type) partial vector indexes
+2026-10-04 00:17:04,348 - INFO - alembic.runtime.migration - Running upgrade d5e6f7a8b9c0 -> d4e5f6g7h8i9, Recreate idx_memory_units_source_memory_ids GIN index with fastupdate=off
+2026-10-04 00:17:04,349 - INFO - alembic.runtime.migration - Running upgrade d4e5f6g7h8i9 -> e5f6g7h8i9j0, Add CASCADE DELETE FK from async_operations and webhooks to banks.
+2026-10-04 00:17:04,351 - INFO - alembic.runtime.migration - Running upgrade e5f6g7h8i9j0 -> f6g7h8i9j0k1, chunk_fk_cascade_delete
+2026-10-04 00:17:04,352 - INFO - alembic.runtime.migration - Running upgrade f6g7h8i9j0k1 -> g7h8i9j0k1l2, backsweep_orphan_memory_units
+2026-10-04 00:17:04,352 - INFO - alembic.runtime.migration - Running upgrade g7h8i9j0k1l2 -> a3b4c5d6e7f8, Add consolidation_failed_at column to memory_units for tracking persistent LLM failures.
+2026-10-04 00:17:04,353 - INFO - alembic.runtime.migration - Running upgrade f1a2b3c4d5e6 -> g2h3i4j5k6l7, remove_opinion_fact_type
+2026-10-04 00:17:04,354 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8 -> b3c4d5e6f7a8, add content_hash to chunks table for delta retain
+2026-10-04 00:17:04,354 - INFO - alembic.runtime.migration - Running upgrade b3c4d5e6f7a8 -> c5d6e7f8a9b0, Add bank_id column to memory_links for direct filtering
+2026-10-04 00:17:04,354 - INFO - alembic.runtime.migration - Running upgrade a3b4c5d6e7f8, c8e5f2a3b4d1 -> c2d3e4f5g6h7, Add audit_log table for feature usage tracking.
+2026-10-04 00:17:04,356 - INFO - alembic.runtime.migration - Running upgrade c2d3e4f5g6h7, c5d6e7f8a9b0 -> d6e7f8a9b0c1, Drop unused metadata column from documents table
+2026-10-04 00:17:04,356 - INFO - alembic.runtime.migration - Running upgrade d6e7f8a9b0c1 -> 2eee35aa3cfc, Recreate entities trigram index on LOWER(canonical_name) for case-insensitive matching
+2026-10-04 00:17:04,357 - INFO - alembic.runtime.migration - Running upgrade 2eee35aa3cfc -> a4b5c6d7e8f9, Fix per-bank vector indexes to match configured extension
+2026-10-04 00:17:04,357 - INFO - alembic.runtime.migration - Running upgrade a4b5c6d7e8f9, g2h3i4j5k6l7 -> h3i4j5k6l7m8, Merge 3 migration heads and add unit_entities composite index
+2026-10-04 00:17:04,357 - INFO - alembic.runtime.migration - Running upgrade z1u2v3w4x5y6 -> a2v3w4x5y6z7, Add last_refreshed_source_query column to mental_models
+2026-10-04 00:17:04,358 - INFO - alembic.runtime.migration - Running upgrade a2v3w4x5y6z7 -> b3w4x5y6z7a8, Add structured_content JSONB column to mental_models
+2026-10-04 00:17:04,358 - INFO - alembic.runtime.migration - Running upgrade b3w4x5y6z7a8 -> c4x5y6z7a8b9, backsweep_orphan_observations_v2
+2026-10-04 00:17:04,358 - INFO - alembic.runtime.migration - Running upgrade c4x5y6z7a8b9, h3i4j5k6l7m8 -> 8c6fa6f7230b, Merge divergent migration heads for v0.5.3
+2026-10-04 00:17:04,358 - INFO - alembic.runtime.migration - Running upgrade 8c6fa6f7230b -> d5y6z7a8b9c0, Backfill mental_models.subtype for databases that ran h3c4d5e6f7g8 before the fix
+2026-10-04 00:17:04,360 - INFO - alembic.runtime.migration - Running upgrade d5y6z7a8b9c0 -> i4j5k6l7m8n9, Add 'cancelled' to async_operations status check constraint
+2026-10-04 00:17:04,360 - INFO - alembic.runtime.migration - Running upgrade i4j5k6l7m8n9 -> k6l7m8n9o0p1, No-op: observation_sources table is Oracle-only
+2026-10-04 00:17:04,360 - INFO - alembic.runtime.migration - Running upgrade k6l7m8n9o0p1 -> o1a2b3c4d5e6, oracle_baseline
+2026-10-04 00:17:04,360 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> b5d4e3f2a1c9, Backfill entity_cooccurrences.last_cooccurred from memory_units event time
+2026-10-04 00:17:04,361 - INFO - alembic.runtime.migration - Running upgrade o1a2b3c4d5e6 -> 9f8e7d6c5b4a, Make memory_links.from_unit_id and memory_links.to_unit_id FKs deferrable.
+2026-10-04 00:17:04,362 - INFO - alembic.runtime.migration - Running upgrade 9f8e7d6c5b4a, b5d4e3f2a1c9 -> m3rg3h3ad5f6, Merge divergent heads from deferrable FK and cooccurrence backfill
+2026-10-04 00:17:04,362 - INFO - alembic.runtime.migration - Running upgrade m3rg3h3ad5f6 -> 86f7a033d372, Repair mental_models.subtype on databases stuck at m3rg3h3ad5f6
+2026-10-04 00:17:04,363 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> b8c9d0e1f2a3, Re-create vchord vector indexes with vector_cosine_ops
+2026-10-04 00:17:04,363 - INFO - alembic.runtime.migration - Running upgrade 86f7a033d372 -> p4q5r6s7t8u9, Drop GENERATED expression on tsvector search_vector columns.
+2026-10-04 00:17:04,365 - INFO - alembic.runtime.migration - Running upgrade p4q5r6s7t8u9 -> e1b2c3d4f5a6, Drop indexes that are unused or redundant with composite indexes.
+2026-10-04 00:17:04,368 - INFO - alembic.runtime.migration - Running upgrade e1b2c3d4f5a6 -> e9b2c7d1f3a4, Drop materialized entity rows from memory_links.
+2026-10-04 00:17:04,369 - INFO - alembic.runtime.migration - Running upgrade e9b2c7d1f3a4 -> b5a4c3e2f1d8, Add graph_maintenance_queue table
+2026-10-04 00:17:04,370 - INFO - alembic.runtime.migration - Running upgrade b5a4c3e2f1d8, b8c9d0e1f2a3 -> c1d2e3f4a5b6, Merge graph_maintenance_queue and vchord_cosine_opclass heads.
+2026-10-04 00:17:04,370 - INFO - alembic.runtime.migration - Running upgrade c1d2e3f4a5b6 -> d3e4f5a6b7c8, Add llm_requests table for per-bank LLM request tracing.
+2026-10-04 00:17:04,371 - INFO - alembic.runtime.migration - Running upgrade d3e4f5a6b7c8 -> a7b8c9d0e1f2, Move mental-model and observation history into dedicated tables.
+2026-10-04 00:17:04,374 - INFO - alembic.runtime.migration - Running upgrade a7b8c9d0e1f2 -> e5f6a7b8c9d0, Add server-side routines for background maintenance sweeps.
+2026-10-04 00:17:04,374 - INFO - alembic.runtime.migration - Running upgrade e5f6a7b8c9d0 -> b2d4f6a8c1e3, Repair: install maintenance routines on the ``public`` / base-schema run.
+2026-10-04 00:17:04,375 - INFO - alembic.runtime.migration - Running upgrade b2d4f6a8c1e3 -> c9a1b2d3e4f5, Add invalidated_memory_units table for curation (edit/invalidate).
+2026-10-04 00:17:04,376 - INFO - alembic.runtime.migration - Running upgrade c9a1b2d3e4f5 -> c3e5a7b9d1f4, Repair: widen ``*_history.bank_id`` from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:17:04,377 - INFO - alembic.runtime.migration - Running upgrade c3e5a7b9d1f4 -> a1d3f5b7c9e2, Repair: widen the remaining live ``bank_id`` columns from VARCHAR(64) to TEXT on PostgreSQL.
+2026-10-04 00:17:04,378 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> 2071c7518f88, Add a composite index on memory_links(bank_id, link_type) (PostgreSQL).
+2026-10-04 00:17:04,379 - INFO - alembic.runtime.migration - Running upgrade a1d3f5b7c9e2 -> d4f6a8c2e1b3, Drop the embedding column from the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,380 - INFO - alembic.runtime.migration - Running upgrade d4f6a8c2e1b3, 2071c7518f88 -> e1f2a3b4c5d6, Merge two divergent migration heads.
+2026-10-04 00:17:04,380 - INFO - alembic.runtime.migration - Running upgrade e1f2a3b4c5d6 -> c7e9f1a3b5d2, Make maintenance routines resilient to schemas that vanish mid-scan.
+2026-10-04 00:17:04,380 - INFO - alembic.runtime.migration - Running upgrade c7e9f1a3b5d2 -> f4d1c2b3a5e6, Add server-side routine for cron-scheduled mental model refresh.
+2026-10-04 00:17:04,380 - INFO - alembic.runtime.migration - Running upgrade f4d1c2b3a5e6 -> c3f7a1b9d2e4, Backfill search_vector for native-backend observations.
+2026-10-04 00:17:04,381 - INFO - alembic.runtime.migration - Running upgrade c3f7a1b9d2e4 -> b57a7c9e0d13, Add bank_stats_cache table for distributed get_bank_stats caching
+2026-10-04 00:17:04,382 - INFO - alembic.runtime.migration - Running upgrade b57a7c9e0d13 -> e7c3a9f1b2d5, Drop the search_vector column from the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,382 - INFO - alembic.runtime.migration - Running upgrade e7c3a9f1b2d5 -> a8c1e4f7b0d3, Add indexes for terminal cleanup and newest-first operation listing.
+2026-10-04 00:17:04,383 - INFO - alembic.runtime.migration - Running upgrade a8c1e4f7b0d3 -> b6d2f8a4c1e7, Install the maintenance discovery routines into the configured schema.
+2026-10-04 00:17:04,383 - INFO - alembic.runtime.migration - Running upgrade b6d2f8a4c1e7 -> d7b2f8a1c934, Add the ``schemas_with_expired_operations`` cross-tenant discovery routine.
+2026-10-04 00:17:04,384 - INFO - alembic.runtime.migration - Running upgrade d7b2f8a1c934 -> c7d1e9a4b3f2, Add ``causal_links`` to the curation archive (invalidated_memory_units).
+2026-10-04 00:17:04,384 - INFO - alembic.runtime.migration - Running upgrade c7d1e9a4b3f2 -> a1c9e7f3b2d8, Drop observation_history's FK to memory_units.
+2026-10-04 00:17:04,384 - INFO - alembic.runtime.migration - Running upgrade a1c9e7f3b2d8 -> a9b8c7d6e5f4, Add knowledge_pages table (knowledge-base hierarchy).
+2026-10-04 00:17:04,386 - INFO - alembic.runtime.migration - Running upgrade a9b8c7d6e5f4 -> e4a7c1b9d2f6, Drop the never-written `access_count` column from memory_units (and its archive).
+2026-10-04 00:17:04,386 - INFO - alembic.runtime.migration - Running upgrade e4a7c1b9d2f6 -> f2a6d8c4b1e9, Repair: drop the stale global memory_units vector index on per-bank backends.
+2026-10-04 00:17:04,387 - INFO - alembic.runtime.migration - Running upgrade f2a6d8c4b1e9 -> b3e8d1c6f4a9, Add entities.entity_kind and exclude label entities from the trigram index.
+2026-10-04 00:17:04,389 - INFO - alembic.runtime.migration - Running upgrade b3e8d1c6f4a9 -> d9c1a7b4e2f6, Add async_operations.serialization_key for per-document retain serialization.
+2026-10-04 00:17:04,390 - INFO - alembic.runtime.migration - Running upgrade d9c1a7b4e2f6 -> c4f7a91b2d38, Add entity_maintenance_queue table (+ seed it with every existing entity)
+2026-10-04 00:17:04,391 - INFO - alembic.runtime.migration - Running upgrade c4f7a91b2d38 -> e7c3a91f4b62, Add last_memory_seen_at to mental_models, splitting it from last_refreshed_at.
+2026-10-04 00:17:04,391 - INFO - alembic.runtime.migration - Running upgrade e7c3a91f4b62 -> c8b4e2a71f95, Make the cross-schema maintenance routines skip a schema under concurrent DDL.
+2026-10-04 00:17:04,391 - INFO - alembic.runtime.migration - Running upgrade c8b4e2a71f95 -> f2a7c9d4b168, Add a partial index for the cron-scheduled mental model discovery sweep.
+2026-10-04 00:17:04,392 - INFO - alembic.runtime.migration - Running upgrade f2a7c9d4b168 -> c4e8a1b7d2f6, Index memory_units(bank_id, updated_at) so the scoped staleness check is cheap.
+2026-10-04 00:17:04,393 - INFO - alembic.runtime.migration - Running upgrade c4e8a1b7d2f6 -> d1e2f3a4b5c6, Drop schema-v1 mental model structured_content
+2026-10-04 00:17:04,393 - INFO - alembic.runtime.migration - Running upgrade d1e2f3a4b5c6 -> e2f4a6c8b0d1, Add attachments and document_attachments (inline retain attachments).
+2026-10-04 00:17:04,395 - INFO - alembic.runtime.migration - Running upgrade e2f4a6c8b0d1 -> f3a5b7c9d1e2, Drop the unused memory_units_bm25 materialized view.
+2026-10-04 00:17:04,395 - INFO - alembic.runtime.migration - Running upgrade f3a5b7c9d1e2 -> a7c2e9f41b60, Give every attachment an owning document, and drop document_attachments.
+2026-10-04 00:17:04,397 - INFO - alembic.runtime.migration - Running upgrade a7c2e9f41b60 -> b8d3f1a6c2e4, Add last_refresh_failed_at column to mental_models
+2026-10-04 00:17:04,397 - INFO - alembic.runtime.migration - Running upgrade b8d3f1a6c2e4 -> c8d1e4f7a20b, Add bank_aliases: extra ids a bank also answers to.
+2026-10-04 00:17:04,398 - INFO - alembic.runtime.migration - Running upgrade c8d1e4f7a20b -> d4f8b1c6e903, Let one of a bank's aliases be the id shown in its place.
+2026-10-04 00:17:04,398 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> a6c4e8f1b203, Store per-request reasoning tokens alongside visible output tokens.
+2026-10-04 00:17:04,399 - INFO - alembic.runtime.migration - Running upgrade d4f8b1c6e903 -> 7c2e5a9d1f40, Scope the entities trigram index by bank: GIN (bank_id, LOWER(canonical_name)).
+2026-10-04 00:17:04,401 - INFO - alembic.runtime.migration - Running upgrade 7c2e5a9d1f40, a6c4e8f1b203 -> e5b1c7d3a902, Merge divergent heads from the bank-scoped trigram index and reasoning tokens
+2026-10-04 00:17:04,401 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'user_team_b'
+2026-10-04 00:17:04,407 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:17:04,412 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:17:04,423 - INFO - hindsight_api.engine.memory_engine - Schema migrations completed
+2026-10-04 00:17:04,423 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:04,430 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=5, max=100, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 00:17:04,434 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend initialized
+2026-10-04 00:17:04,434 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 00:17:04,435 - INFO - root - Memory system initialized
+2026-10-04 00:17:04,435 - INFO - root - DB pool metrics configured
+2026-10-04 00:17:04,435 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+2026-10-04 00:17:04,435 - INFO - root - Worker id: contextdb-cell-b (source: HINDSIGHT_API_WORKER_ID)
+2026-10-04 00:17:04,435 - INFO - root - Worker poller started (worker_id=contextdb-cell-b)
+2026-10-04 00:17:04,435 - INFO - root - Tenant extension started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8890 (Press CTRL+C to quit)
+2026-10-04 00:17:04,439 - INFO - hindsight_api.worker.poller - Worker contextdb-cell-b starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)
+2026-10-04 00:17:04,944 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:17:06,171 - WARNING - hindsight_api.engine.maintenance - Retention sweep discovery failed for llm_requests: function public.schemas_with_expired_rows(unknown, unknown, unknown) does not exist
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2026-10-04 00:17:06,171 - INFO - hindsight_api.engine.maintenance - Maintenance: retention took 0.002s
+2026-10-04 00:17:06,172 - WARNING - hindsight_api.engine.maintenance - Consolidation reconcile discovery failed: function public.banks_needing_consolidation() does not exist
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2026-10-04 00:17:06,172 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.001s
+2026-10-04 00:17:06,173 - WARNING - hindsight_api.engine.maintenance - Scheduled mental model refresh discovery failed: function public.mental_models_with_cron() does not exist
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2026-10-04 00:17:06,173 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.000s
+2026-10-04 00:17:35,087 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:17:46,672 - INFO - hindsight_ext_static_keys_tenant.extension - Initializing schema: user_team_a
+2026-10-04 00:17:46,682 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'user_team_a'...
+2026-10-04 00:17:46,682 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:46,682 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:17:46,689 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:17:46,689 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:17:46,715 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'user_team_a'
+2026-10-04 00:17:46,721 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:17:46,727 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:17:46,739 - INFO - hindsight_ext_static_keys_tenant.extension - Schema ready: user_team_a
+2026-10-04 00:17:46,747 - INFO - hindsight_api.config_resolver - Updated bank config for shared-name: ['retain_extraction_mode', 'enable_observations']
+2026-10-04 00:17:46,781 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 00:17:46,797 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.016s
+2026-10-04 00:17:46,797 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.017s
+2026-10-04 00:17:46,803 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.005s
+2026-10-04 00:17:46,803 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: shared-name
+Batch size: 1 content items, 75 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.000s
+  Generate embeddings: 1 embeddings in 0.025s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document same-document-id tracked (full content)
+  Store chunks: 1 chunks in 0.003s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.001s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.000s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.002s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.006s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.050s
+Document: same-document-id
+============================================================
+
+2026-10-04 00:17:46,805 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=shared-name store=PostgresMemories docs=1 wall=0.055s 1.3KB/s | embed=0.025s/1c/45% pg.acquire=0.002s/10c/3%
+2026-10-04 00:17:46,806 - INFO - hindsight_ext_static_keys_tenant.extension - Initializing schema: user_team_b
+2026-10-04 00:17:46,812 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'user_team_b'...
+2026-10-04 00:17:46,812 - INFO - hindsight_api.migrations - Database URL: postgresql://***:[REDACTED]@127.0.0.1:55433/hindsight
+2026-10-04 00:17:46,812 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/alembic
+2026-10-04 00:17:46,818 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 00:17:46,818 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 00:17:46,830 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'user_team_b'
+2026-10-04 00:17:46,835 - INFO - hindsight_api.migrations - Using vector extension: pgvector
+2026-10-04 00:17:46,841 - INFO - hindsight_api.migrations - Target vector extension: pgvector
+2026-10-04 00:17:46,853 - INFO - hindsight_ext_static_keys_tenant.extension - Schema ready: user_team_b
+2026-10-04 00:17:46,858 - INFO - hindsight_api.config_resolver - Updated bank config for shared-name: ['retain_extraction_mode', 'enable_observations']
+2026-10-04 00:17:46,869 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 00:17:46,876 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.007s
+2026-10-04 00:17:46,876 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.008s
+2026-10-04 00:17:46,880 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.003s
+2026-10-04 00:17:46,880 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: shared-name
+Batch size: 1 content items, 74 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.000s
+  Generate embeddings: 1 embeddings in 0.004s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document same-document-id tracked (full content)
+  Store chunks: 1 chunks in 0.001s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.001s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.000s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.002s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.004s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.018s
+Document: same-document-id
+============================================================
+
+2026-10-04 00:17:46,881 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=shared-name store=PostgresMemories docs=1 wall=0.021s 3.5KB/s | embed=0.004s/1c/21% pg.acquire=0.002s/10c/11%
+2026-10-04 00:17:46,892 - INFO - hindsight_api.engine.memory_engine - [RECALL shared-n] Starting recall for query: ALPHA_CANARY_4821 private data...
+2026-10-04 00:17:46,933 - INFO - hindsight_api.engine.memories.postgres - Using LinkExpansion graph retriever
+2026-10-04 00:17:46,943 - INFO - hindsight_api.engine.memory_engine - 
+[RECALL shared-n-66892-704a45] Query: 'ALPHA_CANARY_4821 private data...' (budget=100, max_tokens=500)
+  [1] Generate query embedding: 0.004s
+  [2] Parallel retrieval (3 fact_types): semantic=1(0.000s), bm25=1(0.000s), graph=0(0.000s), temporal_extraction=0.036s | store=0.009s in 0.045s
+  [3] RRF merge: 1 unique candidates in 0.000s
+  [4] Reranking [cross-encoder]: 1 candidates scored in 0.001s
+  [4.6] Combined scoring: ce * recency_boost(0.2) * temporal_boost(0.2)
+  [5] Truncated to top 1 results
+  [6] Token filtering: 1 results, 19/500 tokens in 0.000s
+  [phases] parallel_retrieval=45ms, generate_query_embedding=4ms, entity_build=1ms, reranking=1ms, rrf_merge=0ms, combined_scoring=0ms, result_serialization=0ms, token_filtering=0ms, hydrate_results=0ms, backend_acquisition=0ms | accounted=51ms of 51ms
+  [phases:subsets] retrieval_temporal_extraction=36ms, store_recall=9ms, retrieval_store_recall=9ms, semaphore_wait=0ms
+[RECALL shared-n-66892-704a45] Complete: 1 facts (19 tok), 0 chunks (0 tok), 0 entities (0 tok) | world=1 | 0.051s
+2026-10-04 00:17:46,955 - INFO - hindsight_api.engine.memory_engine - graph_maintenance task queued for bank_id=shared-name, operation_id=5267279f-37fc-42fe-bf35-83145bc386e2
+2026-10-04 00:17:46,961 - WARNING - hindsight_api.api.unknown_params - Unknown parameters ignored: [tenant_id] for GET /v1/default/banks
+2026-10-04 00:17:47,170 - INFO - hindsight_api.worker.poller - Worker contextdb-cell-b claimed 1 tasks (0 consolidation): graph_maintenance:1 (schemas: user_team_a)
+2026-10-04 00:17:47,176 - INFO - hindsight_api.engine.graph_maintenance - [GRAPH_MAINT] bank=shared-name done: {'relink_units_processed': 0, 'relink_links_added': 0, 'entities_examined': 0, 'orphan_entities_pruned': 0, 'stale_cooccurrences_pruned': 0, 'queues_drained': True}, elapsed=0.00s, operation_id=5267279f-37fc-42fe-bf35-83145bc386e2
+2026-10-04 00:17:47,177 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 5267279f-37fc-42fe-bf35-83145bc386e2
+2026-10-04 00:18:05,289 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:18:35,479 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:19:05,691 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:19:35,896 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:20:06,101 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:20:36,317 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:21:06,527 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:21:36,728 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=5 limits=5-100 idle=5 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:22:06,132 - INFO - hindsight_api.engine.maintenance - Maintenance: consolidation reconcile took 0.016s
+2026-10-04 00:22:06,136 - INFO - hindsight_api.engine.maintenance - Maintenance: scheduled mental model refresh took 0.003s
+2026-10-04 00:22:06,933 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:22:37,142 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=3 limits=5-100 idle=3 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:23:07,337 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=1 limits=5-100 idle=1 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:23:37,537 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=1 limits=5-100 idle=1 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+2026-10-04 00:24:07,731 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=contextdb-cell-b slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/2 schemas: ) | others: none | pool: size=1 limits=5-100 idle=1 in_use=0 free_holders=100 pending_acquires=0 | proc: peak_rss_mb=1588 | my_active: none
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-04 00:24:13,863 - INFO - hindsight_api.worker.poller - Worker contextdb-cell-b initiating graceful shutdown
+2026-10-04 00:24:13,863 - INFO - hindsight_api.worker.poller - Worker contextdb-cell-b graceful shutdown complete
+2026-10-04 00:24:13,863 - INFO - hindsight_api.worker.poller - Worker contextdb-cell-b polling loop stopped
+2026-10-04 00:24:13,865 - INFO - root - Worker poller stopped
+2026-10-04 00:24:13,865 - INFO - root - Tenant extension stopped
+2026-10-04 00:24:13,865 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 00:24:13,865 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend shutdown
+2026-10-04 00:24:13,867 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+2026-10-04 00:24:13,868 - INFO - hindsight_api.engine.memory_engine - Stopping pg0...
+2026-10-04 00:24:13,868 - INFO - hindsight_api.pg0 - Stopping embedded PostgreSQL (name: contextdb-research-cell-b)...
+2026-10-04 00:24:13,995 - INFO - hindsight_api.pg0 - Embedded PostgreSQL stopped
+2026-10-04 00:24:13,995 - INFO - hindsight_api.engine.memory_engine - pg0 stopped
+2026-10-04 00:24:13,995 - INFO - root - Memory system closed
+2026-10-04 00:24:13,995 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+2026-10-04 00:24:13,996 - INFO - hindsight_api.api - MCP lifespans stopped
+2026-10-04 00:24:13,996 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18874]
+
+Received signal 15, shutting down...

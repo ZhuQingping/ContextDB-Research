@@ -1,0 +1,22 @@
+{
+  "HINDSIGHT_API_HOST": "127.0.0.1",
+  "HINDSIGHT_API_PORT": "8888",
+  "HINDSIGHT_API_DATABASE_URL": "pg0://contextdb-research-20261004:55432",
+  "HINDSIGHT_API_LLM_PROVIDER": "openai-codex",
+  "HINDSIGHT_API_LLM_MODEL": "gpt-5.6-luna",
+  "HINDSIGHT_API_LLM_REASONING_EFFORT": "low",
+  "HINDSIGHT_API_LLM_CODEX_HOME": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.secrets/codex",
+  "HINDSIGHT_API_EMBEDDINGS_PROVIDER": "onnx",
+  "HINDSIGHT_API_RERANKER_PROVIDER": "rrf",
+  "HINDSIGHT_API_WORKER_MAX_SLOTS": "2",
+  "HINDSIGHT_API_LLM_MAX_CONCURRENT": "1",
+  "HINDSIGHT_API_LOG_LEVEL": "info",
+  "HINDSIGHT_API_LLM_HTTP_LOG_LEVEL": "WARNING",
+  "NO_PROXY": "localhost,127.0.0.1,::1",
+  "HF_HUB_DISABLE_XET": "1",
+  "HINDSIGHT_API_WORKER_CONSOLIDATION_RESERVED_SLOTS": "1",
+  "HINDSIGHT_API_EMBEDDINGS_ONNX_MODEL_PATH": "/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx",
+  "HINDSIGHT_API_EMBEDDINGS_ONNX_TOKENIZER_NAME_OR_PATH": "/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "HINDSIGHT_API_WORKER_ID": "contextdb-local",
+  "HINDSIGHT_API_ENABLE_AUTO_CONSOLIDATION": "false"
+}

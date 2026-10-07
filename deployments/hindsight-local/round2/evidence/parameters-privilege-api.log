@@ -1,0 +1,197 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+  [38;2;9;127;184m▄[0m[48;2;8;130;178m[38;2;5;133;186m▄[0m       [48;2;10;143;160m[38;2;10;143;165m▄[0m[38;2;7;140;156m▄[0m
+ [38;2;8;125;192m▄[0m [38;2;3;132;191m▀[0m[38;2;2;133;192m▄[0m [38;2;3;132;180m▄[0m[38;2;1;137;184m▄[0m[38;2;3;133;174m▄[0m [38;2;3;142;176m▄[0m[38;2;4;142;169m▀[0m [38;2;10;144;164m▄[0m
+[38;2;6;121;195m▀[0m[38;2;5;128;203m▀[0m[48;2;5;124;195m[38;2;3;125;200m▄[0m[38;2;2;126;196m▄[0m[48;2;3;128;188m[38;2;1;131;196m▄[0m[48;2;0;152;219m[38;2;2;131;191m▄[0m[38;2;1;141;196m▀[0m[38;2;1;135;183m▀[0m[38;2;1;148;198m▀[0m[48;2;1;156;202m[38;2;2;135;180m▄[0m[48;2;4;134;169m[38;2;1;137;177m▄[0m[38;2;3;138;173m▄[0m[48;2;6;137;165m[38;2;2;140;170m▄[0m[38;2;7;144;169m▀[0m[38;2;7;139;158m▀[0m
+   [48;2;2;128;202m[38;2;2;124;201m▄[0m[48;2;1;130;201m[38;2;0;135;212m▄[0m[38;2;2;128;196m▄[0m [48;2;2;142;204m[38;2;7;138;199m▄[0m [38;2;1;135;186m▄[0m[48;2;1;142;186m[38;2;2;144;194m▄[0m[48;2;3;138;176m[38;2;2;134;176m▄[0m
+ [48;2;8;118;200m[38;2;8;121;209m▄[0m[38;2;3;121;203m▀[0m [38;2;3;122;192m▀[0m[38;2;1;138;216m▀[0m[48;2;0;138;210m[38;2;3;128;198m▄[0m[48;2;0;126;188m[38;2;2;131;198m▄[0m[48;2;0;142;205m[38;2;3;132;193m▄[0m[38;2;1;140;196m▀[0m  [38;2;4;134;175m▀[0m[48;2;13;135;167m[38;2;8;136;174m▄[0m 
+
+  [38;2;0;116;217mH[38;2;0;116;215mi[38;2;0;117;213mn[38;2;0;118;211md[38;2;0;119;209ms[38;2;0;120;207mi[38;2;0;121;205mg[38;2;0;122;203mh[38;2;0;123;201mt[38;2;0;123;199m: [38;2;0;125;195mA[38;2;0;126;193mg[38;2;0;127;191me[38;2;0;128;189mn[38;2;0;129;187mt [38;2;0;131;183mM[38;2;0;131;181me[38;2;0;132;179mm[38;2;0;133;177mo[38;2;0;134;175mr[38;2;0;135;173my [38;2;0;137;169mT[38;2;0;138;167mh[38;2;0;138;165ma[38;2;0;139;163mt [38;2;0;141;159mL[38;2;0;142;157me[38;2;0;143;155ma[38;2;0;144;153mr[38;2;0;145;151mn[38;2;0;146;150ms[0m
+
+2026-10-04 22:53:40,014 - INFO - hindsight_api.config - Database: postgresql://***:***@127.0.0.1:55433/hindsight (schema: round2_priv_1791125614)
+2026-10-04 22:53:40,014 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 22:53:40,014 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 22:53:40,015 - INFO - hindsight_api.config - Reranker: provider=rrf
+2026-10-04 22:53:40,015 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 22:53:41,544 - INFO - hindsight_api.extensions.loader - Loading extension from HINDSIGHT_API_TENANT_EXTENSION=hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
+2026-10-04 22:53:41,545 - INFO - hindsight_api.extensions.loader - Loaded extension ApiKeyTenantExtension with config keys: ['api_key']
+2026-10-04 22:53:41,545 - INFO - root - Loaded tenant extension: ApiKeyTenantExtension
+2026-10-04 22:53:41,546 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:53:41,546 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:53:41,546 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:53:41,547 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:53:41,547 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:53:41,983 - INFO - hindsight_api.api - HTTP REST API enabled
+uvloop available, will use for event loop
+[38;2;0;116;217mStarting Hindsight API...[0m
+  [38;2;128;128;128mVersion:[0m [38;2;0;119;210mv0.10.2[0m
+  [38;2;128;128;128mURL:[0m [38;2;0;122;203mhttp://127.0.0.1:8894[0m
+  [38;2;128;128;128mDatabase:[0m [38;2;0;128;190mpostgresql://***:***@127.0.0.1:55433/hindsight[0m
+  [38;2;128;128;128mLLM:[0m [38;2;0;134;176mopenai-codex / gpt-6.1-sol[0m
+  [38;2;128;128;128mEmbeddings:[0m [38;2;0;140;163monnx[0m
+  [38;2;128;128;128mReranker:[0m [38;2;0;146;150mrrf[0m
+  [38;2;128;128;128mExtensions:[0m [38;2;0;128;190mpgvector (vector) / native (text)[0m
+
+INFO:     Started server process [47430]
+INFO:     Waiting for application startup.
+2026-10-04 22:53:42,019 - INFO - root - Metrics initialized - available at /metrics endpoint
+2026-10-04 22:53:42,390 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 22:53:42,390 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 22:53:44,212 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 22:53:44,213 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 22:53:44,251 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 22:53:47,441 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 22:53:47,441 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:55433/hindsight
+2026-10-04 22:53:47,453 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=5, max=100, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:53:47,460 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend initialized
+2026-10-04 22:53:47,460 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:53:47,460 - INFO - root - Memory system initialized
+2026-10-04 22:53:47,460 - INFO - root - DB pool metrics configured
+2026-10-04 22:53:47,460 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+2026-10-04 22:53:47,460 - INFO - root - Tenant extension started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8894 (Press CTRL+C to quit)
+2026-10-04 22:53:48,369 - ERROR - hindsight_api.api.http - Error in /v1/default/banks/round2-privilege: must be owner of table memory_units
+
+Traceback:
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/api/http.py", line 8492, in api_create_or_update_bank
+    final_profile = await app.state.memory.update_bank(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 21523, in update_bank
+    await self._ensure_bank_exists(bank_id, request_context)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 14234, in _ensure_bank_exists
+    created = await bank_utils.create_bank_if_missing(backend, bank_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 432, in create_bank_if_missing
+    return await retry_with_backoff(_create)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db_utils.py", line 90, in retry_with_backoff
+    return await func()
+           ^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 430, in _create
+    return await create_bank_row_on_conn(conn, bank_id, ops=pool.ops)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 406, in create_bank_row_on_conn
+    await create_bank_vector_indexes(conn, bank_id, str(internal_id), ops=ops)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 173, in create_bank_vector_indexes
+    await sql_memories().create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/postgres.py", line 1296, in create_bank_vector_indexes
+    await pg_banks.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/pg/banks.py", line 24, in create_bank_vector_indexes
+    await ops.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/ops_postgresql.py", line 1259, in create_bank_vector_indexes
+    await conn.execute(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/postgresql.py", line 113, in execute
+    return await self._conn.execute(query, *args, timeout=cast(float, timeout))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/asyncpg/connection.py", line 354, in execute
+    result = await self._protocol.query(query, timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 369, in query
+asyncpg.exceptions.InsufficientPrivilegeError: must be owner of table memory_units
+
+2026-10-04 22:53:48,374 - ERROR - hindsight_api.api.http - Error in PATCH /v1/default/banks/round2-privilege/config: must be owner of table memory_units
+
+Traceback:
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/api/http.py", line 9541, in api_update_bank_config
+    state = await app.state.memory.update_bank_config(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 14318, in update_bank_config
+    await self._update_bank_config_authenticated(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 14683, in _update_bank_config_authenticated
+    await self._ensure_bank_exists(bank_id, request_context)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 14234, in _ensure_bank_exists
+    created = await bank_utils.create_bank_if_missing(backend, bank_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 432, in create_bank_if_missing
+    return await retry_with_backoff(_create)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db_utils.py", line 90, in retry_with_backoff
+    return await func()
+           ^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 430, in _create
+    return await create_bank_row_on_conn(conn, bank_id, ops=pool.ops)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 406, in create_bank_row_on_conn
+    await create_bank_vector_indexes(conn, bank_id, str(internal_id), ops=ops)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 173, in create_bank_vector_indexes
+    await sql_memories().create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/postgres.py", line 1296, in create_bank_vector_indexes
+    await pg_banks.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/pg/banks.py", line 24, in create_bank_vector_indexes
+    await ops.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/ops_postgresql.py", line 1259, in create_bank_vector_indexes
+    await conn.execute(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/postgresql.py", line 113, in execute
+    return await self._conn.execute(query, *args, timeout=cast(float, timeout))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/asyncpg/connection.py", line 354, in execute
+    result = await self._protocol.query(query, timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 369, in query
+asyncpg.exceptions.InsufficientPrivilegeError: must be owner of table memory_units
+
+2026-10-04 22:53:48,378 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=round2-privilege store=PostgresMemories docs=1 wall=0.001s 62.9KB/s | pg.acquire=0.0s/2c/24%
+2026-10-04 22:53:48,379 - ERROR - hindsight_api.api.http - Error in /v1/default/banks/round2-privilege/memories (retain): must be owner of table memory_units
+
+Input (1 items):
+  [0] content='Synthetic database incident ZX8932 fixed by reducing connection pool size.', context=None, timestamp=None
+
+Traceback:
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/api/http.py", line 10130, in api_retain
+    result, usage = await app.state.memory.retain_batch_async(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 291, in wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/timing.py", line 207, in wrapper
+    return await fn(self, bank_id, contents, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 6516, in retain_batch_async
+    await self._ensure_bank_exists(bank_id, request_context)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memory_engine.py", line 14234, in _ensure_bank_exists
+    created = await bank_utils.create_bank_if_missing(backend, bank_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 432, in create_bank_if_missing
+    return await retry_with_backoff(_create)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db_utils.py", line 90, in retry_with_backoff
+    return await func()
+           ^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 430, in _create
+    return await create_bank_row_on_conn(conn, bank_id, ops=pool.ops)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 406, in create_bank_row_on_conn
+    await create_bank_vector_indexes(conn, bank_id, str(internal_id), ops=ops)
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/retain/bank_utils.py", line 173, in create_bank_vector_indexes
+    await sql_memories().create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/postgres.py", line 1296, in create_bank_vector_indexes
+    await pg_banks.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/memories/pg/banks.py", line 24, in create_bank_vector_indexes
+    await ops.create_bank_vector_indexes(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/ops_postgresql.py", line 1259, in create_bank_vector_indexes
+    await conn.execute(
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/hindsight_api/engine/db/postgresql.py", line 113, in execute
+    return await self._conn.execute(query, *args, timeout=cast(float, timeout))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/asyncpg/connection.py", line 354, in execute
+    result = await self._protocol.query(query, timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 369, in query
+asyncpg.exceptions.InsufficientPrivilegeError: must be owner of table memory_units
+
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-04 22:53:48,572 - INFO - root - Tenant extension stopped
+2026-10-04 22:53:48,572 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:53:48,572 - INFO - hindsight_api.engine.task_backend - BrokerTaskBackend shutdown
+2026-10-04 22:53:48,574 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+2026-10-04 22:53:48,574 - INFO - root - Memory system closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [47430]
+
+Received signal 15, shutting down...
+libc++abi: terminating due to uncaught exception of type std::__1::system_error: recursive_mutex lock failed: Invalid argument

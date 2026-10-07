@@ -1,0 +1,17 @@
+{
+  "scope": "Current local no-auth UI against local no-auth API; not a hostile-network test or configured cloud IAM result",
+  "requests": [
+    {
+      "actor": "anonymous",
+      "status": 200,
+      "response_sha256": "742e6906642c048e71b41919fba68f43696069a0c0ef373e992181cdf07a8431",
+      "response_bytes": 3750
+    },
+    {
+      "actor": "invalid-client-bearer",
+      "status": 200,
+      "response_sha256": "742e6906642c048e71b41919fba68f43696069a0c0ef373e992181cdf07a8431",
+      "response_bytes": 3750
+    }
+  ]
+}

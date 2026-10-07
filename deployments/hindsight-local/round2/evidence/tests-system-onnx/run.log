@@ -1,0 +1,329 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests
+configfile: pyproject.toml
+plugins: timeout-2.4.0, asyncio-1.4.0, anyio-4.15.1
+timeout: 300.0s
+timeout method: signal
+timeout func_only: False
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/test_76_onnx_embeddings.py::test_real_onnx_memory_lifecycle[cpu] ERROR [100%]
+
+==================================== ERRORS ====================================
+____________ ERROR at setup of test_real_onnx_memory_lifecycle[cpu] ____________
+
+request = <SubRequest 'onnx_server' for <Coroutine test_real_onnx_memory_lifecycle[cpu]>>
+stub_server = StubServer(url='http://127.0.0.1:50949', stubs=Stubs(llm=<hindsight_system_tests.rulebook.LLMStub object at 0x109352c0...[]), _server=<uvicorn.server.Server object at 0x109353d10>, _thread=<Thread(provider-stub, started daemon 6175830016)>)
+tmp_path = PosixPath('/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-system-onnx/tmp/test_real_onnx_memory_lifecycl0')
+
+    @pytest.fixture(params=DEVICES)
+    def onnx_server(request, stub_server, tmp_path) -> Iterator[HindsightServer]:
+        root = Path(MODEL_DIR).resolve()
+>       server = start_hindsight_server(
+            stub_url=stub_server.url,
+            log_path=tmp_path / "onnx-server.log",
+            extra_env={
+                "UV_NO_SYNC": "1",
+                "HINDSIGHT_API_EMBEDDINGS_PROVIDER": "onnx",
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_MODEL_PATH": str(root / "onnx/model.onnx"),
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_TOKENIZER_NAME_OR_PATH": str(root),
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_DEVICE": request.param,
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_CUDA_DEVICE_ID": "0",
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_BATCH_SIZE": "2",
+                "HINDSIGHT_API_EMBEDDINGS_ONNX_DIMENSIONS": "384",
+            },
+        )
+
+tests/test_76_onnx_embeddings.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+hindsight_system_tests/server.py:233: in start_hindsight_server
+    _wait_until_healthy(server)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+server = HindsightServer(url='http://127.0.0.1:50950', log_path=PosixPath('/Users/zhuqingping/Work/Database/Context/ContextDB-R...lifecycl0/onnx-server.log'), _process=<Popen: returncode: 3 args: ['uv', 'run', '--project', '/Users/zhuqingping/W...>)
+
+    def _wait_until_healthy(server: HindsightServer) -> None:
+        deadline = time.monotonic() + SERVER_STARTUP_TIMEOUT
+        while time.monotonic() < deadline:
+            if server._process.poll() is not None:
+>               raise RuntimeError(f"hindsight-api exited during startup:\n{server.logs()}")
+E               RuntimeError: hindsight-api exited during startup:
+E               warning: `VIRTUAL_ENV=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests/.venv` does not match the project environment path `/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv` and will be ignored; use `--active` to target the active environment instead
+E               ONNX embeddings provider configured, but 'onnxruntime' and/or 'transformers' is not installed. The API will fail at model init time. Either:
+E                 1. Install ONNX deps: pip install hindsight-api-slim[local-onnx]
+E                 2. Use a different embeddings provider, e.g. HINDSIGHT_API_EMBEDDINGS_PROVIDER=local or openai
+E               ONNX embeddings provider configured, but 'onnxruntime' and/or 'transformers' is not installed. The API will fail at model init time. Either:
+E                 1. Install ONNX deps: pip install hindsight-api-slim[local-onnx]
+E                 2. Use a different embeddings provider, e.g. HINDSIGHT_API_EMBEDDINGS_PROVIDER=local or openai
+E               
+E                 [38;2;9;127;184m▄[0m[48;2;8;130;178m[38;2;5;133;186m▄[0m       [48;2;10;143;160m[38;2;10;143;165m▄[0m[38;2;7;140;156m▄[0m
+E                [38;2;8;125;192m▄[0m [38;2;3;132;191m▀[0m[38;2;2;133;192m▄[0m [38;2;3;132;180m▄[0m[38;2;1;137;184m▄[0m[38;2;3;133;174m▄[0m [38;2;3;142;176m▄[0m[38;2;4;142;169m▀[0m [38;2;10;144;164m▄[0m
+E               [38;2;6;121;195m▀[0m[38;2;5;128;203m▀[0m[48;2;5;124;195m[38;2;3;125;200m▄[0m[38;2;2;126;196m▄[0m[48;2;3;128;188m[38;2;1;131;196m▄[0m[48;2;0;152;219m[38;2;2;131;191m▄[0m[38;2;1;141;196m▀[0m[38;2;1;135;183m▀[0m[38;2;1;148;198m▀[0m[48;2;1;156;202m[38;2;2;135;180m▄[0m[48;2;4;134;169m[38;2;1;137;177m▄[0m[38;2;3;138;173m▄[0m[48;2;6;137;165m[38;2;2;140;170m▄[0m[38;2;7;144;169m▀[0m[38;2;7;139;158m▀[0m
+E                  [48;2;2;128;202m[38;2;2;124;201m▄[0m[48;2;1;130;201m[38;2;0;135;212m▄[0m[38;2;2;128;196m▄[0m [48;2;2;142;204m[38;2;7;138;199m▄[0m [38;2;1;135;186m▄[0m[48;2;1;142;186m[38;2;2;144;194m▄[0m[48;2;3;138;176m[38;2;2;134;176m▄[0m
+E                [48;2;8;118;200m[38;2;8;121;209m▄[0m[38;2;3;121;203m▀[0m [38;2;3;122;192m▀[0m[38;2;1;138;216m▀[0m[48;2;0;138;210m[38;2;3;128;198m▄[0m[48;2;0;126;188m[38;2;2;131;198m▄[0m[48;2;0;142;205m[38;2;3;132;193m▄[0m[38;2;1;140;196m▀[0m  [38;2;4;134;175m▀[0m[48;2;13;135;167m[38;2;8;136;174m▄[0m 
+E               
+E                 [38;2;0;116;217mH[38;2;0;116;215mi[38;2;0;117;213mn[38;2;0;118;211md[38;2;0;119;209ms[38;2;0;120;207mi[38;2;0;121;205mg[38;2;0;122;203mh[38;2;0;123;201mt[38;2;0;123;199m: [38;2;0;125;195mA[38;2;0;126;193mg[38;2;0;127;191me[38;2;0;128;189mn[38;2;0;129;187mt [38;2;0;131;183mM[38;2;0;131;181me[38;2;0;132;179mm[38;2;0;133;177mo[38;2;0;134;175mr[38;2;0;135;173my [38;2;0;137;169mT[38;2;0;138;167mh[38;2;0;138;165ma[38;2;0;139;163mt [38;2;0;141;159mL[38;2;0;142;157me[38;2;0;143;155ma[38;2;0;144;153mr[38;2;0;145;151mn[38;2;0;146;150ms[0m
+E               
+E               2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Database: pg0://hindsight-systest:15499 (schema: public)
+E               2026-10-04 22:35:54,271 - INFO - hindsight_api.config - LLM: provider=openai, model=stub-model
+E               2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Embeddings: provider=onnx
+E               2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Reranker: provider=siliconflow
+E               2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Graph retriever: link_expansion
+E               2026-10-04 22:35:55,469 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+E               2026-10-04 22:35:55,476 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+E               2026-10-04 22:35:55,484 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+E               2026-10-04 22:35:55,492 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+E               2026-10-04 22:35:55,499 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+E               2026-10-04 22:35:55,633 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+E               2026-10-04 22:35:55,725 - INFO - hindsight_api.api - HTTP REST API enabled
+E               2026-10-04 22:35:55,726 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+E               uvloop available, will use for event loop
+E               [38;2;0;116;217mStarting Hindsight API...[0m
+E                 [38;2;128;128;128mVersion:[0m [38;2;0;119;210mv0.10.2[0m
+E                 [38;2;128;128;128mURL:[0m [38;2;0;122;203mhttp://127.0.0.1:50950[0m
+E                 [38;2;128;128;128mDatabase:[0m [38;2;0;128;190mpg0://hindsight-systest:15499[0m
+E                 [38;2;128;128;128mLLM:[0m [38;2;0;134;176mopenai / stub-model[0m
+E                 [38;2;128;128;128mEmbeddings:[0m [38;2;0;140;163monnx[0m
+E                 [38;2;128;128;128mReranker:[0m [38;2;0;146;150msiliconflow[0m
+E                 [38;2;128;128;128mExtensions:[0m [38;2;0;128;190mpgvector (vector) / native (text)[0m
+E                 [38;2;128;128;128mMCP:[0m [38;2;0;146;150menabled at /mcp[0m
+E               
+E               INFO:     Started server process [23909]
+E               INFO:     Waiting for application startup.
+E               2026-10-04 22:35:55,762 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+E               2026-10-04 22:35:55,762 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+E               2026-10-04 22:35:55,762 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+E               2026-10-04 22:35:55,763 - INFO - root - Metrics initialized - available at /metrics endpoint
+E               2026-10-04 22:35:55,772 - INFO - hindsight_api.engine.cross_encoder - Reranker: initializing SiliconFlow provider at http://127.0.0.1:50949 with model stub-reranker
+E               2026-10-04 22:35:55,772 - INFO - hindsight_api.engine.cross_encoder - Reranker: SiliconFlow provider initialized
+E               2026-10-04 22:35:55,838 - INFO - hindsight_api.engine.providers.openai_compatible_llm - Verifying connection: openai/stub-model
+E               2026-10-04 22:35:56,672 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+E               2026-10-04 22:35:56,677 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+E               ERROR:      + Exception Group Traceback (most recent call last):
+E                 |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/starlette/routing.py", line 638, in lifespan
+E                 |     async with self.lifespan_context(app) as maybe_state:
+E                 |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                 |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+E                 |     return await anext(self.gen)
+E                 |            ^^^^^^^^^^^^^^^^^^^^^
+E                 |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 83, in chained_lifespan
+E                 |     async with multi_bank_starlette_app.router.lifespan_context(multi_bank_starlette_app):
+E                 |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                 |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+E                 |     await self.gen.athrow(value)
+E                 |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 367, in lifespan
+E                 |     async with server._lifespan_manager(), session_manager.run():
+E                 |                                            ^^^^^^^^^^^^^^^^^^^^^
+E                 |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+E                 |     await self.gen.athrow(value)
+E                 |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 128, in run
+E                 |     async with anyio.create_task_group() as tg:
+E                 |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+E                 |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 815, in __aexit__
+E                 |     raise BaseExceptionGroup(
+E                 | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+E                 +-+---------------- 1 ----------------
+E                   | Exception Group Traceback (most recent call last):
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 133, in run
+E                   |     yield  # Let the application run
+E                   |     ^^^^^
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 368, in lifespan
+E                   |     yield
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 84, in chained_lifespan
+E                   |     async with single_bank_starlette_app.router.lifespan_context(single_bank_starlette_app):
+E                   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+E                   |     await self.gen.athrow(value)
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 367, in lifespan
+E                   |     async with server._lifespan_manager(), session_manager.run():
+E                   |                                            ^^^^^^^^^^^^^^^^^^^^^
+E                   |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+E                   |     await self.gen.athrow(value)
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 128, in run
+E                   |     async with anyio.create_task_group() as tg:
+E                   |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 815, in __aexit__
+E                   |     raise BaseExceptionGroup(
+E                   | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+E                   +-+---------------- 1 ----------------
+E                     | Traceback (most recent call last):
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 518, in initialize
+E                     |     from transformers import AutoTokenizer
+E                     | ModuleNotFoundError: No module named 'transformers'
+E                     | 
+E                     | The above exception was the direct cause of the following exception:
+E                     | 
+E                     | Traceback (most recent call last):
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 133, in run
+E                     |     yield  # Let the application run
+E                     |     ^^^^^
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 368, in lifespan
+E                     |     yield
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 87, in chained_lifespan
+E                     |     async with original_lifespan(app_instance):
+E                     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+E                     |     return await anext(self.gen)
+E                     |            ^^^^^^^^^^^^^^^^^^^^^
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/http.py", line 5044, in lifespan
+E                     |     await memory.initialize()
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/memory_engine.py", line 5804, in initialize
+E                     |     await asyncio.wait_for(asyncio.gather(*init_tasks), timeout=init_timeout)
+E                     |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+E                     |     return await fut
+E                     |            ^^^^^^^^^
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/memory_engine.py", line 5710, in init_embeddings
+E                     |     await self.embeddings.initialize()
+E                     |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 526, in initialize
+E                     |     raise ImportError(
+E                     | ImportError: onnxruntime and transformers are required for OnnxEmbeddings. Install with: pip install 'hindsight-api-slim[local-onnx]'
+E                     +------------------------------------
+E               
+E               ERROR:    Application startup failed. Exiting.
+E               2026-10-04 22:35:56,692 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=hindsight-systest, port=15499)...
+E               sys:1: RuntimeWarning: coroutine 'connect_tcp.<locals>.try_connect' was never awaited
+E               RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+
+hindsight_system_tests/server.py:241: RuntimeError
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-system-onnx/junit.xml -
+=========================== short test summary info ============================
+ERROR tests/test_76_onnx_embeddings.py::test_real_onnx_memory_lifecycle[cpu] - RuntimeError: hindsight-api exited during startup:
+warning: `VIRTUAL_ENV=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests/.venv` does not match the project environment path `/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv` and will be ignored; use `--active` to target the active environment instead
+ONNX embeddings provider configured, but 'onnxruntime' and/or 'transformers' is not installed. The API will fail at model init time. Either:
+  1. Install ONNX deps: pip install hindsight-api-slim[local-onnx]
+  2. Use a different embeddings provider, e.g. HINDSIGHT_API_EMBEDDINGS_PROVIDER=local or openai
+ONNX embeddings provider configured, but 'onnxruntime' and/or 'transformers' is not installed. The API will fail at model init time. Either:
+  1. Install ONNX deps: pip install hindsight-api-slim[local-onnx]
+  2. Use a different embeddings provider, e.g. HINDSIGHT_API_EMBEDDINGS_PROVIDER=local or openai
+
+  [38;2;9;127;184m▄[0m[48;2;8;130;178m[38;2;5;133;186m▄[0m       [48;2;10;143;160m[38;2;10;143;165m▄[0m[38;2;7;140;156m▄[0m
+ [38;2;8;125;192m▄[0m [38;2;3;132;191m▀[0m[38;2;2;133;192m▄[0m [38;2;3;132;180m▄[0m[38;2;1;137;184m▄[0m[38;2;3;133;174m▄[0m [38;2;3;142;176m▄[0m[38;2;4;142;169m▀[0m [38;2;10;144;164m▄[0m
+[38;2;6;121;195m▀[0m[38;2;5;128;203m▀[0m[48;2;5;124;195m[38;2;3;125;200m▄[0m[38;2;2;126;196m▄[0m[48;2;3;128;188m[38;2;1;131;196m▄[0m[48;2;0;152;219m[38;2;2;131;191m▄[0m[38;2;1;141;196m▀[0m[38;2;1;135;183m▀[0m[38;2;1;148;198m▀[0m[48;2;1;156;202m[38;2;2;135;180m▄[0m[48;2;4;134;169m[38;2;1;137;177m▄[0m[38;2;3;138;173m▄[0m[48;2;6;137;165m[38;2;2;140;170m▄[0m[38;2;7;144;169m▀[0m[38;2;7;139;158m▀[0m
+   [48;2;2;128;202m[38;2;2;124;201m▄[0m[48;2;1;130;201m[38;2;0;135;212m▄[0m[38;2;2;128;196m▄[0m [48;2;2;142;204m[38;2;7;138;199m▄[0m [38;2;1;135;186m▄[0m[48;2;1;142;186m[38;2;2;144;194m▄[0m[48;2;3;138;176m[38;2;2;134;176m▄[0m
+ [48;2;8;118;200m[38;2;8;121;209m▄[0m[38;2;3;121;203m▀[0m [38;2;3;122;192m▀[0m[38;2;1;138;216m▀[0m[48;2;0;138;210m[38;2;3;128;198m▄[0m[48;2;0;126;188m[38;2;2;131;198m▄[0m[48;2;0;142;205m[38;2;3;132;193m▄[0m[38;2;1;140;196m▀[0m  [38;2;4;134;175m▀[0m[48;2;13;135;167m[38;2;8;136;174m▄[0m 
+
+  [38;2;0;116;217mH[38;2;0;116;215mi[38;2;0;117;213mn[38;2;0;118;211md[38;2;0;119;209ms[38;2;0;120;207mi[38;2;0;121;205mg[38;2;0;122;203mh[38;2;0;123;201mt[38;2;0;123;199m: [38;2;0;125;195mA[38;2;0;126;193mg[38;2;0;127;191me[38;2;0;128;189mn[38;2;0;129;187mt [38;2;0;131;183mM[38;2;0;131;181me[38;2;0;132;179mm[38;2;0;133;177mo[38;2;0;134;175mr[38;2;0;135;173my [38;2;0;137;169mT[38;2;0;138;167mh[38;2;0;138;165ma[38;2;0;139;163mt [38;2;0;141;159mL[38;2;0;142;157me[38;2;0;143;155ma[38;2;0;144;153mr[38;2;0;145;151mn[38;2;0;146;150ms[0m
+
+2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Database: pg0://hindsight-systest:15499 (schema: public)
+2026-10-04 22:35:54,271 - INFO - hindsight_api.config - LLM: provider=openai, model=stub-model
+2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Reranker: provider=siliconflow
+2026-10-04 22:35:54,271 - INFO - hindsight_api.config - Graph retriever: link_expansion
+2026-10-04 22:35:55,469 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+2026-10-04 22:35:55,476 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+2026-10-04 22:35:55,484 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+2026-10-04 22:35:55,492 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+2026-10-04 22:35:55,499 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=stub-model, base_url=http://127.0.0.1:50949/v1, reasoning_effort=not sent
+2026-10-04 22:35:55,633 - INFO - hindsight_api.api.mcp - MCP servers created (stateless_http=False)
+2026-10-04 22:35:55,725 - INFO - hindsight_api.api - HTTP REST API enabled
+2026-10-04 22:35:55,726 - INFO - hindsight_api.api - MCP server enabled at /mcp/
+uvloop available, will use for event loop
+[38;2;0;116;217mStarting Hindsight API...[0m
+  [38;2;128;128;128mVersion:[0m [38;2;0;119;210mv0.10.2[0m
+  [38;2;128;128;128mURL:[0m [38;2;0;122;203mhttp://127.0.0.1:50950[0m
+  [38;2;128;128;128mDatabase:[0m [38;2;0;128;190mpg0://hindsight-systest:15499[0m
+  [38;2;128;128;128mLLM:[0m [38;2;0;134;176mopenai / stub-model[0m
+  [38;2;128;128;128mEmbeddings:[0m [38;2;0;140;163monnx[0m
+  [38;2;128;128;128mReranker:[0m [38;2;0;146;150msiliconflow[0m
+  [38;2;128;128;128mExtensions:[0m [38;2;0;128;190mpgvector (vector) / native (text)[0m
+  [38;2;128;128;128mMCP:[0m [38;2;0;146;150menabled at /mcp[0m
+
+INFO:     Started server process [23909]
+INFO:     Waiting for application startup.
+2026-10-04 22:35:55,762 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 22:35:55,762 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager started
+2026-10-04 22:35:55,762 - INFO - hindsight_api.api - MCP lifespans started (multi-bank and single-bank)
+2026-10-04 22:35:55,763 - INFO - root - Metrics initialized - available at /metrics endpoint
+2026-10-04 22:35:55,772 - INFO - hindsight_api.engine.cross_encoder - Reranker: initializing SiliconFlow provider at http://127.0.0.1:50949 with model stub-reranker
+2026-10-04 22:35:55,772 - INFO - hindsight_api.engine.cross_encoder - Reranker: SiliconFlow provider initialized
+2026-10-04 22:35:55,838 - INFO - hindsight_api.engine.providers.openai_compatible_llm - Verifying connection: openai/stub-model
+2026-10-04 22:35:56,672 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+2026-10-04 22:35:56,677 - INFO - mcp.server.streamable_http_manager - StreamableHTTP session manager shutting down
+ERROR:      + Exception Group Traceback (most recent call last):
+  |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/starlette/routing.py", line 638, in lifespan
+  |     async with self.lifespan_context(app) as maybe_state:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+  |     return await anext(self.gen)
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 83, in chained_lifespan
+  |     async with multi_bank_starlette_app.router.lifespan_context(multi_bank_starlette_app):
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 367, in lifespan
+  |     async with server._lifespan_manager(), session_manager.run():
+  |                                            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 128, in run
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 133, in run
+    |     yield  # Let the application run
+    |     ^^^^^
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 368, in lifespan
+    |     yield
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 84, in chained_lifespan
+    |     async with single_bank_starlette_app.router.lifespan_context(single_bank_starlette_app):
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+    |     await self.gen.athrow(value)
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 367, in lifespan
+    |     async with server._lifespan_manager(), session_manager.run():
+    |                                            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 231, in __aexit__
+    |     await self.gen.athrow(value)
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 128, in run
+    |     async with anyio.create_task_group() as tg:
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 815, in __aexit__
+    |     raise BaseExceptionGroup(
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 518, in initialize
+      |     from transformers import AutoTokenizer
+      | ModuleNotFoundError: No module named 'transformers'
+      | 
+      | The above exception was the direct cause of the following exception:
+      | 
+      | Traceback (most recent call last):
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 133, in run
+      |     yield  # Let the application run
+      |     ^^^^^
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/.venv/lib/python3.12/site-packages/fastmcp/server/http.py", line 368, in lifespan
+      |     yield
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/__init__.py", line 87, in chained_lifespan
+      |     async with original_lifespan(app_instance):
+      |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+      |     return await anext(self.gen)
+      |            ^^^^^^^^^^^^^^^^^^^^^
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/api/http.py", line 5044, in lifespan
+      |     await memory.initialize()
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/memory_engine.py", line 5804, in initialize
+      |     await asyncio.wait_for(asyncio.gather(*init_tasks), timeout=init_timeout)
+      |   File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+      |     return await fut
+      |            ^^^^^^^^^
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/memory_engine.py", line 5710, in init_embeddings
+      |     await self.embeddings.initialize()
+      |   File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/engine/embeddings.py", line 526, in initialize
+      |     raise ImportError(
+      | ImportError: onnxruntime and transformers are required for OnnxEmbeddings. Install with: pip install 'hindsight-api-slim[local-onnx]'
+      +------------------------------------
+
+ERROR:    Application startup failed. Exiting.
+2026-10-04 22:35:56,692 - INFO - hindsight_api.pg0 - Starting embedded PostgreSQL (name=hindsight-systest, port=15499)...
+sys:1: RuntimeWarning: coroutine 'connect_tcp.<locals>.try_connect' was never awaited
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+=============================== 1 error in 5.45s ===============================

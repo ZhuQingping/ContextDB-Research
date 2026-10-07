@@ -1,0 +1,23 @@
+{
+  "dataset": "longmemeval",
+  "split": "s",
+  "category": null,
+  "memory_provider": "hindsight",
+  "run_name": "hindsight",
+  "mode": "rag",
+  "oracle": false,
+  "total_queries": 500,
+  "correct": 473,
+  "accuracy": 0.946,
+  "ingestion_time_ms": 30090034.3,
+  "ingested_docs": 11303,
+  "description": null,
+  "answer_llm": "gemini:gemini-3.1-pro-preview",
+  "judge_llm": "gemini:gemini-2.5-flash-lite",
+  "avg_retrieve_time_ms": 674.9,
+  "avg_context_tokens": 43624.5,
+  "full_payload_bytes": 95194319,
+  "full_payload_sha256": "fd6d11b2dfaa625f9d8b8e101c190e001b249493d5c1ef0e1bae0223229ed362",
+  "local_full_payload": "deployments/hindsight-local/.runtime/reference-downloads/benchmark-longmemeval-run.json",
+  "note": "Full per-question texts remain local and ignored by git; summary preserves run metadata."
+}

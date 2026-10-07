@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, maximum-scale=1">
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<title>Agent Memory 智能体记忆服务｜AI 长期记忆与精准召回平台</title>
+<meta name="keywords" content="Agent Memory,智能体记忆服务,腾讯云Agent Memory,AI记忆服务,智能体长期记忆,四层渐进式记忆架构,双路召回机制,AI跨会话记忆,向量数据库记忆服务,Agent记忆召回,AI智能体记忆解决方案,企业级AI记忆管理,长上下文优化,Token消耗优化">
+<meta name="description" content="腾讯云 Agent Memory 智能体记忆服务，基于向量数据库，四层渐进式架构 + 双路召回，准确率提升至 76.10%，跨会话持久记忆、Token 消耗直降 50%，企业级安全管控。
+">
+<link rel="dns-prefetch" href="//cloudcache.tencent-cloud.com" />
+<link rel="dns-prefetch" href="//qcloudimg.tencent-cloud.cn" />
+<link rel="icon" href="//cloudcache.tencent-cloud.com/qcloud/favicon.ico" type="image/x-icon" />
+
+<link rel="canonical" href="https://cloud.tencent.com/product/agm" />
+
+
+<script>
+  document.domain = 'cloud.tencent.com';
+  window.CDN_DOMAIN = 'cloudcache.tencent-cloud.com'
+</script>
+    
+    <link rel="stylesheet" href="//cloudcache.tencent-cloud.com/open_proj/proj_qcloud_v2/gateway/portal/css/global.css" />
+    
+      <link href="//cloudcache.tencent-cloud.com/qcloud/ui/tea-portal-material-portal/build/Main/Main-202604141503.css" rel="stylesheet" />
+    
+      <link href="https://cloudcache.tencent-cloud.com/qcloud/trisys-landing/materials/material-product.10f804d5ba77c11b334e.css" rel="stylesheet" />
+    
+      <link href="https://cloudcache.tencent-cloud.com/qcloud/portal/css/roadmap/snippet.abc3270d6.css" rel="stylesheet" />
+    
+      <link href="//cloudcache.tencent-cloud.com/qcloud/ui/portal-set/build/DsSale/DsSale-202309121954.css" rel="stylesheet" />
+    
+      <link href="https://cloudcache.tencent-cloud.com/qcloud/portal/css/anchorWidget/snippet.efb555991.css" rel="stylesheet" />
+    
+    
+    <link id="qcportal-kit-style" rel="stylesheet" href="https://cloudcache.tencent-cloud.com/qcloud/portal/kit/full.bc879161c3730bb789df.css">
+    
+<script src="https://tam.cdn-go.cn/aegis-sdk/latest/aegis.min.js"></script>
+<script>
+  !function(){"use strict";if(window.Aegis){let n=function(e){var t=new RegExp("(^| )"+decodeURIComponent(e)+"(?:=([^;]*))?(;|$)"),n=document.cookie.match(t);return n?n[2]?decodeURIComponent(n[2]):"":null};var e=[],t=window.aegisIns=new Aegis({id:"dWOw9fv7jg4XmVzQ09",onError:!0,pagePerformance:!0,reportAssetSpeed:!0,reportApiSpeed:!0,api:{reportRequest:!0,resHeaders:["x-req-id"]},ext1:n("qcloud_uid")||"",beforeRequest:function(e){if(/bot|wechatdevtools|spider/i.test(navigator.userAgent))return!1},beforeReportSpeed:function(t){if("static"===t.type&&"function"==typeof URL)try{var n=t.url||"";if(-1!==n.indexOf("asset-retry"))return;var r=new URL(n).hostname;r&&!e.includes(r)&&e.push(r)}catch(o){}}});window.addEventListener("beforeunload",function(){e.length&&t.reportEvent({name:"resource-domain",ext3:e.join("|")})})}}();
+</script>
+
+  </head>
+  <body>
+    
+<script>
+  var userAgent = navigator.userAgent || 'unknown';
+  userAgent = userAgent.toLowerCase();
+
+  var iosReg = /ip(hone|ad|od)/i;
+  var isIOS = iosReg.test(userAgent);
+  var isMac = userAgent.indexOf('macintosh') > -1;
+
+  var bodyClassName = isIOS || isMac ? 'tpm2-product-type-mac' : '';
+  if (bodyClassName) {
+    document.body.className += ' ' + bodyClassName;
+  }
+</script>
+    
+    <div id="qcportal-kit-topnav"><div role="navigation" id="navigationBar" data-type="cn_zh" class="pls-nav pls-nav-air "><div class="pls-nav-mod"><div class="pls-nav-top"><a class="pls-nav-top-logo" href="https://cloud.tencent.com" hotrep="hp.header.hp"><i>腾讯云</i></a><div class="pls-nav-list-wrap"><ul class="pls-nav-list"><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.act" href="https://cloud.tencent.com/act">最新活动</a></li><li class="pls-nav-item is-model" tabindex="-1"><a role="button" hotrep="hp.header.model"><span class="pls-nav-model-text">大模型</span></a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.product" href="https://cloud.tencent.com/product">产品</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.solution" href="https://cloud.tencent.com/solution">解决方案</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.price" href="https://buy.cloud.tencent.com/pricing">定价</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.ecenter" href="https://cloud.tencent.com/act/pro/center">企业中心</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.market" href="https://market.cloud.tencent.com">云市场</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.developer" href="https://cloud.tencent.com/landing/developer-ecology">开发者</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.support" href="https://cloud.tencent.com/act/event/service-support">客户支持</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.cooperate" href="https://cloud.tencent.com/landing/partner-ecology">合作与生态</a></li><li class="pls-nav-item" tabindex="-1"><a role="button" hotrep="hp.header.learn" href="https://cloud.tencent.com/about">了解腾讯云</a></li></ul></div><div class="pls-nav-top-operation"></div></div><section class="pls-nav-dropdown" style="visibility:hidden;height:0"><div style="background:#FFF;box-shadow:0 4px 16px 0 rgba(0, 0, 0, 0.12);transition:max-height ease-in-out .2s, height ease-in-out .2s, opacity ease-in-out .2s;height:0;max-height:0;opacity:0"></div></section></div></div>
+<div id="navigationBarM" class="pls-m-nav"><div class="pls-m-nav-bar"><div class="pls-m-nav-bar-main"><a href="https://cloud.tencent.com/" class="pls-m-nav-logo"></a></div><div class="pls-m-nav-bar-extra"><a class="pls-m-nav-btn" aria-label="搜索"><i class="pls-m-nav-btn-icon search"></i></a><a class="pls-m-nav-btn profile" aria-label="用户"><i class="pls-m-nav-btn-icon user"></i></a><a class="pls-m-nav-btn" aria-label="菜单"><i class="pls-m-nav-btn-icon menu"><span></span><span></span><span></span></i></a></div></div><div class="pls-m-nav-dropdown search" style="display:none"><div class="pls-m-nav-search"><div class="pls-m-nav-search-bar"><input type="text" class="pls-m-nav-search-input" placeholder="请输入搜索的关键词" value=""/><a class="pls-m-nav-search-btn">搜索</a></div></div></div></div></div>
+    <div id="app-root" aegis-first-screen-timing="true">
+      <div class="product-detail-page" style="position:relative"><div class="block-container view-control"><div class="clear-gap" id="8ISPlGQ5F" data-id="8ISPlGQ5F"><div role="banner" class="tpm-prod-hero tpm-prod-hero-version-v2"><div class="tpm-prod-hero__bg-wrap"><div class="tpm-prod-hero__bg"><div class="tpm-prod-hero__bg-inner" style="background-image:url(&quot;https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/Fy9rVbCkjUyp-SutxcIsp.jpg&quot;)"></div></div></div><div class="tpm-prod-hero__inner"><div class="tpm-prod-hero__seo"><img alt="" src=""/></div><div class="tpm-prod-hero__content"><div><div><div class="tpm-prod-hero__header"><h1 class="tpm-prod-hero__tit" id="hero_tit"><span>Agent 记忆服务</span></h1></div><p class="tpm-prod-hero__desc">Agent 记忆服务（TencentDB Agent Memory）由腾讯云数据库团队从底层完全自研。作为一款独立的记忆管理底座，它原生提供自动写入、分层沉淀、按需召回与治理增强等核心能力。能强力支撑智能体在跨会话、长周期、多任务场景中持续沉淀业务知识，保障上下文的连续性，并使记忆资产具备更全局维度的管理与高效复用能力。</p></div></div><div class="tpm-prod-hero__btn-group"><div class="tpm-prod-hero__btn-group--primary"><a class="tpm-btn tpm-prod-hero__btn tpm-btn--primary" href="https://cloud.tencent.com/apply/p/omo5o2mekrm" hotrep="product.agm.banner.btn1"><span class="tpm-btn__text">申请试用</span></a></div></div></div></div></div></div><div style="padding-bottom:60px" id="-YVF9ArIr" data-id="-YVF9ArIr" class="with-gap"><header class="tpm-section__hd" style="padding-top:60px" id="zOg-VcSnAJ" data-id="zOg-VcSnAJ"><h2 class="tl-anchor tpm-section__title">产品特性</h2></header><div class="view-column"><div><div class="tp-grid__layout"><div><div class="tp-grid__row tp-grid--gutter-8n"><div class="tp-grid__col tp-grid__col--8 tp-grid__col--pad-12 tp-grid__col--phone-24"><div class="tpm-feature__item"><img src="https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/12f9d881-89ae-4270-954d-8e35ad85b57b.png" alt="" class="tpm-feature__item-icon"/><div class="tpm-feature__item-bd"><h3 class="tpm-feature__item-title">四层渐进式记忆架构</h3><div class="tpm-feature__item-desc">自研 L0-L3 四层智能记忆引擎，从原始对话、关键信息、场景归纳到用户画像逐层沉淀，实现记忆的结构化分层存储与按需召回，确保高价值信息精准留存。</div></div></div></div><div class="tp-grid__col tp-grid__col--8 tp-grid__col--pad-12 tp-grid__col--phone-24"><div class="tpm-feature__item"><img src="https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/488957cf-f31c-44cf-b2c9-fefe84e01288.png" alt="" class="tpm-feature__item-icon"/><div class="tpm-feature__item-bd"><h3 class="tpm-feature__item-title">增强型双路召回机制</h3><div class="tpm-feature__item-desc">内置 Embedding + 双路检索能力，兼顾语义理解与关键词命中，在复杂业务场景下显著提升记忆召回的准确性与稳定性。</div></div></div></div><div class="tp-grid__col tp-grid__col--8 tp-grid__col--pad-12 tp-grid__col--phone-24"><div class="tpm-feature__item"><img src="https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/8e8937f0-95a8-489f-93fa-e74bf02e12c6.png" alt="" class="tpm-feature__item-icon"/><div class="tpm-feature__item-bd"><h3 class="tpm-feature__item-title">权威效果验证</h3><div class="tpm-feature__item-desc">基于PersonaMem权威评测集验证，总准确率由47.85%提升至76.10%，事实召回率由29.63%提升至79.07%，个性化推荐率等多个指标均大幅提升。</div></div></div></div><div class="tp-grid__col tp-grid__col--8 tp-grid__col--pad-12 tp-grid__col--phone-24"><div class="tpm-feature__item"><img src="https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/108cb1b4-5ef6-4e51-b130-cc03cfefcb70.png" alt="" class="tpm-feature__item-icon"/><div class="tpm-feature__item-bd"><h3 class="tpm-feature__item-title">全链路安全保障</h3><div class="tpm-feature__item-desc">提供备份、回档与数据保护能力，支持记忆资产与运行实例解耦，帮助企业降低记忆资产丢失风险，保障业务连续性与部署灵活性。</div></div></div></div><div class="tp-grid__col tp-grid__col--8 tp-grid__col--pad-12 tp-grid__col--phone-24"><div class="tpm-feature__item"><img src="https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/MUKPZoQqbjDtoFNnxebP6.png" alt="" class="tpm-feature__item-icon"/><div class="tpm-feature__item-bd"><h3 class="tpm-feature__item-title">全局资源管理</h3><div class="tpm-feature__item-desc">管理端支持记忆库可视化查看、分配与回收，便于统一管控多应用、多实例的记忆资源，实现记忆资产的集中治理与高效复用。</div></div></div></div></div></div></div></div></div></div><div id="mpWBbeEXH" data-id="mpWBbeEXH" class="custom-module with-gap"><div style="max-width:1180px;margin:0 auto;padding-left:20px;padding-right:20px;padding-bottom:60px"><p style="color: #a0a0a0; font-size: 12px; line-height: 1.8; text-align: center; margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">注：上述相关产品性能数据统计时间2026年4月，来自腾讯实验室测试结果，最终实现效果可能会因网络、设备配置、性能而有所波动。</p></div></div><div style="padding-bottom:60px" id="IV7cYBlmJ" data-id="IV7cYBlmJ" class="tl-media-content with-gap bg-gray"><header class="tpm-section__hd" style="padding-top:60px" id="ZBD-wWE0fR" data-id="ZBD-wWE0fR"><h2 class="tl-anchor tpm-section__title">效果对比</h2></header><div class="view-column"><div style="column-gap:40px;row-gap:24px" class="tl-media-object tl-media-object--middle tl-media-object--reverse"><div class="tl-media-object__media" style="width:810px"><div class="tl-media-content__media has-shadow"><img width="100%" src="https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/EVkPahsHxYlOT07Q_lwpR.png"/></div></div><div class="tl-media-object__content"><div class="tpm-draft"><div class="tpm-rich-text"><h3 class="ts-h3">Agent Memory：全面超越原生记忆系统</h3><p class="ts-p">在 OpenClaw 3.7 框架与 Kimi-K2.5 模型的真实评测环境下，系统通过了 PersonaMem 评测集中 20 个独立画像、6462 条海量上下文与 589 道高难推理题的极限挑战，全面验证了其在长周期复杂交互场景下卓越的记忆保真与精准召回能力。</p></div></div></div></div></div></div><div id="eM4ioquF6" data-id="eM4ioquF6" class="tl-faq-list tpm-faq__list with-gap"><header class="tpm-section__hd" style="padding-top:60px" id="FtNhJMKBA4" data-id="FtNhJMKBA4"><h2 class="tl-anchor tpm-section__title">常见问题</h2></header><div class="view-column" style="margin-bottom:40px"><div class="tpm-faq__item is-open"><div class="tpm-faq__item-hd"><h3 class="tpm-faq__item-title">Agent Memory的底层基础设施是什么？</h3><i class="tpm-faq__item-icon"></i></div><div class="tpm-faq__item-bd"><div class="tpm-rich-text"><p class="ts-p">Agent  Memory基于腾讯云向量数据库（Tencent Cloud VectorDB）构建，借助腾讯云成熟的数据库基础设施，提供高性能、高可用的记忆存储与检索服务。</p></div></div></div><div class="tpm-faq__item"><div class="tpm-faq__item-hd"><h3 class="tpm-faq__item-title">Agent Memory原理是什么？</h3><i class="tpm-faq__item-icon"></i></div></div><div class="tpm-faq__item"><div class="tpm-faq__item-hd"><h3 class="tpm-faq__item-title">Agent Memory提供的安全保障具体包括哪些？</h3><i class="tpm-faq__item-icon"></i></div></div><div class="tpm-faq__item"><div class="tpm-faq__item-hd"><h3 class="tpm-faq__item-title">Agent Memory 能跨会话记住之前交代过的内容吗？</h3><i class="tpm-faq__item-icon"></i></div></div><div class="tpm-faq__item"><div class="tpm-faq__item-hd"><h3 class="tpm-faq__item-title">Agent Memory全局资源管理能做什么？</h3><i class="tpm-faq__item-icon"></i></div></div></div><div style="margin-top:40px;padding-bottom:60px" id="ZeLp0dnz0F" data-id="ZeLp0dnz0F"><div class="view-column" style="text-align:center"><div class="tpm-rich-text"><p class="ts-p"></p></div></div></div></div><div class="tl-call2action" id="sWES_iyiX" data-id="sWES_iyiX"><div class="tpm-2-action-panel"><div class="tpm-2-action-panel__inner"><main class="tpm-2-action-panel__main"><div class="tpm-2-action-panel__desc">关于使用场景和技术架构的更多咨询，请联系我们的销售和技术支持团队。</div><div class="tpm-2-action-panel__btns"><a class="tpm-btn tpm-btn--white-hole" href="https://cloud.tencent.com/apply/p/omo5o2mekrm"><span class="tpm-btn__text">联系我们</span></a></div></main><aside class="tpm-2-action-panel__side"></aside></div></div></div><div id="doc-container"></div></div></div>
+    </div>
+    
+		<script>
+			window.__QCPortalContext__ = {
+				version: "0.5.0",
+
+				resource: {},
+
+				$getCurrServerTime: (function(s, c) {return function(){return +new Date()+s-c;}})(1791043535095, +new Date()),
+			}
+		</script>
+		<script src="https://cloudcache.tencent-cloud.com/qcloud/portal/kit/full.27ded199c.js"></script>
+		<script>
+			if (window.QCPortalKit) {
+				window.QCPortalKit.init({"version":"v2","site":{"replaceUrlTLDScope":"page"},"topNav":{"theme":"air"},"floatBar":{"satisfactionSurveyPageUrl":"https://cloud.tencent.com/product/agm","preSaleFromParam":"intro_agm","afterSaleFromParam":"intro_agm","softwareFromParam":"intro_agm"},"footer":{"disable":false}})
+			}
+		</script>
+	
+    <script>
+      window.isServerContext = false;
+      window.isClientContext = true;
+      window.$serverTime = 1791043535095;
+      window.$clientTime = Date.now();
+      window.$user = {"isLogined":false};
+    </script>
+    
+    <script src="//cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/libs/jsencrypt-standalone.min.js" crossOrigin=""></script>
+    
+<script src="//cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/vendors/babel/polyfill.6.26.min.js"></script>
+<script src="//cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/vendors/react/react.17.0.2.min.js"></script>
+<script src="//cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/vendors/react/react-dom.17.0.2.min.js"></script>
+<script src="//cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/vendors/jquery-3.5.0.min.js"></script>
+
+    <script src="/qccomponent/login/api.js"></script>
+    
+    <script src="https://cloudcache.tencent-cloud.com/qcloud/main/scripts/release/common/base.2ca1f4943948247d79e9.js?max_age=31536000"></script>
+    
+    <script>
+      window.__CRAFT_BASE_URL__ = 'https://qcloudimg.tencent-cloud.cn/resource/craft/';
+    </script>
+    
+      <script>window.__TRI_PAGE_STATE__={"kind":"page","id":"blank","slug":"blank","name":"product-detail","scenes":[{"id":"1","slug":"","title":""}],"collection":{"1":[{"kind":"block","name":"hero-prod","data":{"backgroundLayout":"picture","contentLayout":"default","title":"Agent 记忆服务","desc":"Agent 记忆服务（TencentDB Agent Memory）由腾讯云数据库团队从底层完全自研。作为一款独立的记忆管理底座，它原生提供自动写入、分层沉淀、按需召回与治理增强等核心能力。能强力支撑智能体在跨会话、长周期、多任务场景中持续沉淀业务知识，保障上下文的连续性，并使记忆资产具备更全局维度的管理与高效复用能力。","abstract":"提供安全可靠的弹性计算服务，助您轻松上云。","bgImage":"https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/Fy9rVbCkjUyp-SutxcIsp.jpg","buttons":[{"title":"申请试用","to":"https://cloud.tencent.com/apply/p/omo5o2mekrm","__vid__":"CmQKqO6diS6gRhE9Kud1u"}],"links":[]},"id":"8ISPlGQ5F","collection":{"addons":[]}},{"kind":"block","name":"feature-matrix","data":{"list":[{"icon":"https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/12f9d881-89ae-4270-954d-8e35ad85b57b.png","title":"四层渐进式记忆架构","desc":"自研 L0-L3 四层智能记忆引擎，从原始对话、关键信息、场景归纳到用户画像逐层沉淀，实现记忆的结构化分层存储与按需召回，确保高价值信息精准留存。","__vid__":"SUXZASt9Qua0z94c4cofz"},{"icon":"https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/488957cf-f31c-44cf-b2c9-fefe84e01288.png","title":"增强型双路召回机制","desc":"内置 Embedding + 双路检索能力，兼顾语义理解与关键词命中，在复杂业务场景下显著提升记忆召回的准确性与稳定性。","__vid__":"F2dS2FlbjQDAWop0o9-d3"},{"icon":"https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/8e8937f0-95a8-489f-93fa-e74bf02e12c6.png","title":"权威效果验证","desc":"基于PersonaMem权威评测集验证，总准确率由47.85%提升至76.10%，事实召回率由29.63%提升至79.07%，个性化推荐率等多个指标均大幅提升。","__vid__":"7KEupFOiEn1lNI8FHseJU"},{"icon":"https://cloudcache.tencent-cloud.com/qcloud/ui/static/tc_portal_icon/108cb1b4-5ef6-4e51-b130-cc03cfefcb70.png","title":"全链路安全保障","desc":"提供备份、回档与数据保护能力，支持记忆资产与运行实例解耦，帮助企业降低记忆资产丢失风险，保障业务连续性与部署灵活性。","__vid__":"63Rvr31IKvV-ANeNid10k"},{"icon":"https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/MUKPZoQqbjDtoFNnxebP6.png","title":"全局资源管理","desc":"管理端支持记忆库可视化查看、分配与回收，便于统一管控多应用、多实例的记忆资源，实现记忆资产的集中治理与高效复用。","__vid__":"0CrU8fI86QrY_WRupULWe"}],"columns":3},"id":"-YVF9ArIr","collection":{"header":[{"kind":"block","name":"section-header","data":{"title":"产品特性"},"id":"zOg-VcSnAJ"}]}},{"kind":"block","name":"custom-module","data":{"contType":"html","html":"<p style=\"color: #a0a0a0; font-size: 12px; line-height: 1.8; text-align: center; margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;\">注：上述相关产品性能数据统计时间2026年4月，来自腾讯实验室测试结果，最终实现效果可能会因网络、设备配置、性能而有所波动。</p>"},"logics":[],"id":"mpWBbeEXH","collection":{"header":[]},"className":""},{"kind":"block","name":"media-content","data":{"align":"middle","reverse":true,"media":{"type":"image","url":"https://qcloudimg.tencent-cloud.cn/trisys/assets/product/images/EVkPahsHxYlOT07Q_lwpR.png"},"mediaShadow":true,"content":{"mod":"slate","content":[{"type":"h3","children":[{"text":"Agent Memory：全面超越原生记忆系统"}]},{"type":"p","children":[{"text":"在 OpenClaw 3.7 框架与 Kimi-K2.5 模型的真实评测环境下，系统通过了 PersonaMem 评测集中 20 个独立画像、6462 条海量上下文与 589 道高难推理题的极限挑战，全面验证了其在长周期复杂交互场景下卓越的记忆保真与精准召回能力。"}]}]}},"logics":[],"id":"IV7cYBlmJ","collection":{"header":[{"kind":"block","name":"section-header","data":{"title":"效果对比"},"logics":[],"id":"ZBD-wWE0fR","collection":{}}]},"className":"bg-gray"},{"kind":"block","name":"faq-list","data":{"list":[{"question":"Agent Memory的底层基础设施是什么？","answer":{"mod":"slate","content":[{"type":"p","children":[{"text":"Agent  Memory基于腾讯云向量数据库（Tencent Cloud VectorDB）构建，借助腾讯云成熟的数据库基础设施，提供高性能、高可用的记忆存储与检索服务。"}]}]},"__vid__":"SrJdRjqUQVZaOSv61TOWr"},{"question":"Agent Memory原理是什么？","answer":{"mod":"slate","content":[{"type":"p","children":[{"text":"Agent Memory采用异构存储（向量库 + 文件系统）、渐进式披露、多层抽取与提纯，把记忆做成一条自动进化的流水线：原文 → 关键点 → 场景 → 画像。越往上信息密度越高、越接近“深度理解”。"}]}]},"__vid__":"xNLVNn9P15pwPeh4Wxt9U"},{"question":"Agent Memory提供的安全保障具体包括哪些？","answer":{"mod":"slate","content":[{"type":"p","children":[{"text":"Agent Memory 提供备份、回档与数据保护能力，帮助企业降低记忆资产丢失风险，确保关键业务知识的安全存储与可恢复性。"}]}]},"__vid__":"O-cjArtvMlHXiRcmNndjD"},{"question":"Agent Memory 能跨会话记住之前交代过的内容吗？","answer":{"mod":"slate","content":[{"type":"p","children":[{"text":"可以。这是 Memory 的核心能力之一。通过四层渐进式架构，关键信息、场景归纳和用户画像会自动沉淀，新会话开启时按需召回，无需用户重复交代。"}]}]},"__vid__":"-5ocN2BFWMMI4jB_AszIc"},{"question":"Agent Memory全局资源管理能做什么？","answer":{"mod":"slate","content":[{"type":"p","children":[{"text":"管理端支持记忆库的可视化查看、分配与回收，便于企业统一管控多应用、多实例的记忆资源，实现记忆资产的集中治理。"}]}]},"__vid__":"_QjAI3r5-KFF9_kkHiq8L"}]},"id":"eM4ioquF6","collection":{"header":[{"kind":"block","name":"section-header","data":{"title":"常见问题"},"id":"FtNhJMKBA4"}],"addons":[{"kind":"block","name":"section-footer","data":{"content":{"mod":"slate","content":[{"type":"p","children":[{"text":""}]}]}},"id":"ZeLp0dnz0F"}]}},{"kind":"block","name":"call2action","data":{"content":"关于使用场景和技术架构的更多咨询，请联系我们的销售和技术支持团队。","buttons":[{"title":"联系我们","to":"https://cloud.tencent.com/apply/p/omo5o2mekrm","__vid__":"QnKKVhwsCRjM4BvnyICjv"}]},"id":"sWES_iyiX"}]},"settings":{"seo":{"title":"Agent Memory 智能体记忆服务｜AI 长期记忆与精准召回平台","keywords":"Agent Memory,智能体记忆服务,腾讯云Agent Memory,AI记忆服务,智能体长期记忆,四层渐进式记忆架构,双路召回机制,AI跨会话记忆,向量数据库记忆服务,Agent记忆召回,AI智能体记忆解决方案,企业级AI记忆管理,长上下文优化,Token消耗优化","description":"腾讯云 Agent Memory 智能体记忆服务，基于向量数据库，四层渐进式架构 + 双路召回，准确率提升至 76.10%，跨会话持久记忆、Token 消耗直降 50%，企业级安全管控。\n"},"siteSearch":{"enable":true}}};</script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/trisys-landing/materials/material-product.47b0ee030.js"></script>
+    
+    
+    
+    
+    
+    <script>window.__TRI_CUSTOM_HTML_FRAGMENT__ = document?.getElementById('portal-custom-ssr-html')?.innerHTML || '';</script>
+    <script>
+      if (window.__TRI_PAGE_STATE__ 
+        && window.__TRI_PAGE_STATE__.settings 
+        && window.__TRI_PAGE_STATE__.settings.toc 
+        && window.__TRI_PAGE_STATE__.settings.toc.enable
+      ) {
+        window.__TRI_PAGE_STATE__.settings.toc.enable = false;
+      }
+
+      window.__TRI_PAGE_STATE__.legacy = false;
+
+      if (window.$render) {
+        window.$render();
+      }
+    </script>
+    
+      <script>window.G_PAGE_CONTEXT={"business":"product","entryId":3223};</script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/portal/scripts/roadmap/snippet.bd8de6af2.js"></script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/portal/scripts/dianshiSale/snippet.51ba3b899.js"></script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/portal/scripts/anchorWidget/snippet.5fc5e3e7d.js"></script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/portal/scripts/anchor/snippet.22522292d.js"></script>
+    
+      <script src="https://cloudcache.tencent-cloud.com/qcloud/portal/scripts/videoCopy/snippet.f4c950470.js"></script>
+    
+    
+<script src="//dscache.tencent-cloud.cn/ecache/qcstat/qcloud/qcloudStatApi.js" async></script>
+
+  </body>
+</html>

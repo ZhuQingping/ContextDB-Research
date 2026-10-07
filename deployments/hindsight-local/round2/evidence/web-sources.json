@@ -1,0 +1,29 @@
+{
+  "time_utc": "2026-10-04T14:43:48.539094+00:00",
+  "sources": [
+    {
+      "name": "maas-embedding",
+      "url": "https://support.huaweicloud.com/model-call-maas/model-call-027.html",
+      "status": 200,
+      "sha256": "e165b776a666f1120042702d9539501540bba94cd7e297aaaa00f8ab3e4a9998",
+      "chars": 7423,
+      "guiyang_mentioned": true
+    },
+    {
+      "name": "maas-rerank",
+      "url": "https://support.huaweicloud.com/model-call-maas/model-call-028.html",
+      "status": 200,
+      "sha256": "5af8695b58ff0d6d73d968f2ed7ff8d123cccbed789f479c100f9debaadb5ed1",
+      "chars": 5147,
+      "guiyang_mentioned": true
+    },
+    {
+      "name": "hindsight-cloud-keys",
+      "url": "https://docs.hindsight.vectorize.io/api-integration/",
+      "status": 200,
+      "sha256": "805a5d44d617bc69e517023eacd781a6b24f38a4c6d60dfe4f35271d69fa649f",
+      "chars": 5255,
+      "guiyang_mentioned": false
+    }
+  ]
+}

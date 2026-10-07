@@ -1,0 +1,8 @@
+Using Python 3.12.13 environment at: deployments/hindsight-local/.venv
+Resolved 4 packages in 8.75s
+Downloading playwright (41.0MiB)
+ Downloaded playwright
+Prepared 2 packages in 30.61s
+Installed 2 packages in 8ms
+ + playwright==1.63.0
+ + pyee==13.0.1

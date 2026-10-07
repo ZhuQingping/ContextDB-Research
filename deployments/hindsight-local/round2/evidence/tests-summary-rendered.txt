@@ -1,0 +1,190 @@
+[
+  {
+    "suite": "tests-api-collection",
+    "exit_code": 0,
+    "duration_seconds": 16.341,
+    "junit_cases": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 4
+  },
+  {
+    "suite": "tests-api-failure-recheck",
+    "exit_code": 1,
+    "duration_seconds": 4.516,
+    "junit_cases": 25,
+    "failures": 2,
+    "errors": 0,
+    "skipped_or_xfailed": 11
+  },
+  {
+    "suite": "tests-api-localml",
+    "exit_code": 2,
+    "duration_seconds": 97.16,
+    "junit_cases": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 1
+  },
+  {
+    "suite": "tests-api-localml-offline"
+  },
+  {
+    "suite": "tests-api-nonllm",
+    "exit_code": 1,
+    "duration_seconds": 136.245,
+    "junit_cases": 10664,
+    "failures": 8,
+    "errors": 5,
+    "skipped_or_xfailed": 2142
+  },
+  {
+    "suite": "tests-cli-coverage",
+    "exit_code": 0,
+    "duration_seconds": 0.05
+  },
+  {
+    "suite": "tests-cli-stdio-recheck",
+    "exit_code": 0,
+    "duration_seconds": 3.455,
+    "junit_cases": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-client-coverage",
+    "exit_code": 0,
+    "duration_seconds": 0.117
+  },
+  {
+    "suite": "tests-core-unit",
+    "exit_code": 0,
+    "duration_seconds": 22.704,
+    "junit_cases": 682,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 134
+  },
+  {
+    "suite": "tests-localml-install",
+    "exit_code": 0,
+    "duration_seconds": 21.609
+  },
+  {
+    "suite": "tests-localml-models",
+    "exit_code": 0,
+    "duration_seconds": 164.732
+  },
+  {
+    "suite": "tests-proxy-cleanenv",
+    "exit_code": 0,
+    "duration_seconds": 3.521,
+    "junit_cases": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-python-sdk-unit",
+    "exit_code": 1,
+    "duration_seconds": 3.826,
+    "junit_cases": 15,
+    "failures": 0,
+    "errors": 11,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-python-sdk-unit-retry",
+    "exit_code": 0,
+    "duration_seconds": 4.574,
+    "junit_cases": 73,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-ruff",
+    "exit_code": 0,
+    "duration_seconds": 0.805
+  },
+  {
+    "suite": "tests-static-keys",
+    "exit_code": 0,
+    "duration_seconds": 9.183,
+    "junit_cases": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-system",
+    "exit_code": 0,
+    "duration_seconds": 333.226,
+    "junit_cases": 322,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 1
+  },
+  {
+    "suite": "tests-system-onnx",
+    "exit_code": 1,
+    "duration_seconds": 6.678,
+    "junit_cases": 1,
+    "failures": 0,
+    "errors": 1,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-system-onnx-localml",
+    "exit_code": 0,
+    "duration_seconds": 86.265,
+    "junit_cases": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-ty",
+    "exit_code": 0,
+    "duration_seconds": 1.301
+  },
+  {
+    "suite": "tests-typescript-build",
+    "exit_code": 0,
+    "duration_seconds": 4.36
+  },
+  {
+    "suite": "tests-ui",
+    "exit_code": 1,
+    "duration_seconds": 29.67,
+    "junit_cases": 286,
+    "failures": 1,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  },
+  {
+    "suite": "tests-ui-build",
+    "exit_code": 0,
+    "duration_seconds": 17.13
+  },
+  {
+    "suite": "tests-ui-i18n",
+    "exit_code": 0,
+    "duration_seconds": 3.356
+  },
+  {
+    "suite": "tests-ui-install",
+    "exit_code": 0,
+    "duration_seconds": 38.836
+  },
+  {
+    "suite": "tests-ui-utc",
+    "exit_code": 0,
+    "duration_seconds": 4.136,
+    "junit_cases": 286,
+    "failures": 0,
+    "errors": 0,
+    "skipped_or_xfailed": 0
+  }
+]

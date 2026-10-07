@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="11" failures="0" skipped="0" tests="15" time="3.355" timestamp="2026-10-04T22:32:45.507067+08:00" hostname="192.168.0.113"><testcase classname="" name="tests.test_bank_config_update_payload" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_bank_config_update_payload.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_bank_config_update_payload.py:1: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:46: in &lt;module&gt;
+    from hindsight_client_api.models.bank_profile_response import BankProfileResponse
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_retain_async_kwarg" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_retain_async_kwarg.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_retain_async_kwarg.py:14: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_recall_temporal_window" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_recall_temporal_window.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_recall_temporal_window.py:9: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_recall_min_scores" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_recall_min_scores.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_recall_min_scores.py:7: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_retry_after_nonfinite" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_retry_after_nonfinite.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_retry_after_nonfinite.py:8: in &lt;module&gt;
+    from hindsight_client.hindsight_client import _retry_after_seconds, _retry_on_capacity
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_retry_on_capacity" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_retry_on_capacity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_retry_on_capacity.py:14: in &lt;module&gt;
+    from hindsight_client.hindsight_client import (
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_mental_model_query_mapping" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_mental_model_query_mapping.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_mental_model_query_mapping.py:10: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_mental_model_trigger_patch" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_mental_model_trigger_patch.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_mental_model_trigger_patch.py:20: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_reflect_search_observations_options" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_reflect_search_observations_options.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_reflect_search_observations_options.py:10: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_fuzzy_tag_groups_mapping" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_fuzzy_tag_groups_mapping.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_fuzzy_tag_groups_mapping.py:17: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="" name="tests.test_list_time_window_mapping" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/tests/test_list_time_window_mapping.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_list_time_window_mapping.py:15: in &lt;module&gt;
+    from hindsight_client import Hindsight
+hindsight_client/__init__.py:58: in &lt;module&gt;
+    from .hindsight_client import Hindsight
+hindsight_client/hindsight_client.py:25: in &lt;module&gt;
+    import hindsight_client_api
+hindsight_client_api/__init__.py:20: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/__init__.py:4: in &lt;module&gt;
+    from hindsight_client_api.api.audit_api import AuditApi
+hindsight_client_api/api/audit_api.py:25: in &lt;module&gt;
+    from hindsight_client_api.api_client import ApiClient, RequestSerialized
+hindsight_client_api/api_client.py:32: in &lt;module&gt;
+    from hindsight_client_api import rest
+hindsight_client_api/rest.py:22: in &lt;module&gt;
+    import aiohttp_retry
+E   ModuleNotFoundError: No module named 'aiohttp_retry'</error></testcase><testcase classname="tests.test_retain_request_async" name="test_retain_request_default_is_sync" time="0.010" /><testcase classname="tests.test_retain_request_async" name="test_retain_request_async_true_serialized" time="0.001" /><testcase classname="tests.test_retain_request_async" name="test_retain_request_async_json_roundtrip" time="0.001" /><testcase classname="tests.test_retain_request_async" name="test_retain_request_async_false_serialized" time="0.001" /></testsuite></testsuites>

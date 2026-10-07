@@ -1,0 +1,1 @@
+{"exit_code": 0, "checks": 22, "bank": "round2-params-1791124491", "scope": "real authenticated HTTP with two tenant schemas, no LLM call; not every configurable field", "retained_empty_test_banks": true}

@@ -1,0 +1,92 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+2026-10-04 22:40:51,139 - INFO - hindsight_api.worker.main - Worker id: round2-split-worker (source: HINDSIGHT_API_WORKER_ID/--worker-id)
+Starting Hindsight Worker: round2-split-worker
+  Poll interval: 500ms
+  Max retries: 3
+  Max slots: 2
+  Slot reservations: consolidation=1
+  Shared pool: 1
+  Operation retention: disabled (terminal rows and payloads are kept)
+  HTTP server: 127.0.0.1:8893
+
+2026-10-04 22:40:51,491 - INFO - hindsight_api.extensions.loader - Loading extension from HINDSIGHT_API_TENANT_EXTENSION=hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
+2026-10-04 22:40:51,492 - INFO - hindsight_api.extensions.loader - Loaded extension ApiKeyTenantExtension with config keys: ['api_key']
+2026-10-04 22:40:51,823 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:40:51,823 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:40:51,823 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:40:51,823 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:40:51,823 - INFO - hindsight_api.engine.providers.codex_llm - Loaded Codex OAuth credentials for account: adc4d31c-703c-455c-bcee-8c1f6a6d3843
+2026-10-04 22:40:52,076 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 22:40:52,076 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 22:40:53,072 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 22:40:53,072 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 22:40:53,103 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 22:40:57,236 - INFO - hindsight_api.engine.providers.codex_llm - Codex LLM verified: gpt-6.1-sol
+2026-10-04 22:40:57,236 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:55433/hindsight
+2026-10-04 22:40:57,244 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=2, max=10, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:40:57,252 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+Database connected: postgresql://hindsight:hindsight@127.0.0.1:55433/hindsight
+Tenant extension loaded - schemas will be discovered dynamically on each poll
+2026-10-04 22:40:57,254 - INFO - hindsight_api.worker.main - Metrics initialized - available at /metrics endpoint
+2026-10-04 22:40:57,254 - INFO - hindsight_api.worker.main - DB pool metrics configured
+2026-10-04 22:40:57,264 - INFO - hindsight.loop_watchdog - Loop watchdog started (stall_threshold=1.00s, poll_interval=0.25s)
+INFO:     Started server process [26355]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8893 (Press CTRL+C to quit)
+Worker started. Metrics available at http://127.0.0.1:8893/metrics
+2026-10-04 22:40:57,277 - INFO - hindsight_api.worker.poller - Worker round2-split-worker starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)
+2026-10-04 22:40:57,284 - INFO - hindsight_api.worker.poller - Worker round2-split-worker claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: round2_split_3685d7ba)
+2026-10-04 22:40:57,286 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Starting background batch retain for bank_id=round2-split, 1 items, operation_id=6c3215c1-3782-4158-b520-ed284d668da1
+2026-10-04 22:40:57,298 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 22:40:57,315 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.016s
+2026-10-04 22:40:57,315 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.017s
+2026-10-04 22:40:57,322 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.005s
+2026-10-04 22:40:57,322 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: round2-split
+Batch size: 1 content items, 46 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.000s
+  Generate embeddings: 1 embeddings in 0.005s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document queued-without-worker tracked (full content)
+  Store chunks: 1 chunks in 0.002s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.001s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Checkpoint: 1 facts committed, ANN pass next
+[streaming] Final ANN: loaded 1 units with embeddings in 0.000s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.002s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.006s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.033s
+Document: queued-without-worker
+============================================================
+
+2026-10-04 22:40:57,325 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=round2-split store=PostgresMemories docs=1 wall=0.038s 1.2KB/s | embed=0.005s/1c/12% pg.acquire=0.004s/15c/11%
+2026-10-04 22:40:57,325 - INFO - hindsight_api.engine.memory_engine - [BATCH_RETAIN_TASK] Completed background batch retain for bank_id=round2-split
+2026-10-04 22:40:57,326 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 6c3215c1-3782-4158-b520-ed284d668da1
+2026-10-04 22:40:57,326 - INFO - hindsight_api.engine.memory_engine - Updated parent operation 278c9c1f-56c1-4d74-a21b-dc30808df807 to status 'completed' (all children done)
+
+Received shutdown signal, initiating graceful shutdown...
+(Press Ctrl+C again to force immediate exit)
+Shutting down HTTP server...
+Waiting for poller to finish...
+2026-10-04 22:40:57,361 - INFO - hindsight_api.worker.poller - Worker round2-split-worker initiating graceful shutdown
+2026-10-04 22:40:57,361 - INFO - hindsight_api.worker.poller - Worker round2-split-worker graceful shutdown complete
+2026-10-04 22:40:57,362 - INFO - hindsight_api.worker.poller - [WORKER_STATS] worker=round2-split-worker slots=0/2 | reserved: [consolidation=0/1(avail=1)] | shared=0/1(avail=1) | global: pending=0 (queried=0/1 schemas: ) | others: none | pool: size=2 limits=2-10 idle=1 in_use=1 free_holders=9 pending_acquires=0 | proc: peak_rss_mb=1632 | my_active: none
+2026-10-04 22:40:57,364 - INFO - hindsight_api.worker.poller - Worker round2-split-worker polling loop cancelled
+2026-10-04 22:40:57,364 - INFO - hindsight_api.worker.poller - Worker round2-split-worker polling loop stopped
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26355]
+2026-10-04 22:40:57,477 - INFO - hindsight_api.engine.memory_engine - close() started
+
+Received second signal, forcing immediate exit...

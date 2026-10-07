@@ -1,0 +1,28 @@
+{
+  "command": [
+    "../../hindsight-system-tests/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "tests/test_bank_config_update_payload.py",
+    "tests/test_retain_async_kwarg.py",
+    "tests/test_retain_request_async.py",
+    "tests/test_recall_temporal_window.py",
+    "tests/test_recall_min_scores.py",
+    "tests/test_retry_after_nonfinite.py",
+    "tests/test_retry_on_capacity.py",
+    "tests/test_mental_model_query_mapping.py",
+    "tests/test_mental_model_trigger_patch.py",
+    "tests/test_reflect_search_observations_options.py",
+    "tests/test_fuzzy_tag_groups_mapping.py",
+    "tests/test_list_time_window_mapping.py",
+    "-q",
+    "--junitxml=../../../../evidence/tests-python-sdk-unit-retry/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python",
+  "started_utc": "2026-10-04T14:32:58.262006+00:00",
+  "finished_utc": "2026-10-04T14:33:02.835498+00:00",
+  "duration_seconds": 4.574,
+  "exit_code": 0
+}

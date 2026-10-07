@@ -1,0 +1,32 @@
+hindsight-api-slim/hindsight_api/extensions/builtin/tenant.py:8: class DefaultTenantExtension(TenantExtension):
+hindsight-api-slim/hindsight_api/extensions/builtin/tenant.py:44: class ApiKeyTenantExtension(TenantExtension):
+hindsight-api-slim/hindsight_api/extensions/tenant.py:25: class TenantContext:
+hindsight-api-slim/hindsight_api/extensions/tenant.py:84: async def authenticate(self, context: RequestContext) -> TenantContext:
+hindsight-api-slim/hindsight_api/extensions/tenant.py:205: async def authenticate_mcp(self, context: RequestContext) -> TenantContext:
+hindsight-api-slim/hindsight_api/extensions/tenant.py:100: async def list_tenants(self) -> list[Tenant]:
+hindsight-api-slim/hindsight_api/extensions/tenant.py:136: async def get_allowed_config_fields(self, context: RequestContext, bank_id: str) -> set[str] | None:
+hindsight-api-slim/hindsight_api/extensions/operation_validator.py:922: async def resolve_tag_scope(self, ctx: TagScopeContext) -> "list[TagGroup] | None":
+hindsight-api-slim/hindsight_api/extensions/operation_validator.py:966: async def resolve_write_tag_scope(self, ctx: TagScopeContext) -> "list[str] | None":
+hindsight-api-slim/hindsight_api/extensions/operation_validator.py:1118: async def validate_bank_read(self, ctx: BankReadContext) -> ValidationResult:
+hindsight-api-slim/hindsight_api/extensions/operation_validator.py:1138: async def validate_bank_write(self, ctx: BankWriteContext) -> ValidationResult:
+hindsight-api-slim/hindsight_api/config.py:1519: DEFAULT_MCP_STATELESS = False  # False = stateful (supports SSE/GET); True = stateless (POST-only)
+hindsight-api-slim/hindsight_api/config.py:1521: DEFAULT_ENABLE_BANK_CONFIG_API = True
+hindsight-api-slim/hindsight_api/config.py:1693: DEFAULT_FILE_STORAGE_TYPE = "native"  # PostgreSQL BYTEA storage
+hindsight-api-slim/hindsight_api/config.py:154: ENV_READ_DATABASE_URL = "HINDSIGHT_API_READ_DATABASE_URL"
+hindsight-api-slim/hindsight_api/config.py:1212: DEFAULT_EMBEDDINGS_LOCAL_MODEL = "BAAI/bge-small-en-v1.5"
+hindsight-api-slim/hindsight_api/config.py:1275: DEFAULT_RERANKER_LOCAL_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+hindsight-api-slim/hindsight_api/engine/maintenance.py:30: The loop runs in *every* API/worker process with no leader election, so a job that
+hindsight-api-slim/hindsight_api/engine/maintenance.py:83: # maintenance loop runs in every API/worker process with no leader election, so
+hindsight-api-slim/hindsight_api/engine/maintenance.py:625: # but that exclusion is a *read*: this loop runs in every process, so
+hindsight-api-slim/hindsight_api/engine/maintenance.py:159: def _any_job_enabled() -> bool:
+hindsight-api-slim/hindsight_api/engine/memory_engine.py:6096: self._maintenance_loop = MaintenanceLoop(self)
+hindsight-api-slim/hindsight_api/engine/memory_engine.py:14913: async def list_banks(
+hindsight-api-slim/hindsight_api/engine/storage/__init__.py:12: def bank_storage_prefix(bank_id: str, schema: str | None = None) -> str:
+hindsight-api-slim/hindsight_api/engine/storage/__init__.py:44: def create_file_storage(
+hindsight-api-slim/hindsight_api/worker/poller.py:5: FOR UPDATE SKIP LOCKED for safe concurrent claiming.
+hindsight-api-slim/hindsight_api/worker/poller.py:294: Uses FOR UPDATE SKIP LOCKED for safe distributed claiming,
+hindsight-api-slim/hindsight_api/worker/poller.py:534: Uses FOR UPDATE SKIP LOCKED to ensure no conflicts with other workers.
+hindsight-api-slim/hindsight_api/worker/poller.py:566: # FOR UPDATE SKIP LOCKED semantics are unchanged by sharing the
+hindsight-api-slim/hindsight_api/models.py:31: allowed_bank_ids: list[str] | None = None  # None = unrestricted (all banks)
+hindsight-docs/docs/developer/retain.md:300: | `chunks` | When you want to store chunks as-is with no LLM call or extracted metadata |
+schema_router.py in current source: False

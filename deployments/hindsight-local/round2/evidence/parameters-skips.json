@@ -1,0 +1,58 @@
+[
+  {
+    "test": "test_config_hierarchy_resolution",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_validation_rejects_static_fields",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_validation_rejects_malformed_entity_labels",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_freshness_across_updates",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_update_bank_config_rejects_missing_bank",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_reset_to_defaults",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_supports_both_key_formats",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_only_configurable_fields_stored",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_get_bank_config_no_static_or_credential_fields_leak",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_config_permissions_system",
+    "reason": "local ML stack not installed; embeddings fixture needs the 'local-ml' extra (pip install 'hindsight-api-slim[local-ml]')"
+  },
+  {
+    "test": "test_reflect_allowed_when_default_llm_none_but_reflect_configured",
+    "reason": "MemoryEngine construction needs the local-ml extra"
+  },
+  {
+    "test": "test_tei_reranker_performance",
+    "reason": "TEI_RERANKER_URL not set - skipping TEI performance benchmark"
+  },
+  {
+    "test": "test_tei_reranker_concurrent_requests",
+    "reason": "TEI_RERANKER_URL not set - skipping TEI performance benchmark"
+  },
+  {
+    "test": "test_tei_reranker_latency_breakdown",
+    "reason": "TEI_RERANKER_URL not set - skipping TEI performance benchmark"
+  }
+]

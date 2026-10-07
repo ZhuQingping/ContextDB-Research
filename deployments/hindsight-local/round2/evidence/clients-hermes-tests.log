@@ -1,0 +1,20 @@
+Using CPython 3.12.13
+Creating virtual environment at: .venv
+Downloading pygments (1.2MiB)
+Downloading pydantic-core (1.8MiB)
+ Downloaded pygments
+ Downloaded pydantic-core
+Installed 28 packages in 21ms
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/hermes
+configfile: pyproject.toml
+testpaths: tests
+collected 38 items
+
+tests/test_local_runtime.py ..............                               [ 36%]
+tests/test_provider.py ....................                              [ 89%]
+tests/test_settings.py ....                                              [100%]
+
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/clients-hermes-tests.xml -
+============================== 38 passed in 7.16s ==============================

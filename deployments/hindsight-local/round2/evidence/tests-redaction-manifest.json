@@ -1,0 +1,55 @@
+{
+  "note": "Credential-shaped values conservatively redacted after execution; they may be synthetic test fixtures. No matched values retained here.",
+  "changes": [
+    {
+      "file": "tests-api-collection/run.log",
+      "matches": {
+        "pem": 0,
+        "private_key_header": 1,
+        "api_key_shape": 23
+      },
+      "sha256_before": "3cdafdfa757c6259413be94246a6542e5e2956ef0fed7a3d8e93ee8887a91a05",
+      "sha256_after": "54c1e0da63420e44c36964d5bb9b0c8ef4e2a50a346ef49685887f0d8270b628"
+    },
+    {
+      "file": "tests-api-nonllm/junit.xml",
+      "matches": {
+        "pem": 0,
+        "private_key_header": 1,
+        "api_key_shape": 23
+      },
+      "sha256_before": "d677f27379bffc10dac87196a5d47a224eaf709ed9f486c606155ad540e2bfa1",
+      "sha256_after": "a25cd937e11b4f760f40949355ec8915cf558dd4318bfb8e1f88ef2ad5688dbf"
+    },
+    {
+      "file": "tests-api-nonllm/run.log",
+      "matches": {
+        "pem": 0,
+        "private_key_header": 2,
+        "api_key_shape": 46
+      },
+      "sha256_before": "763cf0876b01c55811a21eb9a5f4dca970e4ddc6dfc6f9c85f5947837180e17a",
+      "sha256_after": "8f3f0fa47d7b77d5405548972dff80c26ea687b4c75e8d682421be9ded9e0f47"
+    },
+    {
+      "file": "tests-api-localml-offline/junit.xml",
+      "matches": {
+        "pem": 0,
+        "private_key_header": 1,
+        "api_key_shape": 23
+      },
+      "sha256_before": "e3cd2aa76b1b0ba52bd51da0ccccdec9b51a9531d6d879a118f73cf6177c1a7e",
+      "sha256_after": "6b0c10f1b733ed43c4d1276cab4be0c6a5f6f5f9ecf765b5311ea10eb7ad39ba"
+    },
+    {
+      "file": "tests-api-localml-offline/run.log",
+      "matches": {
+        "pem": 0,
+        "private_key_header": 2,
+        "api_key_shape": 46
+      },
+      "sha256_before": "ee7b9a634651c48aacae82a502642ffcc3f7b2cb0e992ee8bbaab72f5e357bc4",
+      "sha256_after": "6cb1e4909f0291ce646855214136b98a8d65caedb150496674794a4bc8e8274c"
+    }
+  ]
+}

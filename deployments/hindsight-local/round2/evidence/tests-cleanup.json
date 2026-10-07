@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-04T15:08:02.656092+00:00",
+  "checks": [
+    {
+      "instance": "hindsight-round2-core",
+      "exit_code": 0,
+      "output": "waiting for server to shut down.... done\nserver stopped"
+    },
+    {
+      "instance": "hindsight-systest",
+      "exit_code": 0,
+      "output": "waiting for server to shut down.... done\nserver stopped"
+    },
+    {
+      "instance": "hindsight-round2-recheck",
+      "exit_code": 0,
+      "output": "waiting for server to shut down.... done\nserver stopped"
+    }
+  ],
+  "data_deleted": false,
+  "preserved": "main API8888 UI9999 PG55432"
+}

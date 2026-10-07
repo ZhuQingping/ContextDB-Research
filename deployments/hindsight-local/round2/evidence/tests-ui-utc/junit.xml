@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="286" failures="0" errors="0" time="3.728634504">
+    <testsuite name="tests/components/bank-stats-view.test.ts" timestamp="2026-10-04T14:34:10.507Z" hostname="192.168.0.113" tests="2" failures="0" errors="0" skipped="0" time="0.002371709">
+        <testcase classname="tests/components/bank-stats-view.test.ts" name="getCausalLinkCount &gt; combines canonical and legacy causal link types" time="0.00115325">
+        </testcase>
+        <testcase classname="tests/components/bank-stats-view.test.ts" name="getCausalLinkCount &gt; treats absent causal link types as zero" time="0.000144875">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/banks-overview.test.tsx" timestamp="2026-10-04T14:34:10.508Z" hostname="192.168.0.113" tests="7" failures="0" errors="0" skipped="0" time="1.395285417">
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; deletes the selected banks one at a time, never concurrently" time="0.504722083">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; keeps going after a failure and reports the banks that survived" time="0.131364458">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; suppresses the client&apos;s per-request error toast so failures are reported once" time="0.237853917">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; fetches the next page by offset and drops the selection when the page changes" time="0.147306209">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; greets instead of showing an empty table when the server has no banks" time="0.0153385">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; keeps the search box when a query matches nothing, rather than greeting" time="0.285539875">
+        </testcase>
+        <testcase classname="tests/components/banks-overview.test.tsx" name="BanksOverview bulk delete &gt; requires the confirmation word before the delete can run" time="0.070831167">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/content-composer.test.ts" timestamp="2026-10-04T14:34:10.509Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.003223125">
+        <testcase classname="tests/components/content-composer.test.ts" name="toRetainContent &gt; sends the plain string in text mode, whatever the blocks hold" time="0.001116167">
+        </testcase>
+        <testcase classname="tests/components/content-composer.test.ts" name="toRetainContent &gt; drops blank text blocks and types attachments by media type, in order" time="0.000652542">
+        </testcase>
+        <testcase classname="tests/components/content-composer.test.ts" name="hasComposedContent &gt; counts an attachment alone as content, but not blank text" time="0.000294042">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/group-failures.test.ts" timestamp="2026-10-04T14:34:10.510Z" hostname="192.168.0.113" tests="6" failures="0" errors="0" skipped="0" time="0.003298292">
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; returns nothing for a history with no failures" time="0.001470583">
+        </testcase>
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; collapses consecutive identical failures into one event" time="0.000501125">
+        </testcase>
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; splits identical failures that a successful refresh separates" time="0.000118917">
+        </testcase>
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; splits on a different reason" time="0.000078041">
+        </testcase>
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; splits on a different message under the same reason" time="0.000087084">
+        </testcase>
+        <testcase classname="tests/components/group-failures.test.ts" name="groupFailures &gt; ignores versions between failures of different kinds" time="0.000073333">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/inline-attachment-text.test.tsx" timestamp="2026-10-04T14:34:10.510Z" hostname="192.168.0.113" tests="10" failures="0" errors="0" skipped="0" time="0.330150459">
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="hasInlineAttachment &gt; detects a placeholder and is not confused by ordinary prose" time="0.000617667">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="hasInlineAttachment &gt; does not leak regex state between calls" time="0.000119666">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; renders an image in the position its placeholder occupied" time="0.259384833">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; renders a non-image attachment as a downloadable card, not an image" time="0.016611292">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; keeps images and files apart when both appear in one body" time="0.013721333">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; always fetches through the proxy, never the dataplane url" time="0.017347292">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; falls back to an image when no metadata is supplied" time="0.008760542">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="InlineAttachmentText &gt; leaves text with no placeholders exactly as it was" time="0.001498958">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="AttachmentStrip &gt; renders each attachment for a memory whose text names none of them" time="0.009282625">
+        </testcase>
+        <testcase classname="tests/components/inline-attachment-text.test.tsx" name="AttachmentStrip &gt; renders nothing at all when there are no attachments" time="0.00092">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/knowledge-base-view.test.tsx" timestamp="2026-10-04T14:34:10.511Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.257673208">
+        <testcase classname="tests/components/knowledge-base-view.test.tsx" name="KnowledgeBaseView bank scoping &gt; auto-opens the first page of the bank and reads its mental model" time="0.052959416">
+        </testcase>
+        <testcase classname="tests/components/knowledge-base-view.test.tsx" name="KnowledgeBaseView bank scoping &gt; never pairs the new bank with the previous bank&apos;s page or mental model" time="0.074279667">
+        </testcase>
+        <testcase classname="tests/components/knowledge-base-view.test.tsx" name="KnowledgeBaseView bank scoping &gt; ignores a ?page= id the bank doesn&apos;t own and falls back to its first page" time="0.072097334">
+        </testcase>
+        <testcase classname="tests/components/knowledge-base-view.test.tsx" name="KnowledgeBaseView bank scoping &gt; opens a ?page= id the bank does own, without also auto-selecting the first page" time="0.05656525">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/llm-request-tokens.test.ts" timestamp="2026-10-04T14:34:10.512Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.001910625">
+        <testcase classname="tests/components/llm-request-tokens.test.ts" name="totalTokens &gt; adds reported reasoning to the API total" time="0.000686792">
+        </testcase>
+        <testcase classname="tests/components/llm-request-tokens.test.ts" name="totalTokens &gt; keeps the API total when no reasoning was reported" time="0.000072666">
+        </testcase>
+        <testcase classname="tests/components/llm-request-tokens.test.ts" name="totalTokens &gt; reports reasoning alone when the API total is missing" time="0.000060167">
+        </testcase>
+        <testcase classname="tests/components/llm-request-tokens.test.ts" name="totalTokens &gt; stays null when nothing was reported" time="0.000083625">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/memory-detail-modal-attachments.test.tsx" timestamp="2026-10-04T14:34:10.512Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.441531084">
+        <testcase classname="tests/components/memory-detail-modal-attachments.test.tsx" name="memory dialog attachments &gt; renders them for a world memory" time="0.2913095">
+            <system-err>
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/components/memory-detail-modal-attachments.test.tsx" name="memory dialog attachments &gt; renders them for a experience memory" time="0.082306084">
+            <system-err>
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/components/memory-detail-modal-attachments.test.tsx" name="memory dialog attachments &gt; renders them for a observation memory" time="0.039046958">
+            <system-err>
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/components/memory-detail-modal-attachments.test.tsx" name="memory dialog attachments &gt; renders nothing extra for a memory with no attachments" time="0.027590958">
+            <system-err>
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/mental-model-trigger-fields-fact-types.test.tsx" timestamp="2026-10-04T14:34:10.513Z" hostname="192.168.0.113" tests="2" failures="0" errors="0" skipped="0" time="0.098270667">
+        <testcase classname="tests/components/mental-model-trigger-fields-fact-types.test.tsx" name="MentalModelTriggerFields fact types &gt; says all fact types when none are selected" time="0.076642458">
+        </testcase>
+        <testcase classname="tests/components/mental-model-trigger-fields-fact-types.test.tsx" name="MentalModelTriggerFields fact types &gt; hides the note once a fact type is selected" time="0.019383625">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/mental-model-trigger-fields.test.ts" timestamp="2026-10-04T14:34:10.513Z" hostname="192.168.0.113" tests="5" failures="0" errors="0" skipped="0" time="0.005553292">
+        <testcase classname="tests/components/mental-model-trigger-fields.test.ts" name="triggerFromForm &gt; clears the cron, fact types and exclude flag explicitly" time="0.002386834">
+        </testcase>
+        <testcase classname="tests/components/mental-model-trigger-fields.test.ts" name="triggerFromForm &gt; round-trips a scheduled trigger" time="0.000311708">
+        </testcase>
+        <testcase classname="tests/components/mental-model-trigger-fields.test.ts" name="triggerFromForm &gt; sends refresh_after_consolidation for the auto option and no cron" time="0.000423375">
+        </testcase>
+        <testcase classname="tests/components/mental-model-trigger-fields.test.ts" name="triggerFromForm &gt; round-trips the refresh budget and leaves it out when unset" time="0.000592791">
+        </testcase>
+        <testcase classname="tests/components/mental-model-trigger-fields.test.ts" name="triggerFromForm &gt; returns null when the tag groups are not valid JSON" time="0.00017525">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/staleness-badge.test.tsx" timestamp="2026-10-04T14:34:10.514Z" hostname="192.168.0.113" tests="6" failures="0" errors="0" skipped="0" time="0.031012625">
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; reports staleness when the last refresh worked" time="0.024500125">
+        </testcase>
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; says paused, not stale, once a refresh has failed" time="0.001693041">
+        </testcase>
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; shows paused even on a surface that asked for no staleness" time="0.000876292">
+        </testcase>
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; says retrying, not paused, while an attempt is still queued" time="0.00089175">
+        </testcase>
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; renders nothing when staleness is unknown and nothing failed" time="0.000545167">
+        </testcase>
+        <testcase classname="tests/components/staleness-badge.test.tsx" name="StalenessBadge &gt; marks the compact dot red when paused" time="0.000739584">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/components/tag-filter-input.test.tsx" timestamp="2026-10-04T14:34:10.515Z" hostname="192.168.0.113" tests="2" failures="0" errors="0" skipped="0" time="0.05111675">
+        <testcase classname="tests/components/tag-filter-input.test.tsx" name="TagFilterInput &gt; adds what was typed when Enter comes before the suggestions refresh" time="0.036994792">
+        </testcase>
+        <testcase classname="tests/components/tag-filter-input.test.tsx" name="TagFilterInput &gt; still adds the highlighted suggestion once it matches the input" time="0.010622">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/api.test.ts" timestamp="2026-10-04T14:34:10.515Z" hostname="192.168.0.113" tests="13" failures="0" errors="0" skipped="0" time="0.02815125">
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient error handling &gt; shows client-error details for 4xx validation failures" time="0.015083958">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient error handling &gt; does not show upstream response details for 5xx failures" time="0.000372458">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient.cloneBank &gt; posts the target bank id to the clone route" time="0.000548041">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient.cloneBank &gt; forwards all three scope flags, matching the endpoint&apos;s own three" time="0.000197">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient.cloneBank &gt; omits scope flags that were not set, so the server&apos;s defaults decide" time="0.000347">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient.deleteOperation &gt; issues DELETE to /api/banks/{bankId}/operations/{opId}" time="0.000285792">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; preserves the transfer API&apos;s validation detail for the import view" time="0.001827083">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; prefers an error message over a transfer API detail" time="0.000376458">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; formats structured validation details from direct upload requests" time="0.003511">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; formats structured validation details from binary download requests" time="0.003330833">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; passes the knowledge-base export flag to the transfer route" time="0.00055375">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; composes a bank profile from the config and the bank list" time="0.000362834">
+        </testcase>
+        <testcase classname="tests/lib/api.test.ts" name="ControlPlaneClient direct fetch error formatting &gt; falls back to the bank id when the listing cannot supply a name" time="0.000260084">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/bank-order.test.ts" timestamp="2026-10-04T14:34:10.527Z" hostname="192.168.0.113" tests="5" failures="0" errors="0" skipped="0" time="0.003314792">
+        <testcase classname="tests/lib/bank-order.test.ts" name="hoistCurrentBank &gt; pins the current bank first and keeps the rest in server order" time="0.001397208">
+        </testcase>
+        <testcase classname="tests/lib/bank-order.test.ts" name="hoistCurrentBank &gt; leaves the list untouched when the current bank is already first" time="0.000126666">
+        </testcase>
+        <testcase classname="tests/lib/bank-order.test.ts" name="hoistCurrentBank &gt; leaves the list untouched when no bank is selected" time="0.000064125">
+        </testcase>
+        <testcase classname="tests/lib/bank-order.test.ts" name="hoistCurrentBank &gt; leaves the list untouched when the current bank is not on the loaded page" time="0.000052375">
+        </testcase>
+        <testcase classname="tests/lib/bank-order.test.ts" name="hoistCurrentBank &gt; does not drop or duplicate banks" time="0.00040375">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/base-path.test.ts" timestamp="2026-10-04T14:34:10.528Z" hostname="192.168.0.113" tests="11" failures="0" errors="0" skipped="0" time="0.019881334">
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; normalizes missing, root, and slash variants" time="0.011722125">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; prefixes app-relative paths when NEXT_PUBLIC_BASE_PATH is set" time="0.000652166">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; does not double-prefix paths that already include the base path" time="0.003060542">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; strips the base path from returnTo-style paths while preserving query strings" time="0.000682">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; builds a base-prefixed middleware login redirect with an app-relative returnTo" time="0.000250667">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; sanitizeReturnTo &gt; falls back when value is missing or empty" time="0.000122916">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; sanitizeReturnTo &gt; accepts safe app-relative paths and strips the base path" time="0.000339958">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; sanitizeReturnTo &gt; rejects open-redirect payloads" time="0.000720875">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; sanitizeReturnTo &gt; strips browser-ignored leading control chars before validating" time="0.000337458">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; sanitizeReturnTo &gt; honors a custom fallback" time="0.000404792">
+        </testcase>
+        <testcase classname="tests/lib/base-path.test.ts" name="base path helpers &gt; leaves absolute URLs unchanged" time="0.000163417">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/cli-bind-host.test.ts" timestamp="2026-10-04T14:34:10.529Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.002607708">
+        <testcase classname="tests/lib/cli-bind-host.test.ts" name="cli resolveBindHost (#1926) &gt; binds a loopback literal as localhost, keeping the requested family" time="0.001146667">
+        </testcase>
+        <testcase classname="tests/lib/cli-bind-host.test.ts" name="cli resolveBindHost (#1926) &gt; appends to an operator&apos;s NODE_OPTIONS instead of replacing it" time="0.00032575">
+        </testcase>
+        <testcase classname="tests/lib/cli-bind-host.test.ts" name="cli resolveBindHost (#1926) &gt; leaves every other hostname and NODE_OPTIONS untouched" time="0.0002355">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/date-range-preset.test.ts" timestamp="2026-10-04T14:34:10.530Z" hostname="192.168.0.113" tests="18" failures="0" errors="0" skipped="0" time="0.009766333">
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; sends no bounds for the all-time preset" time="0.001807417">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; subtracts the interval 1h names" time="0.001753292">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; subtracts the interval 1d names" time="0.000125458">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; subtracts the interval 7d names" time="0.000084125">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; subtracts the interval 30d names" time="0.000082375">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; never sets an upper bound — the presets all mean &apos;since then&apos;" time="0.000289708">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; treats an unknown preset as no filter, not as an empty window" time="0.000116708">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; does not mutate the date it is given" time="0.000096625">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveDateRangePreset &gt; leaves the custom preset&apos;s bounds to its own inputs" time="0.000111334">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; sends nothing while both ends are blank" time="0.000227917">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; accepts either end alone — the endpoints take one bound" time="0.000162958">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; reads the typed time as local, not as UTC" time="0.000069041">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; rejects a reversed range and sends no bounds" time="0.000078042">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; treats the unparseable value 2027-01-01T as no bound instead of throwing" time="0.000518375">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; treats the unparseable value not-a-date as no bound instead of throwing" time="0.000121208">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; treats the unparseable value 99999-13-45T99:99 as no bound instead of throwing" time="0.000092709">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; rejects a zero-length range — the end is exclusive, so it can match nothing" time="0.000086541">
+        </testcase>
+        <testcase classname="tests/lib/date-range-preset.test.ts" name="resolveCustomRange &gt; across a daylight-saving gap &gt; judges the range by the instants it sends, not by the typed text" time="0.000365458">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/harness-logo.test.ts" timestamp="2026-10-04T14:34:10.531Z" hostname="192.168.0.113" tests="9" failures="0" errors="0" skipped="0" time="0.003119042">
+        <testcase classname="tests/lib/harness-logo.test.ts" name="documentHarness &gt; reads the harness metadata field written by the coding-agent integrations" time="0.000625083">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="documentHarness &gt; falls back to the harness:&lt;id&gt; tag when metadata is absent" time="0.000089875">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="documentHarness &gt; prefers metadata over the tag" time="0.000053667">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="documentHarness &gt; returns null when nothing identifies a harness" time="0.000080667">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="resolveHarnessLogo &gt; resolves every id the coding-agent integration emits" time="0.000257833">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="resolveHarnessLogo &gt; registers no harness that nothing writes" time="0.000296042">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="resolveHarnessLogo &gt; normalizes case, spacing and underscores" time="0.000197458">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="resolveHarnessLogo &gt; returns null for an unknown or empty harness instead of a placeholder" time="0.000152792">
+        </testcase>
+        <testcase classname="tests/lib/harness-logo.test.ts" name="resolveHarnessLogo &gt; points every entry at an asset that is actually shipped" time="0.000630708">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/knowledge-path.test.ts" timestamp="2026-10-04T14:34:10.532Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.002084625">
+        <testcase classname="tests/lib/knowledge-path.test.ts" name="buildPathIndex &gt; walks the parent chain, bank root first" time="0.000721208">
+        </testcase>
+        <testcase classname="tests/lib/knowledge-path.test.ts" name="buildPathIndex &gt; gives a root-level page just the bank" time="0.000077042">
+        </testcase>
+        <testcase classname="tests/lib/knowledge-path.test.ts" name="buildPathIndex &gt; names folders by their own parents, not themselves" time="0.000082584">
+        </testcase>
+        <testcase classname="tests/lib/knowledge-path.test.ts" name="buildPathIndex &gt; stops at a parent the tree doesn&apos;t contain" time="0.000065166">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/list-all-paging.test.ts" timestamp="2026-10-04T14:34:10.532Z" hostname="192.168.0.113" tests="5" failures="0" errors="0" skipped="0" time="0.030774083">
+        <testcase classname="tests/lib/list-all-paging.test.ts" name="ControlPlaneClient paging helpers &gt; stops after one request when the first page holds every mental model" time="0.020505083">
+        </testcase>
+        <testcase classname="tests/lib/list-all-paging.test.ts" name="ControlPlaneClient paging helpers &gt; keeps requesting mental models until it has collected the reported total" time="0.000837458">
+        </testcase>
+        <testcase classname="tests/lib/list-all-paging.test.ts" name="ControlPlaneClient paging helpers &gt; forwards the filter options on every mental-model page" time="0.005523291">
+        </testcase>
+        <testcase classname="tests/lib/list-all-paging.test.ts" name="ControlPlaneClient paging helpers &gt; stops on an empty page even when the total disagrees" time="0.000347792">
+        </testcase>
+        <testcase classname="tests/lib/list-all-paging.test.ts" name="ControlPlaneClient paging helpers &gt; pages directives to the reported total" time="0.00100925">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/memory-filters.test.ts" timestamp="2026-10-04T14:34:10.534Z" hostname="192.168.0.113" tests="10" failures="0" errors="0" skipped="0" time="0.010080458">
+        <testcase classname="tests/lib/memory-filters.test.ts" name="hasActiveMemoryFilters &gt; is false with no filters applied" time="0.002612792">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="hasActiveMemoryFilters &gt; is false for a whitespace-only query" time="0.002118291">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="hasActiveMemoryFilters &gt; is true for a text query" time="0.000219834">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="hasActiveMemoryFilters &gt; is true for a tag filter" time="0.000297042">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="hasActiveMemoryFilters &gt; is true for the global observation scope, whose tag set is empty" time="0.000097542">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="shouldShowEmptyBankState &gt; shows for an empty bank with no filters" time="0.000298791">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="shouldShowEmptyBankState &gt; does not show when the bank has memories" time="0.000113916">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="shouldShowEmptyBankState &gt; does not show for a search that matched nothing" time="0.0002125">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="shouldShowEmptyBankState &gt; does not show for a tag filter that matched nothing" time="0.000143125">
+        </testcase>
+        <testcase classname="tests/lib/memory-filters.test.ts" name="shouldShowEmptyBankState &gt; does not show while the total is still unknown" time="0.000134667">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/observations-config.test.ts" timestamp="2026-10-04T14:34:10.534Z" hostname="192.168.0.113" tests="17" failures="0" errors="0" skipped="0" time="0.004259625">
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; keeps a resolved true value inherited when the bank has no override" time="0.001545292">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; keeps a resolved false value inherited when the bank has no override" time="0.000104167">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; preserves an explicit true bank override" time="0.000127083">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; preserves an explicit false bank override" time="0.000049">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; uses the PATCH response layers when resetting the saved state" time="0.000119041">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; updates only observation baselines from a PATCH response" time="0.000114">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; uses accepted values for permission-filtered response fields" time="0.000068208">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; drops a stale resolved boolean when the cleared parent value is filtered" time="0.000258584">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; preserves unrelated overrides while applying the boolean tombstone" time="0.00010875">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; treats a undefined override snapshot as empty" time="0.000096125">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; treats a null override snapshot as empty" time="0.000049625">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; does not discard edits made while a PATCH is in flight" time="0.000100416">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="observations config state &gt; keeps saved strategies as the new baseline after a PATCH" time="0.000042083">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="strategy shape &gt; stores only the settings that were filled in" time="0.000084584">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="strategy shape &gt; knows when a strategy changes nothing" time="0.000068">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="strategy shape &gt; labels a strategy by its scopes, spelling out and/or" time="0.000087667">
+        </testcase>
+        <testcase classname="tests/lib/observations-config.test.ts" name="strategy shape &gt; suggests existing tags and a wildcard per tag key" time="0.00006325">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/operation-types.test.ts" timestamp="2026-10-04T14:34:10.536Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.042806125">
+        <testcase classname="tests/lib/operation-types.test.ts" name="operation-type parity between the engine and this UI &gt; every operation type the engine submits is filterable here" time="0.004543791">
+        </testcase>
+        <testcase classname="tests/lib/operation-types.test.ts" name="operation-type parity between the engine and this UI &gt; every operation type the engine submits has a display label" time="0.00273675">
+        </testcase>
+        <testcase classname="tests/lib/operation-types.test.ts" name="operation-type parity between the engine and this UI &gt; the filter list and the label map stay in step" time="0.000272">
+        </testcase>
+        <testcase classname="tests/lib/operation-types.test.ts" name="operation-type parity between the engine and this UI &gt; declares which UI-only types are deliberate" time="0.034326958">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/prompt-block-messages.test.ts" timestamp="2026-10-04T14:34:10.536Z" hostname="192.168.0.113" tests="10" failures="0" errors="0" skipped="0" time="0.012998334">
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; de.json names every block the API can emit" time="0.003540375">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; en.json names every block the API can emit" time="0.000737458">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; es.json names every block the API can emit" time="0.000577375">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; fr.json names every block the API can emit" time="0.000578375">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; ja.json names every block the API can emit" time="0.000659417">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; ko.json names every block the API can emit" time="0.000807916">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; pt.json names every block the API can emit" time="0.000730667">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; yue-Hant.json names every block the API can emit" time="0.001317375">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; zh-CN.json names every block the API can emit" time="0.001473209">
+        </testcase>
+        <testcase classname="tests/lib/prompt-block-messages.test.ts" name="prompt block translations &gt; zh-TW.json names every block the API can emit" time="0.001228167">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/relative-time.test.ts" timestamp="2026-10-04T14:34:10.537Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.036579792">
+        <testcase classname="tests/lib/relative-time.test.ts" name="formatWatermark &gt; shows only the clock time for today" time="0.034464875">
+        </testcase>
+        <testcase classname="tests/lib/relative-time.test.ts" name="formatWatermark &gt; keeps the time when the day differs but the year does not" time="0.000459041">
+        </testcase>
+        <testcase classname="tests/lib/relative-time.test.ts" name="formatWatermark &gt; carries the year once the watermark is from an earlier one" time="0.000432625">
+        </testcase>
+        <testcase classname="tests/lib/relative-time.test.ts" name="formatWatermark &gt; distinguishes two moments that read the same relatively" time="0.000649834">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/response-schema.test.ts" timestamp="2026-10-04T14:34:10.538Z" hostname="192.168.0.113" tests="18" failures="0" errors="0" skipped="0" time="0.009055667">
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; accepts an object schema with properties" time="0.002650958">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; allows type to be omitted" time="0.000609375">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects [&quot;not&quot;,&quot;an&quot;,&quot;object&quot;]" time="0.000189083">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects &quot;a string&quot;" time="0.000086583">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;type&quot;:&quot;array&quot;,&quot;properties&quot;:{&quot;a&quot;:{&quot;type&quot;:&quot;string&quot;}}}" time="0.000085959">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;type&quot;:&quot;object&quot;}" time="0.00007325">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;properties&quot;:{}}" time="0.000073125">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;properties&quot;:{&quot;a&quot;:&quot;nope&quot;}}" time="0.000081125">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;properties&quot;:{&quot;a&quot;:{&quot;type&quot;:&quot;banana&quot;}}}" time="0.000146583">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;properties&quot;:{&quot;a&quot;:{&quot;type&quot;:&quot;string&quot;}},&quot;required&quot;:&quot;a&quot;}" time="0.000120958">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="validateResponseSchema &gt; rejects {&quot;properties&quot;:{&quot;a&quot;:{&quot;type&quot;:&quot;string&quot;}},&quot;required&quot;:[&quot;b&quot;]}" time="0.000105166">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="fieldsToSchema &gt; builds an object schema with required list" time="0.000752208">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="fieldsToSchema &gt; skips unnamed fields and omits an empty required list" time="0.00029925">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="fieldsToSchema &gt; serializes nested objects and arrays of objects" time="0.000098958">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="schemaToFields &gt; round-trips a nested schema through fieldsToSchema" time="0.000234917">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="schemaToFields &gt; treats a missing/empty properties map as no fields (representable)" time="0.000043041">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="schemaToFields &gt; returns null for schemas the flat/nested editor can&apos;t represent" time="0.000181667">
+        </testcase>
+        <testcase classname="tests/lib/response-schema.test.ts" name="nodeForType &gt; seeds object with a blank field and array with a string item" time="0.0002605">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/retain-strategy-config.test.ts" timestamp="2026-10-04T14:34:10.540Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.001940125">
+        <testcase classname="tests/lib/retain-strategy-config.test.ts" name="retain strategy config serialization &gt; omits null structured-chunk cap overrides" time="0.000893375">
+        </testcase>
+        <testcase classname="tests/lib/retain-strategy-config.test.ts" name="retain strategy config serialization &gt; omits structured-chunk cap when the strategy inherits it" time="0.000120209">
+        </testcase>
+        <testcase classname="tests/lib/retain-strategy-config.test.ts" name="retain strategy config serialization &gt; emits numeric structured-chunk cap overrides independently of chunk size" time="0.000162">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/sdk-response.test.ts" timestamp="2026-10-04T14:34:10.540Z" hostname="192.168.0.113" tests="13" failures="0" errors="0" skipped="0" time="0.014772875">
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; success path &gt; returns 200 with the data when result is successful" time="0.005882167">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; success path &gt; honors custom success status (e.g. 201 for creates)" time="0.000339209">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; success path &gt; returns 200 with array data" time="0.000259">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; success path &gt; returns 200 with empty-object data (not treated as failure)" time="0.000499">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; does NOT throw TypeError when SDK returns undefined data (regression for upstream bug)" time="0.00074525">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; passes the upstream HTTP status through (5xx)" time="0.000684166">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; passes the upstream HTTP status through (503)" time="0.0002505">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; passes the upstream HTTP status through (429)" time="0.000131583">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; includes upstream error detail in the response body for 4xx responses" time="0.000195791">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; does not expose upstream error detail in the response body for 5xx responses" time="0.001633833">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; logs the upstream status and error to console.error" time="0.001162167">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; falls back to 502 when result has no Response (network-level failure)" time="0.000507667">
+        </testcase>
+        <testcase classname="tests/lib/sdk-response.test.ts" name="respondWithSdk &gt; failure path &gt; treats undefined data + undefined error as a failure (defensive)" time="0.000770917">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/slash-safe-urls.test.ts" timestamp="2026-10-04T14:34:10.541Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.001668667">
+        <testcase classname="tests/lib/slash-safe-urls.test.ts" name="slash-bearing ids stay out of the URL path &gt; keeps the document id in the query string, encoded" time="0.000777208">
+        </testcase>
+        <testcase classname="tests/lib/slash-safe-urls.test.ts" name="slash-bearing ids stay out of the URL path &gt; keeps sub-actions on a static path with the id in the query string" time="0.000132917">
+        </testcase>
+        <testcase classname="tests/lib/slash-safe-urls.test.ts" name="slash-bearing ids stay out of the URL path &gt; keeps the chunk id in the query string" time="0.000086208">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/tag-filter-params.test.ts" timestamp="2026-10-04T14:34:10.542Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.002521375">
+        <testcase classname="tests/lib/tag-filter-params.test.ts" name="readTagFilter &gt; forwards repeated tags with a known mode" time="0.001214">
+        </testcase>
+        <testcase classname="tests/lib/tag-filter-params.test.ts" name="readTagFilter &gt; sends nothing without tags, even when a mode is given" time="0.000199834">
+        </testcase>
+        <testcase classname="tests/lib/tag-filter-params.test.ts" name="readTagFilter &gt; drops an unknown mode instead of forwarding it" time="0.000421958">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/temporal-window.test.ts" timestamp="2026-10-04T14:34:10.542Z" hostname="192.168.0.113" tests="5" failures="0" errors="0" skipped="0" time="0.003603166">
+        <testcase classname="tests/lib/temporal-window.test.ts" name="resolveTemporalWindow &gt; sends the window when both ends are set" time="0.001636625">
+        </testcase>
+        <testcase classname="tests/lib/temporal-window.test.ts" name="resolveTemporalWindow &gt; sends nothing until both ends are set" time="0.000461042">
+        </testcase>
+        <testcase classname="tests/lib/temporal-window.test.ts" name="resolveTemporalWindow &gt; flags a reversed range and withholds it" time="0.000127125">
+        </testcase>
+        <testcase classname="tests/lib/temporal-window.test.ts" name="resolveTemporalWindow &gt; accepts an instant, where both ends are equal" time="0.000126041">
+        </testcase>
+        <testcase classname="tests/lib/temporal-window.test.ts" name="resolveTemporalWindow &gt; orders by calendar date, not by string length or day-of-month" time="0.000097875">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/use-refresh-attempts.test.tsx" timestamp="2026-10-04T14:34:10.542Z" hostname="192.168.0.113" tests="4" failures="0" errors="0" skipped="0" time="0.091096083">
+        <testcase classname="tests/lib/use-refresh-attempts.test.tsx" name="useRefreshAttempts &gt; keeps only the refreshes that have still to run, with their next attempt" time="0.074294916">
+        </testcase>
+        <testcase classname="tests/lib/use-refresh-attempts.test.tsx" name="useRefreshAttempts &gt; asks only for refresh operations, and only for the current bank" time="0.002896833">
+        </testcase>
+        <testcase classname="tests/lib/use-refresh-attempts.test.tsx" name="useRefreshAttempts &gt; asks for nothing without a bank" time="0.003278708">
+        </testcase>
+        <testcase classname="tests/lib/use-refresh-attempts.test.tsx" name="useRefreshAttempts &gt; stays empty when the read fails, rather than breaking the view" time="0.008028917">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/messages/messages.test.ts" timestamp="2026-10-04T14:34:10.543Z" hostname="192.168.0.113" tests="30" failures="0" errors="0" skipped="0" time="0.190709625">
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; every declared locale has a JSON file and no JSON files are undeclared" time="0.00118275">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; es has exactly the same key set as undefined" time="0.015309833">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; fr has exactly the same key set as undefined" time="0.010628708">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; de has exactly the same key set as undefined" time="0.01059125">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; pt has exactly the same key set as undefined" time="0.009579375">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ja has exactly the same key set as undefined" time="0.017789166">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ko has exactly the same key set as undefined" time="0.010946292">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-CN has exactly the same key set as undefined" time="0.010254125">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-TW has exactly the same key set as undefined" time="0.009434667">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; yue-Hant has exactly the same key set as undefined" time="0.020017416">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; en quotes no placeholder out of existence" time="0.011881167">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; es quotes no placeholder out of existence" time="0.004948917">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; fr quotes no placeholder out of existence" time="0.006592625">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; de quotes no placeholder out of existence" time="0.001825875">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; pt quotes no placeholder out of existence" time="0.002438">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ja quotes no placeholder out of existence" time="0.003006167">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ko quotes no placeholder out of existence" time="0.002675375">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-CN quotes no placeholder out of existence" time="0.006035125">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-TW quotes no placeholder out of existence" time="0.002190958">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; yue-Hant quotes no placeholder out of existence" time="0.002821666">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; en has no empty string values" time="0.002773833">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; es has no empty string values" time="0.001524375">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; fr has no empty string values" time="0.003523333">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; de has no empty string values" time="0.00261625">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; pt has no empty string values" time="0.003162584">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ja has no empty string values" time="0.0045445">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; ko has no empty string values" time="0.004464542">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-CN has no empty string values" time="0.00232525">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; zh-TW has no empty string values" time="0.002027833">
+        </testcase>
+        <testcase classname="tests/messages/messages.test.ts" name="locale catalog parity &gt; yue-Hant has no empty string values" time="0.002098625">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/messages/used-keys.test.ts" timestamp="2026-10-04T14:34:10.545Z" hostname="192.168.0.113" tests="2" failures="0" errors="0" skipped="0" time="0.538021458">
+        <testcase classname="tests/messages/used-keys.test.ts" name="translation key references resolve against the default catalog &gt; scans a non-trivial number of source files" time="0.001350208">
+        </testcase>
+        <testcase classname="tests/messages/used-keys.test.ts" name="translation key references resolve against the default catalog &gt; every static t(...) key exists in the default locale" time="0.535092875">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/lib/auth/session.test.ts" timestamp="2026-10-04T14:34:10.546Z" hostname="192.168.0.113" tests="21" failures="0" errors="0" skipped="0" time="0.025329333">
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; round-trips: a freshly issued token verifies" time="0.006436208">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; emits the documented `&lt;issuedAt&gt;.&lt;sig&gt;` shape" time="0.000562292">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects when the signature is tampered" time="0.000276542">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects when the payload is swapped (signature no longer matches)" time="0.000237958">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects the bare-string cookie value that the old impl accepted" time="0.000059416">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;&quot;" time="0.000053625">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: undefined" time="0.000042125">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;.&quot;" time="0.0000465">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;abc&quot;" time="0.000052625">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;abc.&quot;" time="0.000064833">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;.abc&quot;" time="0.000039375">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects malformed token: &quot;notanumber.sig&quot;" time="0.000034625">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; rejects when the access key has rotated since the token was issued" time="0.000200166">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; expiry &gt; accepts a token issued just inside the max-age window" time="0.0022885">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; expiry &gt; rejects a token issued past the max-age window" time="0.000836084">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="createSessionToken / verifySessionToken &gt; expiry &gt; rejects a token whose issuedAt is implausibly in the future" time="0.000509916">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="isSecureRequest &gt; returns true when X-Forwarded-Proto is https" time="0.012057083">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="isSecureRequest &gt; returns false when X-Forwarded-Proto is http (even on a production build)" time="0.000078417">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="isSecureRequest &gt; uses the first value when X-Forwarded-Proto is a comma list" time="0.000073958">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="isSecureRequest &gt; falls back to the request URL protocol when no forwarded header is set" time="0.000050625">
+        </testcase>
+        <testcase classname="tests/lib/auth/session.test.ts" name="isSecureRequest &gt; is case-insensitive on the forwarded value" time="0.000031958">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/app/api/banks/route.test.ts" timestamp="2026-10-04T14:34:10.548Z" hostname="192.168.0.113" tests="3" failures="0" errors="0" skipped="0" time="0.003247209">
+        <testcase classname="tests/app/api/banks/route.test.ts" name="GET /api/banks &gt; forwards the search term and the paging window to the dataplane" time="0.002117833">
+        </testcase>
+        <testcase classname="tests/app/api/banks/route.test.ts" name="GET /api/banks &gt; sends offset=0 rather than dropping it (the first page is explicit)" time="0.00024075">
+        </testcase>
+        <testcase classname="tests/app/api/banks/route.test.ts" name="GET /api/banks &gt; omits every param when none are provided, so the dataplane defaults apply" time="0.00020975">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/app/api/documents/route.test.ts" timestamp="2026-10-04T14:34:10.548Z" hostname="192.168.0.113" tests="10" failures="0" errors="0" skipped="0" time="0.006906625">
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; forwards the `q` search term to the dataplane (search by document ID)" time="0.001552958">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; omits `q` when no search term is provided" time="0.000142">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; forwards repeated `tags` params and `tags_match` to the dataplane" time="0.000183625">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; omits `tags` when none are provided" time="0.000111917">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; drops `tags_match` when no tags are filtered, so the dataplane default stands" time="0.000136708">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; rejects an unknown `tags_match` value rather than passing it through" time="0.000122875">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="GET /api/documents &gt; fetches a single document when `document_id` is present, slashes intact" time="0.000184125">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="single-document operations on /api/documents &gt; DELETE passes the id through to the dataplane intact" time="0.000169958">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="single-document operations on /api/documents &gt; PATCH re-encodes the id for the dataplane path" time="0.002640542">
+        </testcase>
+        <testcase classname="tests/app/api/documents/route.test.ts" name="single-document operations on /api/documents &gt; rejects a PATCH with no document_id" time="0.000716625">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/app/api/documents/chunks/route.test.ts" timestamp="2026-10-04T14:34:10.549Z" hostname="192.168.0.113" tests="2" failures="0" errors="0" skipped="0" time="0.005887875">
+        <testcase classname="tests/app/api/documents/chunks/route.test.ts" name="GET /api/documents/chunks &gt; encodes a slash-bearing document id into the dataplane URL" time="0.003879416">
+        </testcase>
+        <testcase classname="tests/app/api/documents/chunks/route.test.ts" name="GET /api/documents/chunks &gt; rejects a request with no document_id" time="0.001218333">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/app/api/files/retain/route.test.ts" timestamp="2026-10-04T14:34:10.549Z" hostname="192.168.0.113" tests="1" failures="0" errors="0" skipped="0" time="0.006053667">
+        <testcase classname="tests/app/api/files/retain/route.test.ts" name="POST /api/files/retain &gt; returns a localized 400 when the multipart request payload is not valid JSON" time="0.005055">
+        </testcase>
+    </testsuite>
+</testsuites>

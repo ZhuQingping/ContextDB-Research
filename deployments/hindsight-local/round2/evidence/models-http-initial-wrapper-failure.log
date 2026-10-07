@@ -1,0 +1,627 @@
+Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+  1. Install local ML deps: pip install hindsight-api[local-ml]
+  2. Use a remote provider instead:
+     HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+     HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+INFO:hindsight_api.engine.cross_encoder:Reranker: replaced FlashRank ONNX session with cpu_mem_arena=False
+INFO:hindsight_api.engine.cross_encoder:Reranker: FlashRank provider initialized (max_concurrent=4)
+INFO:hindsight_api.engine.embeddings:Embeddings: initializing TEI provider at http://127.0.0.1:64159
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "GET /info HTTP/1.1" 200 208 "-" "Python/3.12 aiohttp/3.14.3"
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /embed HTTP/1.1" 200 8538 "-" "Python/3.12 aiohttp/3.14.3"
+INFO:hindsight_api.engine.embeddings:Embeddings: TEI provider initialized (model: same-local-artifacts-test-wrapper, dim: 384)
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /embed HTTP/1.1" 200 50522 "-" "Python/3.12 aiohttp/3.14.3"
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /embed HTTP/1.1" 200 50495 "-" "Python/3.12 aiohttp/3.14.3"
+INFO:hindsight_api.engine.cross_encoder:Reranker: initializing TEI provider at http://127.0.0.1:64159 (batch_size=128, max_concurrent=8)
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "GET /info HTTP/1.1" 200 208 "-" "Python/3.12 aiohttp/3.14.3"
+INFO:hindsight_api.engine.cross_encoder:Reranker: TEI provider initialized (model: same-local-artifacts-test-wrapper)
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.62s...
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.72s...
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.64s...
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.72s...
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.67s...
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 1/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 0.67s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.39s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.17s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.22s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:03 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.15s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:04 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.00s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:04 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 2/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 1.08s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.03s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.06s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.15s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.15s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.62s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:05 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+WARNING:hindsight_api.engine.cross_encoder:TEI transient error (attempt 3/4): HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble. Retrying in 2.46s...
+ERROR:aiohttp.server:Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 40, in handle
+    return web.json_response([{'index':i,'score':v} for i,v in enumerate(values)])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/.venv/lib/python3.12/site-packages/aiohttp/web_response.py", line 874, in json_response
+    text = dumps(data)
+           ^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable
+INFO:aiohttp.access:127.0.0.1 [04/Oct/2026:22:31:07 +0800] "POST /rerank HTTP/1.1" 500 246 "-" "Python/3.12 aiohttp/3.14.3"
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 590, in _rerank_query_group
+    results = await self._async_request_with_retry(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 504, in _async_request_with_retry
+    await raise_for_status(response)
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/aiohttp_session.py", line 81, in raise_for_status
+    raise UpstreamHTTPError(response.status, body, response.headers, str(response.url))
+hindsight_api.engine.aiohttp_session.UpstreamHTTPError: HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 52, in <module>
+    asyncio.run(main())
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/models_local.py", line 46, in main
+    remote_r=RemoteTEICrossEncoder(url);await remote_r.initialize();rscores=await remote_r.predict([(q,d) for q in queries for d in docs])
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 153, in predict
+    return await self._predict(pairs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 663, in _predict
+    return await self._predict_async(pairs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 638, in _predict_async
+    results = await asyncio.gather(*tasks)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/cross_encoder.py", line 604, in _rerank_query_group
+    raise RuntimeError(f"TEI rerank request failed: {e}")
+RuntimeError: TEI rerank request failed: HTTP 500 from http://127.0.0.1:64159/rerank: 500 Internal Server Error
+
+Server got itself in trouble

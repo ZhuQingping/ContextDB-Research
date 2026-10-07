@@ -1,0 +1,98 @@
+[
+  {
+    "name": "create-round2-replay-fa7a0bd1aa",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "create-round2-replay-fa7a0bd1aa-other",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "eight-concurrent-replays-same-operation",
+    "passed": true,
+    "statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ]
+  },
+  {
+    "name": "native-same-id-changed-payload-replays-not-conflicts",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "native-same-operation-other-bank-conflicts",
+    "passed": true,
+    "status": 409
+  },
+  {
+    "name": "async-task-completed",
+    "passed": true,
+    "response": {
+      "operation_id": "f2731c07-35d5-42c2-858d-7bc8447d698b",
+      "status": "completed",
+      "operation_type": "batch_retain",
+      "id": "f2731c07-35d5-42c2-858d-7bc8447d698b",
+      "task_type": "batch_retain",
+      "mental_model_id": null,
+      "created_at": "2026-10-04T14:30:30.409383+00:00",
+      "updated_at": "2026-10-04T14:30:30.860513+00:00",
+      "completed_at": "2026-10-04T14:30:30.860513+00:00",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": null,
+      "result_metadata": {
+        "is_parent": true,
+        "document_id": "replay-doc",
+        "items_count": 1,
+        "total_tokens": 9,
+        "unit_ids_count": 1,
+        "num_sub_batches": 1,
+        "extraction_errors_count": 0
+      },
+      "details": null,
+      "child_operations": [
+        {
+          "operation_id": "ff12860f-bd9f-4b57-a5e8-2c9152ac32dd",
+          "status": "completed",
+          "sub_batch_index": 1,
+          "items_count": 1,
+          "error_message": null
+        }
+      ],
+      "task_payload": null
+    }
+  },
+  {
+    "name": "changed-payload-not-ingested",
+    "passed": true,
+    "status": 404
+  },
+  {
+    "name": "original-payload-present",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "proposed-ledger-concurrent-one-operation",
+    "passed": true
+  },
+  {
+    "name": "proposed-ledger-rejects-changed-payload",
+    "passed": true,
+    "status": 409
+  },
+  {
+    "name": "proposed-ledger-one-row",
+    "passed": true
+  }
+]

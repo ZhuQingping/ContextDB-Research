@@ -1,0 +1,12 @@
+# Isolated dependencies, copied source and private client runtime.
+tests-work/
+clients-work/
+parameters-work/
+models-work/
+.models-cache/
+.parameters-tests/
+.privilege/
+.runtime/
+.secrets/
+__pycache__/
+evidence/**/tmp/

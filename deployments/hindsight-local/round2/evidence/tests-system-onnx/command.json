@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "HINDSIGHT_TEST_ONNX_MODEL_DIR=/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "uv",
+    "run",
+    "--python",
+    "3.12",
+    "--frozen",
+    "pytest",
+    "tests/test_76_onnx_embeddings.py",
+    "-v",
+    "--junitxml=../../../evidence/tests-system-onnx/junit.xml",
+    "--basetemp=../../../evidence/tests-system-onnx/tmp"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-system-tests",
+  "started_utc": "2026-10-04T14:35:51.507894+00:00",
+  "finished_utc": "2026-10-04T14:35:58.185605+00:00",
+  "duration_seconds": 6.678,
+  "exit_code": 1
+}

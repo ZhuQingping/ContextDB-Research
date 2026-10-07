@@ -1,0 +1,55 @@
+{
+  "roots": [
+    {
+      "id": "kf-e686b7d4d3aa4075ab8089c12b89844a",
+      "kind": "folder",
+      "name": "验收复盘",
+      "parent_id": null,
+      "mental_model_id": null,
+      "managed": false,
+      "description": null,
+      "tags": [],
+      "timestamp": "2026-10-03T16:16:43.433617+00:00",
+      "is_stale": null,
+      "last_refresh_failed_at": null,
+      "trigger": null,
+      "children": [
+        {
+          "id": "kp-12369e3e04974e22b959166081a29c3c",
+          "kind": "page",
+          "name": "连接池排查经验",
+          "parent_id": "kf-e686b7d4d3aa4075ab8089c12b89844a",
+          "mental_model_id": "mm-914f5d8f3279467d882e01a5cf65635c",
+          "managed": false,
+          "description": "海星项目INC-2048给数据库连接池排查带来哪些经验？保留证据和数字。",
+          "tags": [],
+          "timestamp": "2026-10-03T16:16:43.446952+00:00",
+          "is_stale": false,
+          "last_refresh_failed_at": null,
+          "trigger": {
+            "budget": null,
+            "mode": "delta",
+            "refresh_after_consolidation": true,
+            "refresh_cron": null,
+            "min_refresh_interval_seconds": null,
+            "fact_types": [
+              "observation"
+            ],
+            "exclude_mental_models": true,
+            "exclude_mental_model_ids": null,
+            "tags_match": null,
+            "tag_groups": null,
+            "include_chunks": null,
+            "recall_max_tokens": null,
+            "recall_chunks_max_tokens": null,
+            "reflect_search_observations_max_tokens": null,
+            "reflect_search_observations_include_entities": null,
+            "response_schema": null,
+            "keep_trace": false
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

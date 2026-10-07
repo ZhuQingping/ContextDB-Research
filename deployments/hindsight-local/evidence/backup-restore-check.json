@@ -1,0 +1,62 @@
+{
+  "method": "pg_dump custom format -> pg_restore into a new database on a second local PG",
+  "source_port": 55432,
+  "target_port": 55433,
+  "target_database": "contextdb_research_restore",
+  "backup_bytes": 146924,
+  "backup_sha256": "11b117a27143768e797d8ec67bf05fb5914ad32ce64c197edb33200dfd27e2e0",
+  "before": {
+    "banks": {
+      "rows": 4,
+      "sha256": "5a6ecba1fafa0e28fa5086411a5a7f55fb47a2daaf5aaf53137ab30d24a55931"
+    },
+    "documents": {
+      "rows": 2,
+      "sha256": "f31e1d3d15911e965bf55e37599078ed527f671d6b07e4c0fadc843a89623d7b"
+    },
+    "chunks": {
+      "rows": 2,
+      "sha256": "57357abce424d25d6471c696d853ef6b9c89ba94bcbca330393cb18934918d82"
+    },
+    "memory_units": {
+      "rows": 10,
+      "sha256": "447d3f3e46127d3cce55f442787f67c2bee056ecec64f03f470674eec3ae892e"
+    },
+    "entities": {
+      "rows": 11,
+      "sha256": "a09d89212dc5a434606d9df474fec56868c984d0ff0b618c9d959e270901c199"
+    },
+    "memory_links": {
+      "rows": 30,
+      "sha256": "2a9e8a6a61608cd16eee7406bf144b9f924e2f22a1b72aeb7837d5c3948383f0"
+    }
+  },
+  "after": {
+    "banks": {
+      "rows": 4,
+      "sha256": "5a6ecba1fafa0e28fa5086411a5a7f55fb47a2daaf5aaf53137ab30d24a55931"
+    },
+    "documents": {
+      "rows": 2,
+      "sha256": "f31e1d3d15911e965bf55e37599078ed527f671d6b07e4c0fadc843a89623d7b"
+    },
+    "chunks": {
+      "rows": 2,
+      "sha256": "57357abce424d25d6471c696d853ef6b9c89ba94bcbca330393cb18934918d82"
+    },
+    "memory_units": {
+      "rows": 10,
+      "sha256": "447d3f3e46127d3cce55f442787f67c2bee056ecec64f03f470674eec3ae892e"
+    },
+    "entities": {
+      "rows": 11,
+      "sha256": "a09d89212dc5a434606d9df474fec56868c984d0ff0b618c9d959e270901c199"
+    },
+    "memory_links": {
+      "rows": 30,
+      "sha256": "2a9e8a6a61608cd16eee7406bf144b9f924e2f22a1b72aeb7837d5c3948383f0"
+    }
+  },
+  "equal": true,
+  "limitations": "Logical snapshot of synthetic data, not PITR, failover, RDS HA or online migration"
+}

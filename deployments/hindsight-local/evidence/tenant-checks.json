@@ -1,0 +1,307 @@
+[
+  {
+    "name": "unauthenticated-list-denied",
+    "method": "GET",
+    "path": "/v1/default/banks",
+    "actor": "anonymous",
+    "status": 401,
+    "response": {
+      "detail": "Authentication failed: Missing Authorization header. Expected: Bearer <api_key>"
+    }
+  },
+  {
+    "name": "create-same-bank-name",
+    "method": "PUT",
+    "path": "/v1/default/banks/shared-name",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "bank_id": "shared-name",
+      "name": "shared-name",
+      "disposition": {
+        "skepticism": 3,
+        "literalism": 3,
+        "empathy": 3
+      },
+      "mission": "",
+      "background": ""
+    }
+  },
+  {
+    "name": "retain-canary",
+    "method": "POST",
+    "path": "/v1/default/banks/shared-name/memories",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "success": true,
+      "bank_id": "shared-name",
+      "items_count": 1,
+      "async": false,
+      "operation_id": null,
+      "operation_ids": null,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "cached_tokens": 0,
+        "thoughts_tokens": 0
+      }
+    }
+  },
+  {
+    "name": "create-same-bank-name",
+    "method": "PUT",
+    "path": "/v1/default/banks/shared-name",
+    "actor": "team_b",
+    "status": 200,
+    "response": {
+      "bank_id": "shared-name",
+      "name": "shared-name",
+      "disposition": {
+        "skepticism": 3,
+        "literalism": 3,
+        "empathy": 3
+      },
+      "mission": "",
+      "background": ""
+    }
+  },
+  {
+    "name": "retain-canary",
+    "method": "POST",
+    "path": "/v1/default/banks/shared-name/memories",
+    "actor": "team_b",
+    "status": 200,
+    "response": {
+      "success": true,
+      "bank_id": "shared-name",
+      "items_count": 1,
+      "async": false,
+      "operation_id": null,
+      "operation_ids": null,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "cached_tokens": 0,
+        "thoughts_tokens": 0
+      }
+    }
+  },
+  {
+    "name": "tenant-a-list",
+    "method": "GET",
+    "path": "/v1/default/banks/shared-name/memories/list",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "22efc8f9-60a1-48f1-b28b-06a5003ba106",
+          "text": "Synthetic tenant marker ALPHA_CANARY_4821. This is private data for team_a.",
+          "context": "",
+          "date": "2026-10-03T16:27:13.927640+00:00",
+          "fact_type": "world",
+          "document_id": "same-document-id",
+          "mentioned_at": "2026-10-03T16:27:13.927640+00:00",
+          "occurred_start": null,
+          "occurred_end": null,
+          "entities": "",
+          "chunk_id": "shared-name_same-document-id_0",
+          "proof_count": 1,
+          "tags": [
+            "scope:private"
+          ],
+          "metadata": {},
+          "consolidated_at": null,
+          "consolidation_failed_at": null,
+          "state": "valid",
+          "invalidation_reason": null,
+          "invalidated_at": null,
+          "edited_at": null,
+          "updated_at": "2026-10-03T16:27:13.936606+00:00",
+          "source_memory_ids": []
+        }
+      ],
+      "total": 1,
+      "limit": 100,
+      "offset": 0
+    }
+  },
+  {
+    "name": "tenant-b-list",
+    "method": "GET",
+    "path": "/v1/default/banks/shared-name/memories/list",
+    "actor": "team_b",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "14b1a8cd-d45b-4e44-b30f-05c72ca67b83",
+          "text": "Synthetic tenant marker BETA_CANARY_7396. This is private data for team_b.",
+          "context": "",
+          "date": "2026-10-03T16:17:46.862298+00:00",
+          "fact_type": "world",
+          "document_id": "same-document-id",
+          "mentioned_at": "2026-10-03T16:17:46.862298+00:00",
+          "occurred_start": null,
+          "occurred_end": null,
+          "entities": "",
+          "chunk_id": "shared-name_same-document-id_0",
+          "proof_count": 1,
+          "tags": [
+            "scope:private"
+          ],
+          "metadata": {},
+          "consolidated_at": null,
+          "consolidation_failed_at": null,
+          "state": "valid",
+          "invalidation_reason": null,
+          "invalidated_at": null,
+          "edited_at": null,
+          "updated_at": "2026-10-03T16:27:14.022147+00:00",
+          "source_memory_ids": []
+        }
+      ],
+      "total": 1,
+      "limit": 100,
+      "offset": 0
+    }
+  },
+  {
+    "name": "foreign-memory-id-denied",
+    "method": "GET",
+    "path": "/v1/default/banks/shared-name/memories/22efc8f9-60a1-48f1-b28b-06a5003ba106",
+    "actor": "team_b",
+    "status": 404,
+    "response": {
+      "detail": "Memory unit '22efc8f9-60a1-48f1-b28b-06a5003ba106' not found"
+    }
+  },
+  {
+    "name": "tenant-b-recall-cannot-find-alpha",
+    "method": "POST",
+    "path": "/v1/default/banks/shared-name/memories/recall",
+    "actor": "team_b",
+    "status": 200,
+    "response": {
+      "results": [
+        {
+          "id": "14b1a8cd-d45b-4e44-b30f-05c72ca67b83",
+          "text": "Synthetic tenant marker BETA_CANARY_7396. This is private data for team_b.",
+          "type": "world",
+          "entities": null,
+          "context": "",
+          "occurred_start": null,
+          "occurred_end": null,
+          "mentioned_at": "2026-10-03T16:17:46.862298+00:00",
+          "document_id": "same-document-id",
+          "metadata": {},
+          "chunk_id": "shared-name_same-document-id_0",
+          "tags": [
+            "scope:private"
+          ],
+          "source_fact_ids": null,
+          "scores": {
+            "final": 1.0999964028136162,
+            "reranker": null,
+            "semantic": 0.8489622473716796,
+            "keyword": 0.20000000298023224
+          },
+          "attachments": null
+        }
+      ],
+      "trace": null,
+      "entities": null,
+      "chunks": null,
+      "source_facts": null,
+      "source_facts_truncated": null
+    }
+  },
+  {
+    "name": "delete-a-document",
+    "method": "DELETE",
+    "path": "/v1/default/banks/shared-name/documents/same-document-id",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "success": true,
+      "message": "Document 'same-document-id' and 1 associated memory units deleted successfully",
+      "document_id": "same-document-id",
+      "memory_units_deleted": 1
+    }
+  },
+  {
+    "name": "a-document-removed",
+    "method": "GET",
+    "path": "/v1/default/banks/shared-name/memories/list",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "items": [],
+      "total": 0,
+      "limit": 100,
+      "offset": 0
+    }
+  },
+  {
+    "name": "b-document-survives-a-delete",
+    "method": "GET",
+    "path": "/v1/default/banks/shared-name/documents/same-document-id",
+    "actor": "team_b",
+    "status": 200,
+    "response": {
+      "id": "same-document-id",
+      "bank_id": "shared-name",
+      "original_text": "Synthetic tenant marker BETA_CANARY_7396. This is private data for team_b.",
+      "content_hash": "d924689338768c89250f7236dbc7ee2541f2bd3c6493741d536b75910e050418",
+      "created_at": "2026-10-03T16:17:46.869920+00:00",
+      "updated_at": "2026-10-03T16:27:14.022147+00:00",
+      "memory_unit_count": 1,
+      "nodes_by_fact_type": {
+        "world": 1,
+        "experience": 0,
+        "observation": 0
+      },
+      "tags": [
+        "scope:private"
+      ],
+      "document_metadata": null,
+      "retain_params": null,
+      "observation_scopes": null,
+      "attachments": null
+    }
+  },
+  {
+    "name": "spoof-bank-config-not-auth",
+    "method": "GET",
+    "path": "/v1/default/banks?tenant_id=team_b",
+    "actor": "team_a",
+    "status": 200,
+    "response": {
+      "banks": [
+        {
+          "bank_id": "shared-name",
+          "name": "shared-name",
+          "disposition": {
+            "skepticism": 3,
+            "literalism": 3,
+            "empathy": 3
+          },
+          "mission": "",
+          "created_at": "2026-10-03T16:17:46.744181+00:00",
+          "updated_at": "2026-10-03T16:27:13.923109+00:00",
+          "fact_count": 0,
+          "last_document_at": null,
+          "last_write_at": null,
+          "display_alias": null,
+          "matched_aliases": []
+        }
+      ],
+      "total": 1,
+      "limit": 100,
+      "offset": 0
+    }
+  }
+]

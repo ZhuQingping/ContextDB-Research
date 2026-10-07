@@ -1,0 +1,21 @@
+{
+  "query": "banks bank_id or name contains -extra",
+  "rows": [
+    [
+      "test-worker-extract-fail-3b3a9ac0",
+      "test-worker-extract-fail-3b3a9ac0"
+    ],
+    [
+      "test-worker-extract-fail-840e1eb4",
+      "test-worker-extract-fail-840e1eb4"
+    ],
+    [
+      "test-worker-extract-fail-f380ca4d",
+      "test-worker-extract-fail-f380ca4d"
+    ],
+    [
+      "test-worker-extract-fail-f66d257e",
+      "test-worker-extract-fail-f66d257e"
+    ]
+  ]
+}

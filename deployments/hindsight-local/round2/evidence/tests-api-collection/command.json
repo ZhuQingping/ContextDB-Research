@@ -1,0 +1,20 @@
+{
+  "command": [
+    "../.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-n",
+    "0",
+    "--collect-only",
+    "-q",
+    "-m",
+    "not hs_llm_mat and not hs_llm_core and not integration and not slow and not oracle",
+    "--junitxml=../../../evidence/tests-api-collection/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim",
+  "started_utc": "2026-10-04T14:30:53.278183+00:00",
+  "finished_utc": "2026-10-04T14:31:09.618270+00:00",
+  "duration_seconds": 16.341,
+  "exit_code": 0
+}

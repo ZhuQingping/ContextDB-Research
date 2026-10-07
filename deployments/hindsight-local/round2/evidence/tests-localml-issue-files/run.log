@@ -1,0 +1,933 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/recheck-source/hindsight-api-slim
+configfile: pyproject.toml
+plugins: xdist-3.8.0, timeout-2.4.0, anyio-4.14.2, asyncio-1.3.0, rerunfailures-16.1
+timeout: 300.0s
+timeout method: signal
+timeout func_only: False
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 24 items
+
+tests/test_load_large_batch.py::TestLargeBatchRetain::test_large_batch_500k_chars_20_items 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:23 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 22:46:23 - INFO - hindsight_api.migrations - Database URL: postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:23 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/recheck-source/hindsight-api-slim/hindsight_api/alembic
+2026-10-04 22:46:23 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 22:46:23 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 22:46:23 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing local provider with model BAAI/bge-small-en-v1.5
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.local_device - Local model: MPS (Apple Silicon GPU) is available but unsupported (leaks memory under variable-length workloads, aborts under concurrent inference); running on CPU.
+2026-10-04 22:46:24 - INFO - sentence_transformers.base.model - Loading SentenceTransformer model from BAAI/bge-small-en-v1.5.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 18258.84it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 17.91it/s]
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.embeddings - Embeddings: local provider initialized (dim: 384, device: cpu)
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.cross_encoder - Reranker: initializing local provider with model cross-encoder/ms-marco-MiniLM-L-6-v2
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.local_device - Local model: MPS (Apple Silicon GPU) is available but unsupported (leaks memory under variable-length workloads, aborts under concurrent inference); running on CPU.
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.cross_encoder - Reranker: applied transformers 5.x compatibility patch for XLM-RoBERTa
+2026-10-04 22:46:24 - INFO - sentence_transformers.base.model - No modules.json found for cross-encoder/ms-marco-MiniLM-L-6-v2, initializing a new CrossEncoder model.
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|██████████| 105/105 [00:00<00:00, 14513.16it/s]
+2026-10-04 22:46:24 - WARNING - hindsight_api.engine.local_device - Reranker[cross-encoder/ms-marco-MiniLM-L-6-v2]: copied 105/107 misaligned tensor(s) out of memory-mapped storage. The model file's data section is not naturally aligned; without this copy the CPU matmul would return corrupt scores.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 128.39it/s]
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.cross_encoder - Reranker: local provider initialized (device: cpu, max_concurrent=4)
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:24 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:27 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:27 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=2, max=10, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:27 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:46:27 - INFO - tests.test_load_large_batch - Created 20 content items with 51,600 total chars
+2026-10-04 22:46:27 - INFO - hindsight_api.engine.memory_engine - Large batch detected (10,560 tokens from 20 items). Splitting into sub-batches of ~10,000 tokens each...
+2026-10-04 22:46:27 - INFO - hindsight_api.engine.memory_engine - Processing sub-batch 1: 18 items, 9,504 tokens
+2026-10-04 22:46:31 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.024s
+2026-10-04 22:46:32 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 1.220s
+2026-10-04 22:46:32 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 1.261s
+2026-10-04 22:46:33 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 18000 links in 0.808s
+2026-10-04 22:46:33 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: load-test-f927c08d
+Batch size: 18 content items, 46,440 chars
+============================================================
+[streaming] 18 chunks, batch_size 100 — 1 batch
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.039s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.040s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.040s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.040s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.041s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.041s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.042s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.042s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.042s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.042s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.043s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.043s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.043s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.044s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.044s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.044s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.045s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.045s
+  Generate embeddings: 50 embeddings in 0.600s
+  Generate embeddings: 50 embeddings in 0.674s
+  Generate embeddings: 50 embeddings in 0.708s
+  Generate embeddings: 50 embeddings in 0.723s
+  Generate embeddings: 50 embeddings in 1.640s
+  Generate embeddings: 50 embeddings in 1.691s
+  Generate embeddings: 50 embeddings in 1.704s
+  Generate embeddings: 50 embeddings in 1.717s
+  Generate embeddings: 50 embeddings in 2.474s
+  Generate embeddings: 50 embeddings in 2.538s
+  Generate embeddings: 50 embeddings in 2.580s
+  Generate embeddings: 50 embeddings in 2.589s
+  Generate embeddings: 50 embeddings in 3.479s
+  Generate embeddings: 50 embeddings in 3.506s
+  Generate embeddings: 50 embeddings in 3.572s
+  Generate embeddings: 50 embeddings in 3.600s
+  Generate embeddings: 50 embeddings in 4.193s
+  Generate embeddings: 50 embeddings in 4.193s
+[streaming] Embeddings: 900 texts in 18 backend request(s) (avg 50.0, max 50 texts per request)
+[streaming] Consumer batch 1: processing 900 facts from 18 chunks
+[streaming] Document aa78a723-c1b3-4856-aab0-c0b9ffde4571 tracked (full content)
+  Store chunks: 18 chunks in 0.005s
+  Insert facts: 900 units in 0.000s
+  Insert unit_entities: 900 pairs in 0.016s
+  Temporal links: 18000 links in 0.847s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 900 units with embeddings in 0.042s
+      [8.1] ANN search (Phase 1): 900 units → 18000 links in 0.397s
+[streaming] Final ANN: 18000 total semantic links
+[streaming] Final ANN pass: 0.853s for 900 units
+============================================================
+STREAMING RETAIN COMPLETE: 900 units across 1 batches in 6.360s
+Document: aa78a723-c1b3-4856-aab0-c0b9ffde4571
+============================================================
+2026-10-04 22:46:33 - INFO - hindsight_api.engine.memory_engine - Processing sub-batch 2: 2 items, 1,056 tokens
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.007s
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.138s
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.149s
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 2000 links in 0.072s
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: load-test-f927c08d
+Batch size: 2 content items, 5,160 chars
+============================================================
+[streaming] 2 chunks, batch_size 100 — 1 batch
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.003s
+  Extract facts: 50 facts, 1 chunks from 1 contents in 0.004s
+  Generate embeddings: 50 embeddings in 0.421s
+  Generate embeddings: 50 embeddings in 0.469s
+[streaming] Embeddings: 100 texts in 2 backend request(s) (avg 50.0, max 50 texts per request)
+[streaming] Consumer batch 1: processing 100 facts from 2 chunks
+[streaming] Document 0c133dce-7367-4af3-81fb-2dcaf97d4dae tracked (full content)
+  Store chunks: 2 chunks in 0.001s
+  Insert facts: 100 units in 0.000s
+  Insert unit_entities: 100 pairs in 0.003s
+  Temporal links: 2000 links in 0.091s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 100 units with embeddings in 0.004s
+      [8.1] ANN search (Phase 1): 100 units → 2000 links in 0.036s
+[streaming] Final ANN: 2000 total semantic links
+[streaming] Final ANN pass: 0.076s for 100 units
+============================================================
+STREAMING RETAIN COMPLETE: 100 units across 1 batches in 0.706s
+Document: 0c133dce-7367-4af3-81fb-2dcaf97d4dae
+============================================================
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - RETAIN_BATCH_ASYNC (chunked) COMPLETE: 20 results from 20 contents across 2 sub-batches in 7.088s
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=load-test-f927c08d store=PostgresMemories docs=20 wall=7.093s 7.1KB/s | embed=43.066s/20c/607% pg.acquire=0.011s/19c/0%
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - 
+============================================================
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - LOAD TEST RESULTS
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - ============================================================
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Input: 20 items, 51,600 chars
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - LLM calls: 20
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Mock facts generated: 1000
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Memory units created: 1000
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Elapsed time: 7.09s
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Throughput: 7,275 chars/sec
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - ============================================================
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_load_large_batch.py::TestLargeBatchRetain::test_batch_chunking_behavior 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=2, max=10, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:46:34 - INFO - tests.test_load_large_batch - Created 5 items with 50,330 chars (should trigger chunking)
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - Large batch detected (10,290 tokens from 5 items). Splitting into sub-batches of ~10,000 tokens each...
+2026-10-04 22:46:34 - INFO - hindsight_api.engine.memory_engine - Processing sub-batch 1: 4 items, 8,232 tokens
+2026-10-04 22:46:36 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.013s
+2026-10-04 22:46:36 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.579s
+2026-10-04 22:46:36 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.594s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 11600 links in 0.286s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: chunk-test-1b961dcd
+Batch size: 4 content items, 40,264 chars
+============================================================
+[streaming] 16 chunks, batch_size 100 — 1 batch
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 43 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 18 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 43 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.005s
+  Extract facts: 18 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 43 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 18 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 43 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.006s
+  Extract facts: 18 facts, 1 chunks from 1 contents in 0.007s
+  Generate embeddings: 42 embeddings in 0.347s
+  Generate embeddings: 42 embeddings in 0.388s
+  Generate embeddings: 43 embeddings in 0.407s
+  Generate embeddings: 42 embeddings in 0.512s
+  Generate embeddings: 18 embeddings in 0.513s
+  Generate embeddings: 43 embeddings in 0.816s
+  Generate embeddings: 42 embeddings in 0.907s
+  Generate embeddings: 43 embeddings in 1.030s
+  Generate embeddings: 42 embeddings in 1.070s
+  Generate embeddings: 18 embeddings in 1.071s
+  Generate embeddings: 42 embeddings in 1.438s
+  Generate embeddings: 42 embeddings in 1.465s
+  Generate embeddings: 18 embeddings in 1.466s
+  Generate embeddings: 43 embeddings in 1.525s
+  Generate embeddings: 42 embeddings in 1.604s
+  Generate embeddings: 18 embeddings in 1.604s
+[streaming] Embeddings: 580 texts in 12 backend request(s) (avg 48.3, max 60 texts per request)
+[streaming] Consumer batch 1: processing 580 facts from 16 chunks
+[streaming] Document 01f2bf39-496f-4ac1-8013-91a5e676171d tracked (full content)
+  Store chunks: 16 chunks in 0.004s
+  Insert facts: 580 units in 0.000s
+  Insert unit_entities: 580 pairs in 0.008s
+  Temporal links: 11600 links in 0.362s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 580 units with embeddings in 0.009s
+      [8.1] ANN search (Phase 1): 580 units → 11600 links in 0.134s
+[streaming] Final ANN: 11600 total semantic links
+[streaming] Final ANN pass: 0.296s for 580 units
+============================================================
+STREAMING RETAIN COMPLETE: 580 units across 1 batches in 2.505s
+Document: 01f2bf39-496f-4ac1-8013-91a5e676171d
+============================================================
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.memory_engine - Processing sub-batch 2: 1 items, 2,058 tokens
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.003s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.097s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.101s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 2900 links in 0.082s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: chunk-test-1b961dcd
+Batch size: 1 content items, 10,066 chars
+============================================================
+[streaming] 4 chunks, batch_size 100 — 1 batch
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.001s
+  Extract facts: 43 facts, 1 chunks from 1 contents in 0.001s
+  Extract facts: 42 facts, 1 chunks from 1 contents in 0.001s
+  Extract facts: 18 facts, 1 chunks from 1 contents in 0.002s
+  Generate embeddings: 42 embeddings in 0.271s
+  Generate embeddings: 43 embeddings in 0.288s
+  Generate embeddings: 42 embeddings in 0.346s
+  Generate embeddings: 18 embeddings in 0.346s
+[streaming] Embeddings: 145 texts in 3 backend request(s) (avg 48.3, max 60 texts per request)
+[streaming] Consumer batch 1: processing 145 facts from 4 chunks
+[streaming] Document 3346d1dd-a48a-467e-8cb0-dc35727d7f94 tracked (full content)
+  Store chunks: 4 chunks in 0.001s
+  Insert facts: 145 units in 0.000s
+  Insert unit_entities: 145 pairs in 0.003s
+  Temporal links: 2900 links in 0.043s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 145 units with embeddings in 0.003s
+      [8.1] ANN search (Phase 1): 145 units → 2900 links in 0.040s
+[streaming] Final ANN: 2900 total semantic links
+[streaming] Final ANN pass: 0.085s for 145 units
+============================================================
+STREAMING RETAIN COMPLETE: 145 units across 1 batches in 0.536s
+Document: 3346d1dd-a48a-467e-8cb0-dc35727d7f94
+============================================================
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.memory_engine - RETAIN_BATCH_ASYNC (chunked) COMPLETE: 5 results from 5 contents across 2 sub-batches in 3.051s
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd total_unconsolidated=725
+2026-10-04 22:46:37 - INFO - hindsight_api.engine.memories.postgres - Using LinkExpansion graph retriever
+2026-10-04 22:46:38 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #1 (8 memories, 1 llm calls) | processed=8/725 | recall=0.329s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3393 | avg=0.042s/memory
+2026-10-04 22:46:38 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #2 (5 memories, 1 llm calls) | processed=13/725 | recall=0.174s, llm=0.000s | created=0 updated=0 skipped=5 | input_tokens=~3241 | avg=0.036s/memory
+2026-10-04 22:46:38 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #3 (8 memories, 1 llm calls) | processed=21/725 | recall=0.291s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3395 | avg=0.037s/memory
+2026-10-04 22:46:38 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #4 (5 memories, 1 llm calls) | processed=26/725 | recall=0.207s, llm=0.000s | created=0 updated=0 skipped=5 | input_tokens=~3242 | avg=0.042s/memory
+2026-10-04 22:46:39 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #5 (8 memories, 1 llm calls) | processed=34/725 | recall=0.319s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3395 | avg=0.040s/memory
+2026-10-04 22:46:39 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #6 (5 memories, 1 llm calls) | processed=39/725 | recall=0.198s, llm=0.000s | created=0 updated=0 skipped=5 | input_tokens=~3242 | avg=0.040s/memory
+2026-10-04 22:46:39 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #7 (8 memories, 1 llm calls) | processed=47/725 | recall=0.323s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3394 | avg=0.041s/memory
+2026-10-04 22:46:39 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #8 (5 memories, 1 llm calls) | processed=52/725 | recall=0.231s, llm=0.000s | created=0 updated=0 skipped=5 | input_tokens=~3241 | avg=0.047s/memory
+2026-10-04 22:46:40 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #9 (8 memories, 1 llm calls) | processed=60/725 | recall=0.390s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3395 | avg=0.049s/memory
+2026-10-04 22:46:40 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #10 (4 memories, 1 llm calls) | processed=64/725 | recall=0.171s, llm=0.000s | created=0 updated=0 skipped=4 | input_tokens=~3191 | avg=0.044s/memory
+2026-10-04 22:46:40 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #11 (8 memories, 1 llm calls) | processed=72/725 | recall=0.339s, llm=0.000s | created=0 updated=0 skipped=8 | input_tokens=~3395 | avg=0.043s/memory
+2026-10-04 22:46:40 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #12 (1 memories, 1 llm calls) | processed=73/725 | recall=0.039s, llm=0.000s | created=0 updated=0 skipped=1 | input_tokens=~3038 | avg=0.042s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #13 (7 memories, 1 llm calls) | processed=80/725 | recall=0.280s, llm=0.000s | created=0 updated=0 skipped=7 | input_tokens=~3344 | avg=0.040s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #14 (5 memories, 1 llm calls) | processed=85/725 | recall=0.192s, llm=0.000s | created=0 updated=0 skipped=5 | input_tokens=~3242 | avg=0.039s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #15 (4 memories, 1 llm calls) | processed=89/725 | recall=0.147s, llm=0.000s | created=0 updated=0 skipped=4 | input_tokens=~3190 | avg=0.037s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #16 (3 memories, 1 llm calls) | processed=92/725 | recall=0.106s, llm=0.000s | created=0 updated=0 skipped=3 | input_tokens=~3139 | avg=0.036s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #17 (2 memories, 1 llm calls) | processed=94/725 | recall=0.077s, llm=0.000s | created=0 updated=0 skipped=2 | input_tokens=~3088 | avg=0.040s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #18 (2 memories, 1 llm calls) | processed=96/725 | recall=0.078s, llm=0.000s | created=0 updated=0 skipped=2 | input_tokens=~3089 | avg=0.040s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #19 (1 memories, 1 llm calls) | processed=97/725 | recall=0.040s, llm=0.000s | created=0 updated=0 skipped=1 | input_tokens=~3038 | avg=0.044s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #20 (1 memories, 1 llm calls) | processed=98/725 | recall=0.046s, llm=0.000s | created=0 updated=0 skipped=1 | input_tokens=~3038 | avg=0.049s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #21 (1 memories, 1 llm calls) | processed=99/725 | recall=0.040s, llm=0.000s | created=0 updated=0 skipped=1 | input_tokens=~3038 | avg=0.043s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd llm_batch #22 (1 memories, 1 llm calls) | processed=100/725 | recall=0.042s, llm=0.000s | created=0 updated=0 skipped=1 | input_tokens=~3038 | avg=0.045s/memory
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd hit round limit of 100 memories, ~625 remaining. Re-queuing consolidation.
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=chunk-test-1b961dcd deferring mental model refresh to the final round (round limit hit; carrying 0 tags forward)
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.consolidation.consolidator - 
+============================================================
+CONSOLIDATION for bank chunk-test-1b961dcd
+[1] Found 725 pending memories to consolidate
+[3] Results: 100 memories -> 0 actions (0 created, 0 updated, 0 merged, 100 skipped)
+[4] Timing breakdown: recall=4.058s (22 calls, avg=184ms), llm=0.002s (22 calls, avg=0ms), avg_obs=0.0, avg_prompt_tokens=~3219
+============================================================
+CONSOLIDATION COMPLETE: 4.186s total
+============================================================
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - [CONSOLIDATION] bank=chunk-test-1b961dcd completed: 100 processed
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 0adf5f99-73fc-4f4e-b65c-180afccdf34c
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - consolidation task queued for bank_id=chunk-test-1b961dcd, operation_id=0adf5f99-73fc-4f4e-b65c-180afccdf34c
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=chunk-test-1b961dcd store=PostgresMemories docs=5 wall=7.244s 6.8KB/s | embed=17.411s/20c/240% pg.acquire=0.154s/431c/2%
+2026-10-04 22:46:41 - INFO - tests.test_load_large_batch - Chunking test: 725 units in 7.24s
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_load_large_batch.py::TestLargeBatchRetain::test_db_connection_pool_under_load 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.providers.openai_compatible_llm - OpenAI-compatible client initialized: provider=openai, model=gpt-4, base_url=default, reasoning_effort=not sent
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=2, max=10, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:41 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.003s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.003s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.002s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.002s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.056s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.060s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.058s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.005s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.062s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.052s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.055s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.003s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.053s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.056s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.014s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.019s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.013s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.015s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.001s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.013s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.016s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.014s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.016s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.017s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-a4ca5811
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.011s
+  Generate embeddings: 1 embeddings in 0.080s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document b7f9977f-fa34-44e9-823b-258362e35a21 tracked (full content)
+  Store chunks: 1 chunks in 0.008s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.006s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.015s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.008s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.033s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.188s
+Document: b7f9977f-fa34-44e9-823b-258362e35a21
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-a4ca5811 store=PostgresMemories docs=1 wall=0.208s 9.6KB/s | embed=0.08s/1c/38% pg.acquire=0.015s/11c/7%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.017s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-1415a80e
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.011s
+  Generate embeddings: 1 embeddings in 0.085s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 9b520f4f-47a8-45dd-aebe-da6fedec6997 tracked (full content)
+  Store chunks: 1 chunks in 0.010s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.005s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.014s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.008s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.032s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.195s
+Document: 9b520f4f-47a8-45dd-aebe-da6fedec6997
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.016s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.018s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-1415a80e store=PostgresMemories docs=1 wall=0.21s 9.5KB/s | embed=0.085s/1c/41% pg.acquire=0.012s/11c/6%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.018s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-e6ad7351
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.012s
+  Generate embeddings: 1 embeddings in 0.088s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document c09da3d2-2a39-40a1-b422-7263026f710c tracked (full content)
+  Store chunks: 1 chunks in 0.009s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.007s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.014s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.008s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.033s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.191s
+Document: c09da3d2-2a39-40a1-b422-7263026f710c
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-e6ad7351 store=PostgresMemories docs=1 wall=0.211s 9.5KB/s | embed=0.088s/1c/41% pg.acquire=0.016s/11c/8%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.009s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-1a4d879e
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.013s
+  Generate embeddings: 1 embeddings in 0.087s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 8d8c5c93-65c2-4cc8-b5d9-d62ac1284d78 tracked (full content)
+  Store chunks: 1 chunks in 0.001s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.002s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.012s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.006s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.022s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.182s
+Document: 8d8c5c93-65c2-4cc8-b5d9-d62ac1284d78
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.017s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-b80fa6ec
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.012s
+  Generate embeddings: 1 embeddings in 0.079s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 44155c2a-38e5-4fca-9f66-7c111c9692f7 tracked (full content)
+  Store chunks: 1 chunks in 0.001s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.003s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.002s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.009s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.019s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.176s
+Document: 44155c2a-38e5-4fca-9f66-7c111c9692f7
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-1a4d879e store=PostgresMemories docs=1 wall=0.214s 9.3KB/s | embed=0.087s/1c/41% pg.acquire=0.019s/11c/9%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-b80fa6ec store=PostgresMemories docs=1 wall=0.216s 9.3KB/s | embed=0.079s/1c/36% pg.acquire=0.028s/11c/13%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.016s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-b7e3f953
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.012s
+  Generate embeddings: 1 embeddings in 0.093s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 54e87447-8984-45ab-97ac-ef2ef247029b tracked (full content)
+  Store chunks: 1 chunks in 0.009s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.002s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.014s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.009s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.030s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.194s
+Document: 54e87447-8984-45ab-97ac-ef2ef247029b
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-b7e3f953 store=PostgresMemories docs=1 wall=0.217s 9.2KB/s | embed=0.093s/1c/43% pg.acquire=0.014s/11c/6%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.014s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.015s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-36f77833
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.012s
+  Generate embeddings: 1 embeddings in 0.078s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 41423ab8-09dd-4743-bb79-1d439502c043 tracked (full content)
+  Store chunks: 1 chunks in 0.001s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.003s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.004s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.005s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.018s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.165s
+Document: 41423ab8-09dd-4743-bb79-1d439502c043
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-6235ca8f
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.014s
+  Generate embeddings: 1 embeddings in 0.090s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document ecfc8835-cd6e-406e-8614-4c8c3c1e0ffa tracked (full content)
+  Store chunks: 1 chunks in 0.001s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.002s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.015s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.007s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.030s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.196s
+Document: ecfc8835-cd6e-406e-8614-4c8c3c1e0ffa
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-36f77833 store=PostgresMemories docs=1 wall=0.222s 9.0KB/s | embed=0.078s/1c/35% pg.acquire=0.026s/11c/12%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-6235ca8f store=PostgresMemories docs=1 wall=0.223s 9.0KB/s | embed=0.09s/1c/40% pg.acquire=0.019s/11c/8%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.013s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-abade4ef
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.012s
+  Generate embeddings: 1 embeddings in 0.093s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document dd45dd29-6fe6-45c4-8c8b-41619987499c tracked (full content)
+  Store chunks: 1 chunks in 0.002s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.003s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.002s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.006s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.015s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.176s
+Document: dd45dd29-6fe6-45c4-8c8b-41619987499c
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.033s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.034s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-abade4ef store=PostgresMemories docs=1 wall=0.224s 8.9KB/s | embed=0.093s/1c/41% pg.acquire=0.022s/11c/10%
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 1 links in 0.011s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: pool-test-d93e6017
+Batch size: 1 content items, 2,050 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 1 facts, 1 chunks from 1 contents in 0.015s
+  Generate embeddings: 1 embeddings in 0.073s
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+[streaming] Consumer batch 1: processing 1 facts from 1 chunks
+[streaming] Document 3a719e48-4735-4736-9eff-5f245ed5933e tracked (full content)
+  Store chunks: 1 chunks in 0.006s
+  Insert facts: 1 units in 0.000s
+  Insert unit_entities: 0 pairs in 0.000s
+  Temporal links: 0 links in 0.003s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 1 units with embeddings in 0.001s
+      [8.1] ANN search (Phase 1): 1 units → 1 links in 0.005s
+[streaming] Final ANN: 1 total semantic links
+[streaming] Final ANN pass: 0.012s for 1 units
+============================================================
+STREAMING RETAIN COMPLETE: 1 units across 1 batches in 0.177s
+Document: 3a719e48-4735-4736-9eff-5f245ed5933e
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=pool-test-d93e6017 store=PostgresMemories docs=1 wall=0.239s 8.4KB/s | embed=0.073s/1c/30% pg.acquire=0.019s/11c/8%
+2026-10-04 22:46:42 - INFO - tests.test_load_large_batch - Pool test: 10 successes, 0 errors in 0.24s
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_alias_reaches_the_same_bank 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:42 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_alias_sees_the_banks_memories 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:42 - INFO - hindsight_api.api - HTTP REST API enabled
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 1 (entity resolution): 0.009s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Phase 2 (write transaction): 0.024s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Consumer batch 1 total (excluding fire-and-forget): 0.036s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - [streaming] Final ANN chunk 1/1: 14 links in 0.006s
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.orchestrator - 
+============================================================
+RETAIN_BATCH START: alias-src-c47795c3
+Batch size: 1 content items, 32 chars
+============================================================
+[streaming] 1 chunks, batch_size 100 — 1 batch
+  Extract facts: 4 facts, 1 chunks from 1 contents in 0.001s
+  Generate embeddings: 4 embeddings in 0.027s
+[streaming] Embeddings: 4 texts in 1 backend request(s) (avg 4.0, max 4 texts per request)
+[streaming] Consumer batch 1: processing 4 facts from 1 chunks
+[streaming] Document ops tracked (full content)
+  Store chunks: 1 chunks in 0.003s
+  Insert facts: 4 units in 0.000s
+  Insert unit_entities: 8 pairs in 0.002s
+  Temporal links: 24 links in 0.005s
+  Semantic links: skipped (deferred to final ANN pass)
+  Causal links: 0 links in 0.000s
+[streaming] Final ANN: loaded 4 units with embeddings in 0.001s
+      [8.1] ANN search (Phase 1): 4 units → 14 links in 0.004s
+[streaming] Final ANN: 14 total semantic links
+[streaming] Final ANN pass: 0.007s for 4 units
+============================================================
+STREAMING RETAIN COMPLETE: 4 units across 1 batches in 0.073s
+Document: ops
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=alias-src-c47795c3 total_unconsolidated=4
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.consolidation.consolidator - [CONSOLIDATION] bank=alias-src-c47795c3 llm_batch #1 (4 memories, 1 llm calls) | processed=4/4 | recall=0.098s, llm=0.000s, embedding=0.041s, db_write=0.005s | created=4 updated=0 skipped=0 | input_tokens=~3114 | avg=0.041s/memory
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.consolidation.consolidator - 
+============================================================
+CONSOLIDATION for bank alias-src-c47795c3
+[1] Found 4 pending memories to consolidate
+[3] Results: 4 memories -> 4 actions (4 created, 0 updated, 0 merged, 0 skipped)
+[4] Timing breakdown: recall=0.098s, llm=0.000s, embedding=0.041s (4 calls, avg=10ms), db_write=0.005s (4 calls, avg=1ms), avg_obs=0.0, avg_prompt_tokens=~3114
+============================================================
+CONSOLIDATION COMPLETE: 0.173s total
+============================================================
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - [CONSOLIDATION] bank=alias-src-c47795c3 completed: 4 processed
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 6a397f32-19cc-4036-bc0a-cc43621c59eb
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - consolidation task queued for bank_id=alias-src-c47795c3, operation_id=6a397f32-19cc-4036-bc0a-cc43621c59eb
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.retain.timing - [retain-timing] bank=alias-src-c47795c3 store=PostgresMemories docs=1 wall=0.254s 0.1KB/s | embed=0.026s/1c/10% pg.acquire=0.023s/51c/9%
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_a_bank_can_hold_several_aliases 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:42 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_one_alias_cannot_reach_two_banks 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:42 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_an_alias_cannot_shadow_an_existing_bank 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:42 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:42 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_a_bank_cannot_be_created_under_an_alias 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_removing_an_alias_stops_it_routing_and_keeps_the_bank 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_deleting_an_alias_of_another_bank_is_a_404 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_deleting_the_bank_takes_its_aliases_with_it 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_a_bank_cannot_alias_itself 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_an_alias_obeys_the_bank_id_rules 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_the_bank_list_can_be_searched_by_alias 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_only_a_bank_found_via_an_alias_is_labelled_with_one 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:43 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_extensions_see_the_canonical_id_not_the_alias 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:43 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_a_bank_shows_its_own_id_until_an_alias_is_promoted 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_promoting_an_alias_changes_only_what_the_bank_is_shown_as 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_promoting_a_second_alias_demotes_the_first 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_an_alias_can_be_created_already_primary 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_demoting_returns_the_bank_to_its_own_id 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_deleting_the_primary_alias_takes_the_display_with_it 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+tests/test_bank_aliases.py::test_promoting_an_alias_of_another_bank_is_a_404 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Connecting to database at postgresql://***:***@127.0.0.1:15591/hindsight
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool created (min=1, max=15, cmd_timeout=60s, acquire_timeout=30s, session_setup_on_acquire=True)
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - Memory system initialized (pool and task backend started)
+2026-10-04 22:46:44 - INFO - hindsight_api.api - HTTP REST API enabled
+PASSED
+------------------------------ live log teardown -------------------------------
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.memory_engine - close() started
+2026-10-04 22:46:44 - INFO - hindsight_api.engine.db.postgresql - PostgreSQL pool closed
+
+
+=============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+tests/test_load_large_batch.py::TestLargeBatchRetain::test_large_batch_500k_chars_20_items
+  /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/recheck-source/hindsight-api-slim/hindsight_api/engine/embeddings.py:372: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+    self._dimension = self._model.get_sentence_embedding_dimension()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-localml-issue-files/junit.xml -
+============================= slowest 10 durations =============================
+7.25s call     tests/test_load_large_batch.py::TestLargeBatchRetain::test_batch_chunking_behavior
+7.09s call     tests/test_load_large_batch.py::TestLargeBatchRetain::test_large_batch_500k_chars_20_items
+4.13s setup    tests/test_load_large_batch.py::TestLargeBatchRetain::test_large_batch_500k_chars_20_items
+0.29s setup    tests/test_bank_aliases.py::test_demoting_returns_the_bank_to_its_own_id
+0.27s call     tests/test_bank_aliases.py::test_alias_sees_the_banks_memories
+0.26s setup    tests/test_bank_aliases.py::test_deleting_an_alias_of_another_bank_is_a_404
+0.24s call     tests/test_load_large_batch.py::TestLargeBatchRetain::test_db_connection_pool_under_load
+0.16s setup    tests/test_bank_aliases.py::test_alias_reaches_the_same_bank
+0.10s setup    tests/test_bank_aliases.py::test_the_bank_list_can_be_searched_by_alias
+0.09s setup    tests/test_bank_aliases.py::test_alias_sees_the_banks_memories
+======================= 24 passed, 3 warnings in 24.79s ========================
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

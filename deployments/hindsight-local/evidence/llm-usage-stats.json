@@ -1,0 +1,22 @@
+{
+  "bank_id": "huawei-contextdb-demo",
+  "period": "7d",
+  "trunc": "day",
+  "start": "2026-09-26T16:17:16.280819+00:00",
+  "buckets": [
+    {
+      "time": "2026-10-03T00:00:00+00:00",
+      "statuses": {
+        "success": 12
+      },
+      "total": 12,
+      "tokens": {
+        "input": 5185,
+        "output": 665,
+        "cached": 0,
+        "thoughts": 0,
+        "total": 5850
+      }
+    }
+  ]
+}

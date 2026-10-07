@@ -1,0 +1,277 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim
+configfile: pyproject.toml
+plugins: xdist-3.8.0, timeout-2.4.0, anyio-4.14.2, asyncio-1.3.0, rerunfailures-16.1
+timeout: 300.0s
+timeout method: signal
+timeout func_only: False
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 25 items
+
+tests/test_hnsw_indexes_store_owned.py::test_store_owned_bank_gets_no_vector_indexes 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:33:54 - INFO - hindsight_api.migrations - Running database migrations to head for schema 'public'...
+2026-10-04 22:33:54 - INFO - hindsight_api.migrations - Database URL: postgresql://***:***@127.0.0.1:15500/hindsight
+2026-10-04 22:33:54 - INFO - hindsight_api.migrations - Script location: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim/hindsight_api/alembic
+2026-10-04 22:33:54 - INFO - alembic.runtime.migration - Context impl PostgresqlImpl.
+2026-10-04 22:33:54 - INFO - alembic.runtime.migration - Will assume transactional DDL.
+2026-10-04 22:33:54 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+SKIPPED (local ML stack not installed; embeddings fixture needs the ...) [  4%]
+tests/test_hnsw_indexes_store_owned.py::test_a_sql_owned_bank_still_gets_all_three SKIPPED [  8%]
+tests/test_hnsw_indexes_store_owned.py::test_a_store_that_cannot_answer_still_gets_its_indexes SKIPPED [ 12%]
+tests/test_hnsw_indexes_store_owned.py::test_a_sql_bank_under_a_non_postgres_store_still_gets_all_three SKIPPED [ 16%]
+tests/test_hnsw_indexes_store_owned.py::test_repair_does_not_rebuild_what_creation_declined_to_build SKIPPED [ 20%]
+tests/test_hnsw_indexes_store_owned.py::test_indexes_an_existing_store_owned_bank_already_has_are_left_alone SKIPPED [ 24%]
+tests/test_hnsw_indexes_store_owned.py::test_importing_a_bank_into_a_store_owned_deployment_creates_no_indexes SKIPPED [ 28%]
+tests/test_hnsw_indexes_store_owned.py::test_repair_refuses_to_guess_when_the_store_cannot_answer SKIPPED [ 32%]
+tests/test_hnsw_indexes_store_owned.py::test_the_command_exits_non_zero_and_names_the_schema_it_could_not_classify SKIPPED [ 36%]
+tests/test_hnsw_indexes_store_owned.py::test_both_reports_print_before_the_single_non_zero_exit 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:33:54 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:33:54 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+FAILED                                                                   [ 40%]
+tests/test_hnsw_indexes_store_owned.py::test_rename_refuses_when_the_store_cannot_say_who_owns_the_bank SKIPPED [ 44%]
+tests/test_hnsw_indexes_store_owned.py::test_a_schema_that_fails_partway_still_reports_the_banks_it_did_repair 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:33:54 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+PASSED                                                                   [ 48%]
+tests/test_hnsw_indexes_store_owned.py::test_a_dead_connection_stops_the_sweep_instead_of_repeating_itself 
+-------------------------------- live log setup --------------------------------
+2026-10-04 22:33:54 - WARNING - hindsight_api.config - Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                                         1. Install local ML deps: pip install hindsight-api[local-ml]
+                                                         2. Use a remote provider instead:
+                                                            HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                            HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+PASSED                                                                   [ 52%]
+tests/test_hnsw_indexes_store_owned.py::test_the_bank_search_keeps_a_sql_banks_watermark_under_a_non_postgres_store SKIPPED [ 56%]
+tests/test_aiohttp_session.py::test_constructed_without_a_running_loop PASSED [ 60%]
+tests/test_aiohttp_session.py::test_reuses_one_session_per_loop PASSED   [ 64%]
+tests/test_aiohttp_session.py::test_other_loop_gets_its_own_session PASSED [ 68%]
+tests/test_aiohttp_session.py::test_close_loop_sessions_closes_every_holder PASSED [ 72%]
+tests/test_aiohttp_session.py::test_closed_loops_are_released PASSED     [ 76%]
+tests/test_aiohttp_session.py::test_per_phase_timeout_has_no_total_cap PASSED [ 80%]
+tests/test_aiohttp_session.py::test_raise_for_status_keeps_body_and_is_classified 
+-------------------------------- live log call ---------------------------------
+2026-10-04 22:33:54 - INFO - aiohttp.access - 127.0.0.1 [04/Oct/2026:22:33:54 +0800] "GET /x?status=200 HTTP/1.1" 200 186 "-" "Python/3.12 aiohttp/3.14.3"
+2026-10-04 22:33:54 - INFO - aiohttp.access - 127.0.0.1 [04/Oct/2026:22:33:54 +0800] "GET /x?status=503 HTTP/1.1" 503 203 "-" "Python/3.12 aiohttp/3.14.3"
+2026-10-04 22:33:54 - INFO - aiohttp.access - 127.0.0.1 [04/Oct/2026:22:33:54 +0800] "GET /x?status=429 HTTP/1.1" 429 201 "-" "Python/3.12 aiohttp/3.14.3"
+2026-10-04 22:33:54 - INFO - aiohttp.access - 127.0.0.1 [04/Oct/2026:22:33:54 +0800] "GET /x?status=401 HTTP/1.1" 401 196 "-" "Python/3.12 aiohttp/3.14.3"
+PASSED                                                                   [ 84%]
+tests/test_aiohttp_session.py::test_aiohttp_connection_errors_are_transient PASSED [ 88%]
+tests/test_aiohttp_session.py::test_request_goes_through_the_proxy_named_by_http_proxy FAILED [ 92%]
+tests/test_aiohttp_session.py::test_no_proxy_env_means_no_per_request_env_lookup PASSED [ 96%]
+tests/test_aiohttp_session.py::test_every_production_session_decides_about_the_proxy PASSED [100%]
+
+=================================== FAILURES ===================================
+___________ test_both_reports_print_before_the_single_non_zero_exit ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10dcfb200>
+pg0_db_url = 'postgresql://hindsight:hindsight@127.0.0.1:15500/hindsight'
+
+    def test_both_reports_print_before_the_single_non_zero_exit(monkeypatch, pg0_db_url):
+        """Failed index names and skipped schemas are independent; neither may hide the other.
+    
+        The bug this pins: the skipped-schemas branch used to ``raise Exit(1)`` before the
+        failed-index branch, so a run with both printed the failure COUNT but never the
+        NAMES — and those names appear nowhere else in the output.
+    
+        Driven off a canned RepairSweep rather than a real sweep, because producing both
+        conditions at once against a live database means engineering a failed CONCURRENTLY
+        build, which is slow and flaky. What is under test is the reporting block.
+        """
+        from typer.testing import CliRunner
+    
+        canned = cli.RepairSweep(
+            banks=[BankIndexResult(bank_id="b1", failed=1, failed_indexes=["public.idx_mu_emb_worl_dead"])],
+            skipped_schemas=["t_unreachable"],
+        )
+    
+        async def _fake_sweep(*args, **kwargs):
+            return canned
+    
+        monkeypatch.setattr(cli, "_run_repair_bank", _fake_sweep)
+        # Pinned even though the sweep is faked: repair_bank still refuses on an empty
+        # database_url before it gets that far, and that refusal also exits 1 — which
+        # would satisfy this test's exit-code assertion without running the block it is
+        # about. catch_exceptions=False for the same reason.
+        monkeypatch.setenv("HINDSIGHT_API_DATABASE_URL", pg0_db_url)
+    
+>       result = CliRunner().invoke(cli.app, ["repair-bank", "--all"], catch_exceptions=False)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_hnsw_indexes_store_owned.py:504: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../.venv/lib/python3.12/site-packages/typer/testing.py:21: in invoke
+    return super().invoke(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <typer.testing.CliRunner object at 0x10e0ea360>
+cli = <TyperGroup hindsight-admin>, args = ['repair-bank', '--all']
+input = None, env = None, catch_exceptions = False, color = False, extra = {}
+exc_info = (<class 'SystemExit'>, SystemExit(1), <traceback object at 0x10de5c640>)
+outstreams = (<_io.BytesIO object at 0x10dd7fb50>, None), return_value = None
+exception = SystemExit(1), exit_code = 1, prog_name = 'hindsight-admin'
+
+    def invoke(
+        self,
+        cli: "BaseCommand",
+        args: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        input: t.Optional[t.Union[str, bytes, t.IO[t.Any]]] = None,
+        env: t.Optional[t.Mapping[str, t.Optional[str]]] = None,
+        catch_exceptions: bool = True,
+        color: bool = False,
+        **extra: t.Any,
+    ) -> Result:
+        """Invokes a command in an isolated environment.  The arguments are
+        forwarded directly to the command line script, the `extra` keyword
+        arguments are passed to the :meth:`~clickpkg.Command.main` function of
+        the command.
+    
+        This returns a :class:`Result` object.
+    
+        :param cli: the command to invoke
+        :param args: the arguments to invoke. It may be given as an iterable
+                     or a string. When given as string it will be interpreted
+                     as a Unix shell command. More details at
+                     :func:`shlex.split`.
+        :param input: the input data for `sys.stdin`.
+        :param env: the environment overrides.
+        :param catch_exceptions: Whether to catch any other exceptions than
+                                 ``SystemExit``.
+        :param extra: the keyword arguments to pass to :meth:`main`.
+        :param color: whether the output should contain color codes. The
+                      application can still override this explicitly.
+    
+        .. versionchanged:: 8.0
+            The result object has the ``return_value`` attribute with
+            the value returned from the invoked command.
+    
+        .. versionchanged:: 4.0
+            Added the ``color`` parameter.
+    
+        .. versionchanged:: 3.0
+            Added the ``catch_exceptions`` parameter.
+    
+        .. versionchanged:: 3.0
+            The result object has the ``exc_info`` attribute with the
+            traceback if available.
+        """
+        exc_info = None
+        with self.isolation(input=input, env=env, color=color) as outstreams:
+            return_value = None
+            exception: t.Optional[BaseException] = None
+            exit_code = 0
+    
+            if isinstance(args, str):
+                args = shlex.split(args)
+    
+            try:
+                prog_name = extra.pop("prog_name")
+            except KeyError:
+                prog_name = self.get_default_prog_name(cli)
+    
+            try:
+                return_value = cli.main(args=args or (), prog_name=prog_name, **extra)
+            except SystemExit as e:
+                exc_info = sys.exc_info()
+                e_code = t.cast(t.Optional[t.Union[int, t.Any]], e.code)
+    
+                if e_code is None:
+                    e_code = 0
+    
+                if e_code != 0:
+                    exception = e
+    
+                if not isinstance(e_code, int):
+                    sys.stdout.write(str(e_code))
+                    sys.stdout.write("\n")
+                    e_code = 1
+    
+                exit_code = e_code
+    
+            except Exception as e:
+                if not catch_exceptions:
+                    raise
+                exception = e
+                exit_code = 1
+                exc_info = sys.exc_info()
+            finally:
+                sys.stdout.flush()
+>               stdout = outstreams[0].getvalue()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+E               ValueError: I/O operation on closed file.
+
+../.venv/lib/python3.12/site-packages/click/testing.py:438: ValueError
+------------------------------ Captured log setup ------------------------------
+WARNING  hindsight_api.config:config.py:4118 Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                               1. Install local ML deps: pip install hindsight-api[local-ml]
+                                               2. Use a remote provider instead:
+                                                  HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                  HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+----------------------------- Captured stdout call -----------------------------
+Repairing per-bank vector indexes for all banks across base schema and all discovered tenant schemas...
+Done: 1 bank(s) scanned, 0 already present, 0 created, 0 dropped, 0 to-create (dry-run), 0 to-drop (dry-run), 1 failed
+----------------------------- Captured stderr call -----------------------------
+Failed indexes (dropped, retry with a re-run): public.idx_mu_emb_worl_dead
+Skipped 1 schema(s): t_unreachable. Re-run once the cause is cleared.
+------------------------------ Captured log call -------------------------------
+WARNING  hindsight_api.config:config.py:4118 Local ML provider configured for embeddings and reranker, but 'sentence-transformers' is not installed. The API will fail at startup. Either:
+                                               1. Install local ML deps: pip install hindsight-api[local-ml]
+                                               2. Use a remote provider instead:
+                                                  HINDSIGHT_API_EMBEDDINGS_PROVIDER=openai (or gemini, tei)
+                                                  HINDSIGHT_API_RERANKER_PROVIDER=none (or tei)
+___________ test_request_goes_through_the_proxy_named_by_http_proxy ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e0e52e0>
+
+    @pytest.mark.asyncio
+    async def test_request_goes_through_the_proxy_named_by_http_proxy(monkeypatch):
+        # The httpx -> aiohttp migration (#4318) dropped proxy support: httpx reads the
+        # proxy env vars by default, aiohttp only with trust_env. Prove it end to end by
+        # pointing HTTP_PROXY at a stub and asking for a host that does not resolve —
+        # the stub is reached only if the request was actually proxied.
+        proxied: list[str] = []
+    
+        async def handler(request: web.Request) -> web.StreamResponse:
+            proxied.append(str(request.url))
+            return web.Response(text="via proxy")
+    
+        async with stub_server(handler) as proxy_url:
+            monkeypatch.setenv("HTTP_PROXY", proxy_url)
+            monkeypatch.delenv("NO_PROXY", raising=False)
+            monkeypatch.delenv("no_proxy", raising=False)
+            holder = LoopLocalSession(timeout=per_phase_timeout(5.0))
+            async with holder.get().get("http://unreachable.invalid/embeddings") as response:
+>               assert await response.text() == "via proxy"
+E               AssertionError: assert '' == 'via proxy'
+E                 
+E                 - via proxy
+
+tests/test_aiohttp_session.py:144: AssertionError
+- generated xml file: /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/tests-api-failure-recheck/junit.xml -
+============================= slowest 10 durations =============================
+0.66s call     tests/test_aiohttp_session.py::test_every_production_session_decides_about_the_proxy
+0.31s setup    tests/test_hnsw_indexes_store_owned.py::test_store_owned_bank_gets_no_vector_indexes
+0.24s call     tests/test_aiohttp_session.py::test_request_goes_through_the_proxy_named_by_http_proxy
+0.01s call     tests/test_hnsw_indexes_store_owned.py::test_a_schema_that_fails_partway_still_reports_the_banks_it_did_repair
+0.01s call     tests/test_hnsw_indexes_store_owned.py::test_a_dead_connection_stops_the_sweep_instead_of_repeating_itself
+
+(5 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED tests/test_hnsw_indexes_store_owned.py::test_both_reports_print_before_the_single_non_zero_exit
+FAILED tests/test_aiohttp_session.py::test_request_goes_through_the_proxy_named_by_http_proxy
+=================== 2 failed, 12 passed, 11 skipped in 2.26s ===================

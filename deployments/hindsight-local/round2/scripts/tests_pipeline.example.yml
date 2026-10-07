@@ -1,0 +1,40 @@
+# Proposed minimal PR pipeline. Not installed/published. Run in your fork.
+# Complements, does not replace, upstream Linux CI and release/real-model gates.
+name: contextdb-pr-baseline
+on: [pull_request, workflow_dispatch]
+jobs:
+  blackbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: .python-version
+      - run: uv sync --frozen --extra embedded-db
+        working-directory: hindsight-api-slim
+      - run: uv sync --frozen
+        working-directory: hindsight-system-tests
+      - run: uv run pytest tests -v --junitxml=system.xml
+        working-directory: hindsight-system-tests
+        env:
+          PYTEST_ADDOPTS: ''
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: system-tests
+          path: hindsight-system-tests/system.xml
+  static-keys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run pytest tests -v --junitxml=static-keys.xml
+        working-directory: hindsight-extensions/static-keys-tenant
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: static-keys-tests
+          path: hindsight-extensions/static-keys-tenant/static-keys.xml

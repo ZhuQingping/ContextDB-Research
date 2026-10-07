@@ -1,0 +1,29 @@
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[38;5;103mhindsight:[0m plugin entry invoked
+[plugins] [38;5;103mhindsight:[0m registering plugin service
+[plugins] [38;5;103mhindsight:[0m registering agent hooks
+[plugins] [38;5;103mhindsight:[0m agent hooks registered
+[provider-transport-fetch] [model-fetch] response provider=round2 api=anthropic-messages model=glm-5.3-flash status=401 elapsedMs=1140 dispatcher=new contentType=text/plain
+[agent/embedded] embedded run agent end: runId=6ff97f88-93e5-4556-95ca-94827cb311eb isError=true model=glm-5.3-flash provider=round2 error=⚠️ round2/glm-5.3-flash request failed (authentication failed, HTTP 401). Re-authenticate the provider and try again. rawError=401: Consumer authentication failed.
+[agent/embedded] auth profile failure state updated: runId=6ff97f88-93e5-4556-95ca-94827cb311eb profile=sha256:dd4e9ce0177c provider=round2 reason=auth window=cooldown reused=false
+[agent/embedded] embedded run failover decision: runId=6ff97f88-93e5-4556-95ca-94827cb311eb stage=assistant decision=surface_error reason=auth attempt=1 retry=0 rotations=0 from=round2/glm-5.3-flash profile=- rawError=401: Consumer authentication failed.
+[diagnostic] lane task error: lane=main durationMs=2049 error="⚠️ round2/glm-5.3-flash request failed (authentication failed, HTTP 401). Re-authenticate the provider and try again." errorName=FailoverError taskKind=turn sessionKey=agent:main:explicit:round2-claw-retain runId=6ff97f88-93e5-4556-95ca-94827cb311eb
+[diagnostic] lane task error: lane=session:agent:main:explicit:round2-claw-retain durationMs=2052 error="⚠️ round2/glm-5.3-flash request failed (authentication failed, HTTP 401). Re-authenticate the provider and try again." errorName=FailoverError taskKind=turn sessionKey=agent:main:explicit:round2-claw-retain runId=6ff97f88-93e5-4556-95ca-94827cb311eb
+[model-fallback/decision] model fallback decision: decision=candidate_failed requested=round2/glm-5.3-flash candidate=round2/glm-5.3-flash reason=auth next=none detail=401: Consumer authentication failed.
+[session-sqlite] reclamation worker retired reason=revoked kind=maintenance-plan ageMs=2273 opsServed=2
+[openclaw] The CLI command failed.
+[openclaw] Reason: ⚠️ round2/glm-5.3-flash request failed (authentication failed, HTTP 401). Re-authenticate the provider and try again.
+[openclaw] Debug: set OPENCLAW_DEBUG=1 to include the stack trace.
+[openclaw] Try: openclaw doctor
+[openclaw] Help: openclaw --help

@@ -1,0 +1,75 @@
+{
+  "requirements": [
+    {
+      "requirement": "参数与客户配置",
+      "answer_location": "主文档§3",
+      "evidence": [
+        "parameters-inventory.csv",
+        "parameters-http-summary.json"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    },
+    {
+      "requirement": "测试与流水线",
+      "answer_location": "reports/tests.md; reports/tests-ci-runbook.md",
+      "evidence": [
+        "tests-api-localml-offline/junit.xml",
+        "tests-summary.json"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    },
+    {
+      "requirement": "四客户端端到端",
+      "answer_location": "reports/clients.md",
+      "evidence": [
+        "clients-hermes-runtime-recall.json",
+        "clients-claude-auto-summary.json",
+        "clients-openclaw-operations.json",
+        "clients-codex-auto-recall.jsonl"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    },
+    {
+      "requirement": "API Key",
+      "answer_location": "主文档§6",
+      "evidence": [
+        "auth-probe.json",
+        "mcp-auth-probe.json"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    },
+    {
+      "requirement": "模型与运行配置",
+      "answer_location": "主文档§7",
+      "evidence": [
+        "models-local.json",
+        "runtime-cost-control.json"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    },
+    {
+      "requirement": "差异化与HLD/LLD/计划",
+      "answer_location": "cloud-service-priorities.md; cloud-service-architecture.md",
+      "evidence": [
+        "control-schema-results.json",
+        "idempotency-probe.json",
+        "publication-probe.json",
+        "parameters-privilege-prebank.json"
+      ],
+      "evidence_exists": true,
+      "status": "research answer delivered; limits explicit, not production acceptance"
+    }
+  ],
+  "unverified_production_gates": [
+    "Huawei RDS/MaaS/OBS/public gateway",
+    "Production load/durability/quality benchmarks",
+    "Eight-hour soak",
+    "Luna full client/quality rerun: omitted per cost constraint"
+  ],
+  "remaining_research_delivery_work": []
+}

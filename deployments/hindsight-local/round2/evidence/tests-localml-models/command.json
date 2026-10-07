@@ -1,0 +1,14 @@
+{
+  "command": [
+    "env",
+    "HF_HUB_DISABLE_XET=1",
+    "../localml-venv/bin/python",
+    "-c",
+    "from sentence_transformers import SentenceTransformer,CrossEncoder; SentenceTransformer(\"BAAI/bge-small-en-v1.5\",device=\"cpu\"); CrossEncoder(\"cross-encoder/ms-marco-MiniLM-L-6-v2\",device=\"cpu\"); print(\"Both upstream test models loaded on CPU\")"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source",
+  "started_utc": "2026-10-04T14:36:21.177147+00:00",
+  "finished_utc": "2026-10-04T14:39:05.909242+00:00",
+  "duration_seconds": 164.732,
+  "exit_code": 0
+}

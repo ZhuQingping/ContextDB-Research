@@ -1,0 +1,31 @@
+Client SDK OpenAPI coverage check
+  Spec:        hindsight-docs/static/openapi.json
+  Bank config: hindsight-api-slim/hindsight_api/config.py (51 fields)
+
+  [python]
+    Source:          /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/hindsight_client/hindsight_client.py
+    Manifest:        /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/python/.openapi-coverage.toml
+    Operations:      10 covered
+    Request params:  67
+      covered:       67
+      skipped:       0
+      missing:       0
+    Bank config:     51
+      covered:       51
+      skipped:       0
+      missing:       0
+
+  [typescript]
+    Source:          /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/typescript/src/index.ts
+    Manifest:        /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-clients/typescript/.openapi-coverage.toml
+    Operations:      13 covered
+    Request params:  89
+      covered:       89
+      skipped:       0
+      missing:       0
+    Bank config:     51
+      covered:       51
+      skipped:       0
+      missing:       0
+
+OK: all covered operations have their request params accounted for.

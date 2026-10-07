@@ -1,0 +1,1 @@
+At first local-ml fixtures, one xdist worker waited for embedding initialization lock; the other held an outbound IPv6 TCP SYN_SENT connection. Both default models had already loaded successfully in tests-localml-models. Interrupting this run and rerunning with HF_HUB_OFFLINE=1 avoids Hugging Face metadata network access. No test/code changes.

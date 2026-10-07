@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="85.036" timestamp="2026-10-04T22:36:21.164106+08:00" hostname="192.168.0.113"><testcase classname="tests.test_76_onnx_embeddings" name="test_real_onnx_memory_lifecycle[cpu]" time="85.021" /></testsuite></testsuites>

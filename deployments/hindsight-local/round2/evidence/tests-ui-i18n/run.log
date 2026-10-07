@@ -1,0 +1,5 @@
+
+> @vectorize-io/hindsight-control-plane@0.10.2 i18n:check
+> tsx scripts/find-untranslated.ts
+
+✓ no hardcoded user-facing strings found

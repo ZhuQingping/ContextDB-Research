@@ -1,0 +1,5 @@
+
+> @vectorize-io/hindsight-openclaw@0.13.0 test
+> vitest run src --reporter=json --outputFile=../../evidence/clients-openclaw-tests.json
+
+JSON report written to /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/clients-openclaw-tests.json

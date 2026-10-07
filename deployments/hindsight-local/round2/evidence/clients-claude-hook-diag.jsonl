@@ -1,0 +1,6 @@
+{"ts": "2026-10-04T14:36:30.172Z", "harness": "claude-code", "event": "inject_recall", "ms": 64, "count": 3}
+{"ts": "2026-10-04T14:36:30.175Z", "harness": "claude-code", "event": "pages_ok", "ms": 2, "count": 0}
+{"ts": "2026-10-04T14:36:56.203Z", "harness": "claude-code", "event": "retain_ok", "ms": 33, "turns": 1, "session": "b7459e62-47f1-410a-bdae-e90714fc1c44"}
+{"ts": "2026-10-04T14:37:04.955Z", "harness": "claude-code", "event": "inject_recall", "ms": 46, "count": 4}
+{"ts": "2026-10-04T14:37:04.959Z", "harness": "claude-code", "event": "pages_ok", "ms": 3, "count": 0}
+{"ts": "2026-10-04T14:37:11.932Z", "harness": "claude-code", "event": "retain_ok", "ms": 25, "turns": 1, "session": "e1333d01-b2a4-4d80-a6c4-e2f0108b4d88"}

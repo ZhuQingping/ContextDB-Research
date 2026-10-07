@@ -1,0 +1,540 @@
+{
+  "checked_at_utc": "2026-10-07T03:01:56.249954+00:00",
+  "files": [
+    {
+      "path": "hindsight/Huawei ContextDB Service Develop.md",
+      "bytes": 47622,
+      "sha256": "161393aba4b326bdfb143d5675c9d80541ef4cc965898025e89339d5ee4510e4"
+    },
+    {
+      "path": "hindsight/cloud-service-architecture.md",
+      "bytes": 46130,
+      "sha256": "7844f77c4ea5d65453174c8ae271cde0e7d517b10a8ef8bd275e204e89ecedfa"
+    },
+    {
+      "path": "hindsight/cloud-service-priorities.md",
+      "bytes": 7301,
+      "sha256": "fbce69f240b789a19f7291677f04610929b89451b7f1a1254cbd4c986c878dfc"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/README.md",
+      "bytes": 4322,
+      "sha256": "3d5b576bf1173628a7b0e17a7f289ec4c703f8289f5f897162b227f2c114d145"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/reports/clients.md",
+      "bytes": 11880,
+      "sha256": "cee98206c5eaae41b3b5567ff6474f2f122e940d2d5c88d8b8da9d3a403107a3"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/reports/design-review.md",
+      "bytes": 9181,
+      "sha256": "2910a612f446acd31530e08d7c4a907d7179a903713e328befa14ef303d91377"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/reports/parameters-models.md",
+      "bytes": 15526,
+      "sha256": "e96337cb527eabfd6294ed84848e1b6d10ece76df3cc182dde8093cd9181f692"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/reports/tests-ci-runbook.md",
+      "bytes": 7472,
+      "sha256": "757c8acd73162b4b6c1008c3e81f3235b93fc680ed99fb02ca897fc4e54ffc58"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/reports/tests.md",
+      "bytes": 15448,
+      "sha256": "84a8d7f5779e34e48374986c50cab45b5a4c23af738e3bc44ffdce782d17f180"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/auth_probe.py",
+      "bytes": 9037,
+      "sha256": "0aa7dc1fa36ae7f522e72675c547bbaa211cadf444de6fe5aa1a6acb5ad49e81"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_claude_runtime.py",
+      "bytes": 2140,
+      "sha256": "e3b28343e8dd0829eebfc537cb5b60b85e3291717339d50266032b1f300507f7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_hermes_runtime.py",
+      "bytes": 1388,
+      "sha256": "7ebd31f7387739ececf92820dafb03bb44802d9db0275a7339b16151d83d2098"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_openclaw_runtime.py",
+      "bytes": 4165,
+      "sha256": "69ab11d3e12ec0b57d20f4a5760799b6e8b280f1b319022340f3397d4794b240"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_sanitize_evidence.py",
+      "bytes": 1851,
+      "sha256": "46018d078554b2077f760593e113417c48f20673867bb2899d2943ac6e7157f2"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_stop_hook.py",
+      "bytes": 488,
+      "sha256": "f26f640f34d979928eff62f1249225109cccb538701888e38e6ed92a9db42d70"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/clients_verify.py",
+      "bytes": 2801,
+      "sha256": "a1be55e694d059dea06e2b23b5e3e562b04fb5ef420b16bdcecb9cfe7305ed0c"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/control_schema_probe.py",
+      "bytes": 6913,
+      "sha256": "b9908bb6c1cd2e14d2787e7ddd66b4e9187c3b75d470e6bb149e1585574b3e88"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/delivery_verify.py",
+      "bytes": 2910,
+      "sha256": "99ae372707be23a1318bb7d888c653f27a8f9bedf0c86659e819a01a78d8a892"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/idempotency_probe.py",
+      "bytes": 4340,
+      "sha256": "27819d1c021ae959b47105af218cec8d768e36b2a3ab3a4528c57249f23b1894"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/mcp_auth_probe.py",
+      "bytes": 2747,
+      "sha256": "16153368b7f92e19797e00d585af1b4e1e96ee407d6bbc066245f1b9742c7810"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/models_local.py",
+      "bytes": 5391,
+      "sha256": "7369be20b66d1a2a1ce32daf9f660cd9aa823228cc8c539065963073563e6305"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_failopen.py",
+      "bytes": 2177,
+      "sha256": "b98095c1bcc4305768d29a50668bd428a92684195c21fefb1ba50482829747f9"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_http.py",
+      "bytes": 3213,
+      "sha256": "f2638536c31ac6dda0688f15c2ac3a1c55617ad211049b9ddc2c9ee908463462"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_inventory.py",
+      "bytes": 4733,
+      "sha256": "ce0d9b7dc0a462b744fdf118c903a77dbdaa234b128e4b2339792ee3039a0385"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_privilege.py",
+      "bytes": 5111,
+      "sha256": "5aef3f76bcea11db4d9f0aa6e91054461528ed5e15db497a0987d67d7ba6627d"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_privilege_prebank.py",
+      "bytes": 3167,
+      "sha256": "163096dc76f5f4b6528b53606d759c8dde959a13b05d0c48541897dfdc12f800"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/parameters_tests.py",
+      "bytes": 1737,
+      "sha256": "f903fa645e26422ef25c26dd88413b07bd3799006f36da2268d854d71ac0dbcf"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/publication_probe.py",
+      "bytes": 4870,
+      "sha256": "dbbac2dde8390d0387398e8cc61e649b2d4567a86a2ff90ddcfe8f695a3d86d4"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/split_worker_probe.py",
+      "bytes": 5069,
+      "sha256": "f5cd0e21c8a744e5b46d56c7fc5af1da7faadda0c324d75007e737a46b528b7b"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/tests_analyze_junit.py",
+      "bytes": 954,
+      "sha256": "44dd41b5691a9cbe32388a003fcad0f584deae81aa80ce6828032f8634171eb6"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/tests_redact_artifacts.py",
+      "bytes": 2486,
+      "sha256": "9e1290c5fcb9ce41f68447ae93638d1da43dba062f764e24f65ae86a2da3be3f"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/tests_run.py",
+      "bytes": 1152,
+      "sha256": "105eadb5fc01638f7b9bf1ab89b7eab87f84b553b9e18f9666816876868cdf40"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/tests_summarize.py",
+      "bytes": 912,
+      "sha256": "e4a39089269fcc1fe3cf7945e685a71b7b4edcfeac005c472519b95551903691"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/scripts/ui_access_probe.py",
+      "bytes": 1947,
+      "sha256": "abfe1b2dd5c850ae57cbdd0ebef93aa73bd4b96beb0ac1cf85a2458dd2b4e14f"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/auth-probe.json",
+      "bytes": 2646,
+      "sha256": "fa771c80343c1d329b96caef533f791cc8d78aac371a5b53c211db0bdcfa7299"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-claude-auto-recall-status.json",
+      "bytes": 124,
+      "sha256": "4c593dd67b9fae55b7fdc6a1061b27e5d1259d74045692ab8b8c3c221468345d"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-claude-auto-retain-status.json",
+      "bytes": 124,
+      "sha256": "2260e941a8fc07bf484facb9ded2fa2525663497e65d691fb5edbd2266569f9c"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-claude-auto-summary.json",
+      "bytes": 581,
+      "sha256": "3c053c73af1dbfc6cbcb68faf546cd528fbc952f193a1b8dd0e8802cbd1e0c18"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-claude-final-recall.json",
+      "bytes": 6213,
+      "sha256": "79045cec27ab71e79379476258b72744c717877400d56e334896c1aacd8ea541"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-claude-retain-auth-env-status.json",
+      "bytes": 133,
+      "sha256": "88ffb3a18a132f70033151918ec85742e2643672f11a54019750772afa527021"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-cleanup.json",
+      "bytes": 266,
+      "sha256": "d240f2ba45c8ac7871dd584343f31c28cd9b6fdd02ad9a99135e128cba73ecd5"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-recall-command.json",
+      "bytes": 1262,
+      "sha256": "0cbaf5617e9755f4f4957f510c23e9fe0cb6942958efcf9e9d1b14079967941e"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-recall-status.json",
+      "bytes": 47,
+      "sha256": "7ca5bf994a1cdbf516ddd52124e617f0196207e5ee58940bbc1599ef9891d8f7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-retain-command.json",
+      "bytes": 1192,
+      "sha256": "51a43b66d69230cec239ccd369b471135da051ffe4d23a59208d25b731f080b3"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-retain-persistent-command.json",
+      "bytes": 1176,
+      "sha256": "f02a04db8dd55722ba191c5529158422e8f35f33ce9b72ddec9b7d321a1f4c23"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-retain-persistent-status.json",
+      "bytes": 46,
+      "sha256": "be805e09ac3e92353b87a6c0157f540d1bcb925f37e62d1e6f5bc0fdf316a58d"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-auto-retain-status.json",
+      "bytes": 47,
+      "sha256": "c824894c3cac22113102305ac95a49f2bdaea8564ed3bf8b433ce72ddcf84a00"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-final-recall.json",
+      "bytes": 5452,
+      "sha256": "957b4ddd64bdf60a82c01f7e8298db64c8584161e992a1906d6a6c08d7383e44"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-hook-command.json",
+      "bytes": 1291,
+      "sha256": "c7da953cdf27bd4996cf74a4f73988cbe333f9703c5f957280e4c840ed3b20a0"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-hook-status.json",
+      "bytes": 47,
+      "sha256": "d2feef14a022d38a91e98f40b48e8865839852c3073ebecbd713e72e3490c329"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-codex-operation.json",
+      "bytes": 911,
+      "sha256": "479f0511357c60105ab89ee5519352aedb6d84d258c6c4140cdf5e36fd44399e"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-coding-tests-layout-fixed.json",
+      "bytes": 425322,
+      "sha256": "41f4dc00d20c34732263a701fd3a8a33a9abce005f80d0afcefe958ad6af2fc7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-coding-tests.json",
+      "bytes": 430018,
+      "sha256": "cb510f9d3fb9b5c6f4d313327d0fe4f47fa4c9118a6f6948a9710b1911789cd7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-hermes-final-recall.json",
+      "bytes": 6400,
+      "sha256": "6b7433f4d645a76fae278f08a97f5cfd333cc8e542ca7b85e9040ae618903827"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-hermes-runtime-recall.json",
+      "bytes": 157,
+      "sha256": "3feb52e898e7040522d9def3302611868a50a9351fb8c0f89c4a6777c840cc87"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-hermes-runtime-retain.json",
+      "bytes": 127,
+      "sha256": "54942240cd0c9dbd5433e16e721529983f73a6210c48d91b00003420aa3e2142"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-inventory.json",
+      "bytes": 27033,
+      "sha256": "9522a031c9d68cfefb232140f98a1b21ef11be9982367ad13067f8636c0804fc"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-documents.json",
+      "bytes": 2179,
+      "sha256": "622893680a3ea48c2ece7d7c8ad4000b178ebf50fab84a571e123900a82da0d5"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-final-recall.json",
+      "bytes": 6295,
+      "sha256": "a074aa041546dbcab99490966131df17de2e42fd7ab4ef23de31fff9ccb9c07c"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-operations.json",
+      "bytes": 2275,
+      "sha256": "c19e45362b5dfd93a21f485d4f5495ee4f0ca2efc1f0f667fb624e4130123515"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-runtime-install-isolated-status.json",
+      "bytes": 41,
+      "sha256": "ecd92ee25695976cd09c872ad085e5bdbf2ffe630479abac19856da9ba2d7ae7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-runtime-install-status.json",
+      "bytes": 41,
+      "sha256": "a2af3282feef9587bb3d0572650b0b165b103bcdd785c2df4d5fc1841ba58687"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-runtime-recall-status.json",
+      "bytes": 41,
+      "sha256": "f1f6b193ed11120826f019685e3cfbc88aaec92f429ec0a12229b215d45f51f4"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-runtime-retain-status.json",
+      "bytes": 42,
+      "sha256": "d03013f912b8fbe22337e3bb1a83766373f953c61a492f19e9d7dea105a73678"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-openclaw-tests.json",
+      "bytes": 121465,
+      "sha256": "0442c450531eb2183d08c2d451b0f752e5963b016e27c03c7a8dc196c6fc4c0a"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-redaction-audit.json",
+      "bytes": 95,
+      "sha256": "c3ccc7ca88c58f2eb8fc7eeeea7f787c55518d7075fe49dac0ecce12bbbcbd2e"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-claude-operations-final.json",
+      "bytes": 6354,
+      "sha256": "0673930e8ac8841b580def16505876133570f8b1606ccbca4994a77d794e9adb"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-claude-recall-check.json",
+      "bytes": 4784,
+      "sha256": "aca0ae6ba5649fa4759e94d26e1a4d9f16cd810eb05617c91b3d50f6bf0ad10f"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-codex-operations-final.json",
+      "bytes": 4350,
+      "sha256": "e23f6e452eca10594b61a3650494f5311b2f79b2053e8818e6eb2ffbc2c8e567"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-codex-recall-check.json",
+      "bytes": 4742,
+      "sha256": "06627f26688d8b298e694ae8be44878af49ad390633784bafe587199d183bf50"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-hermes-operations-final.json",
+      "bytes": 1597,
+      "sha256": "88ea091694c045f83ef9e7de1caf64fcd9b2f6b3b38ceb86a266e8dc9bf40609"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-hermes-recall-check.json",
+      "bytes": 1723,
+      "sha256": "550992b225f982141577d58f7c0642f10c5eb9ed66a63e67a3fcd14871b6bc25"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-round2-client-openclaw-operations-final.json",
+      "bytes": 3528,
+      "sha256": "3856d7ef613fb8cd78899fbc2d127bf3174fbe559e81ab5d9e708d7624123cab"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-stop-hook-result.json",
+      "bytes": 39,
+      "sha256": "91ec3436dfb4505e90874e2dad931685f6b6aff5fa6652fe3cf69efc205c9752"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-stop-payload.json",
+      "bytes": 519,
+      "sha256": "d0e6e5bd3cc5332504814be0253776e7740bcc35bb7afa991d2ccdf578fa04ff"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-test-summary.json",
+      "bytes": 291,
+      "sha256": "1aabd637b3683dc67e93fcacae7c9c18f51f0a7f8993f3a502f2e02586ff4b17"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/clients-verdict.json",
+      "bytes": 4052,
+      "sha256": "e40b838aa1d511617830a25e3e125fff12c24804533833fcfd42d17227e468f3"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/completion-audit.json",
+      "bytes": 2454,
+      "sha256": "d2e49c3be0213e89a27eaefaeabdee14ea7813d40552b5de4906d078681dafc5"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/control-schema-results.json",
+      "bytes": 2479,
+      "sha256": "37b928530918d0ffbaff1576a1873a35339f0891fd8434957a070e5fb14d12d7"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/delivery-secret-scan.json",
+      "bytes": 216,
+      "sha256": "9e2e68951f3172f076998dbe8a35ced51c2c6ae1fe5aa18d059d368ee2403369"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/idempotency-probe.json",
+      "bytes": 2203,
+      "sha256": "de0dbafb2a04bdbe8317eb0a33f45fde7d3c3439ac778f1af5a4f3d993d6969b"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/mcp-auth-probe.json",
+      "bytes": 732,
+      "sha256": "14272a112389296664d899eb41b09655fed8d2ba71d2a9f65704b749e2eceebe"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/models-local.json",
+      "bytes": 3557,
+      "sha256": "614a4a58f2561cb5d90124852147aceed89c1ebec017d9355651a8c1ce80c9c9"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/models-parameters-command-results.json",
+      "bytes": 450,
+      "sha256": "25253bb3b2c89b86b55ee58e42f67ebea356a5bee65c4078c55d04e09eb9a44f"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-dynamic-families.json",
+      "bytes": 599,
+      "sha256": "5293d64e758d9aadbe41459e68bb97d0a567aaadaa8d440478583d6f81f8e860"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-env-constants.json",
+      "bytes": 21952,
+      "sha256": "746b4563e7339329b8f57ff8659827a3091430270a3922fad1584d6035aed365"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-failopen.json",
+      "bytes": 1616,
+      "sha256": "ed62872d794a5e6f47d4502abd0f062c19f8b189df77544dd5663627be1ebb7d"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-http-recall-default.json",
+      "bytes": 313,
+      "sha256": "25ba4be38fa12ac1a418702b7661201994e0829ca75401ca4cf2850ddbaa13c2"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-http-results.json",
+      "bytes": 32705,
+      "sha256": "0cb07dd0b01b25432436bfa77b89dbca8c4c52ecb57c1d40b29bb7156ad6f561"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-http-summary.json",
+      "bytes": 216,
+      "sha256": "fdd4af3d6fb8051f25695a71d3fd3a09d5c4d882960a72e9c6684d4499504666"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-inventory.json",
+      "bytes": 204004,
+      "sha256": "a040dd6ce2d9f528953972815a379f434346549b1b61fc37311e3bb710a495d6"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-privilege-prebank.json",
+      "bytes": 4799,
+      "sha256": "4cb0c42abe964dc42884ed0dc1609775c9c4501e2a7a51e2e79c01967dac04ac"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-privilege-results.json",
+      "bytes": 1252,
+      "sha256": "7e1d3ecbc13e060019d3db743c7bcce916fc1a3467d872228145abd211734035"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-skips.json",
+      "bytes": 2601,
+      "sha256": "76c6a177eaeeba30a7958a49d7235db5e5bff081de36eb18d9867630ff2aa4a4"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-summary.json",
+      "bytes": 346,
+      "sha256": "d1b5cb89971bbdcdd9dd2426367b45e2c5a6dbc053bcf6903a1e60549594cda0"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/parameters-tests-result.json",
+      "bytes": 1065,
+      "sha256": "61abbd36505d95bcde92fef00556e414acb84a356bb0bfc8f3a329e01c1aae62"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/pg-runtime.json",
+      "bytes": 1210,
+      "sha256": "808373eb26e8cdfa22700070746d1e0599bbb5e16d0ad6dab3568e789bf1b8b8"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/publication-probe.json",
+      "bytes": 1018,
+      "sha256": "cc30fb37b6b80b01e21d3569d14ef426b737ef9f69c26328044856529546f3bf"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/runtime-cost-control.json",
+      "bytes": 1870,
+      "sha256": "72b972e0047201dc81b7046c0adcb78cf1b831578813775d8ec4b4961cb6bccb"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/split-worker-probe.json",
+      "bytes": 1080,
+      "sha256": "35151b83132dca5f12a8ca24e64d156e6701c55c9269c291553a1149893890bf"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/tests-cleanup.json",
+      "bytes": 594,
+      "sha256": "9219d0e52351a1c336aae59bfd5b135a1b02a340b99b694d013f4e30f38b9c52"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/tests-localml-environment.json",
+      "bytes": 579,
+      "sha256": "7b563d5286f696dbd25c23f2381dbff3af2761a4cd4cdfe0fb2f1581839f891e"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/tests-redaction-manifest.json",
+      "bytes": 1907,
+      "sha256": "956a63b94f268af305d7590e12f905ef4b93f1c81c883492e06ab6f8bc3c95c2"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/tests-summary.json",
+      "bytes": 4259,
+      "sha256": "2371740c1d6f79f8436ee663880366969b98c35f73dfdde95a5147307f745034"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/ui-access-probe.json",
+      "bytes": 419,
+      "sha256": "322af126d96705cfb0380970867d57cd46fa841f101e545eefbe0fd2f751a2fb"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/ui-local-auth-boundary.json",
+      "bytes": 526,
+      "sha256": "246c1652d8ec7a6ba7f2cd99bf52de8340921eae98c0f63c2858b347619cc7d3"
+    },
+    {
+      "path": "deployments/hindsight-local/round2/evidence/web-sources.json",
+      "bytes": 921,
+      "sha256": "e4a9508fed8c9505b0bd5315ab5ed2f4d3a1415e64f4569505aa9c36a8761654"
+    }
+  ]
+}

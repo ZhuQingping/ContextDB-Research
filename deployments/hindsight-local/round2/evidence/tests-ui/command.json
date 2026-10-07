@@ -1,0 +1,14 @@
+{
+  "command": [
+    "npx",
+    "--yes",
+    "--package=node@24",
+    "--call",
+    "npm test --workspace=hindsight-control-plane -- --reporter=default --reporter=junit --outputFile=../../../evidence/tests-ui/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source",
+  "started_utc": "2026-10-04T14:33:10.516260+00:00",
+  "finished_utc": "2026-10-04T14:33:40.186793+00:00",
+  "duration_seconds": 29.67,
+  "exit_code": 1
+}

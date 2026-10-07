@@ -1,0 +1,4 @@
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of hindsight-client==0.10.1 and you require
+      hindsight-client==0.10.1, we can conclude that your requirements are
+      unsatisfiable.

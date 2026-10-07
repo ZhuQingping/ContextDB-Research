@@ -1,0 +1,7 @@
+{
+  "status": 200,
+  "url": "http://127.0.0.1:9999/dashboard",
+  "title": "Hindsight Control Plane",
+  "text": "选择记忆库...\nGitHub\n记忆库\n\n每个记忆库都是一个独立的大脑——隔离存储某个用户、智能体或项目记住的一切。记忆库之间不共享任何内容。\n\n创建新记忆库\n\t记忆库\t记忆\t最近活动\t创建时间\n\n\t\nhuawei-contextdb-knowledge\n\t\n1\n\t2 minutes ago\t4 minutes ago\n\n\t\nhuawei-contextdb-demo\n\t\n9\n\t2 minutes ago\t4 minutes ago\n\n\t\nhuawei-contextdb-isolation\n\t空\t从未\t4 minutes ago",
+  "errors": []
+}

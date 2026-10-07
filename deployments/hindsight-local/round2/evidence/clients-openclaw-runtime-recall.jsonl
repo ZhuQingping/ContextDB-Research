@@ -1,0 +1,282 @@
+{
+  "runId": "539ebe52-88ab-4654-adff-345fac2d45ea",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634.",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 5786,
+      "agentMeta": {
+        "sessionId": "5fe8b466-5428-410c-9303-b9909f6bf8b8",
+        "sessionFile": "agent:main:webchat:direct:round2-claw-recall",
+        "provider": "round2",
+        "model": "glm-5.3-flash",
+        "contextTokens": 128000,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "direct",
+          "evidence": "environment",
+          "authorization": "declared"
+        },
+        "usage": {
+          "input": 6185,
+          "output": 177,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 6362,
+          "cost": {
+            "total": 0
+          }
+        },
+        "lastCallUsage": {
+          "input": 6185,
+          "output": 177,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0
+          },
+          "contextUsage": {
+            "state": "available",
+            "promptTokens": 6185,
+            "totalTokens": 6362
+          },
+          "total": 6362
+        },
+        "promptTokens": 6185,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1791124788426,
+          "provider": "round2",
+          "model": "glm-5.3-flash",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 8228,
+          "contextTokenBudget": 128000,
+          "promptBudgetBeforeReserve": 108000,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 99772,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 0,
+          "unwindowedMessageCount": 0,
+          "sessionId": "5fe8b466-5428-410c-9303-b9909f6bf8b8"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "terminalReceipt": {
+          "runId": "539ebe52-88ab-4654-adff-345fac2d45ea",
+          "sessionId": "5fe8b466-5428-410c-9303-b9909f6bf8b8",
+          "turnId": "539ebe52-88ab-4654-adff-345fac2d45ea",
+          "requested": {
+            "provider": "round2",
+            "model": "glm-5.3-flash"
+          },
+          "effective": {
+            "provider": "round2",
+            "model": "glm-5.3-flash",
+            "responseModel": "glm-5.3-flash"
+          },
+          "successfulToolNames": [],
+          "rerouted": false,
+          "terminalDisposition": "visible"
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1791124788366,
+        "sessionId": "5fe8b466-5428-410c-9303-b9909f6bf8b8",
+        "sessionKey": "agent:main:webchat:direct:round2-claw-recall",
+        "provider": "round2",
+        "model": "glm-5.3-flash",
+        "workspaceDir": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 60000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 26683,
+          "hash": "96541e461e0a7b9b8125040fa5f4b0db53b9a28c79654ea85d37b23244806863",
+          "projectContextChars": 21214,
+          "nonProjectContextChars": 5469
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project/AGENTS.md",
+            "missing": false,
+            "rawChars": 6449,
+            "injectedChars": 6449,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project/SOUL.md",
+            "missing": false,
+            "rawChars": 1526,
+            "injectedChars": 1526,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project/IDENTITY.md",
+            "missing": false,
+            "rawChars": 1398,
+            "injectedChars": 1398,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project/USER.md",
+            "missing": false,
+            "rawChars": 1136,
+            "injectedChars": 1136,
+            "truncated": false
+          },
+          {
+            "name": "BOOTSTRAP.md",
+            "path": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project/BOOTSTRAP.md",
+            "missing": false,
+            "rawChars": 7475,
+            "injectedChars": 7475,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 6801,
+          "hash": "ed9f214effd1d697e50e5460c968dc7acc5316a7501d0c186261fd95938cbb1b",
+          "entries": [
+            {
+              "name": "add-model-provider",
+              "blockChars": 391
+            },
+            {
+              "name": "clawhub",
+              "blockChars": 394
+            },
+            {
+              "name": "cloud-image-bake",
+              "blockChars": 377
+            },
+            {
+              "name": "configure-channel",
+              "blockChars": 379
+            },
+            {
+              "name": "control-ui",
+              "blockChars": 430
+            },
+            {
+              "name": "diagnose-gateway",
+              "blockChars": 371
+            },
+            {
+              "name": "diagram-maker",
+              "blockChars": 356
+            },
+            {
+              "name": "healthcheck",
+              "blockChars": 368
+            },
+            {
+              "name": "meme-maker",
+              "blockChars": 341
+            },
+            {
+              "name": "node-connect",
+              "blockChars": 425
+            },
+            {
+              "name": "node-inspect-debugger",
+              "blockChars": 367
+            },
+            {
+              "name": "notion",
+              "blockChars": 362
+            },
+            {
+              "name": "python-debugpy",
+              "blockChars": 355
+            },
+            {
+              "name": "skill-creator",
+              "blockChars": 374
+            },
+            {
+              "name": "spike",
+              "blockChars": 341
+            },
+            {
+              "name": "visualize",
+              "blockChars": 372
+            },
+            {
+              "name": "weather",
+              "blockChars": 379
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 0,
+          "entries": []
+        },
+        "currentTurn": {
+          "promptChars": 611,
+          "runtimeContextChars": 0,
+          "modelOnlyPromptChars": 454
+        }
+      },
+      "finalPromptText": "What approval code and pool limit are recorded for project CDB-CLAW-634? Answer only from supplied memory. Do not use tools. If no memory exists say unknown.",
+      "finalAssistantVisibleText": "Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634.",
+      "finalAssistantRawText": "Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634.",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "round2",
+        "winnerModel": "glm-5.3-flash",
+        "attempts": [
+          {
+            "provider": "round2",
+            "model": "glm-5.3-flash",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "thinking": "off"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      },
+      "terminalReply": {
+        "disposition": "visible",
+        "text": "Approval code **FIR-8193**, pool limit **39** — per the supplied memory for project CDB-CLAW-634."
+      }
+    },
+    "sourceReplyDeliveryState": "missing"
+  }
+}

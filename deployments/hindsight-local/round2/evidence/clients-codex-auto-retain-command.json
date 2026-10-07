@@ -1,0 +1,21 @@
+[
+  "codex",
+  "exec",
+  "--ignore-user-config",
+  "--ignore-rules",
+  "--ephemeral",
+  "--skip-git-repo-check",
+  "--dangerously-bypass-hook-trust",
+  "-s",
+  "read-only",
+  "-C",
+  "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/codex-project",
+  "-m",
+  "gpt-6.1-sol",
+  "-c",
+  "features.hooks=true",
+  "-c",
+  "hooks.Stop=[{hooks=[{type=\"command\",command=\"HINDSIGHT_CONFIG=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/clients-work/hook-config.json HINDSIGHT_LOG_FILE=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/clients-hook.log HINDSIGHT_DIAG_FILE=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/clients-hook-diag.jsonl python3 /Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/scripts/clients_stop_hook.py\",timeout=60}]}]",
+  "--json",
+  "Synthetic acceptance fact: project CDB-AUTO-318 uses failover approval code CEDAR-9516. Reply acknowledged only. Do not call tools, write files, or perform other tasks."
+]

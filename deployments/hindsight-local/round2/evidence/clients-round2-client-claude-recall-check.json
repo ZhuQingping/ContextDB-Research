@@ -1,0 +1,152 @@
+{
+  "results": [
+    {
+      "id": "6ad88362-6415-4670-b26b-35b3a075a12c",
+      "text": "Project CDB-CLAUDE-468 uses approval code BIRCH-6937 and pool limit 57. | Synthetic acceptance fact.",
+      "type": "world",
+      "entities": [
+        "pool limit",
+        "BIRCH-6937",
+        "CDB-CLAUDE-468"
+      ],
+      "context": "conversation between the user and you (the coding agent): user turns are the user's words and decisions, assistant turns are yours. When an assistant turn says something is fixed, passes or works, record it as the agent's claim (\"the agent reported X fixed\"), not as an established fact.",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:36:30.076000+00:00",
+      "document_id": "conversation:b7459e62-47f1-410a-bdae-e90714fc1c44",
+      "metadata": {
+        "ref_id": "conversation:b7459e62-47f1-410a-bdae-e90714fc1c44",
+        "source": "chat",
+        "harness": "claude-code",
+        "session_id": "b7459e62-47f1-410a-bdae-e90714fc1c44"
+      },
+      "chunk_id": "round2-client-claude_conversation:b7459e62-47f1-410a-bdae-e90714fc1c44_0",
+      "tags": [
+        "source:chat",
+        "harness:claude-code"
+      ],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 1.0999997808657533,
+        "reranker": null,
+        "semantic": 0.8794995546341005,
+        "keyword": 0.6000000238418579
+      },
+      "attachments": null
+    },
+    {
+      "id": "6221c5ed-6b76-4c48-be3a-4b100d0359ae",
+      "text": "Project CDB-SYNTH-519 uses release code MAPLE-5271 and has a maximum connection pool size of 61.",
+      "type": "world",
+      "entities": [
+        "connection pool",
+        "MAPLE-5271",
+        "CDB-SYNTH-519"
+      ],
+      "context": "general",
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:35:47.151160+00:00",
+      "document_id": "0e674700-1822-46fc-a49c-6cd8743689da",
+      "metadata": {},
+      "chunk_id": "round2-client-claude_0e674700-1822-46fc-a49c-6cd8743689da_0",
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.7699996560467427,
+        "reranker": null,
+        "semantic": 0.8269755943432111,
+        "keyword": 0.20000000298023224
+      },
+      "attachments": null
+    },
+    {
+      "id": "346b67fe-4db8-4828-9103-226e2ba08821",
+      "text": "Project CDB-SYNTH-519 uses release code MAPLE-5271.",
+      "type": "observation",
+      "entities": [
+        "connection pool",
+        "MAPLE-5271",
+        "CDB-SYNTH-519"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:35:47.151160+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.4399998034552816,
+        "reranker": null,
+        "semantic": 0.8192811012268124,
+        "keyword": 0.10000000149011612
+      },
+      "attachments": null
+    },
+    {
+      "id": "7a299d4b-7a74-4b5b-90ae-5078977e454a",
+      "text": "Project CDB-SYNTH-519 has a maximum connection pool size of 61.",
+      "type": "observation",
+      "entities": [
+        "connection pool",
+        "MAPLE-5271",
+        "CDB-SYNTH-519"
+      ],
+      "context": null,
+      "occurred_start": null,
+      "occurred_end": null,
+      "mentioned_at": "2026-10-04T14:35:47.151160+00:00",
+      "document_id": null,
+      "metadata": {},
+      "chunk_id": null,
+      "tags": [],
+      "source_fact_ids": null,
+      "scores": {
+        "final": 0.10999995086382038,
+        "reranker": null,
+        "semantic": 0.818057249900268,
+        "keyword": 0.10000000149011612
+      },
+      "attachments": null
+    }
+  ],
+  "trace": null,
+  "entities": {
+    "pool limit": {
+      "entity_id": "0bfb68ab-6071-499b-973a-09a9febecdd5",
+      "canonical_name": "pool limit",
+      "observations": []
+    },
+    "BIRCH-6937": {
+      "entity_id": "5cc438f9-861a-44ac-8f9c-a781bddcb51b",
+      "canonical_name": "BIRCH-6937",
+      "observations": []
+    },
+    "CDB-CLAUDE-468": {
+      "entity_id": "7e9dd5cd-2e40-4a13-9be3-5b1321482500",
+      "canonical_name": "CDB-CLAUDE-468",
+      "observations": []
+    },
+    "connection pool": {
+      "entity_id": "826028b1-13aa-41b5-99a6-7f23697f8243",
+      "canonical_name": "connection pool",
+      "observations": []
+    },
+    "MAPLE-5271": {
+      "entity_id": "90bb5feb-62ff-4622-b16d-e27ea050a78d",
+      "canonical_name": "MAPLE-5271",
+      "observations": []
+    },
+    "CDB-SYNTH-519": {
+      "entity_id": "d268a5b6-457d-45a0-a2b4-7131c01154ec",
+      "canonical_name": "CDB-SYNTH-519",
+      "observations": []
+    }
+  },
+  "chunks": null,
+  "source_facts": null,
+  "source_facts_truncated": null
+}

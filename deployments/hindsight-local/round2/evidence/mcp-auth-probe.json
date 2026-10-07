@@ -1,0 +1,46 @@
+[
+  {
+    "name": "prepare-team_a",
+    "passed": true
+  },
+  {
+    "name": "retain-team_a",
+    "passed": true
+  },
+  {
+    "name": "prepare-team_b",
+    "passed": true
+  },
+  {
+    "name": "retain-team_b",
+    "passed": true
+  },
+  {
+    "name": "mcp-missing-key-denied",
+    "passed": true,
+    "status": 401
+  },
+  {
+    "name": "mcp-invalid-key-denied",
+    "passed": true,
+    "status": 401
+  },
+  {
+    "name": "authenticated-tool-discovery-team_a",
+    "passed": true,
+    "tool_count": 36
+  },
+  {
+    "name": "mcp-isolation-team_a",
+    "passed": true
+  },
+  {
+    "name": "authenticated-tool-discovery-team_b",
+    "passed": true,
+    "tool_count": 36
+  },
+  {
+    "name": "mcp-isolation-team_b",
+    "passed": true
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "name": "prepare-team_a-round2-private-5f34263375",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "prepare-team_a-round2-shared-5f34263375",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "prepare-canary-team_a",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "prepare-team_b-round2-private-5f34263375",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "prepare-team_b-round2-shared-5f34263375",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "prepare-canary-team_b",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "missing-key",
+    "passed": true,
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "name": "unknown-key",
+    "passed": true,
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "name": "tampered-secret",
+    "passed": true,
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "name": "expired-key",
+    "passed": true,
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "name": "valid-owner",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "owner-gets-only-team-a",
+    "passed": true
+  },
+  {
+    "name": "same-bank-name-other-workspace",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "other-workspace-gets-only-team-b",
+    "passed": true
+  },
+  {
+    "name": "spoof-tenant-header-ignored",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "spoof-does-not-change-route",
+    "passed": true
+  },
+  {
+    "name": "team-reader-can-read-shared",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "team-reader-denied-private-bank",
+    "passed": true,
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "name": "team-reader-denied-write",
+    "passed": true,
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "name": "native-config-not-public",
+    "passed": true,
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "name": "unknown-bank-denied",
+    "passed": true,
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "name": "rotated-new-key-works",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "revoked-old-key-next-request-denied",
+    "passed": true,
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "name": "new-key-survives-old-revocation",
+    "passed": true,
+    "status": 200,
+    "expected": 200
+  },
+  {
+    "name": "grant-revocation-next-request-denied",
+    "passed": true,
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "name": "database-stores-no-plaintext-key",
+    "passed": true
+  },
+  {
+    "name": "generated-secret-256-bits",
+    "passed": true
+  }
+]

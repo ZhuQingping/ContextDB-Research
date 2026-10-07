@@ -1,0 +1,106 @@
+[
+  {
+    "id": "aliyun",
+    "url": "https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/rds-contextdb-quick-start",
+    "fetched_at": "2026-10-03T16:05:34.273735+00:00",
+    "status": 200,
+    "bytes": 170933,
+    "sha256": "ee2519ef3c47567d7eb8b17742bfca5033efdf739626d06e08ee9289d9246ee2"
+  },
+  {
+    "id": "tencent",
+    "url": "https://cloud.tencent.com/product/agm",
+    "fetched_at": "2026-10-03T16:05:34.274305+00:00",
+    "status": 200,
+    "bytes": 26981,
+    "sha256": "4a4a92f8f9e807dccb116bd24783e9d7ad924d26a22a66daac22f551ddcc6564"
+  },
+  {
+    "id": "volcengine",
+    "url": "https://www.volcengine.com/product/openviking-service",
+    "fetched_at": "2026-10-03T16:05:34.274551+00:00",
+    "status": 200,
+    "bytes": 170440,
+    "sha256": "d714fbb9d4a91a7ea630238b67f59de9cbaebb3258283680666866fffe86628e"
+  },
+  {
+    "id": "benchmark",
+    "url": "https://agentmemorybenchmark.ai/",
+    "fetched_at": "2026-10-03T16:05:34.274840+00:00",
+    "status": 200,
+    "bytes": 2352,
+    "sha256": "9d22d6626c5971a6671857dc114a31582028b85cb4a7732ef5a8bca19535d83f"
+  },
+  {
+    "id": "design-v2",
+    "url": "https://contextdb-team-review.zcimon57.chatgpt.site/DESIGN-V2",
+    "fetched_at": "2026-10-03T16:05:34.275037+00:00",
+    "status": 200,
+    "bytes": 514902,
+    "sha256": "7d964b68115aba6a4fd7085e327c175f62d21d1259f3c2a509ec434f9656d801"
+  },
+  {
+    "id": "decision-workbook",
+    "url": "https://contextdb-team-review.zcimon57.chatgpt.site/DECISION-WORKBOOK",
+    "fetched_at": "2026-10-03T16:05:35.337494+00:00",
+    "status": 200,
+    "bytes": 86954,
+    "sha256": "91dde71453be0d067564461a12075814d614f5194fdcc17ad40cebaade0f8250"
+  },
+  {
+    "id": "huawei-extensions",
+    "url": "https://support.huaweicloud.com/usermanual-rds-pg/rds_09_0045.html",
+    "fetched_at": "2026-10-03T16:05:35.675929+00:00",
+    "status": 200,
+    "bytes": 366916,
+    "sha256": "933fd11509586ccf2c6ed93e1c5dee0af33073c2d07a9af0b65bfef27acf130f"
+  },
+  {
+    "id": "hindsight-github",
+    "url": "https://api.github.com/repos/vectorize-io/hindsight",
+    "fetched_at": "2026-10-03T16:05:36.407296+00:00",
+    "status": 200,
+    "bytes": 6585,
+    "sha256": "936e8e480803ec93c92699445ffa80590a3eb43ca021369e04b33322d46a5d31"
+  },
+  {
+    "id": "mem0-github",
+    "url": "https://api.github.com/repos/mem0ai/mem0",
+    "fetched_at": "2026-10-03T16:05:37.365842+00:00",
+    "status": 200,
+    "bytes": 6127,
+    "sha256": "3ea2ad96af8269db5a9f808a96503895991eb994e4c68be9dada9290c225e7d2"
+  },
+  {
+    "id": "openviking-github",
+    "url": "https://api.github.com/repos/volcengine/OpenViking",
+    "fetched_at": "2026-10-03T16:05:38.325714+00:00",
+    "status": 200,
+    "bytes": 6597,
+    "sha256": "fc7296d5cdce7198911cd9758259b0ac5852449a9b2b26be87756e11c9565aed"
+  },
+  {
+    "id": "cognee-github",
+    "url": "https://api.github.com/repos/topoteretes/cognee",
+    "fetched_at": "2026-10-03T16:05:39.138227+00:00",
+    "status": 200,
+    "bytes": 6692,
+    "sha256": "bf3b9db6ce69106766e0aa633e3c7711d237c146934291a0604f78ce09d0070f"
+  },
+  {
+    "id": "graphiti-github",
+    "url": "https://api.github.com/repos/getzep/graphiti",
+    "fetched_at": "2026-10-03T16:05:39.324493+00:00",
+    "status": 200,
+    "bytes": 6094,
+    "sha256": "f5f9cfca4c9b09515d1d4672332ae7356f15be44d9532e93ab354b48324a96fd"
+  },
+  {
+    "id": "hindsight-releases",
+    "url": "https://api.github.com/repos/vectorize-io/hindsight/releases/latest",
+    "fetched_at": "2026-10-03T16:05:39.944918+00:00",
+    "status": 200,
+    "bytes": 84894,
+    "sha256": "8f6dde05dcbdc5863f473c7fc18b40a6581735ea951b28cfd06568d78883b66a"
+  }
+]

@@ -1,0 +1,371 @@
+{
+  "time_utc": "2026-10-03T16:14:29.294214+00:00",
+  "scope": "Local synthetic functional smoke; no production SLO or benchmark claim",
+  "records": [
+    {
+      "name": "health",
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "elapsed_s": 0.002,
+      "response": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 0.4,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      }
+    },
+    {
+      "name": "version",
+      "method": "GET",
+      "path": "/version",
+      "status": 200,
+      "elapsed_s": 0.001,
+      "response": {
+        "api_version": "0.10.2",
+        "features": {
+          "observations": true,
+          "mcp": true,
+          "worker": true,
+          "bank_config_api": true,
+          "bank_llm_health": false,
+          "file_upload_api": true,
+          "document_export_api": true,
+          "document_import_api": true,
+          "audit_log": false,
+          "llm_trace": true,
+          "store_document_text": true
+        }
+      }
+    },
+    {
+      "name": "create-bank",
+      "method": "PUT",
+      "path": "/v1/default/banks/huawei-contextdb-demo",
+      "status": 200,
+      "elapsed_s": 0.012,
+      "response": {
+        "bank_id": "huawei-contextdb-demo",
+        "name": "huawei-contextdb-demo",
+        "disposition": {
+          "skepticism": 3,
+          "literalism": 3,
+          "empathy": 3
+        },
+        "mission": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。",
+        "background": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。"
+      }
+    },
+    {
+      "name": "create-bank",
+      "method": "PUT",
+      "path": "/v1/default/banks/huawei-contextdb-knowledge",
+      "status": 200,
+      "elapsed_s": 0.005,
+      "response": {
+        "bank_id": "huawei-contextdb-knowledge",
+        "name": "huawei-contextdb-knowledge",
+        "disposition": {
+          "skepticism": 3,
+          "literalism": 3,
+          "empathy": 3
+        },
+        "mission": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。",
+        "background": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。"
+      }
+    },
+    {
+      "name": "create-bank",
+      "method": "PUT",
+      "path": "/v1/default/banks/huawei-contextdb-isolation",
+      "status": 200,
+      "elapsed_s": 0.005,
+      "response": {
+        "bank_id": "huawei-contextdb-isolation",
+        "name": "huawei-contextdb-isolation",
+        "disposition": {
+          "skepticism": 3,
+          "literalism": 3,
+          "empathy": 3
+        },
+        "mission": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。",
+        "background": "这是合成的数据库运维验收样例。仅根据记忆和原文回答，区分历史记录与当前结论，不编造生产操作。"
+      }
+    },
+    {
+      "name": "retain-async",
+      "method": "POST",
+      "path": "/v1/default/banks/huawei-contextdb-demo/memories",
+      "status": 200,
+      "elapsed_s": 0.005,
+      "response": {
+        "success": true,
+        "bank_id": "huawei-contextdb-demo",
+        "items_count": 1,
+        "async": true,
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "operation_ids": null,
+        "usage": null
+      }
+    },
+    {
+      "name": "retain-idempotent-retry",
+      "method": "POST",
+      "path": "/v1/default/banks/huawei-contextdb-demo/memories",
+      "status": 200,
+      "elapsed_s": 0.001,
+      "response": {
+        "success": true,
+        "bank_id": "huawei-contextdb-demo",
+        "items_count": 1,
+        "async": true,
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "operation_ids": null,
+        "usage": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.001,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.006,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.004,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.003,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.004,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    },
+    {
+      "name": "operation-status",
+      "method": "GET",
+      "path": "/v1/default/banks/huawei-contextdb-demo/operations/7670f0fe-63c8-471a-88b2-f9e7732ada84",
+      "status": 200,
+      "elapsed_s": 0.004,
+      "response": {
+        "operation_id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "status": "pending",
+        "operation_type": "batch_retain",
+        "id": "7670f0fe-63c8-471a-88b2-f9e7732ada84",
+        "task_type": "batch_retain",
+        "mental_model_id": null,
+        "created_at": "2026-10-03T16:14:14.235896+00:00",
+        "updated_at": "2026-10-03T16:14:14.235896+00:00",
+        "completed_at": null,
+        "error_message": null,
+        "retry_count": 0,
+        "next_retry_at": null,
+        "progress": null,
+        "result_metadata": {
+          "is_parent": true,
+          "document_id": "incident-2048-v1",
+          "items_count": 1,
+          "total_tokens": 147,
+          "num_sub_batches": 1
+        },
+        "details": null,
+        "child_operations": [
+          {
+            "operation_id": "1248b8d5-d982-4131-9170-5f6a1a1733f6",
+            "status": "pending",
+            "sub_batch_index": 1,
+            "items_count": 1,
+            "error_message": null
+          }
+        ],
+        "task_payload": null
+      }
+    }
+  ]
+}

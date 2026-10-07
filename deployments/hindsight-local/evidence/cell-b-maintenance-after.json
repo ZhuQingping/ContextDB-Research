@@ -1,0 +1,16 @@
+{
+  "public_routines": [
+    {
+      "nspname": "public",
+      "proname": "banks_needing_consolidation"
+    },
+    {
+      "nspname": "public",
+      "proname": "mental_models_with_cron"
+    }
+  ],
+  "reconcile_call": [
+    "<Record schema_name='user_team_b' bank_id='shared-name'>"
+  ],
+  "refresh_call": []
+}

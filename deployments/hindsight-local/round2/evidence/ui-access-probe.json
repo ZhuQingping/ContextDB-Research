@@ -1,0 +1,27 @@
+[
+  {
+    "name": "ui-ready",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "anonymous-list-denied",
+    "passed": true,
+    "status": 401
+  },
+  {
+    "name": "invalid-access-key-denied",
+    "passed": true,
+    "status": 401
+  },
+  {
+    "name": "valid-access-key-login",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "name": "authenticated-list-allowed",
+    "passed": true,
+    "status": 200
+  }
+]

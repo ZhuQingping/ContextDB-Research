@@ -1,0 +1,18 @@
+{
+  "command": [
+    "../.venv/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "-s",
+    "tests/test_hnsw_indexes_store_owned.py::test_both_reports_print_before_the_single_non_zero_exit",
+    "-q",
+    "--junitxml=../../../evidence/tests-cli-stdio-recheck/junit.xml"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/source/hindsight-api-slim",
+  "started_utc": "2026-10-04T14:34:30.246689+00:00",
+  "finished_utc": "2026-10-04T14:34:33.701916+00:00",
+  "duration_seconds": 3.455,
+  "exit_code": 0
+}

@@ -1,0 +1,59 @@
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:10:58,298 - INFO - hindsight_api.config - Reranker: provider=rrf
+  Version: v0.10.2
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+2026-10-04 00:12:40,099 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:12:40,099 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 00:12:53,288 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:12:53,289 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:12:53,368 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:13:04,883 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:14:37,907 - INFO - hindsight_api.config - Reranker: provider=rrf
+  Version: v0.10.2
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+2026-10-04 00:14:40,562 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:14:40,562 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 00:14:44,256 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:14:44,259 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:14:44,295 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:14:47,886 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:14:47,937 - INFO - hindsight_api.worker.poller - Worker [LOCAL-HOST] starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)
+[streaming] Embeddings: 4 texts in 1 backend request(s) (avg 4.0, max 4 texts per request)
+2026-10-04 00:15:13,881 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 1248b8d5-d982-4131-9170-5f6a1a1733f6
+CONSOLIDATION COMPLETE: 21.406s total
+2026-10-04 00:15:35,552 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 0ca88930-3871-4182-bf05-eef05175e7d0
+2026-10-04 00:16:05,974 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: c3efd782-02d2-4e63-83b1-1b061d9428b6
+2026-10-04 00:16:06,475 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 59ea5d18-9495-46bf-a862-335344ed8b27
+[streaming] Embeddings: 1 texts in 1 backend request(s) (avg 1.0, max 1 texts per request)
+2026-10-04 00:18:26,653 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 9e2c2aa0-678a-4a43-9dc8-193ede8d3817
+2026-10-04 00:18:36,629 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: b115020d-3ee5-4c80-b61e-0417faedc64d
+2026-10-04 00:20:33,709 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: 551bbce2-5fed-4634-b97e-b3ba888f38e3
+2026-10-04 00:20:33,714 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: d8226f33-64ec-4f35-b3ec-c3f5078cc5f2
+2026-10-04 00:20:34,223 - INFO - hindsight_api.engine.memory_engine - Marked async operation as completed: f37d4a58-bef0-4275-bfad-51339e8cc6b9
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - LLM: provider=openai-codex, model=gpt-6.1-sol
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Embeddings: provider=onnx
+2026-10-04 00:23:03,859 - INFO - hindsight_api.config - Reranker: provider=rrf
+  Version: v0.10.2
+  LLM: openai-codex / gpt-6.1-sol
+  Embeddings: onnx
+  Reranker: rrf
+2026-10-04 00:23:04,987 - INFO - hindsight_api.engine.embeddings - Embeddings: initializing ONNX provider with model intfloat/multilingual-e5-small (/Users/zhuqingping/.cache/huggingface/hub/models--intfloat--multilingual-e5-small/snapshots/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model.onnx)
+2026-10-04 00:23:04,987 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX query_prefix='query: ' passage_prefix='passage: ' pooling=mean normalize=True batch_size=32 cpu_mem_arena=False
+2026-10-04 00:23:06,002 - INFO - hindsight_api.engine.embeddings - Embeddings: ONNX provider initialized (dim: 384, device: cpu, cuda_device_id: None, providers: ['CPUExecutionProvider'])
+2026-10-04 00:23:06,002 - INFO - hindsight_api.engine.cross_encoder - Reranker: RRF passthrough provider initialized (neural reranking disabled)
+2026-10-04 00:23:06,046 - INFO - hindsight_api.engine.providers.codex_llm - Verifying Codex LLM: model=gpt-6.1-sol, account=adc4d31c-703c-455c-bcee-8c1f6a6d3843...
+2026-10-04 00:23:10,311 - INFO - hindsight_api.migrations - Database migrations completed successfully for schema 'public'
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8888 (Press CTRL+C to quit)
+2026-10-04 00:23:10,360 - INFO - hindsight_api.worker.poller - Worker contextdb-local starting polling loop (max_slots=2, reservations=[consolidation=1], shared_pool=1)

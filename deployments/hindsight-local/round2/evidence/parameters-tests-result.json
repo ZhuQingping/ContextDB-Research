@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.venv-parameters/bin/python",
+    "-m",
+    "pytest",
+    "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/.parameters-tests/tests",
+    "-q",
+    "-o",
+    "asyncio_mode=auto",
+    "--tb=short",
+    "--junitxml=/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/evidence/parameters-tests.xml"
+  ],
+  "exit_code": 0,
+  "seconds": 11.287072916515172,
+  "copied_unmodified_upstream_tests": [
+    "config_validation",
+    "config_env_readers",
+    "hierarchical_config",
+    "bank_config_value_types",
+    "config_resolution_shape",
+    "recall_budget_config",
+    "per_operation_llm_config",
+    "onnx_embeddings",
+    "tei_embeddings",
+    "tei_cross_encoder",
+    "reranker_max_candidates_budget",
+    "embeddings_openai_batch_size",
+    "embeddings_asymmetric_prefixes",
+    "reranker_score_normalization",
+    "embedding_retry",
+    "reranker_retry"
+  ]
+}

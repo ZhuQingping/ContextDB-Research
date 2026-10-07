@@ -1,0 +1,144 @@
+{
+  "bank_id": "round2-client-codex",
+  "total": 6,
+  "limit": 20,
+  "offset": 0,
+  "operations": [
+    {
+      "id": "5404ff01-55ae-423b-99c2-52a4f285cb9b",
+      "task_type": "consolidation",
+      "operation_id": "5404ff01-55ae-423b-99c2-52a4f285cb9b",
+      "operation_type": "consolidation",
+      "items_count": 0,
+      "document_id": null,
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:34:36.100806+00:00",
+      "updated_at": "2026-10-04T14:34:53.018957+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "refreshing_mental_models",
+        "at": "2026-10-04T14:34:53.017462+00:00",
+        "processed": 1,
+        "total": 1,
+        "detail": null
+      }
+    },
+    {
+      "id": "8340fc5c-5938-518a-8e27-0650e3d790b3",
+      "task_type": "batch_retain",
+      "operation_id": "8340fc5c-5938-518a-8e27-0650e3d790b3",
+      "operation_type": "batch_retain",
+      "items_count": 1,
+      "document_id": "conversation:01a10756-4e43-7c71-8c8b-61a6c3b717c2",
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:34:29.628526+00:00",
+      "updated_at": "2026-10-04T14:34:36.104292+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": null
+    },
+    {
+      "id": "90acef88-c0c9-472d-8abd-638e3b796020",
+      "task_type": "retain",
+      "operation_id": "90acef88-c0c9-472d-8abd-638e3b796020",
+      "operation_type": "retain",
+      "items_count": 1,
+      "document_id": "conversation:01a10756-4e43-7c71-8c8b-61a6c3b717c2",
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:34:29.628526+00:00",
+      "updated_at": "2026-10-04T14:34:36.104292+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "storing",
+        "at": "2026-10-04T14:34:36.089345+00:00",
+        "processed": 1,
+        "total": 1,
+        "detail": {
+          "facts_committed": 1
+        }
+      }
+    },
+    {
+      "id": "d6bece47-4ed8-4de2-a477-916e688df815",
+      "task_type": "consolidation",
+      "operation_id": "d6bece47-4ed8-4de2-a477-916e688df815",
+      "operation_type": "consolidation",
+      "items_count": 0,
+      "document_id": null,
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:30:33.152515+00:00",
+      "updated_at": "2026-10-04T14:30:42.497455+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "refreshing_mental_models",
+        "at": "2026-10-04T14:30:42.495585+00:00",
+        "processed": 1,
+        "total": 1,
+        "detail": null
+      }
+    },
+    {
+      "id": "03d7102d-b772-46a8-ae18-d5f286624601",
+      "task_type": "batch_retain",
+      "operation_id": "03d7102d-b772-46a8-ae18-d5f286624601",
+      "operation_type": "batch_retain",
+      "items_count": 1,
+      "document_id": null,
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:30:25.574969+00:00",
+      "updated_at": "2026-10-04T14:30:33.157184+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": null
+    },
+    {
+      "id": "03e75aa4-5462-48f4-98af-9afca9dd0af8",
+      "task_type": "retain",
+      "operation_id": "03e75aa4-5462-48f4-98af-9afca9dd0af8",
+      "operation_type": "retain",
+      "items_count": 1,
+      "document_id": null,
+      "filename": null,
+      "mental_model_id": null,
+      "details": null,
+      "created_at": "2026-10-04T14:30:25.574969+00:00",
+      "updated_at": "2026-10-04T14:30:33.157184+00:00",
+      "status": "completed",
+      "error_message": null,
+      "retry_count": 0,
+      "next_retry_at": null,
+      "progress": {
+        "stage": "storing",
+        "at": "2026-10-04T14:30:33.139512+00:00",
+        "processed": 1,
+        "total": 1,
+        "detail": {
+          "facts_committed": 1
+        }
+      }
+    }
+  ]
+}

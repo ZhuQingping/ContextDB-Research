@@ -1,0 +1,25 @@
+{
+  "command": [
+    "env",
+    "HF_HUB_OFFLINE=1",
+    "HF_HUB_DISABLE_XET=1",
+    "OMP_NUM_THREADS=2",
+    "MKL_NUM_THREADS=2",
+    "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/localml-venv/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "-s",
+    "tests/test_load_large_batch.py",
+    "tests/test_bank_aliases.py",
+    "-q",
+    "--junitxml=../../../evidence/tests-localml-issue-files/junit.xml",
+    "--basetemp=../../../evidence/tests-localml-issue-files/tmp"
+  ],
+  "cwd": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/deployments/hindsight-local/round2/tests-work/recheck-source/hindsight-api-slim",
+  "started_utc": "2026-10-04T14:46:02.072999+00:00",
+  "finished_utc": "2026-10-04T14:46:46.569881+00:00",
+  "duration_seconds": 44.497,
+  "exit_code": 0
+}
