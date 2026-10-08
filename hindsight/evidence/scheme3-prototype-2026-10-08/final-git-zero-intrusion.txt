@@ -1,0 +1,17 @@
+MAIN_STATUS
+WORKTREE_STATUS
+?? prototypes/contextdb-scheme3/README.md
+?? prototypes/contextdb-scheme3/contextdb-scheme3
+?? prototypes/contextdb-scheme3/contextdb_scheme3/__init__.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/acceptance.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/cli.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/constants.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/embedding_service.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/gateway.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/metadata.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/models.py
+?? prototypes/contextdb-scheme3/contextdb_scheme3/supervisor.py
+?? prototypes/contextdb-scheme3/tests/test_embedding_service.py
+?? prototypes/contextdb-scheme3/tests/test_gateway.py
+?? prototypes/contextdb-scheme3/tests/test_metadata.py
+CORE_DIFF

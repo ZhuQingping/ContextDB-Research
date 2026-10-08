@@ -1,0 +1,235 @@
+{
+  "status": "healthy",
+  "profile": "mock",
+  "worktree": "/Users/zhuqingping/Work/Database/Context/.local/worktrees/hindsight-scheme3-prototype",
+  "main_checkout": "/Users/zhuqingping/Work/Database/Context/hindsight",
+  "onnx_model_present": true,
+  "codex_auth_present": true,
+  "processes": [
+    {
+      "process_id": "cell1-api1",
+      "role": "api",
+      "cell_id": "cell1",
+      "node_id": "cell1-api1",
+      "pid": 53671,
+      "port": 18101,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 1.0,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-api1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-api2",
+      "role": "api",
+      "cell_id": "cell1",
+      "node_id": "cell1-api2",
+      "pid": 53692,
+      "port": 18102,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 0.9,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-api2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-worker1",
+      "role": "worker",
+      "cell_id": "cell1",
+      "node_id": "cell1-worker1",
+      "pid": 53757,
+      "port": 18111,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 1.1,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5,
+        "worker_id": "cell1-worker1",
+        "is_shutdown": false
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-worker1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-worker2",
+      "role": "worker",
+      "cell_id": "cell1",
+      "node_id": "cell1-worker2",
+      "pid": 53800,
+      "port": 18112,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 1.0,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5,
+        "worker_id": "cell1-worker2",
+        "is_shutdown": false
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-worker2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-api1",
+      "role": "api",
+      "cell_id": "cell2",
+      "node_id": "cell2-api1",
+      "pid": 53693,
+      "port": 18201,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 0.9,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-api1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-api2",
+      "role": "api",
+      "cell_id": "cell2",
+      "node_id": "cell2-api2",
+      "pid": 53755,
+      "port": 18202,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 1.0,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-api2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-worker1",
+      "role": "worker",
+      "cell_id": "cell2",
+      "node_id": "cell2-worker1",
+      "pid": 53808,
+      "port": 18211,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 0.9,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5,
+        "worker_id": "cell2-worker1",
+        "is_shutdown": false
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-worker1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-worker2",
+      "role": "worker",
+      "cell_id": "cell2",
+      "node_id": "cell2-worker2",
+      "pid": 53840,
+      "port": 18212,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "database": "connected",
+        "db_acquire_ms": 1.0,
+        "db_pool_waiting": 0,
+        "db_pool_in_use": 0,
+        "db_pool_max": 100,
+        "db_pool_idle": 5,
+        "worker_id": "cell2-worker2",
+        "is_shutdown": false
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-worker2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "embedding",
+      "role": "embedding",
+      "cell_id": null,
+      "node_id": "embedding-deterministic",
+      "pid": 53667,
+      "port": 18081,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "model_id": "deterministic-test-embedding",
+        "model_dtype": "float32",
+        "max_input_length": 512,
+        "dimension": 384,
+        "prototype_mode": "deterministic"
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/embedding-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "gateway",
+      "role": "gateway",
+      "cell_id": null,
+      "node_id": "gateway",
+      "pid": 53855,
+      "port": 18080,
+      "alive": true,
+      "healthy": true,
+      "health": {
+        "status": "healthy",
+        "service": "contextdb-scheme3-gateway"
+      },
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/gateway-mock.log",
+      "profile": "mock"
+    }
+  ],
+  "containers": [
+    {
+      "cell_id": "cell1",
+      "name": "contextdb-scheme3-poc-20261008-cell1-pg",
+      "port": 55434,
+      "status": "running"
+    },
+    {
+      "cell_id": "cell2",
+      "name": "contextdb-scheme3-poc-20261008-cell2-pg",
+      "port": 55435,
+      "status": "running"
+    }
+  ]
+}

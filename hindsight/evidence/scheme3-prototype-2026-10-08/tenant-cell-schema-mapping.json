@@ -1,0 +1,64 @@
+{
+  "routes": [
+    {
+      "tenant_id": "tenant1",
+      "cell_id": "cell1",
+      "schema_name": "scheme3_tenant1",
+      "service_type": "shared",
+      "backends": [
+        {
+          "backend_id": "cell1-api1",
+          "base_url": "http://127.0.0.1:18101",
+          "enabled": true,
+          "cooling_down": false
+        },
+        {
+          "backend_id": "cell1-api2",
+          "base_url": "http://127.0.0.1:18102",
+          "enabled": true,
+          "cooling_down": false
+        }
+      ]
+    },
+    {
+      "tenant_id": "tenant2",
+      "cell_id": "cell1",
+      "schema_name": "scheme3_tenant2",
+      "service_type": "shared",
+      "backends": [
+        {
+          "backend_id": "cell1-api1",
+          "base_url": "http://127.0.0.1:18101",
+          "enabled": true,
+          "cooling_down": false
+        },
+        {
+          "backend_id": "cell1-api2",
+          "base_url": "http://127.0.0.1:18102",
+          "enabled": true,
+          "cooling_down": false
+        }
+      ]
+    },
+    {
+      "tenant_id": "tenant3",
+      "cell_id": "cell2",
+      "schema_name": "scheme3_tenant3",
+      "service_type": "dedicated",
+      "backends": [
+        {
+          "backend_id": "cell2-api1",
+          "base_url": "http://127.0.0.1:18201",
+          "enabled": true,
+          "cooling_down": false
+        },
+        {
+          "backend_id": "cell2-api2",
+          "base_url": "http://127.0.0.1:18202",
+          "enabled": true,
+          "cooling_down": false
+        }
+      ]
+    }
+  ]
+}

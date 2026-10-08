@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "test_id": "T01",
+      "status": "PASS",
+      "summary": "Gateway, 4 APIs and 4 Workers healthy; every API reports worker=false",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t01-health.json"
+    },
+    {
+      "test_id": "T02",
+      "status": "PASS",
+      "summary": "Per-Cell round robin balanced and tenant3 stayed in Cell2",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t02-gateway-distribution.json"
+    }
+  ],
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  }
+}

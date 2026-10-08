@@ -1,0 +1,14 @@
+{
+  "tenant1_sequential_20": {
+    "cell1-api1": 10,
+    "cell1-api2": 10
+  },
+  "tenant1_concurrent_20": {
+    "cell1-api1": 10,
+    "cell1-api2": 10
+  },
+  "tenant3_8": {
+    "cell2-api1": 4,
+    "cell2-api2": 4
+  }
+}

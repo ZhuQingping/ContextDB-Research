@@ -1,0 +1,52 @@
+{
+  "results": [
+    {
+      "test_id": "T01",
+      "status": "PASS",
+      "summary": "Gateway, 4 APIs and 4 Workers healthy; every API reports worker=false",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t01-health.json"
+    },
+    {
+      "test_id": "T02",
+      "status": "PASS",
+      "summary": "Per-Cell round robin balanced and tenant3 stayed in Cell2",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t02-gateway-distribution.json"
+    },
+    {
+      "test_id": "T03",
+      "status": "PASS",
+      "summary": "tenant1/tenant2 share Cell1 but use distinct schemas and data",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t03-t04-tenant-isolation.json"
+    },
+    {
+      "test_id": "T04",
+      "status": "PASS",
+      "summary": "tenant3 routes/stores only in physically separate Cell2",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t03-t04-tenant-isolation.json"
+    },
+    {
+      "test_id": "T05",
+      "status": "PASS",
+      "summary": "PG queue showed pending/processing/completed and each Cell1 Worker claimed work",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t05-worker-operations.json"
+    },
+    {
+      "test_id": "T06",
+      "status": "PASS",
+      "summary": "one Cell1 API stopped without Cell outage and rejoined after restart",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t06-api-failure-boundary.json"
+    },
+    {
+      "test_id": "T07",
+      "status": "PASS",
+      "summary": "original checkout clean; core dirs unchanged; only prototype path added",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t07-git-zero-intrusion.json"
+    },
+    {
+      "test_id": "T08",
+      "status": "PASS",
+      "summary": "stop/start preserved metadata and PG data; core smoke passed",
+      "evidence": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/evidence/scheme3-prototype-2026-10-08/t08-restart.json"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "bank_id": "scheme3-shared-bank",
+  "operations": {
+    "tenant1": {
+      "operation_id": "f54304cb-dd52-4dee-987c-6b8464c450b9",
+      "statuses": [
+        "pending",
+        "completed"
+      ],
+      "final_status": "completed",
+      "marker": "T1-2323d3d4b2b7"
+    },
+    "tenant2": {
+      "operation_id": "d31a8077-d5b8-4c5d-8f50-b6bbbe8ef0ff",
+      "statuses": [
+        "pending",
+        "completed"
+      ],
+      "final_status": "completed",
+      "marker": "T2-5d2ece12b734"
+    },
+    "tenant3": {
+      "operation_id": "8b892498-2a37-421f-bdc7-7436cc2d41c7",
+      "statuses": [
+        "pending",
+        "completed"
+      ],
+      "final_status": "completed",
+      "marker": "T3-5c951c480518"
+    }
+  },
+  "own_recall_contains_marker": {
+    "tenant1": true,
+    "tenant2": true,
+    "tenant3": true
+  },
+  "cross_tenant_marker_absent": {
+    "tenant2_vs_tenant1": true,
+    "tenant3_vs_tenant1": true
+  },
+  "postgres": {
+    "cell1": {
+      "pg_port": 55434,
+      "schemas": [
+        "scheme3_tenant1",
+        "scheme3_tenant2"
+      ],
+      "table_counts": {
+        "scheme3_tenant1": [
+          {
+            "table": "banks",
+            "row_count": 2
+          },
+          {
+            "table": "documents",
+            "row_count": 16
+          },
+          {
+            "table": "memory_units",
+            "row_count": 56
+          },
+          {
+            "table": "async_operations",
+            "row_count": 32
+          }
+        ],
+        "scheme3_tenant2": [
+          {
+            "table": "banks",
+            "row_count": 1
+          },
+          {
+            "table": "documents",
+            "row_count": 6
+          },
+          {
+            "table": "memory_units",
+            "row_count": 24
+          },
+          {
+            "table": "async_operations",
+            "row_count": 12
+          }
+        ]
+      }
+    },
+    "cell2": {
+      "pg_port": 55435,
+      "schemas": [
+        "scheme3_tenant3"
+      ],
+      "table_counts": {
+        "scheme3_tenant3": [
+          {
+            "table": "banks",
+            "row_count": 1
+          },
+          {
+            "table": "documents",
+            "row_count": 6
+          },
+          {
+            "table": "memory_units",
+            "row_count": 24
+          },
+          {
+            "table": "async_operations",
+            "row_count": 12
+          }
+        ]
+      }
+    }
+  }
+}

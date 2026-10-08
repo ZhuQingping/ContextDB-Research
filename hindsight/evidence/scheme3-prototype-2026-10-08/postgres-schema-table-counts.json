@@ -1,0 +1,73 @@
+{
+  "cell1": {
+    "pg_port": 55434,
+    "schemas": [
+      "scheme3_tenant1",
+      "scheme3_tenant2"
+    ],
+    "table_counts": {
+      "scheme3_tenant1": [
+        {
+          "table": "banks",
+          "row_count": 2
+        },
+        {
+          "table": "documents",
+          "row_count": 16
+        },
+        {
+          "table": "memory_units",
+          "row_count": 56
+        },
+        {
+          "table": "async_operations",
+          "row_count": 32
+        }
+      ],
+      "scheme3_tenant2": [
+        {
+          "table": "banks",
+          "row_count": 1
+        },
+        {
+          "table": "documents",
+          "row_count": 6
+        },
+        {
+          "table": "memory_units",
+          "row_count": 24
+        },
+        {
+          "table": "async_operations",
+          "row_count": 12
+        }
+      ]
+    }
+  },
+  "cell2": {
+    "pg_port": 55435,
+    "schemas": [
+      "scheme3_tenant3"
+    ],
+    "table_counts": {
+      "scheme3_tenant3": [
+        {
+          "table": "banks",
+          "row_count": 1
+        },
+        {
+          "table": "documents",
+          "row_count": 6
+        },
+        {
+          "table": "memory_units",
+          "row_count": 24
+        },
+        {
+          "table": "async_operations",
+          "row_count": 12
+        }
+      ]
+    }
+  }
+}

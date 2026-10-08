@@ -1,0 +1,34 @@
+{
+  "commands": {
+    "main_status": [
+      "git",
+      "-C",
+      "/Users/zhuqingping/Work/Database/Context/hindsight",
+      "status",
+      "--short"
+    ],
+    "worktree_status": [
+      "git",
+      "-C",
+      "/Users/zhuqingping/Work/Database/Context/.local/worktrees/hindsight-scheme3-prototype",
+      "status",
+      "--short",
+      "--untracked-files=all"
+    ],
+    "core_diff": [
+      "git",
+      "-C",
+      "/Users/zhuqingping/Work/Database/Context/.local/worktrees/hindsight-scheme3-prototype",
+      "diff",
+      "--",
+      "hindsight-api-slim",
+      "hindsight-extensions",
+      "helm"
+    ]
+  },
+  "outputs": {
+    "main_status": "",
+    "worktree_status": "?? prototypes/contextdb-scheme3/README.md\n?? prototypes/contextdb-scheme3/contextdb-scheme3\n?? prototypes/contextdb-scheme3/contextdb_scheme3/__init__.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/acceptance.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/cli.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/constants.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/embedding_service.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/gateway.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/metadata.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/models.py\n?? prototypes/contextdb-scheme3/contextdb_scheme3/supervisor.py\n?? prototypes/contextdb-scheme3/tests/test_embedding_service.py\n?? prototypes/contextdb-scheme3/tests/test_gateway.py\n?? prototypes/contextdb-scheme3/tests/test_metadata.py\n",
+    "core_diff": ""
+  }
+}

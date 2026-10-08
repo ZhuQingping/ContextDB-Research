@@ -1,0 +1,56 @@
+{
+  "stopped": "cell1-api1",
+  "idempotent_get_retry_policy": "one same-Cell retry; non-idempotent methods have zero retries",
+  "during_outage": [
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    }
+  ],
+  "after_restore": [
+    {
+      "status": 200,
+      "upstream": "cell1-api1"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api1"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api1"
+    },
+    {
+      "status": 200,
+      "upstream": "cell1-api2"
+    }
+  ]
+}

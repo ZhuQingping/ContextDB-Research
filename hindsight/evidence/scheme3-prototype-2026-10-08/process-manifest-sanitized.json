@@ -1,0 +1,117 @@
+{
+  "profile": "mock",
+  "base_commit": "a77c1f3412a7b82f36588dffce1a8d7480e99cc7",
+  "worktree": "/Users/zhuqingping/Work/Database/Context/.local/worktrees/hindsight-scheme3-prototype",
+  "processes": [
+    {
+      "process_id": "embedding",
+      "role": "embedding",
+      "cell_id": null,
+      "node_id": "embedding-deterministic",
+      "pid": 53667,
+      "port": 18081,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/python -m contextdb_scheme3.embedding_service --mode deterministic --port 18081",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/embedding-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-api1",
+      "role": "api",
+      "cell_id": "cell1",
+      "node_id": "cell1-api1",
+      "pid": 53671,
+      "port": 18101,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-api --host 127.0.0.1 --port 18101 --no-access-log",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-api1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-api2",
+      "role": "api",
+      "cell_id": "cell1",
+      "node_id": "cell1-api2",
+      "pid": 53692,
+      "port": 18102,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-api --host 127.0.0.1 --port 18102 --no-access-log",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-api2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-api1",
+      "role": "api",
+      "cell_id": "cell2",
+      "node_id": "cell2-api1",
+      "pid": 53693,
+      "port": 18201,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-api --host 127.0.0.1 --port 18201 --no-access-log",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-api1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-api2",
+      "role": "api",
+      "cell_id": "cell2",
+      "node_id": "cell2-api2",
+      "pid": 53755,
+      "port": 18202,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-api --host 127.0.0.1 --port 18202 --no-access-log",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-api2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-worker1",
+      "role": "worker",
+      "cell_id": "cell1",
+      "node_id": "cell1-worker1",
+      "pid": 53757,
+      "port": 18111,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-worker --worker-id cell1-worker1 --http-host 127.0.0.1 --http-port 18111 --poll-interval 100",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-worker1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell1-worker2",
+      "role": "worker",
+      "cell_id": "cell1",
+      "node_id": "cell1-worker2",
+      "pid": 53800,
+      "port": 18112,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-worker --worker-id cell1-worker2 --http-host 127.0.0.1 --http-port 18112 --poll-interval 100",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell1-worker2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-worker1",
+      "role": "worker",
+      "cell_id": "cell2",
+      "node_id": "cell2-worker1",
+      "pid": 53808,
+      "port": 18211,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-worker --worker-id cell2-worker1 --http-host 127.0.0.1 --http-port 18211 --poll-interval 100",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-worker1-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "cell2-worker2",
+      "role": "worker",
+      "cell_id": "cell2",
+      "node_id": "cell2-worker2",
+      "pid": 53840,
+      "port": 18212,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/hindsight-worker --worker-id cell2-worker2 --http-host 127.0.0.1 --http-port 18212 --poll-interval 100",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/cell2-worker2-mock.log",
+      "profile": "mock"
+    },
+    {
+      "process_id": "gateway",
+      "role": "gateway",
+      "cell_id": null,
+      "node_id": "gateway",
+      "pid": 53855,
+      "port": 18080,
+      "command_summary": "/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/python -m contextdb_scheme3.gateway --metadata /Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/metadata.sqlite3 --port 18080",
+      "log_path": "/Users/zhuqingping/Work/Database/Context/.local/runtime/hindsight-scheme3-prototype/logs/gateway-mock.log",
+      "profile": "mock"
+    }
+  ]
+}

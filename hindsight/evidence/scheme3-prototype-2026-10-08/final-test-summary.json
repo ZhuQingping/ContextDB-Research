@@ -1,0 +1,19 @@
+{
+  "status": "PARTIAL",
+  "business_acceptance": {"passed": 8, "failed": 1, "skipped": 0},
+  "unit_tests": {"passed": 5, "failed": 0},
+  "static_checks": {"compileall": "PASS", "ruff": "PASS", "git_diff_check": "PASS"},
+  "tests": {
+    "T01": "PASS",
+    "T02": "PASS",
+    "T03": "PASS",
+    "T04": "PASS",
+    "T05": "PASS",
+    "T06": "PASS",
+    "T07": "PASS",
+    "T08": "PASS",
+    "T09": "FAIL"
+  },
+  "final_profile": "mock",
+  "note": "T09 Retain completed with current Codex/ONNX configuration, but final tenant1 Recall response did not contain the unique marker."
+}

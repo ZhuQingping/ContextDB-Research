@@ -1,0 +1,17 @@
+{
+  "provider": "openai-codex",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "embedding_dimension": 384,
+  "reranker": "rrf",
+  "calls": {
+    "tenant1_retain": 0,
+    "tenant1_recall": 0,
+    "tenant2_recall": 0
+  },
+  "status": "FAIL",
+  "error_type": "RuntimeError",
+  "error": "Port 18081/health did not become healthy: Cannot connect to host 127.0.0.1:18081 ssl:default [Connect call failed ('127.0.0.1', 18081)]",
+  "duration_seconds": 181.817
+}

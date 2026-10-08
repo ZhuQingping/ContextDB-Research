@@ -1,0 +1,86 @@
+{
+  "method": "controlled pause of the peer Worker",
+  "worker1": {
+    "operation_id": "a7c4ca67-3225-40cb-9f82-f3e44be593d9",
+    "api_statuses": [
+      "pending",
+      "pending",
+      "completed"
+    ],
+    "postgres_poll_samples": [
+      {
+        "status": "pending",
+        "worker_id": null
+      },
+      {
+        "status": "completed",
+        "worker_id": null
+      }
+    ],
+    "postgres_status_audit": [
+      {
+        "operation_id": "44c0c03a-216f-4740-9d7f-097a6e68408d",
+        "status": "pending",
+        "worker_id": null
+      },
+      {
+        "operation_id": "44c0c03a-216f-4740-9d7f-097a6e68408d",
+        "status": "processing",
+        "worker_id": "cell1-worker1"
+      },
+      {
+        "operation_id": "44c0c03a-216f-4740-9d7f-097a6e68408d",
+        "status": "completed",
+        "worker_id": "cell1-worker1"
+      }
+    ],
+    "claim_lines": [
+      "2026-10-08 01:44:32,035 - INFO - hindsight_api.worker.poller - Worker cell1-worker1 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:45:23,247 - INFO - hindsight_api.worker.poller - Worker cell1-worker1 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant2)",
+      "2026-10-08 01:45:34,466 - INFO - hindsight_api.worker.poller - Worker cell1-worker1 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:46:13,274 - INFO - hindsight_api.worker.poller - Worker cell1-worker1 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant2)",
+      "2026-10-08 01:46:24,572 - INFO - hindsight_api.worker.poller - Worker cell1-worker1 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)"
+    ]
+  },
+  "worker2": {
+    "operation_id": "cd427b82-86bb-451d-981a-984b3393588a",
+    "api_statuses": [
+      "pending",
+      "completed"
+    ],
+    "postgres_poll_samples": [
+      {
+        "status": "pending",
+        "worker_id": null
+      },
+      {
+        "status": "completed",
+        "worker_id": null
+      }
+    ],
+    "postgres_status_audit": [
+      {
+        "operation_id": "c75f8a56-00f7-4e24-9568-da5cc9e64ee5",
+        "status": "pending",
+        "worker_id": null
+      },
+      {
+        "operation_id": "c75f8a56-00f7-4e24-9568-da5cc9e64ee5",
+        "status": "processing",
+        "worker_id": "cell1-worker2"
+      },
+      {
+        "operation_id": "c75f8a56-00f7-4e24-9568-da5cc9e64ee5",
+        "status": "completed",
+        "worker_id": "cell1-worker2"
+      }
+    ],
+    "claim_lines": [
+      "2026-10-08 01:44:35,744 - INFO - hindsight_api.worker.poller - Worker cell1-worker2 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:45:22,077 - INFO - hindsight_api.worker.poller - Worker cell1-worker2 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:45:38,588 - INFO - hindsight_api.worker.poller - Worker cell1-worker2 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:46:12,111 - INFO - hindsight_api.worker.poller - Worker cell1-worker2 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)",
+      "2026-10-08 01:46:28,251 - INFO - hindsight_api.worker.poller - Worker cell1-worker2 claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: scheme3_tenant1)"
+    ]
+  }
+}
