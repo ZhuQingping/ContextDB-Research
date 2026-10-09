@@ -5,6 +5,8 @@
 > 分析方法：基于容器内源码（`hindsight_api/config.py`、`pg0.py`、`db_url.py`、`engine/sql/postgresql.py`）、部署脚本（`.deploy-hindsight-mt/run-hindsight.sh`）、宿主 `.env`，以及**对运行中 PG 实库的实证查询**，非推测。
 > 日期：2026-09-29
 
+> 最新Hindsight源码和方案三实库中的完整25张表、字段结构、主外键及用途，参见 [Hindsight PostgreSQL 表结构与用途](postgresql-table-reference.md)。本文保留2026-09-29部署环境的历史实测数据；表结构口径以该参考文档为准。
+
 ---
 
 ## 0. 结论速览（TL;DR）
@@ -76,10 +78,10 @@ HINDSIGHT_API_TENANT_USERS=company1:key-zhang3,company1:key-li4,company2:key-wan
 | Schema | 归属 | 内容 |
 |--------|------|------|
 | `public` | 共享 | 元数据/迁移版本表，无租户业务数据（`public.banks` 为空） |
-| `user_company1` | 租户 company1 | 完整一套 24 张业务表 |
-| `user_company2` | 租户 company2 | 完整一套 24 张业务表（结构相同，数据各管各） |
+| `user_company1` | 租户 company1 | 完整一套 24 张业务与运行表，另有 `alembic_version` 迁移表 |
+| `user_company2` | 租户 company2 | 结构相同，数据各自隔离 |
 
-每个租户 schema 拥有**完全相同的 24 张表**（DDL 一致，由 Alembic 按 schema 分别迁移）。这是干净的"schema-per-tenant"多租户隔离——跨公司物理隔离，公司内多用户共享同 schema。
+该部署中每个租户 schema 拥有相同的Hindsight表结构，由Alembic按schema分别迁移。最新源码基线的准确口径是 **24张业务与运行表，加1张 `alembic_version`，合计25张表**；详见[表结构参考](postgresql-table-reference.md)。这是"schema-per-tenant"隔离：跨租户使用不同schema，租户内多个用户共享同一schema。
 
 ### 2.2 记忆库（Bank）：共 2 个
 
@@ -256,7 +258,7 @@ HINDSIGHT_API_TENANT_SCHEMA_PREFIX=user   # 默认值,生成 user_<id> schema
 2. 扩展把该 key 与内存中全部已配置 key 逐一做 **`hmac.compare_digest`(常数时间比较)**——避免时序侧信道泄露 key 形状。
 3. 命中 → 取该 key 对应的 `user_id` 与 `schema_name`，返回 `TenantContext(schema_name=user_<id>)`。
 4. 未命中 → `AuthenticationError`(401)。
-5. **首次访问某 schema 时懒加载**:加锁跑一次该 schema 的迁移(Alembic)，建出 24 张表，之后缓存"已初始化"标记。
+5. **首次访问某 schema 时懒加载**：加锁执行该schema的Alembic迁移，创建Hindsight原生表，之后缓存“已初始化”标记。最新源码共25张表，其中24张为业务与运行表，1张为迁移版本表。
 6. MCP 通道(`authenticate_mcp`)走同一套，**不允许关闭鉴权**(扩展在启动期就拒绝 `HINDSIGHT_API_TENANT_MCP_AUTH_DISABLED`)。
 
 > 计量用途:认证后会在 `RequestContext` 上设 `tenant_id`(=user_id)和 `api_key_id`(=key 的 sha256 前 16 位,**非 key 本身**),供用量统计,不会泄露明文 key。
@@ -276,7 +278,7 @@ HINDSIGHT_API_TENANT_SCHEMA_PREFIX=user   # 默认值,生成 user_<id> schema
 
 ### 5.4 关于 `public` schema:空壳,不是元数据中心
 
-`public` schema 也有完整 24 张表(与租户 schema 同构),但**全部为空**(`public.banks` 0 行)。它是 `DefaultTenantExtension`(单租户无鉴权模式)的默认落点;本部署改用了 `StaticKeysTenantExtension` 多租户模式后,public 不再承载任何租户数据,只是建表模板/迁移基线。**元数据并不在 public,而在环境变量(用户/key)+ 各 `user_*` schema 的 `banks` 表(文档库)。**
+`public` schema 也有与该历史部署租户schema同构的Hindsight表，但**全部为空**（`public.banks` 0行）。它是 `DefaultTenantExtension` 单租户模式的默认落点；本部署改用 `StaticKeysTenantExtension` 多租户模式后，`public` 不承载租户数据。**元数据并不在 `public`，而在环境变量中的用户/API Key配置和各 `user_*` schema 的 `banks` 表中。**
 
 ### 5.5 控制平面(CP,端口 9999):不引入额外元数据存储
 
