@@ -33,6 +33,7 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 
 | 文档 | 说明 |
 |---|---|
+| [快速熟悉 Hindsight 与 Agent Memory](hindsight/快速熟悉Hindsight与AgentMemory.md) | 概念速览、阅读路线、基础论文和 ContextDB 架构师验证问题 |
 | [多 PG 实例横向扩展方案](hindsight/multi-pg-scaling-design.md) | schema 级横向扩展设计与灰度路径 |
 | [多 PG 实例验证报告](hindsight/multi-pg-scaling-validation.md) | 13 项验证结果与证据 |
 | [多 PG 实例评审导览](hindsight/multi-pg-scaling-review-guide.md) | 评审入口、关键决策与复核顺序 |
