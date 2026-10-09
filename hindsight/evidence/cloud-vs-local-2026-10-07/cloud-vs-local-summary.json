@@ -1,0 +1,107 @@
+{
+  "verified_at": "2026-10-07",
+  "hindsight_source_commit": "f7dd3f4fd7420f7beec60c32c965e5e5cf7be066",
+  "openapi": {
+    "cloud": {
+      "title": "Hindsight Cloud API",
+      "version": "0.10.2",
+      "path_count": 86,
+      "authenticated_bank_list_status": 200,
+      "unauthenticated_bank_list_status": 401,
+      "scoped_key_list_status_for_test_key": 403
+    },
+    "local": {
+      "title": "Hindsight HTTP API",
+      "version": "0.10.2",
+      "path_count": 77,
+      "unauthenticated_bank_list_status": 200
+    },
+    "common_path_count": 74,
+    "common_paths_have_same_http_method_sets": true,
+    "cloud_only_paths": [
+      "/organizations/{org_id}/webhooks",
+      "/organizations/{org_id}/webhooks/{webhook_id}",
+      "/v1/api-keys/scoped",
+      "/v1/api-keys/scoped/{key_id}",
+      "/v1/default/banks/{bank_id}/security-events",
+      "/v1/default/banks/{bank_id}/security-events:purge",
+      "/v1/{tenant}/banks/{bank_id}/subjects/erase",
+      "/v1/{tenant}/banks/{bank_id}/subjects/erase/preview",
+      "/v1/{tenant}/banks/{bank_id}/subjects/export",
+      "/v1/{tenant}/exports/{export_id}",
+      "/v1/{tenant}/privacy-events",
+      "/v1/{tenant}/privacy-events/{receipt_id}"
+    ],
+    "local_only_paths": [
+      "/health",
+      "/metrics",
+      "/version"
+    ]
+  },
+  "runtime": {
+    "cloud": {
+      "api_version": "0.10.2",
+      "worker": false,
+      "audit_log": true,
+      "health_status": 200,
+      "database": "connected"
+    },
+    "local": {
+      "api_version": "0.10.2",
+      "worker": true,
+      "audit_log": false,
+      "health_status": 200,
+      "database": "connected"
+    }
+  },
+  "cloud_file_storage": {
+    "file_upload_api": true,
+    "document_export_api": true,
+    "document_import_api": true,
+    "bank_config_exposes_backend_type": false,
+    "existing_test_bank_document_count": 0,
+    "existing_test_bank_attachment_count": 0,
+    "aws_s3_backend_confirmed": false,
+    "conclusion": "Managed file storage is enabled, but the physical backend is not disclosed by the customer-visible API or official Cloud documentation."
+  },
+  "passive_network_probe": {
+    "public_ipv4": "8.233.104.54",
+    "reverse_dns": "54.104.233.8.bc.googleusercontent.com",
+    "asn": "AS396982 Google LLC",
+    "whois_netname": "GOOGL-2",
+    "http_via_header": "1.1 google",
+    "tls_issuer": "Google Trust Services WR3",
+    "tls_common_name": "alb.hindsight.vectorize.io",
+    "same_ip_hostnames": [
+      "ui.hindsight.vectorize.io",
+      "api.hindsight.vectorize.io",
+      "auth.hindsight.vectorize.io",
+      "docs.hindsight.vectorize.io",
+      "analytics.hindsight.vectorize.io",
+      "grafana.hindsight.vectorize.io",
+      "status.hindsight.vectorize.io",
+      "alb.hindsight.vectorize.io"
+    ],
+    "public_ingress_provider": "Google Cloud / Google network",
+    "aws_public_ingress_supported_by_evidence": false,
+    "kubernetes_confirmed": false,
+    "kubernetes_note": "The Google Application Load Balancer can front GKE, Cloud Run, Compute Engine, Cloud Storage, or external backends. No Kubernetes-specific response headers were exposed."
+  },
+  "cloud_control_plane_routes_found_in_frontend_assets": [
+    "/account/email-preferences",
+    "/account/security",
+    "/api-keys",
+    "/api/api-keys",
+    "/api/organizations",
+    "/billing",
+    "/settings",
+    "/team",
+    "/usage"
+  ],
+  "local_control_plane_product_routes_found_in_frontend_assets": [],
+  "notes": [
+    "Cloud /health and /version returned 200 although they are omitted from the Cloud OpenAPI document.",
+    "The test did not create, update, retain, reflect, revoke, or delete Cloud data.",
+    "No credential, bank identifier, or business payload is stored in this evidence file."
+  ]
+}

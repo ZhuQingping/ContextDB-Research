@@ -18,9 +18,18 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | 文档 | 说明 |
 |---|---|
 | [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
+| [Hindsight Cloud 与开源版实测及部署建议](hindsight/hindsight-cloud-open-source-comparison.md) | 商业版与开源版真实差异、Cloud 部署证据边界、控制面/数据面拆分和华为云 Data Cell 方案 |
 | [华为云 ContextDB 首期服务化架构](hindsight/cloud-service-architecture.md) | 5 人 6–8 周范围、端到端职责、PG 服务单元扩展、接口开放与上线门槛 |
+| [ContextDB 设计与两个月交付专家评审](hindsight/contextdb-design-expert-review.md) | 当前设计权威、实现成熟度、Hindsight 侵入度、产品形态、五人八周计划与上线门 |
+| [AgentStratum 长期演进与 AI 工程收敛建议](hindsight/agentstratum-long-term-evolution-and-ai-convergence.md) | 固定代码基线下的产品主链缺口、AI任务合同、CI与团队并行工作建议 |
+| [Hindsight Solution 3 与 AgentStratum 定位](hindsight/hindsight-solution3-and-agentstratum.md) | 方案三原型验证与长期产品架构的关系；含当前首期范围提示 |
+| [Hindsight Cloud/开源差异实测证据](hindsight/evidence/cloud-vs-local-2026-10-07/cloud-vs-local-summary.json) | 2026-10-07 OpenAPI、运行状态、存储后端可见性和网络探测摘要 |
 | [首期竞争力与投入顺序](hindsight/cloud-service-priorities.md) | 三家竞品对照、接入／成本／数据库复盘场景的投入优先级 |
+| [ContextDB 差异化竞争力建议](hindsight/competitive-differentiation/ContextDB差异化竞争力.md) | 加密、导出、中文场景等候选能力及验收要求；属于规划建议，不代表当前承诺 |
+| [竞争力证据与决策记录](hindsight/competitive-differentiation/ContextDB竞争力证据与决策记录.md) | 竞品/论文来源、历史结论修订、证据等级和未关闭问题 |
 | [核验依据](hindsight/cloud-service-evidence.md) | 固定源码和官方来源，纠正 Star 排名、榜单解释及历史多 PG 实验证明范围 |
+
+以上评审和竞争力材料均标注了检查日期与代码/资料基线。竞品价格、版本、社区数据和 AgentStratum 实现状态会变化，引用时应按文内日期理解；当前首期选择以最新明确的产品决策为准。
 
 ### 决策与选型
 
