@@ -2,7 +2,10 @@
 
 > 日期：2026-10-09
 > 验证对象：本地开源 Hindsight `0.10.1`（运行实例）；商用 Hindsight Cloud `0.10.2`（运行实例）
-> 关联文档：[hindsight-cloud-open-source-comparison.md](hindsight-cloud-open-source-comparison.md)（部署形态与商业控制面对比）、[2026-10-09-Agent与Hindsight交互协议辨析](../2026-10-09-Agent与Hindsight交互协议辨析-Rest-MCP-SDK.md)
+> 关联文档：[hindsight-cloud-open-source-comparison.md](hindsight-cloud-open-source-comparison.md)（部署形态与商业控制面对比）、[Agent与Hindsight交互协议辨析](Agent与Hindsight交互协议辨析-Rest-MCP-SDK.md)
+
+
+> 2026-10-12 适用范围校准：本文是 2026-10-09 的数据面协议快照，不是完整控制台管理 API/认证合同。普通 API Key 的数据面调用、登录账户管理和具有 create_scoped_keys 能力的父 Key 委派是三类不同路径。当前 ContextDB 管理 IAM/业务 Key 分离方案见[首期管理设计](member-apikey-bank-service-design.md)。历史示例的明文 Key 已脱敏，原始请求结构保留；不应使用跳过 TLS 验证作为生产方案。
 
 ---
 
@@ -222,7 +225,7 @@
 | `/health` `/version` | 今天实测**可访问**（200），但**未列入**商用 OpenAPI |
 | `/metrics` | 商用 `/metrics` 未列入 OpenAPI，不应对公网开放 |
 
-### 4.4 鉴权差异（今天实测两边）
+### 4.4 数据面鉴权差异（当天实测，不含完整控制台管理）
 
 | | 商用 Cloud（今天实测） | 开源本地（今天实测） |
 |---|---|---|
@@ -268,7 +271,7 @@
 
 ### 5.2 关键结论
 
-- 商用**没有**把 15 条企业治理 REST API（scoped key/security-events/GDPR）暴露成 MCP 工具——治理类操作不让模型自主调，只走 REST 由程序调用。这是合理设计。
+- 当天 tools/list 未发现上述 15 条治理 REST 路径的对应工具；这只是工具清单观察，不证明维护者意图或所有商业部署的能力。Bank 的 create_bank/delete_bank 等管理工具仍然存在。
 - 数据面 39 工具两边一致，模型侧调用方式（retain/recall/reflect）在商用与开源**完全可互换**。
 
 ---
@@ -357,7 +360,7 @@ curl -sS http://127.0.0.1:8888/mcp -H "Authorization: Bearer key-zhang3" -H "Mcp
 
 ```bash
 PROXY="http://xxxx:xxxx@proxyhk.huawei.com:8080"
-KEY="hsk_3b389add23d7c7fb33db93e89ad2b74f_a835f0b3055c3961"
+KEY="<HINDSIGHT_API_KEY>"
 CLOUD="https://api.hindsight.vectorize.io"
 # 鉴权：无 key → 401，有 key → 200
 curl -sS -k -m 12 -x "$PROXY" "$CLOUD/v1/default/banks" -w " [%{http_code}]\n"              # 401
@@ -381,7 +384,7 @@ curl -sS -k -m 30 -x "$PROXY" "$CLOUD/v1/default/banks/MySQL/memories/recall" \
 
 1. **核心数据面复用 Hindsight 原生 API 语义**：retain/recall/reflect 三件套商用与开源同源（今天实测 71 共同路径方法集一致、recall 返回结构一致），华为云应直接保留，不自造协议。
 2. **REST + MCP 双协议都保留**：REST 给程序/控制面/SDK，MCP 给模型自主调用。华为云 Control Plane 走 REST，Agent 接入走 MCP。
-3. **企业能力（商用独有的 15 条）是华为云控制面的活**：scoped key、bank 别名、安全事件、GDPR 删除/导出/隐私回执、组织 webhook、固化策略预演——这些应在华为云控制面实现，不污染 Hindsight 数据面内核。**且这些治理类操作商用刻意不暴露成 MCP 工具**（仅多一个数据面的 `search_docs`），华为云应沿用此设计。
+3. **企业能力（商用独有的 15 条）是华为云控制面的活**：scoped key、bank 别名、安全事件、GDPR 删除/导出/隐私回执、组织 webhook、固化策略预演——这些应在华为云控制面实现，不污染 Hindsight 数据面内核。**当天工具清单未发现这些路径的对应工具**，但原生 Bank 管理工具仍存在。ContextDB 首期选择不把新管理 REST 注册为 MCP 工具，并以服务端授权拦截业务 Key 的管理调用。
 4. **鉴权与多租户**：开源版 StaticKeysTenantExtension（key→schema）已是多租户形态；华为云用 IAM/Workspace 替换这一层，schema 级隔离可复用。
 5. **运行形态**：商用 `worker=false`（API 与 Worker 分离）+ `audit_log=true`；开源默认 `worker=true` + `audit_log=false`。华为云生产应采用商用形态（独立 Worker + 审计开启），这是同一镜像的部署开关，非内核 fork。
 6. **版本对齐**：今天本地 0.10.1，商用 0.10.2。华为云应锁定 Hindsight 版本，每次升级做差分合同测试（今天实测 0.10.2 比 0.10.1 多了 aliases/consolidation-strategies 等路径）。
@@ -408,7 +411,7 @@ curl -sS -k -m 30 -x "$PROXY" "$CLOUD/v1/default/banks/MySQL/memories/recall" \
 # 本沙箱访问商用需经 proxyhk 代理 + -k 跳过代理 SSL 拦截
 PROXY="http://xxx:xxx@proxyhk.huawei.com:8080"
 CLOUD=https://api.hindsight.vectorize.io
-KEY=hsk_3b389add23d7c7fb33db93e89ad2b74f_a835f0b3055c3961
+KEY=YOUR_HINDSIGHT_API_KEY
 # 1. 健康/版本
 curl -sS -k -x "$PROXY" $CLOUD/health; curl -sS -k -x "$PROXY" $CLOUD/version
 # 2. OpenAPI 全量（对比路径数）
@@ -423,3 +426,17 @@ curl -sS -k -x "$PROXY" $CLOUD/v1/default/banks/MySQL/security-events -H "Author
 ```
 
 > 直连环境（无代理）去掉 `-x "$PROXY"` 和 `-k` 即可。
+
+## 管理 API 与认证补充核对
+
+2026-10-12 结合既有 Cloud 前端路由证据与官方 Team Management/API Keys 文档校准；没有重新执行付费请求或管理写操作。
+
+| 类型 | 证据与认证边界 |
+|---|---|
+| Bank 数据面/管理 | 原生 REST/MCP 都有 Bank 相关操作；是否允许创建/删除由实际授权决定，不能说 Cloud 一切管理能力都只走 REST |
+| 登录账户的组织/成员/常规 Key 管理 | 历史前端中有 /api/organizations、/team、/api-keys、/api/api-keys；官方描述登录后的角色权限。没有完整捕获所有管理请求的 Cookie/JWT/Token 交换，不推断其私有认证实现 |
+| 程序化子 Key 管理 | 官方确认有 create_scoped_keys 能力的父 Key 用 Bearer 创建/列出/撤销子 Key；不是普通数据 Key 的默认能力，也不授权用户管理 |
+
+[Cloud API Keys](https://docs.hindsight.vectorize.io/api-keys/) 对 Bank scope、过期/展示一次及父子能力有明确说明；[Team Management](https://docs.hindsight.vectorize.io/team-management/) 描述组织角色/成员管理，个别细节段落存在差异，不能把本文的总体边界当成精确权限合同。
+
+可借鉴的是凭据类型与权限能力明确分离、Key 最小范围、到期/轮换/撤销、受控自动化，而非复制 Organization 或所有私有前端 API。ContextDB 首期不开放父子 Key：管理 REST 使用 IAM Token，retain/recall 使用成员随机 Key。Memory 用户私有/共享策略另行研究，见[后续备忘](member-memory-isolation-future-notes.md)。

@@ -1,0 +1,13 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "PingFang SC, Microsoft YaHei, Arial, sans-serif",
+    "fontSize": "16px",
+    "primaryColor": "#eef4ff",
+    "primaryTextColor": "#15304e",
+    "primaryBorderColor": "#4276ac",
+    "lineColor": "#62768b"
+  },
+  "flowchart": { "htmlLabels": false, "useMaxWidth": false, "curve": "linear", "wrappingWidth": 320 },
+  "sequence": { "useMaxWidth": false, "wrap": true }
+}

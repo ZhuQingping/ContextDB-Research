@@ -5,6 +5,8 @@
 
 > 本文是固定日期的Cloud账号只读实测和部署推断，物理部署拓扑仅按文中证据边界表述。结构化实测结果见[证据JSON](evidence/cloud-vs-local-2026-10-07/cloud-vs-local-summary.json)。当前首期独享范围已于2026-10-09明确；本文的多Cell建议应视为长期扩展建议。
 
+> 2026-10-12 用户已确认首期采用同 DB、一工作空间一 schema、schema 内唯一 Bank；工作空间下的用户也叫成员，角色仅 admin/member，每用户拥有多个 API Key，Key 固定绑定用户和空间；首期云租户独享 API、Worker 和 RDS PG，元信息与数据共用同一个 PG 数据库，不新增项目层级或 MetaPG。本期仅实现空间/用户/Key 管理和认证，不实现用户记忆私有与知识发布；商业 SMIC 跨 Key 行为见[证据](evidence/hindsight-cloud-cross-key-smic-2026-10-10.md)。最新架构、API 与 extension 方案见[首期服务化设计](member-apikey-bank-service-design.md)。Cloud 自身的 Owner 等角色名称仍按实测保留，不等同于 ContextDB 设计。本文的共享 Cell/空间内多 Bank 放置建议属于历史候选；当前采用 workspace-schema 映射，但 schema 内仅一个 Bank；Cloud 实测和首期独享范围保持原有证据边界。
+
 ## 1. 结论
 
 Hindsight Cloud 的公开证据支持下面的产品拆分：
@@ -13,7 +15,7 @@ Hindsight Cloud 的公开证据支持下面的产品拆分：
 2. **组织、成员、API Key、用量、账单、账号安全和邮件偏好由商业控制面提供。** Cloud 前端存在独立的组织类控制面接口；开源 Control Plane 没有这些路由。
 3. **标准 Cloud 的控制面明确是多租户的，且不承诺每客户 Dedicated Infrastructure。** 官方把 Dedicated Infrastructure 单列为 Enterprise 能力；标准 Cloud 使用统一域名、按量计费、无席位费，并明确支持 multi-org。这些证据支持标准档采用资源池化，但标准 Cloud 内部究竟按组织、Bank 还是其他粒度划分 Pod、schema 和 PG，公开资料无法证明。
 4. **Cloud 的 API 进程关闭了内置 Worker。** 实测 Cloud `/version` 返回 `worker:false`，本地联合进程返回 `worker:true`。这说明商业云至少采用了 API 不执行后台任务的运行方式；Worker 的数量、编排方式和数据库分片方式没有公开证据。
-5. **华为云首期应学习这种“控制面在外、Hindsight 数据面在内”的边界。** 不应为了多 PG 对 Hindsight 做动态 DSN、双 schema 拆表和自研任务调度等大范围内核修改。采用“共享控制面 + 多 Data Cell”的方式，每个 Cell 固定连接一套 RDS PG，由 Gateway 按 Workspace 放置结果路由到 Cell，便可横向增加 PG。
+5. **华为云可以学习产品管理与记忆引擎解耦的边界，不必复制标准 Cloud 拓扑。** 当前首期为租户独享 API、Worker 与 PG，管理功能优先放在 API 扩展中，元信息同库；不为了多 PG 改造动态 DSN、核心拆表或自研 API→Worker 队列。下文共享控制面/多 Cell 是历史长期扩展候选，不是首期必要组件。
 
 首期建议把 Hindsight 当成可升级的数据面内核，产品差异能力主要放在 Huawei API Gateway、ContextDB Control Plane、模型网关和运维平台。生产预览版可启用 Hindsight 官方支持的独立 Worker；这只是同一镜像的部署开关，不是内核 fork。
 
@@ -211,7 +213,9 @@ Cloud Console / Org / Team / Key / Usage / Billing / SSO
 
 因此最合理的学习不是复制一套未知的 Cloud 私有代码，而是复制它的**产品边界**：通用记忆能力持续进入开源内核，云租户和商业治理留在外围，必要的接入通过稳定扩展点完成。
 
-## 6. 华为云 ContextDB 推荐部署
+## 6. 华为云 ContextDB 历史部署候选
+
+本节保留 2026-10-07 的共享控制面/多 Cell 研究，MetaPG、Workspace placement 等不属于当前首期独享方案。当前部署见[租户独享管理架构](member-apikey-bank-service-design.md#扩展包与原生记忆接口)。
 
 ### 6.1 总体结构
 
@@ -236,6 +240,8 @@ ContextDB Control Plane -------- MetaPG / IAM / KMS / Metering
 **Data Cell 是一组有固定数据归属的运行资源，不等于一个进程，也不要求等于一台 ECS。** 每个 Cell 的 Hindsight 实例固定连接该 Cell 的 RDS PG 和 OBS 配置。Gateway 先根据 MetaPG 中的 placement 找到 Cell，再把请求发送给该 Cell 的稳定 Service，由负载均衡选择任意健康 API Pod。
 
 ### 6.2 小用户如何控制成本
+
+> 历史共享部署候选：本小节的共享 Cell 和空间内多 Bank 映射已被当前模型替代；workspace-schema 映射被采用，但每 schema 内唯一 Bank；不要将下面的放置/迁移粒度直接作为当前实现合同。
 
 - 多个小 Workspace 共享一个 Data Cell、API Pool、Worker Pool 和 RDS PG；
 - 每个 Workspace 对应一个 Hindsight tenant/schema，Workspace 内包含多个 Bank；
@@ -339,7 +345,7 @@ Hindsight 已提供 Memory、Mental Model、Knowledge Page、MCP 和来源信息
 
 ## 9. 对现有设计的修正意见
 
-现有设计中以下方向保留：Gateway、MetaPG、Data Cell、RDS PG、OBS、模型网关、Workspace 放置和 API/Worker 可拆分。
+本节是历史候选修正清单。当前首期保留既有云入口、独享 API/Worker 和 RDS PG，不单独引入 MetaPG、共享 Cell 放置或独立生命周期/审计组件；成员/Key 元信息同库。OBS、模型网关等按实际需要接入，不因本报告而成为新增前置服务。
 
 以下内容应从首期删除或降为后续研究：
 

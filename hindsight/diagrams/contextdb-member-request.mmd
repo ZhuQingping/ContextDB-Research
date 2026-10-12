@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    participant C as 控制台或 Agent
+    participant I as 云 IAM
+    participant A as API 扩展
+    participant P as 同一 RDS PG
+    participant E as 原生记忆引擎
+    alt 管理 REST：工作空间 / 用户 / Key
+        C->>I: 登录或获取 IAM 临时 Token
+        I-->>C: IAM Token
+        C->>A: X-Auth-Token + 管理目标 ws1/u1
+        A->>I: 验证 Token，获得可信云身份
+        I-->>A: 可信云租户、调用者 IAM 用户、有效期
+        A->>A: 核对云权限与部署租户
+        A->>P: 按可信调用者查询角色，核对目标 ws1/u1
+        P-->>A: 管理员/成员及目标归属
+        A->>A: 管理员可代签，成员仅可为本人签发
+        Note over C,A: URL 中 u1 是目标用户，不是调用者身份；失败即拒绝，不签发 Key
+        A->>P: 执行管理，Key 只保存摘要
+        A-->>C: 管理结果；新 Key 完整值只返回一次
+        Note over A,E: 空间开通/删除由内部限定身份调用原生迁移和 Bank 接口
+    else 业务 REST / MCP：retain / recall
+        C->>A: Bearer ContextDB Key + 目标 Bank
+        A->>P: 校验摘要、状态及绑定用户/空间
+        P-->>A: 空间 schema、Bank、Key 操作权限
+        A->>A: Bank 必须属于 Key 绑定的空间
+        A->>E: 已认证的 schema + Bank + 操作
+        E->>P: 查询或写入本空间数据/原生任务
+        P-->>E: 本 Bank 数据或任务状态
+        E-->>A: 原生响应
+        A-->>C: 业务结果
+        Note over A,P: 本期不按用户过滤记忆，同 Bank 的读取者可能看到他人记忆
+    end

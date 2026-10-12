@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: ContextDB 首期控制面 API 草案
+  version: 0.2.0-draft
+  description: |
+    设计草案，尚未实现。一个工作空间对应一个 Hindsight Bank；没有独立 Bank 创建接口。
+    本期只实现工作空间、用户、API Key 管理及必需认证/空间授权，不实现个人记忆隔离或共享知识发布。
+    管理入口使用 X-Auth-Token 携带可信云 IAM 临时 Token，普通业务 API Key 不可调用。
+    用户与成员是同一工作空间实体，角色只允许 admin/member，每个用户均可拥有多个 API Key。
+    cloud_tenant_id 从认证上下文解析，并校验与租户独享实例配置一致；不引入项目层级。
+    元信息和 Hindsight 数据使用同一个 RDS PG 数据库；每工作空间独立 schema，schema 内唯一 Bank。
+    表和索引按空间分开，但 CPU/内存/I/O/WAL 共享，不承诺性能互不影响。
+    schema 由服务端登记，不接受请求体传入 schema 或 allowed_bank_ids；空间/schema 映射由扩展实现。
+    首期管理接口由 Hindsight API 的 HttpExtension 承载，现有云入口做固定路径映射。
+    ManagementAuth 必须验证 IAM Token 并检查云权限、空间角色和本人关系；HttpExtension 不自动鉴权。
+    同空间同 Bank 的记忆沿用共享语义；Key 绑定用户不等于 memory 行授权。IAM 接入仍需实现适配器。
+servers:
+  - url: https://contextdb.example.com/contextdb/v1
+    description: 示例地址，不是已部署服务
+security:
+  - CloudIdentity: []
+tags:
+  - name: Workspaces
+  - name: Members
+  - name: APIKeys
+  - name: Operations
+paths:
+  /workspaces:
+    post:
+      tags: [Workspaces]
+      operationId: createWorkspace
+      summary: 创建工作空间及其唯一 Bank
+      description: IAM 需允许创建；服务端登记空间唯一 schema，复用原生迁移初始化表及唯一 Bank，为创建者建立初始管理员用户。202 不表示 schema 或 Bank 已可调用。
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorkspaceCreate' }
+      responses:
+        '202': { $ref: '#/components/responses/ManagementAccepted' }
+        default: { $ref: '#/components/responses/ApiError' }
+    get:
+      tags: [Workspaces]
+      operationId: listWorkspaces
+      summary: 分页列出当前 IAM 身份可见的工作空间
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: 工作空间列表，不泄露其他云租户或不可见资源
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspacePage' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /workspaces/{workspace_id}:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    get:
+      tags: [Workspaces]
+      operationId: getWorkspace
+      summary: 查询工作空间
+      responses:
+        '200':
+          description: 工作空间状态与版本
+          headers:
+            ETag:
+              description: 更新时通过 If-Match 提交
+              schema: { type: string, example: '"3"' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+    patch:
+      tags: [Workspaces]
+      operationId: updateWorkspace
+      summary: 修改工作空间名称 描述或冻结状态
+      description: 本空间管理员；只支持 active/frozen 间转换，不用于创建激活或删除。
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorkspacePatch' }
+      responses:
+        '200':
+          description: 更新后的工作空间
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+    delete:
+      tags: [Workspaces]
+      operationId: deleteWorkspace
+      summary: 异步删除工作空间对应 Bank
+      description: 本空间管理员；拒绝新请求并排空既有任务，在登记的空间 schema 中清理唯一 Bank；不要求立即回收 schema。不得删除共享元信息、其他空间 schema 或整个数据库。
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyRequired'
+      responses:
+        '202': { $ref: '#/components/responses/ManagementAccepted' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /operations/{operation_id}:
+    parameters:
+      - name: operation_id
+        in: path
+        required: true
+        schema: { type: string, minLength: 1 }
+    get:
+      tags: [Operations]
+      operationId: getManagementOperation
+      summary: 查询可见工作空间的控制面任务
+      responses:
+        '200':
+          description: 控制任务状态；与 Hindsight 数据 operation 不同
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ManagementOperation' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /workspaces/{workspace_id}/members:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    post:
+      tags: [Members]
+      operationId: createMember
+      summary: 动态创建工作空间成员
+      description: 本空间管理员；用户也叫成员，角色只能为 admin 或 member，不区分人/服务账号类型。管理员须绑定可信 iam_subject；未绑定的普通成员由管理员管理其 Key。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MemberCreate' }
+      responses:
+        '201':
+          description: 成员已创建，不自动签发 Key
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MemberResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+    get:
+      tags: [Members]
+      operationId: listMembers
+      summary: 列出工作空间用户
+      description: 仅本空间管理员可列出完整用户目录；普通成员使用自己的详情接口。
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: 成员目录，不包含凭据 secret
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MemberPage' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /workspaces/{workspace_id}/members/{member_id}:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+      - $ref: '#/components/parameters/MemberId'
+    get:
+      tags: [Members]
+      operationId: getMember
+      summary: 查询用户和版本
+      description: 本空间管理员或 IAM 绑定的本人。
+      responses:
+        '200':
+          description: 成员详情
+          headers:
+            ETag:
+              schema: { type: string, example: '"2"' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MemberResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+    patch:
+      tags: [Members]
+      operationId: updateMember
+      summary: 更新名称 角色或停用状态
+      description: 本空间管理员；提升为 admin 要求已有可信 IAM 绑定，不得降级或停用最后一个有效可登录管理员。
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MemberPatch' }
+      responses:
+        '200':
+          description: 更新后成员，停用同步影响其所有 Key 的鉴权
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MemberResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+    delete:
+      tags: [Members]
+      operationId: deleteMember
+      summary: 软删除成员并拒绝后续凭据调用
+      description: 本空间管理员；保留 member_id 和审计，数据按保留策略处理。不可删除最后一个有效管理员。
+      responses:
+        '204': { description: 已删除或已处于删除状态 }
+        default: { $ref: '#/components/responses/ApiError' }
+  /workspaces/{workspace_id}/members/{member_id}/api-keys:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+      - $ref: '#/components/parameters/MemberId'
+    post:
+      tags: [APIKeys]
+      operationId: createApiKey
+      summary: 创建属于指定成员的工作空间 Key
+      description: |
+        本空间管理员或 IAM 绑定的本人；scopes 不得超出成员当前能力。
+        代签管理员可获得secret，首期属于受信任管理者，不承诺防管理员模拟成员。
+        memory.write 要求 memory.read；reflect 要求 memory.read；knowledge.read 只开放知识页读取，不作为个人记忆隔离策略。
+        Key 必须归属路径中的用户；管理员和成员都可拥有多个 Key，同用户各 Key 对应同一调用者身份，不代表记忆只对该用户可见。
+        Key 固定绑定此工作空间；不支持 Bank 集合或跨空间授权。
+        使用幂等标识重放已成功签发请求时返回409及key_id，不再返回secret。
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApiKeyCreate' }
+      responses:
+        '201':
+          description: 完整 secret 只展示一次；响应和代理日志不得记录 secret
+          headers:
+            Cache-Control:
+              schema: { type: string, example: no-store }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiKeyIssued' }
+        default: { $ref: '#/components/responses/ApiError' }
+    get:
+      tags: [APIKeys]
+      operationId: listApiKeys
+      summary: 列出用户 Key 元数据
+      description: 本空间管理员或 IAM 绑定的本人；不返回完整 secret 或摘要。
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: 不返回 secret 或其摘要
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiKeyPage' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /workspaces/{workspace_id}/members/{member_id}/api-keys/{key_id}/revoke:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+      - $ref: '#/components/parameters/MemberId'
+      - name: key_id
+        in: path
+        required: true
+        schema: { type: string, minLength: 1 }
+    post:
+      tags: [APIKeys]
+      operationId: revokeApiKey
+      summary: 幂等撤销用户的 Key
+      description: 本空间管理员或 IAM 绑定的本人；必须校验 key_id 同时属于路径中的 workspace 和 member。首期不缓存鉴权结果，每个新请求查 PG 主库；撤销提交后开始鉴权的请求被拒绝，不承诺取消在途请求或已受理任务。
+      responses:
+        '204': { description: 已撤销或已处于撤销状态 }
+        default: { $ref: '#/components/responses/ApiError' }
+components:
+  securitySchemes:
+    CloudIdentity:
+      type: apiKey
+      in: header
+      name: X-Auth-Token
+      description: |
+        云 IAM 临时 Token，不是 ContextDB API Key。OpenAPI apiKey 类型只描述自定义请求头的位置。
+        ManagementAuth 验证身份；具体接口再校验云权限与空间角色。业务 Bearer Key 不可替代。
+  parameters:
+    WorkspaceId:
+      name: workspace_id
+      in: path
+      required: true
+      schema: { type: string, minLength: 1 }
+    MemberId:
+      name: member_id
+      in: path
+      required: true
+      schema: { type: string, minLength: 1 }
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string, maxLength: 1024 }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      description: 查询时获得的版本 ETag；并发版本不符返回412
+      schema: { type: string, example: '"2"' }
+    IdempotencyRequired:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 同一管理动作重试使用相同值；同值不同正文返回409
+      schema: { type: string, minLength: 1, maxLength: 128 }
+    IdempotencyOptional:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: Key 签发重放不再返回 secret
+      schema: { type: string, minLength: 1, maxLength: 128 }
+  responses:
+    ApiError:
+      description: 400/401/403/404/409/412/429/503 等错误；原生数据 API 不使用此信封
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ManagementAccepted:
+      description: 管理任务已接收，客户端需查询 operation 状态
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ManagementAccepted' }
+  schemas:
+    WorkspaceCreate:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 64 }
+        description: { type: string, maxLength: 512 }
+    WorkspacePatch:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 64 }
+        description: { type: string, maxLength: 512 }
+        state: { type: string, enum: [active, frozen] }
+    Workspace:
+      type: object
+      required: [workspace_id, name, state, version]
+      properties:
+        workspace_id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        state: { type: string, enum: [creating, active, frozen, deleting, deleted, failed] }
+        version: { type: integer, minimum: 1 }
+        created_at: { type: string, format: date-time }
+    WorkspaceResponse:
+      allOf:
+        - $ref: '#/components/schemas/Workspace'
+        - type: object
+          required: [request_id]
+          properties:
+            request_id: { type: string }
+    MemberCreate:
+      type: object
+      additionalProperties: false
+      required: [member_name]
+      oneOf:
+        - required: [role, iam_subject]
+          properties:
+            role: { enum: [admin] }
+        - properties:
+            role: { enum: [member] }
+      properties:
+        member_name: { type: string, minLength: 1, maxLength: 64 }
+        iam_subject:
+          type: string
+          minLength: 1
+          description: 普通成员可选，管理员必需；管理入口识别用户及自助 Key 管理需有可信 IAM 绑定。未绑定普通成员的 Key 由管理员管理。
+        role: { type: string, enum: [admin, member], default: member }
+    MemberPatch:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        member_name: { type: string, minLength: 1, maxLength: 64 }
+        role: { type: string, enum: [admin, member] }
+        status: { type: string, enum: [active, disabled] }
+    Member:
+      type: object
+      required: [member_id, workspace_id, member_name, role, status, version]
+      properties:
+        member_id: { type: string }
+        workspace_id: { type: string }
+        member_name: { type: string }
+        role: { type: string, enum: [admin, member] }
+        status: { type: string, enum: [active, disabled, deleted] }
+        version: { type: integer, minimum: 1 }
+        created_at: { type: string, format: date-time }
+    MemberResponse:
+      allOf:
+        - $ref: '#/components/schemas/Member'
+        - type: object
+          required: [request_id]
+          properties:
+            request_id: { type: string }
+    KeyScopes:
+      type: array
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: string
+        enum: [memory.read, memory.write, knowledge.read, reflect]
+    ApiKeyCreate:
+      type: object
+      additionalProperties: false
+      required: [name, scopes, expires_at]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 64 }
+        scopes: { $ref: '#/components/schemas/KeyScopes' }
+        expires_at:
+          type: string
+          format: date-time
+          description: 必须晚于创建时间，最长有效期由租户策略决定
+    ApiKeyMetadata:
+      type: object
+      additionalProperties: false
+      required: [key_id, workspace_id, member_id, name, scopes, status, expires_at]
+      properties:
+        key_id: { type: string }
+        workspace_id: { type: string }
+        member_id: { type: string }
+        name: { type: string }
+        scopes: { $ref: '#/components/schemas/KeyScopes' }
+        status: { type: string, enum: [active, expired, revoked] }
+        expires_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        last_used_at: { type: string, format: date-time, nullable: true }
+        created_by: { type: string }
+    ApiKeyIssued:
+      type: object
+      additionalProperties: false
+      required: [key_id, workspace_id, member_id, name, scopes, status, expires_at, secret, request_id]
+      properties:
+        key_id: { type: string }
+        workspace_id: { type: string }
+        member_id: { type: string }
+        name: { type: string }
+        scopes: { $ref: '#/components/schemas/KeyScopes' }
+        status: { type: string, enum: [active] }
+        expires_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        created_by: { type: string }
+        secret:
+          type: string
+          minLength: 32
+          description: 完整 Bearer Key，只在创建响应中返回一次
+        request_id: { type: string }
+    WorkspacePage:
+      type: object
+      required: [items, request_id]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/Workspace' } }
+        next_cursor: { type: string, nullable: true }
+        request_id: { type: string }
+    MemberPage:
+      type: object
+      required: [items, request_id]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/Member' } }
+        next_cursor: { type: string, nullable: true }
+        request_id: { type: string }
+    ApiKeyPage:
+      type: object
+      required: [items, request_id]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/ApiKeyMetadata' } }
+        next_cursor: { type: string, nullable: true }
+        request_id: { type: string }
+    ManagementAccepted:
+      type: object
+      required: [operation_id, workspace_id, state, request_id]
+      properties:
+        operation_id: { type: string }
+        workspace_id: { type: string }
+        state: { type: string, enum: [pending, running] }
+        request_id: { type: string }
+    ManagementOperation:
+      type: object
+      required: [operation_id, workspace_id, action, state, request_id]
+      properties:
+        operation_id: { type: string }
+        workspace_id: { type: string }
+        action: { type: string, enum: [create_workspace, delete_workspace] }
+        state: { type: string, enum: [pending, running, succeeded, failed] }
+        error: { $ref: '#/components/schemas/Error' }
+        request_id: { type: string }
+    Error:
+      type: object
+      required: [code, message, request_id]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        request_id: { type: string }
+        details: { type: object, additionalProperties: true }

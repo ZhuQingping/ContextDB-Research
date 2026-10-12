@@ -19,6 +19,9 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 |---|---|
 | [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
 | [Hindsight Cloud 与开源版实测及部署建议](hindsight/hindsight-cloud-open-source-comparison.md) | 商业版与开源版真实差异、Cloud 部署证据边界、控制面/数据面拆分和华为云 Data Cell 方案 |
+| [ContextDB 成员与 API Key 管理设计](hindsight/member-and-apikey-management-design.md) | 阿里云控制台实测、成员与 Key 关系、Hindsight Organization 的产品原因，以及华为云首期是否需要组织层 |
+| [ContextDB 首期工作空间 用户与 API Key 服务化设计](hindsight/member-apikey-bank-service-design.md) | 首期空间/用户/Key 管理；IAM 与业务 Key 认证分离；每空间独立 schema/Bank；用户记忆隔离延期 |
+| [同 Bank 用户记忆隔离后续研究](hindsight/member-memory-isolation-future-notes.md) | SMIC 跨 Key 证据、tag scope 思路与派生/Worker 风险；非本期实现 |
 | [华为云 ContextDB 首期服务化架构](hindsight/cloud-service-architecture.md) | 5 人 6–8 周范围、端到端职责、PG 服务单元扩展、接口开放与上线门槛 |
 | [ContextDB 设计与两个月交付专家评审](hindsight/contextdb-design-expert-review.md) | 当前设计权威、实现成熟度、Hindsight 侵入度、产品形态、五人八周计划与上线门 |
 | [AgentStratum 长期演进与 AI 工程收敛建议](hindsight/agentstratum-long-term-evolution-and-ai-convergence.md) | 固定代码基线下的产品主链缺口、AI任务合同、CI与团队并行工作建议 |
@@ -43,6 +46,7 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | 文档 | 说明 |
 |---|---|
 | [快速熟悉 Hindsight 与 Agent Memory](hindsight/快速熟悉Hindsight与AgentMemory.md) | 概念速览、阅读路线、基础论文和 ContextDB 架构师验证问题 |
+| [Hindsight 开源版多人记忆隔离与知识共享讨论](hindsight/hindsight-opensource-multiuser-isolation-issues.md) | GitHub issue 与维护者结论、Bank/tag/API Key 权限边界，以及 ContextDB 设计建议 |
 | [多 PG 实例横向扩展方案](hindsight/multi-pg-scaling-design.md) | schema 级横向扩展设计与灰度路径 |
 | [多 PG 实例验证报告](hindsight/multi-pg-scaling-validation.md) | 13 项验证结果与证据 |
 | [多 PG 实例评审导览](hindsight/multi-pg-scaling-review-guide.md) | 评审入口、关键决策与复核顺序 |

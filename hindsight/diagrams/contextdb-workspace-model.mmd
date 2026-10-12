@@ -1,0 +1,33 @@
+flowchart TB
+    T["华为云租户"] --> W1["研发工作空间"]
+    T --> W2["客服工作空间"]
+    W1 --> U1["用户 A<br/>管理员 admin"]
+    W1 --> U2["用户 B<br/>成员 member"]
+    W2 --> U3["本空间用户<br/>角色：admin / member"]
+    U1 --> K1A["用户 A 的 API Key × N"]
+    U2 --> K1B["用户 B 的 API Key × N"]
+    U3 --> K2A["每个用户的 API Key × N"]
+    subgraph D["同一个租户独享 RDS PG 数据库：表与索引分开，资源共享"]
+        subgraph S1["研发空间独立 schema：ctxdb_ws_a"]
+            B1["研发 Bank<br/>ID = workspace_id"]
+            B1 --> P1["记忆数据<br/>同 Bank 共享<br/>用户隔离未实现"]
+            B1 --> K1["知识页面<br/>沿用上游语义"]
+        end
+        subgraph S2["客服空间独立 schema：ctxdb_ws_b"]
+            B2["客服 Bank<br/>ID = workspace_id"]
+            B2 --> P2["记忆数据<br/>同 Bank 共享<br/>用户隔离未实现"]
+            B2 --> K2["知识页面<br/>沿用上游语义"]
+        end
+    end
+    W1 -. "独立 schema + 唯一 Bank" .-> B1
+    W2 -. "独立 schema + 唯一 Bank" .-> B2
+    K1A -. "绑定用户 A 与研发空间" .-> B1
+    K1B -. "绑定用户 B 与研发空间" .-> B1
+    K2A -. "绑定所属用户与客服空间" .-> B2
+    classDef cloud fill:#eef4ff,stroke:#3b6fc4,color:#143253
+    classDef resource fill:#e9f6ef,stroke:#2e8460,color:#173b2a
+    classDef content fill:#fff8e9,stroke:#b7892b,color:#49380c
+    class T,W1,W2 cloud
+    class B1,B2,U1,U2,U3 resource
+    class K1A,K1B,K2A content
+    class P1,P2,K1,K2 content

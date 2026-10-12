@@ -1,0 +1,22 @@
+flowchart TB
+    Console["控制台 / 管理 SDK"] -- "X-Auth-Token：IAM Token" --> Entry["现有云入口<br/>TLS / 路由 / 限流"]
+    Agent["Agent / REST / MCP"] -- "成员 API Key" --> Entry
+    subgraph Tenant["一个华为云租户的独享部署"]
+        direction TB
+        subgraph App["应用层：API 与 Worker 并列"]
+            direction LR
+            API["Hindsight API + ContextDB 扩展<br/>管理 REST：IAM + 空间角色<br/>业务 REST / MCP：Key + Bank 范围<br/>空间 / 用户 / Key 管理<br/>不实现用户记忆隔离"]
+            Worker["Hindsight Worker + 同版本扩展<br/>原生任务 / 记忆整理 / 页面刷新<br/>按空间 schema 处理数据"]
+        end
+        PG[("同一个 RDS PG 数据库<br/>ctxdb_meta：空间 / 用户 / Key / 审计<br/>空间 A schema：Bank / 数据 / 任务<br/>空间 B schema：Bank / 数据 / 任务<br/>表与索引分开，PG 资源共享")]
+        API -- "读写元信息与数据 / 提交任务" --> PG
+        Worker -- "枚举空间 schema / 处理原生任务" --> PG
+    end
+    Entry --> API
+    Entry ~~~ Worker
+    classDef entry fill:#edf3ff,stroke:#3c6bad,color:#19334e
+    classDef app fill:#e8f6ee,stroke:#35875e,color:#193a29
+    classDef storage fill:#fff4dd,stroke:#aa7c23,color:#4e3a12
+    class Console,Agent,Entry entry
+    class API,Worker app
+    class PG storage
