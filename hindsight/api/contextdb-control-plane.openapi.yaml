@@ -1,24 +1,29 @@
 openapi: 3.0.3
 info:
   title: ContextDB 首期控制面 API 草案
-  version: 0.2.0-draft
+  version: 0.3.0-draft
   description: |
     设计草案，尚未实现。一个工作空间对应一个 Hindsight Bank；没有独立 Bank 创建接口。
     本期只实现工作空间、用户、API Key 管理及必需认证/空间授权，不实现个人记忆隔离或共享知识发布。
-    管理入口使用 X-Auth-Token 携带可信云 IAM 临时 Token，普通业务 API Key 不可调用。
+    仅供已有管控后端通过内部 HTTPS 调用，不是用户直连 API。
+    管理入口使用 X-ContextDB-Control-Key 携带部署配置的专用管理 Key；用户业务 Key 或 IAM Token 不可替代。
+    管控后端负责用户登录认证、云权限与目标权限检查，不向浏览器或业务客户端下发管理 Key。
+    管控覆盖用户自报内部身份头，从已认证会话生成 X-ContextDB-Actor-Subject；API 先验证管理 Key，再接受该操作人。
     用户与成员是同一工作空间实体，角色只允许 admin/member，每个用户均可拥有多个 API Key。
-    cloud_tenant_id 从认证上下文解析，并校验与租户独享实例配置一致；不引入项目层级。
+    cloud_tenant_id 从部署及管理 Key 绑定解析，目标必须属于本实例；不信任客户自报租户，不引入项目层级。
     元信息和 Hindsight 数据使用同一个 RDS PG 数据库；每工作空间独立 schema，schema 内唯一 Bank。
     表和索引按空间分开，但 CPU/内存/I/O/WAL 共享，不承诺性能互不影响。
     schema 由服务端登记，不接受请求体传入 schema 或 allowed_bank_ids；空间/schema 映射由扩展实现。
-    首期管理接口由 Hindsight API 的 HttpExtension 承载，现有云入口做固定路径映射。
-    ManagementAuth 必须验证 IAM Token 并检查云权限、空间角色和本人关系；HttpExtension 不自动鉴权。
-    同空间同 Bank 的记忆沿用共享语义；Key 绑定用户不等于 memory 行授权。IAM 接入仍需实现适配器。
+    首期管理接口由 Hindsight API 的 HttpExtension 承载，内部入口固定映射到 /ext/contextdb/v1；公共入口禁止暴露两种路径。
+    ControlPlaneKeyAuth 必须覆盖全部管理路由；handler 依据可信 actor 与当前元信息复核空间角色、本人和目标归属。
+    HttpExtension 不自动鉴权；节点不调用 IAM 校验用户 Token。管理 Key 不进入用户 Key 管理表，也不默认获得业务 REST/MCP 权限。
+    管理 Key 每租户独享实例独立生成、配置注入并支持轮换/撤销，禁止硬编码或记录明文。
+    同空间同 Bank 的记忆沿用共享语义；Key 绑定用户不等于 memory 行授权。认证与管控对接仍待实现。
 servers:
-  - url: https://contextdb.example.com/contextdb/v1
-    description: 示例地址，不是已部署服务
+  - url: https://contextdb-internal.example.com/contextdb/v1
+    description: 管控到节点的内部示例地址，不是已部署服务或用户公开入口
 security:
-  - CloudIdentity: []
+  - ControlPlaneKey: []
 tags:
   - name: Workspaces
   - name: Members
@@ -26,11 +31,13 @@ tags:
   - name: Operations
 paths:
   /workspaces:
+    parameters:
+      - $ref: '#/components/parameters/ActorSubject'
     post:
       tags: [Workspaces]
       operationId: createWorkspace
       summary: 创建工作空间及其唯一 Bank
-      description: IAM 需允许创建；服务端登记空间唯一 schema，复用原生迁移初始化表及唯一 Bank，为创建者建立初始管理员用户。202 不表示 schema 或 Bank 已可调用。
+      description: 管控先验证用户云租户和创建权限，再以专用管理 Key 调用。节点为可信 actor 建立初始管理员，登记空间唯一 schema，复用原生迁移初始化表及唯一 Bank。202 不表示 schema 或 Bank 已可调用；不能仅靠未认证 actor 头创建。
       parameters:
         - $ref: '#/components/parameters/IdempotencyRequired'
       requestBody:
@@ -44,7 +51,7 @@ paths:
     get:
       tags: [Workspaces]
       operationId: listWorkspaces
-      summary: 分页列出当前 IAM 身份可见的工作空间
+      summary: 分页列出可信操作人可见的工作空间
       parameters:
         - $ref: '#/components/parameters/Cursor'
         - $ref: '#/components/parameters/PageSize'
@@ -57,6 +64,7 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /workspaces/{workspace_id}:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - $ref: '#/components/parameters/WorkspaceId'
     get:
       tags: [Workspaces]
@@ -104,6 +112,7 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /operations/{operation_id}:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - name: operation_id
         in: path
         required: true
@@ -121,12 +130,13 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /workspaces/{workspace_id}/members:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - $ref: '#/components/parameters/WorkspaceId'
     post:
       tags: [Members]
       operationId: createMember
       summary: 动态创建工作空间成员
-      description: 本空间管理员；用户也叫成员，角色只能为 admin 或 member，不区分人/服务账号类型。管理员须绑定可信 iam_subject；未绑定的普通成员由管理员管理其 Key。
+      description: 管控代本空间管理员调用；节点按可信 actor 复核。用户也叫成员，角色只能为 admin 或 member，不区分人/服务账号类型。管理员须绑定管控核验的 iam_subject；无登录绑定的普通成员由管理员管理其 Key。
       requestBody:
         required: true
         content:
@@ -156,13 +166,14 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /workspaces/{workspace_id}/members/{member_id}:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - $ref: '#/components/parameters/WorkspaceId'
       - $ref: '#/components/parameters/MemberId'
     get:
       tags: [Members]
       operationId: getMember
       summary: 查询用户和版本
-      description: 本空间管理员或 IAM 绑定的本人。
+      description: 管控代本空间管理员或登录身份绑定的本人调用，节点按可信 actor 和当前成员记录复核。
       responses:
         '200':
           description: 成员详情
@@ -177,7 +188,7 @@ paths:
       tags: [Members]
       operationId: updateMember
       summary: 更新名称 角色或停用状态
-      description: 本空间管理员；提升为 admin 要求已有可信 IAM 绑定，不得降级或停用最后一个有效可登录管理员。
+      description: 本空间管理员；提升为 admin 要求已有管控核验的登录身份绑定，不得降级或停用最后一个有效可登录管理员。节点不直接校验用户 IAM Token。
       parameters:
         - $ref: '#/components/parameters/IfMatch'
       requestBody:
@@ -202,6 +213,7 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /workspaces/{workspace_id}/members/{member_id}/api-keys:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - $ref: '#/components/parameters/WorkspaceId'
       - $ref: '#/components/parameters/MemberId'
     post:
@@ -209,7 +221,8 @@ paths:
       operationId: createApiKey
       summary: 创建属于指定成员的工作空间 Key
       description: |
-        本空间管理员或 IAM 绑定的本人；scopes 不得超出成员当前能力。
+        管控代本空间管理员或登录身份绑定的本人调用；节点按可信 actor 复核，scopes 不得超出成员当前能力。
+        本接口只签发用户业务 Key，不签发/返回内部管理 Key；管控不记录 secret，并仅转交通过授权的申请用户。
         代签管理员可获得secret，首期属于受信任管理者，不承诺防管理员模拟成员。
         memory.write 要求 memory.read；reflect 要求 memory.read；knowledge.read 只开放知识页读取，不作为个人记忆隔离策略。
         Key 必须归属路径中的用户；管理员和成员都可拥有多个 Key，同用户各 Key 对应同一调用者身份，不代表记忆只对该用户可见。
@@ -236,7 +249,7 @@ paths:
       tags: [APIKeys]
       operationId: listApiKeys
       summary: 列出用户 Key 元数据
-      description: 本空间管理员或 IAM 绑定的本人；不返回完整 secret 或摘要。
+      description: 管控代本空间管理员或登录身份绑定的本人调用；节点按可信 actor 复核，不返回完整 secret 或摘要，不列出内部管理 Key。
       parameters:
         - $ref: '#/components/parameters/Cursor'
         - $ref: '#/components/parameters/PageSize'
@@ -249,6 +262,7 @@ paths:
         default: { $ref: '#/components/responses/ApiError' }
   /workspaces/{workspace_id}/members/{member_id}/api-keys/{key_id}/revoke:
     parameters:
+      - $ref: '#/components/parameters/ActorSubject'
       - $ref: '#/components/parameters/WorkspaceId'
       - $ref: '#/components/parameters/MemberId'
       - name: key_id
@@ -259,20 +273,32 @@ paths:
       tags: [APIKeys]
       operationId: revokeApiKey
       summary: 幂等撤销用户的 Key
-      description: 本空间管理员或 IAM 绑定的本人；必须校验 key_id 同时属于路径中的 workspace 和 member。首期不缓存鉴权结果，每个新请求查 PG 主库；撤销提交后开始鉴权的请求被拒绝，不承诺取消在途请求或已受理任务。
+      description: 管控代本空间管理员或登录身份绑定的本人调用；节点按可信 actor 复核，必须校验 key_id 同时属于路径中的 workspace 和 member。本接口仅撤销用户业务 Key，不能撤销内部管理 Key。首期业务鉴权不缓存，每个新请求查 PG 主库；撤销提交后开始鉴权的请求被拒绝，不承诺取消在途请求或已受理任务。
       responses:
         '204': { description: 已撤销或已处于撤销状态 }
         default: { $ref: '#/components/responses/ApiError' }
 components:
   securitySchemes:
-    CloudIdentity:
+    ControlPlaneKey:
       type: apiKey
       in: header
-      name: X-Auth-Token
+      name: X-ContextDB-Control-Key
       description: |
-        云 IAM 临时 Token，不是 ContextDB API Key。OpenAPI apiKey 类型只描述自定义请求头的位置。
-        ManagementAuth 验证身份；具体接口再校验云权限与空间角色。业务 Bearer Key 不可替代。
+        每个租户独享部署预配置的管控服务 Key，仅由管控后端持有，不下发给用户。
+        ControlPlaneKeyAuth 核验 Key 摘要、有效状态和部署租户；用户业务 Key、用户 IAM Token 均不能替代。
+        Key 只能认证服务凭据，不能独立认证人；须配合可信管控产生的 ActorSubject 和节点角色/目标复核。
+        内部网络限制和 HTTPS 是必要边界，公共业务入口不路由管理接口。
   parameters:
+    ActorSubject:
+      name: X-ContextDB-Actor-Subject
+      in: header
+      required: true
+      description: |
+        管控从已认证登录上下文生成的稳定用户 ID，与 workspace_members.iam_subject 对应。
+        管控必须覆盖客户端自报的内部身份/角色头；节点先验证管理 Key，再接受此字段。
+        此头不是认证凭据，也不是 URL 的目标 member_id；角色由当前元信息解析，不接受 role 头。
+        缺少/非法字段为400；管理 Key 无效时优先401。cloud_tenant_id 取部署/Key 绑定，不取用户输入。
+      schema: { type: string, minLength: 1, maxLength: 256 }
     WorkspaceId:
       name: workspace_id
       in: path
@@ -368,7 +394,8 @@ components:
         iam_subject:
           type: string
           minLength: 1
-          description: 普通成员可选，管理员必需；管理入口识别用户及自助 Key 管理需有可信 IAM 绑定。未绑定普通成员的 Key 由管理员管理。
+          maxLength: 256
+          description: 普通成员可选，管理员必需；由管控核验的云登录身份 ID，用于和可信 ActorSubject 匹配、本人管理及审计。不是 IAM Token，节点不调用 IAM 校验。未绑定普通成员的 Key 由管理员管理。
         role: { type: string, enum: [admin, member], default: member }
     MemberPatch:
       type: object

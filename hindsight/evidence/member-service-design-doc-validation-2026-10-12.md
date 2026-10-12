@@ -1,5 +1,7 @@
 # ContextDB 首期管理设计文档验证记录
 
+> 历史记录：以下结果针对 2026-10-12 的 IAM 直连草案，不代表当前合同。2026-10-13 已按用户决定改为管控后端专用管理 Key，见[修订验证记录](member-service-design-control-key-validation-2026-10-13.md)和[当前设计](../member-apikey-bank-service-design.md)；保留本页用于追溯，未重写当日验证结果。
+
 日期：2026-10-12。对象：[首期管理设计](../member-apikey-bank-service-design.md)、[后续记忆隔离备忘](../member-memory-isolation-future-notes.md)、[OpenAPI](../api/contextdb-control-plane.openapi.yaml)和[架构图](../diagrams/README.md)。
 
 本轮按用户要求收窄：本期只实现工作空间、用户、API Key 管理及必需认证/空间授权。用户记忆私有/共享知识的 tag 策略、发布工作流和成员任务私有适配不进入本期。管理 IAM Token 与业务随机 Key 明确分开；HttpExtension 的新增 Router 必须自行加管理认证依赖。

@@ -1,11 +1,12 @@
 flowchart TB
-    Console["控制台 / 管理 SDK"] -- "X-Auth-Token：IAM Token" --> Entry["现有云入口<br/>TLS / 路由 / 限流"]
-    Agent["Agent / REST / MCP"] -- "成员 API Key" --> Entry
+    Console["用户 / 控制台 / 管控客户端"] -- "已有云登录认证" --> Control["已有云管控后端<br/>用户认证 / 权限检查<br/>重建可信操作人<br/>管理 Key 不下发给用户"]
+    Control -- "内网 HTTPS<br/>管理 Key + 可信 actor" --> Internal["内部管理入口<br/>仅允许管控来源<br/>不暴露公网管理路径"]
+    Agent["Agent / REST / MCP"] -- "用户 API Key" --> Entry["现有业务入口<br/>TLS / 路由 / 限流<br/>不路由管理路径"]
     subgraph Tenant["一个华为云租户的独享部署"]
         direction TB
         subgraph App["应用层：API 与 Worker 并列"]
             direction LR
-            API["Hindsight API + ContextDB 扩展<br/>管理 REST：IAM + 空间角色<br/>业务 REST / MCP：Key + Bank 范围<br/>空间 / 用户 / Key 管理<br/>不实现用户记忆隔离"]
+            API["Hindsight API + ContextDB 扩展<br/>管理 REST：专用 Key + actor/角色复核<br/>业务 REST / MCP：用户 Key + Bank 范围<br/>不直接校验用户 IAM Token<br/>不实现用户记忆隔离"]
             Worker["Hindsight Worker + 同版本扩展<br/>原生任务 / 记忆整理 / 页面刷新<br/>按空间 schema 处理数据"]
         end
         PG[("同一个 RDS PG 数据库<br/>ctxdb_meta：空间 / 用户 / Key / 审计<br/>空间 A schema：Bank / 数据 / 任务<br/>空间 B schema：Bank / 数据 / 任务<br/>表与索引分开，PG 资源共享")]
@@ -13,10 +14,10 @@ flowchart TB
         Worker -- "枚举空间 schema / 处理原生任务" --> PG
     end
     Entry --> API
-    Entry ~~~ Worker
+    Internal --> API
     classDef entry fill:#edf3ff,stroke:#3c6bad,color:#19334e
     classDef app fill:#e8f6ee,stroke:#35875e,color:#193a29
     classDef storage fill:#fff4dd,stroke:#aa7c23,color:#4e3a12
-    class Console,Agent,Entry entry
+    class Console,Control,Internal,Agent,Entry entry
     class API,Worker app
     class PG storage

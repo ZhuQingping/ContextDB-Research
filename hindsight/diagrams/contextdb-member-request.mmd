@@ -1,26 +1,28 @@
 sequenceDiagram
     autonumber
-    participant C as 控制台或 Agent
-    participant I as 云 IAM
+    participant C as 用户/控制台
+    participant B as 已有管控后端
+    participant G as Agent/应用
     participant A as API 扩展
     participant P as 同一 RDS PG
     participant E as 原生记忆引擎
     alt 管理 REST：工作空间 / 用户 / Key
-        C->>I: 登录或获取 IAM 临时 Token
-        I-->>C: IAM Token
-        C->>A: X-Auth-Token + 管理目标 ws1/u1
-        A->>I: 验证 Token，获得可信云身份
-        I-->>A: 可信云租户、调用者 IAM 用户、有效期
-        A->>A: 核对云权限与部署租户
-        A->>P: 按可信调用者查询角色，核对目标 ws1/u1
+        C->>B: 已有登录会话 + 管理申请 ws1/u1
+        B->>B: 用户认证、云租户/管理权限、目标权限检查
+        B->>B: 覆盖客户端内部身份头，生成可信 actor
+        B->>A: 内部 HTTPS + 管理 Key + actor + 目标 ws1/u1
+        A->>A: ControlPlaneKeyAuth 核验专用 Key 与部署租户
+        Note over B,A: 管理 Key 不下发用户；节点不调用 IAM 校验用户 Token
+        A->>P: 按可信 actor 查询当前角色，核对目标 ws1/u1
         P-->>A: 管理员/成员及目标归属
         A->>A: 管理员可代签，成员仅可为本人签发
-        Note over C,A: URL 中 u1 是目标用户，不是调用者身份；失败即拒绝，不签发 Key
+        Note over B,A: actor 仅在管理 Key 验证后接受；u1 是目标用户，不是操作人
         A->>P: 执行管理，Key 只保存摘要
-        A-->>C: 管理结果；新 Key 完整值只返回一次
+        A-->>B: 管理结果；新用户 Key 完整值只返回一次
+        B-->>C: 返回获授权的结果/用户 Key，不含管理 Key
         Note over A,E: 空间开通/删除由内部限定身份调用原生迁移和 Bank 接口
     else 业务 REST / MCP：retain / recall
-        C->>A: Bearer ContextDB Key + 目标 Bank
+        G->>A: 业务入口：Bearer 用户 Key + 目标 Bank
         A->>P: 校验摘要、状态及绑定用户/空间
         P-->>A: 空间 schema、Bank、Key 操作权限
         A->>A: Bank 必须属于 Key 绑定的空间
@@ -28,6 +30,6 @@ sequenceDiagram
         E->>P: 查询或写入本空间数据/原生任务
         P-->>E: 本 Bank 数据或任务状态
         E-->>A: 原生响应
-        A-->>C: 业务结果
+        A-->>G: 业务结果
         Note over A,P: 本期不按用户过滤记忆，同 Bank 的读取者可能看到他人记忆
     end
