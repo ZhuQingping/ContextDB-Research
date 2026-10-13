@@ -2,9 +2,11 @@
 
 更新日期：2026-10-10。本文聚焦成员身份、API Key 的归属/授权/生命周期，以及 Hindsight Cloud 为什么采用 Organization（组织）。阿里云部分基于当日登录控制台的只读观察；Hindsight Cloud 组织能力基于 2026-10-07 的登录态页面/API 与官方资料核验。控制台与商业产品会演进，不能把单账号当前配置外推为所有客户的默认配置。
 
-> 2026-10-12 首期产品模型已由用户确认：云租户独享 API、Worker 与 RDS PG，元信息和数据共用一个 PG 数据库；云租户下多个工作空间，每空间独立 schema 内一个 Bank，用户（也叫成员）在空间下，仅 admin/member 两种角色；每个管理员或成员均可拥有多个 API Key，Key 隶属用户。首期不引入项目、独立 MetaPG 或独立生命周期服务。当前架构、OpenAPI 与插件细节见[首期服务化设计](member-apikey-bank-service-design.md)。本期只实现工作空间/用户/Key 管理和必需认证，不实现用户私有记忆或知识发布；候选 tag 方案见[后续备忘](member-memory-isolation-future-notes.md)。本文保留竞品历史观察，API/插件尚待实现。
+> 2026-10-12 首期产品模型已由用户确认：云租户独享 API、Worker 与 RDS PG，元信息和数据共用一个 PG 数据库；云租户下多个工作空间，每空间独立 schema 内一个 Bank，用户（也叫成员）在空间下，仅 admin/member 两种角色；每个管理员或成员均可拥有多个 API Key，Key 隶属用户。首期不引入项目、独立 MetaPG 或独立生命周期服务。当前架构、OpenAPI 与插件细节见[首期服务化设计](member-apikey-bank-service-design.md)。本期只实现工作空间/用户/Key 管理和必需认证，不实现用户私有记忆或知识发布；候选 tag 方案见[后续备忘](member-memory-isolation-future-notes.md)。本文保留竞品历史观察；首期扩展已在本地实现并完成代理自测，用户检视、验收及生产联调未完成。
 
-> 2026-10-13 管理认证修订：新增管理 REST 仅由已有管控后端调用，使用部署时配置的专用管理 Key，不向用户下发。用户登录和权限检查保留管控侧；节点验证管理 Key，并按管控传递的可信操作人及当前元信息复核角色和目标。本文的 IAM 身份绑定表示与管控登录身份对应，不要求节点校验 IAM Token；管理 Key 与下文用户业务 Key 的归属、签发、scope 分开，详见[当前设计](member-apikey-bank-service-design.md#管理接口与业务接口如何认证)。
+> 2026-10-13 管理认证修订：新增管理 REST 仅由已有管控后端调用，使用部署时配置的专用管理 Key，不向用户下发。用户登录和权限检查保留管控侧；节点验证管理 Key，并按管控传递的可信操作人及当前元信息复核角色和目标。本文的 IAM 身份绑定表示与管控登录身份对应，不要求节点校验 IAM Token；管理 Key 与下文用户业务 Key 的归属、签发、scope 分开，详见[当前设计](member-apikey-bank-service-design.md#认证与授权)。
+
+> 后续范围澄清：新增管理接口仅通过内部 REST 供管控后端调用，不向用户面直连开放；原生 REST/MCP 接口保持不变，接口裁剪另行评估。PG 表与 API 描述已集中到[主设计](member-apikey-bank-service-design.md)。下文竞品观察是历史研究，不替代当前功能合同。
 
 ## 结论先行
 
@@ -124,7 +126,7 @@ Hindsight Cloud 的登录态产品页面和官方 Team Management、API Keys、U
 
 #### 当前首期目标模型（2026-10-12，产品模型已确认）
 
-本模型替代此前“空间内多个 Bank、Key 多 Bank 授权”的候选设计；实现细节仍需原型验证：
+本模型替代此前“空间内多个 Bank、Key 多 Bank 授权”的候选设计；对应扩展已本地实现并完成代理自测，用户验收及生产联调未完成：
 
 - 一个云租户包含多个工作空间；每个工作空间映射独立 Hindsight schema，schema 内唯一 Bank，默认 Bank ID 等于 workspace ID。
 - 工作空间下统一建立用户记录，role 只允许 admin/member；API Key 隶属于用户，两种角色均支持多 Key。一个 Key 固定绑定空间和用户，服务端解析租户/schema 和唯一 Bank；首期没有独立成员 Bank ACL 或 Key Bank 集合。
@@ -133,7 +135,7 @@ Hindsight Cloud 的登录态产品页面和官方 Team Management、API Keys、U
 - 用户隔离是后续候选：可以通过稳定 member ID、服务端强制 tag scope、写入校验和派生任务范围尝试实现，但本期不开发/验收；metadata.user_id 不是授权规则。SMIC 商业跨 Key 实测也证明不同 Key 本身不隔离记忆，见[证据](evidence/hindsight-cloud-cross-key-smic-2026-10-10.md)。
 - 一个独享部署共用一个 PG 数据库，每空间独立数据 schema，表、索引及原生任务分开；元信息位于同库 ctxdb_meta，不增加独立元数据库。空间/schema 映射和授权由扩展实现，复用上游迁移及 Worker 枚举，不承诺零新增代码或性能互不影响；删除不得触及其他空间或元信息。
 
-同一 RDS PG 中的元信息表至少需要 `workspaces`、`workspace_members`、`api_keys`，并保留状态、角色、scope、有效期/撤销、创建者和审计字段。具体表草案见[首期服务化设计](member-apikey-bank-service-design.md)，不是独立组件或已实现表结构。
+同一 RDS PG 中的元信息表至少需要 `workspaces`、`workspace_members`、`api_keys`，并保留状态、角色、scope、有效期/撤销、创建者和审计字段。完整表设计与本地实现对应，见[主设计 PG 章节](member-apikey-bank-service-design.md#pg-表设计)；不是独立 MetaPG，尚未完成用户验收或生产部署。
 
 ### 4.2 再决定要不要“组织”
 
@@ -151,13 +153,13 @@ Hindsight Cloud 的登录态产品页面和官方 Team Management、API Keys、U
 
 ## 5. 需要实现与验证的场景
 
-在成员/Key 管理进入可上线设计前，至少做如下合同测试：
+以下保留历史候选验收矩阵，不是当前首期门禁：个人记忆隔离、晋升与完整审计属于后续候选。现行验收以[主设计](member-apikey-bank-service-design.md#部署与验收)为准。
 
-1. **成员边界：** 同一 workspace 两个成员 A/B；验证 A 的私有记忆对 B 的列表、搜索、Recall、详情、导出、MCP、后台任务均不可见；显式共享 KB 按授权可见。
+1. **后续个人记忆隔离候选：** 同一 workspace 两个成员 A/B；验证 A 的私有记忆对 B 的列表、搜索、Recall、详情、导出、MCP、后台任务均不可见；显式共享 KB 按授权可见。
 2. **Key 边界：** 管理员和成员都可拥有多个 Key；不同 Key 可分别限 scope、过期、撤销；同用户各 Key 对应同一认证身份，但本期不实现个人记忆隔离，其他有权用户仍可能读取同 Bank 内容。
 3. **继承与撤权：** Key 权限不得高于成员；降权、离职、成员禁用、workspace 冻结提交后，新请求直接查 PG 主库并拒绝无效身份；首期不引入鉴权缓存。
 4. **资源归属：** 修改请求中的 workspace_id、Bank ID、用户 ID 或 tenant 头不能越权；服务端从认证主体和控制库解析真实归属。
-5. **审计：** 成员邀请/绑定/角色变化/禁用，Key 创建/轮换/撤销，记忆与 KB 的关键读写都可按 RequestId 追溯；审计不泄露 secret 或未授权正文。
+5. **后续完整审计候选：** 成员邀请/绑定/角色变化/禁用，Key 创建/轮换/撤销，记忆与 KB 的关键读写都可按 RequestId 追溯；审计不泄露 secret 或未授权正文。
 6. **后台与重试：** 异步 retain、晋升、导出在创建者权限被撤销后有明确策略；重试不能复用已失效的客户 bearer token 或绕过资源 ACL。
 
 ## 6. 证据与未决问题

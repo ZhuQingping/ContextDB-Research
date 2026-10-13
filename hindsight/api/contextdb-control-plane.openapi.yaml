@@ -1,9 +1,13 @@
 openapi: 3.0.3
 info:
-  title: ContextDB 首期控制面 API 草案
-  version: 0.3.0-draft
+  title: ContextDB 首期管理 REST API
+  version: 0.4.0-development
   description: |
-    设计草案，尚未实现。一个工作空间对应一个 Hindsight Bank；没有独立 Bank 创建接口。
+    前序源码已实现并完成代理本地自测，用户尚未检视代码或完成验收；未部署上线，云管控/生产联调未完成。
+    新增实例/工作空间/成员/API Key 管理接口仅提供内部 REST，供可信管控调用，不向用户面直接开放，也不新增管理 MCP 工具。
+    原生 Hindsight REST/MCP 接口与协议保持不变；是否关闭或裁剪原生接口另行评估，不属于本特性。
+    本文件只描述新增管理 REST，业务 REST 与 PG 表设计见主设计文档。
+    一个工作空间对应一个 Hindsight Bank；没有独立 Bank 创建接口。
     本期只实现工作空间、用户、API Key 管理及必需认证/空间授权，不实现个人记忆隔离或共享知识发布。
     仅供已有管控后端通过内部 HTTPS 调用，不是用户直连 API。
     管理入口使用 X-ContextDB-Control-Key 携带部署配置的专用管理 Key；用户业务 Key 或 IAM Token 不可替代。
@@ -14,22 +18,64 @@ info:
     元信息和 Hindsight 数据使用同一个 RDS PG 数据库；每工作空间独立 schema，schema 内唯一 Bank。
     表和索引按空间分开，但 CPU/内存/I/O/WAL 共享，不承诺性能互不影响。
     schema 由服务端登记，不接受请求体传入 schema 或 allowed_bank_ids；空间/schema 映射由扩展实现。
-    首期管理接口由 Hindsight API 的 HttpExtension 承载，内部入口固定映射到 /ext/contextdb/v1；公共入口禁止暴露两种路径。
+    首期管理接口由 Hindsight API 的 HttpExtension 承载，管理面直接调用节点的 /ext/contextdb/v1，不新增入口或路径转发组件；节点校验来源、管理 Key 和操作人。
     ControlPlaneKeyAuth 必须覆盖全部管理路由；handler 依据可信 actor 与当前元信息复核空间角色、本人和目标归属。
-    HttpExtension 不自动鉴权；节点不调用 IAM 校验用户 Token。管理 Key 不进入用户 Key 管理表，也不默认获得业务 REST/MCP 权限。
+    HttpExtension 不自动鉴权；节点不调用 IAM 校验用户 Token。管理 Key 不进入用户 Key 管理表，也不获得原生业务 REST/MCP 权限。
     管理 Key 每租户独享实例独立生成、配置注入并支持轮换/撤销，禁止硬编码或记录明文。
-    同空间同 Bank 的记忆沿用共享语义；Key 绑定用户不等于 memory 行授权。认证与管控对接仍待实现。
+    同空间同 Bank 的记忆沿用共享语义；Key 绑定用户不等于 memory 行授权。精确实现与生产集成仍需验证。
+    实例管理仅登记部署配置中的已有独享实例，不自动开通云资源、不增加用户产品层级。
+    集合按 limit/offset 分页并返回 total，替代尚未上线的 cursor/page_size 草案。
+    204 响应没有正文，request_id 在 X-Request-ID；其他响应在正文和响应头提供 request_id。
 servers:
-  - url: https://contextdb-internal.example.com/contextdb/v1
+  - url: https://contextdb-internal.example.com/ext/contextdb/v1
     description: 管控到节点的内部示例地址，不是已部署服务或用户公开入口
 security:
   - ControlPlaneKey: []
 tags:
+  - name: Instances
   - name: Workspaces
   - name: Members
   - name: APIKeys
   - name: Operations
 paths:
+  /instances:
+    parameters:
+      - $ref: '#/components/parameters/ActorSubject'
+    post:
+      tags: [Instances]
+      operationId: registerInstance
+      summary: 登记本部署已有独享实例
+      description: 管控先核验云资源创建/登记权限；instance_id 必须等于部署配置，cloud_tenant_id 来自配置。重复同名称请求返回既有登记；不同实例或名称冲突被拒绝。不是 RDS/API/Worker 自动开通接口。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InstanceCreate' }
+      responses:
+        '201':
+          description: 本部署登记完成
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InstanceResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /instances/{instance_id}:
+    parameters:
+      - $ref: '#/components/parameters/ActorSubject'
+      - name: instance_id
+        in: path
+        required: true
+        schema: { type: string, minLength: 1, maxLength: 128 }
+    get:
+      tags: [Instances]
+      operationId: getInstance
+      summary: 查询本部署登记
+      responses:
+        '200':
+          description: 实例登记元信息，不包含管理 Key/数据库凭据
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InstanceResponse' }
+        default: { $ref: '#/components/responses/ApiError' }
   /workspaces:
     parameters:
       - $ref: '#/components/parameters/ActorSubject'
@@ -53,8 +99,8 @@ paths:
       operationId: listWorkspaces
       summary: 分页列出可信操作人可见的工作空间
       parameters:
-        - $ref: '#/components/parameters/Cursor'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
       responses:
         '200':
           description: 工作空间列表，不泄露其他云租户或不可见资源
@@ -85,7 +131,7 @@ paths:
       tags: [Workspaces]
       operationId: updateWorkspace
       summary: 修改工作空间名称 描述或冻结状态
-      description: 本空间管理员；只支持 active/frozen 间转换，不用于创建激活或删除。
+      description: 本空间管理员；只支持 active/frozen 间转换，不用于创建激活或删除。冻结时首响应可能先等待已准入请求退出，不能理解为立即返回200。
       parameters:
         - $ref: '#/components/parameters/IfMatch'
       requestBody:
@@ -104,7 +150,7 @@ paths:
       tags: [Workspaces]
       operationId: deleteWorkspace
       summary: 异步删除工作空间对应 Bank
-      description: 本空间管理员；拒绝新请求并排空既有任务，在登记的空间 schema 中清理唯一 Bank；不要求立即回收 schema。不得删除共享元信息、其他空间 schema 或整个数据库。
+      description: 本空间管理员；首响应可能先等待已准入请求退出，取得独占锁、关闭准入并登记任务后才返回202；随后异步排空任务并清理唯一Bank。客户端超时后使用相同Idempotency-Key重试，不据超时认定未受理。保留空间schema/表与deleted元信息；不得删除共享元信息、其他空间schema或整个数据库。
       parameters:
         - $ref: '#/components/parameters/IdempotencyRequired'
       responses:
@@ -155,8 +201,8 @@ paths:
       summary: 列出工作空间用户
       description: 仅本空间管理员可列出完整用户目录；普通成员使用自己的详情接口。
       parameters:
-        - $ref: '#/components/parameters/Cursor'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
       responses:
         '200':
           description: 成员目录，不包含凭据 secret
@@ -207,7 +253,7 @@ paths:
       tags: [Members]
       operationId: deleteMember
       summary: 软删除成员并拒绝后续凭据调用
-      description: 本空间管理员；保留 member_id 和审计，数据按保留策略处理。不可删除最后一个有效管理员。
+      description: 本空间管理员；保留 member_id 和管理操作审计记录（audit_events），不是 retain/recall 业务审计。数据按保留策略处理。不可删除最后一个有效管理员。
       responses:
         '204': { description: 已删除或已处于删除状态 }
         default: { $ref: '#/components/responses/ApiError' }
@@ -251,8 +297,8 @@ paths:
       summary: 列出用户 Key 元数据
       description: 管控代本空间管理员或登录身份绑定的本人调用；节点按可信 actor 复核，不返回完整 secret 或摘要，不列出内部管理 Key。
       parameters:
-        - $ref: '#/components/parameters/Cursor'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
       responses:
         '200':
           description: 不返回 secret 或其摘要
@@ -287,7 +333,7 @@ components:
         每个租户独享部署预配置的管控服务 Key，仅由管控后端持有，不下发给用户。
         ControlPlaneKeyAuth 核验 Key 摘要、有效状态和部署租户；用户业务 Key、用户 IAM Token 均不能替代。
         Key 只能认证服务凭据，不能独立认证人；须配合可信管控产生的 ActorSubject 和节点角色/目标复核。
-        内部网络限制和 HTTPS 是必要边界，公共业务入口不路由管理接口。
+        调用来源限制和 HTTPS 是必要边界，须进行部署联调验收；用户业务 Key 不允许调用管理接口，不假定存在独立业务入口。
   parameters:
     ActorSubject:
       name: X-ContextDB-Actor-Subject
@@ -309,14 +355,14 @@ components:
       in: path
       required: true
       schema: { type: string, minLength: 1 }
-    Cursor:
-      name: cursor
-      in: query
-      schema: { type: string, maxLength: 1024 }
-    PageSize:
-      name: page_size
+    Limit:
+      name: limit
       in: query
       schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
     IfMatch:
       name: If-Match
       in: header
@@ -347,6 +393,23 @@ components:
         application/json:
           schema: { $ref: '#/components/schemas/ManagementAccepted' }
   schemas:
+    InstanceCreate:
+      type: object
+      additionalProperties: false
+      required: [instance_id, name]
+      properties:
+        instance_id: { type: string, minLength: 1, maxLength: 128 }
+        name: { type: string, minLength: 1, maxLength: 64 }
+    InstanceResponse:
+      type: object
+      required: [instance_id, cloud_tenant_id, name, created_by, created_at, request_id]
+      properties:
+        instance_id: { type: string }
+        cloud_tenant_id: { type: string }
+        name: { type: string }
+        created_by: { type: string }
+        created_at: { type: string, format: date-time }
+        request_id: { type: string }
     WorkspaceCreate:
       type: object
       additionalProperties: false
@@ -367,6 +430,9 @@ components:
       required: [workspace_id, name, state, version]
       properties:
         workspace_id: { type: string }
+        instance_id: { type: string, description: 部署登记 ID，不增加工作空间下的 Bank 产品层级 }
+        cloud_tenant_id: { type: string }
+        schema_name: { type: string, readOnly: true, description: 内部管控可读；创建/修改请求不可指定 }
         name: { type: string }
         description: { type: string }
         state: { type: string, enum: [creating, active, frozen, deleting, deleted, failed] }
@@ -393,9 +459,10 @@ components:
         member_name: { type: string, minLength: 1, maxLength: 64 }
         iam_subject:
           type: string
+          pattern: '^[!-~]{1,256}$'
           minLength: 1
           maxLength: 256
-          description: 普通成员可选，管理员必需；由管控核验的云登录身份 ID，用于和可信 ActorSubject 匹配、本人管理及审计。不是 IAM Token，节点不调用 IAM 校验。未绑定普通成员的 Key 由管理员管理。
+          description: 普通成员可选，管理员必需；由管控核验的云登录身份 ID，用于和可信 ActorSubject 匹配、本人管理及管理操作审计。不是 IAM Token，节点不调用 IAM 校验。未绑定普通成员的 Key 由管理员管理。
         role: { type: string, enum: [admin, member], default: member }
     MemberPatch:
       type: object
@@ -409,6 +476,7 @@ components:
       type: object
       required: [member_id, workspace_id, member_name, role, status, version]
       properties:
+        iam_subject: { type: string, nullable: true, description: 管控核验的稳定登录绑定（可见 ASCII）；未绑定的普通成员为 null }
         member_id: { type: string }
         workspace_id: { type: string }
         member_name: { type: string }
@@ -440,7 +508,7 @@ components:
         expires_at:
           type: string
           format: date-time
-          description: 必须晚于创建时间，最长有效期由租户策略决定
+          description: 必须携带时区、晚于当前时间；当前实现最长有效期为365天
     ApiKeyMetadata:
       type: object
       additionalProperties: false
@@ -452,6 +520,7 @@ components:
         name: { type: string }
         scopes: { $ref: '#/components/schemas/KeyScopes' }
         status: { type: string, enum: [active, expired, revoked] }
+        revoked_at: { type: string, format: date-time, nullable: true }
         expires_at: { type: string, format: date-time }
         created_at: { type: string, format: date-time }
         last_used_at: { type: string, format: date-time, nullable: true }
@@ -467,9 +536,11 @@ components:
         name: { type: string }
         scopes: { $ref: '#/components/schemas/KeyScopes' }
         status: { type: string, enum: [active] }
+        revoked_at: { type: string, format: date-time, nullable: true }
         expires_at: { type: string, format: date-time }
         created_at: { type: string, format: date-time }
         created_by: { type: string }
+        last_used_at: { type: string, format: date-time, nullable: true }
         secret:
           type: string
           minLength: 32
@@ -477,24 +548,30 @@ components:
         request_id: { type: string }
     WorkspacePage:
       type: object
-      required: [items, request_id]
+      required: [items, total, limit, offset, request_id]
       properties:
         items: { type: array, items: { $ref: '#/components/schemas/Workspace' } }
-        next_cursor: { type: string, nullable: true }
+        total: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        offset: { type: integer, minimum: 0 }
         request_id: { type: string }
     MemberPage:
       type: object
-      required: [items, request_id]
+      required: [items, total, limit, offset, request_id]
       properties:
         items: { type: array, items: { $ref: '#/components/schemas/Member' } }
-        next_cursor: { type: string, nullable: true }
+        total: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        offset: { type: integer, minimum: 0 }
         request_id: { type: string }
     ApiKeyPage:
       type: object
-      required: [items, request_id]
+      required: [items, total, limit, offset, request_id]
       properties:
         items: { type: array, items: { $ref: '#/components/schemas/ApiKeyMetadata' } }
-        next_cursor: { type: string, nullable: true }
+        total: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        offset: { type: integer, minimum: 0 }
         request_id: { type: string }
     ManagementAccepted:
       type: object
@@ -502,7 +579,10 @@ components:
       properties:
         operation_id: { type: string }
         workspace_id: { type: string }
-        state: { type: string, enum: [pending, running] }
+        action: { type: string, enum: [create_workspace, delete_workspace] }
+        state: { type: string, enum: [pending, running, succeeded, failed], description: 同幂等请求可返回已完成状态 }
+        attempts: { type: integer, minimum: 0 }
+        error_code: { type: string, nullable: true, description: 安全错误/等待码；waiting_for_admissions 或 waiting_for_tasks 表示删除仍在等待，并非 failed }
         request_id: { type: string }
     ManagementOperation:
       type: object
@@ -512,7 +592,8 @@ components:
         workspace_id: { type: string }
         action: { type: string, enum: [create_workspace, delete_workspace] }
         state: { type: string, enum: [pending, running, succeeded, failed] }
-        error: { $ref: '#/components/schemas/Error' }
+        attempts: { type: integer, minimum: 0 }
+        error_code: { type: string, nullable: true, description: 安全错误/等待码，不含数据库异常或凭据；等待码不代表 failed }
         request_id: { type: string }
     Error:
       type: object

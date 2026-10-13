@@ -215,7 +215,7 @@ Cloud Console / Org / Team / Key / Usage / Billing / SSO
 
 ## 6. 华为云 ContextDB 历史部署候选
 
-本节保留 2026-10-07 的共享控制面/多 Cell 研究，MetaPG、Workspace placement 等不属于当前首期独享方案。当前部署见[租户独享管理架构](member-apikey-bank-service-design.md#扩展包与原生记忆接口)。
+本节保留 2026-10-07 的共享控制面/多 Cell 研究，MetaPG、Workspace placement 等不属于当前首期独享方案。当前部署见[租户独享管理架构](member-apikey-bank-service-design.md#总体架构与资源模型)。
 
 ### 6.1 总体结构
 

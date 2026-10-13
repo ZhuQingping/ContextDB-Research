@@ -20,7 +20,12 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
 | [Hindsight Cloud 与开源版实测及部署建议](hindsight/hindsight-cloud-open-source-comparison.md) | 商业版与开源版真实差异、Cloud 部署证据边界、控制面/数据面拆分和华为云 Data Cell 方案 |
 | [ContextDB 成员与 API Key 管理设计](hindsight/member-and-apikey-management-design.md) | 阿里云控制台实测、成员与 Key 关系、Hindsight Organization 的产品原因，以及华为云首期是否需要组织层 |
-| [ContextDB 首期工作空间 用户与 API Key 服务化设计](hindsight/member-apikey-bank-service-design.md) | 首期空间/用户/Key 管理；管控专用管理 Key 与用户业务 Key 分离；每空间独立 schema/Bank；用户记忆隔离延期 |
+| [ContextDB 首期工作空间 用户与 API Key 服务化设计](hindsight/member-apikey-bank-service-design.md) | 按功能模块组织；新增管理 REST 仅供管控，含 PG 表/API/插件及原生业务集成说明；原生 REST/MCP 协议不变 |
+| [ContextDB 管理 REST 接口合同](hindsight/api/contextdb-control-plane.openapi.yaml) | 实例登记、工作空间、成员、Key 与管理任务的 16 个操作；内部管理认证、版本与幂等约定 |
+| [ContextDB PG 表设计章节](hindsight/member-apikey-bank-service-design.md#pg-表设计) | 主设计中的同库布局、9 张元信息表、索引、约束与事务规则 |
+| [ContextDB 首期实现验收记录](hindsight/implementation/contextdb-service-verification-2026-10-13.md) | 本地测试、接口覆盖、专家交叉检视及未完成的生产联调 |
+| [ContextDB 首期设计五专家局部复核](hindsight/implementation/contextdb-design-five-expert-review-2026-10-13.md) | 保留已实现架构，仅校准事实与阅读提示；资料/文档/memory/PG/开发者五视角复核，用户验收未完成 |
+| [ContextDB 开发问题与设计差异](hindsight/implementation/contextdb-service-night-task-2026-10-13.md) | 本次实现过程中发现的问题、修复依据与后续优化项 |
 | [同 Bank 用户记忆隔离后续研究](hindsight/member-memory-isolation-future-notes.md) | SMIC 跨 Key 证据、tag scope 思路与派生/Worker 风险；非本期实现 |
 | [华为云 ContextDB 首期服务化架构](hindsight/cloud-service-architecture.md) | 5 人 6–8 周范围、端到端职责、PG 服务单元扩展、接口开放与上线门槛 |
 | [ContextDB 设计与两个月交付专家评审](hindsight/contextdb-design-expert-review.md) | 当前设计权威、实现成熟度、Hindsight 侵入度、产品形态、五人八周计划与上线门 |

@@ -1,0 +1,7 @@
+flowchart LR
+    A["Agent / 应用<br/>原生 REST / MCP"]
+    H["Hindsight 计算节点<br/>校验用户 Key、空间与操作权限"]
+    P[("RDS PostgreSQL<br/>Key 元信息 · 工作空间记忆")]
+
+    A -->|HTTPS + 用户 API Key<br/>retain / recall| H
+    H -->|查询 Key 映射<br/>读写目标 Bank| P
