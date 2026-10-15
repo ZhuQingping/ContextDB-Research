@@ -23,7 +23,8 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | [ContextDB 服务化设计 v1（历史详细版）](hindsight/member-apikey-bank-service-design.md) | 工作空间内成员、单空间 Key；恢复原架构图、9 张 PG 表、16 个管理操作及实现说明 |
 | [ContextDB 服务化设计 v2（当前实现）](hindsight/member-apikey-bank-service-design-v2.md) | 实例级用户、多空间 Key、管理员 UI；含架构流程、8 张表、18 个管理操作及实现入口 |
 | [ContextDB V2 总体架构](hindsight/contextdb-v2-architecture.md) | 业务访问、云管控、UI 管理三个场景，以及 API/Worker 与 PG 元数据、用户数据的关系 |
-| [ContextDB V2 管控联调](hindsight/contextdb-v2-control-plane-integration.md) | 实例开通、工作空间接口与异步流程；节点 Agent 职责及直连/经 Agent 调用路径确认 |
+| [ContextDB V2 管控联调](hindsight/contextdb-v2-control-plane-integration.md) | PG 插件与配置、实例初始化/服务启停、空间创建/删除/轮询的具体命令与脚本；节点 Agent 调度边界 |
+| [ContextDB V2 管控命令审核](hindsight/implementation/contextdb-v2-control-plane-executable-review-2026-10-15.md) | 16 项模拟验证、架构师与资料审核结论；真实部署与云端联调尚未执行 |
 | [ContextDB 管理 REST 合同 v1](hindsight/api/contextdb-control-plane-v1.openapi.yaml) | 原 16 个内部管控操作的历史合同，配套 v1 设计 |
 | [ContextDB 管理 REST 合同 v2](hindsight/api/contextdb-control-plane.openapi.yaml) | 当前实际路由生成的 18 个操作；区分 Console 管控与 admin/all 管理认证 |
 | [ContextDB PG 表设计 v1](hindsight/member-apikey-bank-service-design.md#pg-表设计) / [v2](hindsight/member-apikey-bank-service-design-v2.md#pg-表设计) | 两版字段、约束、索引及事务规则，不能混用 DDL |
