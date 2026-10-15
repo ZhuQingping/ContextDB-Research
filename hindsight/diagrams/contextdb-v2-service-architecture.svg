@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="1280" viewBox="0 0 1460 1280" role="img" aria-labelledby="title description">
+  <title id="title">ContextDB V2 总体架构：业务访问、云管控、UI 管理</title>
+  <desc id="description">按三个场景展示同一套 ContextDB 服务。Agent 或应用通过 REST 或 MCP 调用 Hindsight API；API 与 Worker 共用一个 PG 数据库。华为云 Console 通过华为云管控和节点管理 Agent 调用本机 API 管理实例和工作空间；Agent 接口方案待与管控确认。管理员通过 Hindsight UI 调用 API 管理用户、API Key、授权及空间内容。PG 内分别保存管理元数据和按工作空间隔离的用户数据。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #222; }
+      .title { font-size: 30px; font-weight: 600; }
+      .section { font-size: 24px; font-weight: 600; }
+      .name { font-size: 22px; font-weight: 600; text-anchor: middle; }
+      .body { font-size: 19px; text-anchor: middle; }
+      .label { font-size: 17px; text-anchor: middle; }
+      .note { font-size: 18px; }
+      .panel { fill: white; stroke: #aaa; stroke-width: 1; }
+      .node { fill: white; stroke: #333; stroke-width: 1.6; }
+      .part { fill: #fafafa; stroke: #888; stroke-width: 1; }
+      .line { fill: none; stroke: #333; stroke-width: 1.6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1460" height="1280" fill="white"/>
+  <text x="30" y="42" class="title">ContextDB V2 总体架构</text>
+  <text x="30" y="75" class="note">按三个场景展开；图中重复出现的 API 和 PG 属于同一套实例。</text>
+
+  <g id="business-access">
+    <rect x="25" y="98" width="1410" height="390" rx="4" class="panel"/>
+    <text x="50" y="137" class="section">1. 业务面：Agent / 应用访问 ContextDB</text>
+
+    <rect x="65" y="195" width="210" height="88" rx="4" class="node"/>
+    <text x="170" y="230" class="name">Agent / 应用</text>
+    <text x="170" y="260" class="body">读写记忆、检索与推理</text>
+
+    <rect x="490" y="195" width="225" height="88" rx="4" class="node"/>
+    <text x="602" y="230" class="name">Hindsight API</text>
+    <text x="602" y="260" class="body">鉴权与业务处理</text>
+
+    <path d="M275 239 H490" class="line"/>
+    <text x="382" y="204" class="label">REST / MCP</text>
+    <text x="382" y="227" class="label">API Key + 工作空间 ID</text>
+
+    <rect x="490" y="365" width="225" height="80" rx="4" class="node"/>
+    <text x="602" y="398" class="name">Hindsight Worker</text>
+    <text x="602" y="426" class="body">执行后台任务</text>
+
+    <rect x="1020" y="170" width="370" height="283" rx="4" class="node"/>
+    <text x="1205" y="203" class="name">PG Database</text>
+    <rect x="1040" y="222" width="330" height="82" rx="3" class="part"/>
+    <text x="1205" y="251" class="name">元数据</text>
+    <text x="1205" y="280" class="body">用户、Key、授权、工作空间映射</text>
+    <rect x="1040" y="317" width="330" height="115" rx="3" class="part"/>
+    <text x="1205" y="347" class="name">用户数据</text>
+    <text x="1205" y="376" class="body">各工作空间的文档、记忆、知识</text>
+    <text x="1205" y="405" class="body">索引、后台任务与处理结果</text>
+
+    <path d="M715 239 H1020" class="line"/>
+    <text x="867" y="224" class="label">鉴权、数据读写、任务入队</text>
+    <path d="M715 405 H1020" class="line"/>
+    <text x="867" y="390" class="label">领取任务、写入处理结果</text>
+    <text x="65" y="471" class="note">同步请求由 API 处理；后台任务写入 PG，由 Worker 领取执行。</text>
+  </g>
+
+  <g id="cloud-management">
+    <rect x="25" y="510" width="1410" height="350" rx="4" class="panel"/>
+    <text x="50" y="549" class="section">2. 云管理面：实例与工作空间管理</text>
+    <text x="65" y="581" class="note">建议管理请求经节点管理 Agent，具体 Agent 接口待与管控确认。</text>
+
+    <rect x="60" y="646" width="190" height="88" rx="4" class="node"/>
+    <text x="155" y="681" class="name" style="font-size:20px">华为云 Console</text>
+    <text x="155" y="711" class="body" style="font-size:18px">实例与工作空间入口</text>
+
+    <rect x="335" y="646" width="190" height="88" rx="4" class="node"/>
+    <text x="430" y="681" class="name">华为云管控</text>
+    <text x="430" y="711" class="body">资源开通与编排</text>
+
+    <rect x="610" y="646" width="190" height="88" rx="4" class="node"/>
+    <text x="705" y="681" class="name" style="font-size:20px">节点管理 Agent</text>
+    <text x="705" y="711" class="body" style="font-size:17px">启停 / 升级 / 运维</text>
+
+    <rect x="885" y="646" width="190" height="88" rx="4" class="node"/>
+    <text x="980" y="681" class="name" style="font-size:20px">Hindsight API</text>
+    <text x="980" y="711" class="body" style="font-size:17px">实例登记 / 空间管理</text>
+
+    <rect x="1170" y="612" width="230" height="197" rx="4" class="node"/>
+    <text x="1285" y="644" class="name">PG Database</text>
+    <rect x="1185" y="657" width="200" height="59" rx="3" class="part"/>
+    <text x="1285" y="682" class="body">元数据</text>
+    <text x="1285" y="704" class="label" style="font-size:16px">实例、空间、管理任务</text>
+    <rect x="1185" y="726" width="200" height="62" rx="3" class="part"/>
+    <text x="1285" y="752" class="body">用户数据</text>
+    <text x="1285" y="776" class="label" style="font-size:16px">各空间 schema / Bank</text>
+
+    <path d="M250 690 H335" class="line"/>
+    <text x="292" y="628" class="label" style="font-size:16px">管理请求</text>
+    <path d="M525 690 H610" class="line"/>
+    <text x="567" y="628" class="label" style="font-size:16px">Agent 接口</text>
+    <path d="M800 690 H885" class="line"/>
+    <text x="842" y="606" class="label" style="font-size:16px">本机 API</text>
+    <text x="842" y="628" class="label" style="font-size:14px">管控服务 Key</text>
+    <path d="M1075 690 H1170" class="line"/>
+    <text x="1122" y="593" class="label" style="font-size:16px">保存与执行</text>
+
+    <text x="65" y="833" class="note">节点 Agent 管理 API / Worker / UI 服务；API 执行实例登记和空间操作，工作空间信息以 PG 为准。</text>
+  </g>
+
+  <g id="ui-management">
+    <rect x="25" y="882" width="1410" height="370" rx="4" class="panel"/>
+    <text x="50" y="921" class="section">3. UI 管理面：用户、API Key、授权与空间内容</text>
+
+    <rect x="65" y="1020" width="210" height="88" rx="4" class="node"/>
+    <text x="170" y="1055" class="name">管理员</text>
+    <text x="170" y="1085" class="body">通过浏览器访问</text>
+
+    <rect x="420" y="1020" width="210" height="88" rx="4" class="node"/>
+    <text x="525" y="1055" class="name">Hindsight UI</text>
+    <text x="525" y="1085" class="body">管理界面与服务端</text>
+
+    <rect x="775" y="1020" width="210" height="88" rx="4" class="node"/>
+    <text x="880" y="1055" class="name">Hindsight API</text>
+    <text x="880" y="1085" class="body">用户、Key 与内容管理</text>
+
+    <rect x="1130" y="965" width="270" height="215" rx="4" class="node"/>
+    <text x="1265" y="998" class="name">PG Database</text>
+    <rect x="1145" y="1014" width="240" height="67" rx="3" class="part"/>
+    <text x="1265" y="1041" class="body">元数据</text>
+    <text x="1265" y="1067" class="label">用户、Key、工作空间授权</text>
+    <rect x="1145" y="1092" width="240" height="68" rx="3" class="part"/>
+    <text x="1265" y="1119" class="body">用户数据</text>
+    <text x="1265" y="1145" class="label">各工作空间的记忆与知识</text>
+
+    <path d="M275 1064 H420" class="line"/>
+    <text x="347" y="1002" class="label">UI 登录口令</text>
+    <path d="M630 1064 H775" class="line"/>
+    <text x="702" y="1002" class="label">管理员 API Key</text>
+    <path d="M985 1064 H1130" class="line"/>
+    <text x="1057" y="1002" class="label">授权与内容读写</text>
+
+    <text x="65" y="1208" class="note">UI 服务端持有管理员 Key 调用 API，UI 不直接连接 PG。</text>
+    <text x="65" y="1237" class="note">管理员可切换全部工作空间；空间创建与删除仍由华为云管控负责。</text>
+  </g>
+</svg>

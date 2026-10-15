@@ -1,5 +1,7 @@
 # ContextDB 独享版本工作空间、用户与 API Key 服务化设计
 
+> **版本说明：** 本文件恢复为 v1 详细设计（2026-10-13），保留原架构图、接口、PG 表和实现说明。当前实现请阅读 [v2 设计](member-apikey-bank-service-design-v2.md)。v1 的成员层级、认证及接口范围属于历史方案，不能混用于 v2。
+
 更新日期：2026-10-13。本特性新增实例登记、工作空间、成员和 API Key 管理能力，管理接口仅通过内部 REST 提供给已有云管控后端，不向用户面直接开放，也不新增管理 MCP 工具。
 
 原生 Hindsight 的 REST/MCP 接口、路径和请求/响应协议保持不变。本特性只接入动态 Key 认证、空间路由与操作权限；是否关闭或裁剪原生接口另行评估，不属于本次设计与验收。
@@ -211,7 +213,7 @@ schema_name 由服务端生成并登记，例如 `ctxdb_ws_<workspace_id_hex>`�
 
 新增 16 个操作仅由可信管理面调用，实际挂载在计算节点的 `/ext/contextdb/v1` 下，不依赖额外路径映射。用户通过 Console 向管理面提出申请，不直接调用这些节点管理接口。
 
-本章列出新增接口的请求、响应和权限；[管理 OpenAPI](api/contextdb-control-plane.openapi.yaml) `0.4.0-development` 是对应的机器合同。原生业务接口不是新增管理 API，也不套管理响应信封。
+本章列出新增接口的请求、响应和权限；[管理 OpenAPI](api/contextdb-control-plane-v1.openapi.yaml) `0.4.0-development` 是对应的机器合同。原生业务接口不是新增管理 API，也不套管理响应信封。
 
 | 管理请求头/参数 | 约定 |
 |---|---|

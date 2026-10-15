@@ -20,10 +20,19 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
 | [Hindsight Cloud 与开源版实测及部署建议](hindsight/hindsight-cloud-open-source-comparison.md) | 商业版与开源版真实差异、Cloud 部署证据边界、控制面/数据面拆分和华为云 Data Cell 方案 |
 | [ContextDB 成员与 API Key 管理设计](hindsight/member-and-apikey-management-design.md) | 阿里云控制台实测、成员与 Key 关系、Hindsight Organization 的产品原因，以及华为云首期是否需要组织层 |
-| [ContextDB 独享版本工作空间、用户与 API Key 服务化设计](hindsight/member-apikey-bank-service-design.md) | 按功能模块组织；新增管理 REST 仅供管控，含 PG 表/API/插件及原生业务集成说明；原生 REST/MCP 协议不变 |
-| [ContextDB 管理 REST 接口合同](hindsight/api/contextdb-control-plane.openapi.yaml) | 实例登记、工作空间、成员、Key 与管理任务的 16 个操作；内部管理认证、版本与幂等约定 |
-| [ContextDB PG 表设计章节](hindsight/member-apikey-bank-service-design.md#pg-表设计) | 主设计中的同库布局、9 张元信息表、索引、约束与事务规则 |
+| [ContextDB 服务化设计 v1（历史详细版）](hindsight/member-apikey-bank-service-design.md) | 工作空间内成员、单空间 Key；恢复原架构图、9 张 PG 表、16 个管理操作及实现说明 |
+| [ContextDB 服务化设计 v2（当前实现）](hindsight/member-apikey-bank-service-design-v2.md) | 实例级用户、多空间 Key、管理员 UI；含架构流程、8 张表、18 个管理操作及实现入口 |
+| [ContextDB V2 总体架构](hindsight/contextdb-v2-architecture.md) | 业务访问、云管控、UI 管理三个场景，以及 API/Worker 与 PG 元数据、用户数据的关系 |
+| [ContextDB V2 管控联调](hindsight/contextdb-v2-control-plane-integration.md) | 实例开通、工作空间接口与异步流程；节点 Agent 职责及直连/经 Agent 调用路径确认 |
+| [ContextDB 管理 REST 合同 v1](hindsight/api/contextdb-control-plane-v1.openapi.yaml) | 原 16 个内部管控操作的历史合同，配套 v1 设计 |
+| [ContextDB 管理 REST 合同 v2](hindsight/api/contextdb-control-plane.openapi.yaml) | 当前实际路由生成的 18 个操作；区分 Console 管控与 admin/all 管理认证 |
+| [ContextDB PG 表设计 v1](hindsight/member-apikey-bank-service-design.md#pg-表设计) / [v2](hindsight/member-apikey-bank-service-design-v2.md#pg-表设计) | 两版字段、约束、索引及事务规则，不能混用 DDL |
+| [ContextDB 租户用户与管理员 UI 审阅记录](hindsight/implementation/contextdb-tenant-admin-review-2026-10-15.md) | 夜间开发阶段的专家评审、已修缺陷与历史验证记录 |
+| [ContextDB V2 本地自测与验收记录](hindsight/implementation/contextdb-v2-self-test-acceptance-2026-10-15.md) | 正式提交的自测结果、本机体验检查、待完成的模型与云管控验收 |
 | [ContextDB 首期实现验收记录](hindsight/implementation/contextdb-service-verification-2026-10-13.md) | 本地测试、接口覆盖、专家交叉检视及未完成的生产联调 |
+| [ContextDB v2 本地验证与演示手册](hindsight/implementation/contextdb-v2-local-validation-guide.md) | 代码仓随版验证与演示手册；此处保留入口 |
+| [ContextDB v2 部署配置清单](hindsight/implementation/contextdb-v2-deployment-environment.md) | 代码仓随版配置清单；此处保留入口 |
+| [ContextDB v2 部署与使用手册](hindsight/implementation/contextdb-v2-deployment-usage-guide.md) | 已迁入代码仓并随 V2 提交维护；此处保留文档入口 |
 | [ContextDB 首期设计五专家局部复核](hindsight/implementation/contextdb-design-five-expert-review-2026-10-13.md) | 保留已实现架构，仅校准事实与阅读提示；资料/文档/memory/PG/开发者五视角复核，用户验收未完成 |
 | [ContextDB 开发问题与设计差异](hindsight/implementation/contextdb-service-night-task-2026-10-13.md) | 本次实现过程中发现的问题、修复依据与后续优化项 |
 | [同 Bank 用户记忆隔离后续研究](hindsight/member-memory-isolation-future-notes.md) | SMIC 跨 Key 证据、tag scope 思路与派生/Worker 风险；非本期实现 |
