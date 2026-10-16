@@ -1,5 +1,9 @@
 # ContextDB 服务化架构图
 
+## 当前首发对象关系
+
+[contextdb-first-release-workspace-model.drawio](contextdb-first-release-workspace-model.drawio) 是可编辑源文件，配套 SVG 与 PNG 用于文档和预览。图中用户与工作空间同属实例，Key 归属用户，并独立配置可访问的空间与权限。旧版 `contextdb-workspace-model` 保留为历史参考。
+
 ## V2 总体架构
 
 [总体架构说明](../contextdb-v2-architecture.md)按业务访问、云管控、UI 管理三个场景展示同一套服务。

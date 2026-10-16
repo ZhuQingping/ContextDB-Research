@@ -20,6 +20,9 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 | [Hindsight 本地体验与验收](deployments/hindsight-local/README.md) | UI／API／MCP 入口、启停、真实验证日志和已发现边界 |
 | [Hindsight Cloud 与开源版实测及部署建议](hindsight/hindsight-cloud-open-source-comparison.md) | 商业版与开源版真实差异、Cloud 部署证据边界、控制面/数据面拆分和华为云 Data Cell 方案 |
 | [ContextDB 成员与 API Key 管理设计](hindsight/member-and-apikey-management-design.md) | 阿里云控制台实测、成员与 Key 关系、Hindsight Organization 的产品原因，以及华为云首期是否需要组织层 |
+| [ContextDB 首发完整设计（当前优化版）](hindsight/member-apikey-bank-service-design-first-release.md) | 按实例管理、UI 管理、应用访问组织，保留完整接口、PG 约束、认证及恢复细节 |
+| [ContextDB 首发优化与验收](hindsight/contextdb-optimization-backlog.md) | 当前决策、实现状态和四领域复核入口 |
+| [ContextDB 首发部署与 API 验证](hindsight/implementation/contextdb-optimized-guide.md) / [curl 用例](hindsight/implementation/contextdb-management-api-curl-guide.md) | 离线初始化、启动升级及多空间、多用户验证 |
 | [ContextDB 服务化设计 v1（历史详细版）](hindsight/member-apikey-bank-service-design.md) | 工作空间内成员、单空间 Key；恢复原架构图、9 张 PG 表、16 个管理操作及实现说明 |
 | [ContextDB 服务化设计 v2（当前实现）](hindsight/member-apikey-bank-service-design-v2.md) | 实例级用户、多空间 Key、管理员 UI；含架构流程、8 张表、18 个管理操作及实现入口 |
 | [ContextDB V2 总体架构](hindsight/contextdb-v2-architecture.md) | 业务访问、云管控、UI 管理三个场景，以及 API/Worker 与 PG 元数据、用户数据的关系 |

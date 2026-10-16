@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "documentation-only; no runtime tests or writes",
+  "markdown_files_checked": 6,
+  "local_links_checked": 22,
+  "proposed_api_json_examples_valid": 4,
+  "management_operations": 14,
+  "future_acceptance_cases": 12,
+  "code_status_and_tracked_diff_unchanged": true,
+  "code_untracked_file_hashes_unchanged": 8,
+  "unrelated_research_tracked_diff_unchanged": true,
+  "git_diff_check": "PASS",
+  "credential_shape_scan": "PASS",
+  "not_run": [
+    "HTTP/MCP reproduction",
+    "unit/system tests",
+    "model calls",
+    "database writes or migrations",
+    "service restart",
+    "performance/public-network acceptance",
+    "commit/push"
+  ]
+}

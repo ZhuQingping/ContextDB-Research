@@ -1,32 +1,21 @@
-# ContextDB V2 总体架构
+# ContextDB 总体架构
 
-更新日期：2026-10-15。按业务访问、云管控、UI 管理三个场景展示。三者共用同一套 Hindsight API、Worker 和 PG 数据库。
+更新：2026-10-16。沿用原详细设计中“入口 → 独享计算服务 → 同一 PG”的结构，展示当前首发版本的三个入口。
 
-![ContextDB V2 总体架构](diagrams/contextdb-v2-service-architecture.svg)
+![Console、Agent、Hindsight UI 三个入口](diagrams/contextdb-first-release-architecture.svg)
 
-## 业务面：Agent / 应用
+[可编辑 drawio 源文件](diagrams/contextdb-first-release-architecture.drawio) · [PNG 预览](diagrams/contextdb-first-release-architecture.png) · [当前设计](member-apikey-bank-service-design-first-release.md)
 
-Agent / 应用携带 API Key 和工作空间 ID，通过 REST / MCP 访问 Hindsight API。API 检查用户、Key 和空间权限后读写数据；后台任务保存在 PG，由 Worker 领取执行。
+| 入口 | 链路 | 职责 |
+| --- | --- | --- |
+| Console | Console → 华为云管控 → 节点管理 Agent | 实例资源开通、配置、启停和升级；部署阶段离线初始化元数据 |
+| Agent / 应用 | 原生 REST / MCP → Hindsight API | 使用业务 API Key 和 bank_id，调用 Retain、Recall、Reflect 等记忆接口 |
+| Hindsight UI | UI 服务端 → Hindsight API | 管理员用 UI 密码登录；服务端持 Admin Key，管理工作空间、用户、Key 和空间内容 |
 
-## 云管理面：实例与工作空间
+实线表示请求或数据访问，虚线表示部署运维。节点管理 Agent 不转发业务 Agent 或 UI 的请求。实例运维与业务 Agent 是不同角色。
 
-华为云 Console 提供管理入口，华为云管控负责实例资源开通。节点上已有管理 Agent，负责 Hindsight API/Worker/UI 的启停、升级及高可用运维。
+Hindsight API 与 Worker 并列，共用同一 PG。API 负责认证、授权、路由与请求处理，Worker 领取原生异步任务。ctxdb_meta 保存管理元数据；每个工作空间在独立 schema 中对应唯一 Bank，保存记忆、文档、索引和原生任务。没有独立的 MetaPG。
 
-建议管理请求走“管控 → 节点管理 Agent → 本机 Hindsight API”，登记实例、创建 / 删除 / 查询工作空间。具体 Agent接口和转发能力待与管控确认；当前 V2 提供的是 Hindsight REST 接口。工作空间信息保存在服务 PG，云管控不另存一份空间目录。
+工作空间管理已在 Hindsight UI，Console 负责实例运维。已有节点 Agent 的具体调度实现由云管控集成，图中的运维连线不代表新增了一套 Agent 接口。
 
-当前 Console 尚未完成，验证时使用管控 API 执行这些操作，管理职责不变。详细流程与接口见 [管控联调文档](contextdb-v2-control-plane-integration.md)。节点管理 Agent与业务侧的 Agent/应用是两个组件。
-
-## UI 管理面：用户、Key 与空间内容
-
-管理员使用独立口令登录 Hindsight UI。UI 服务端携带管理员 API Key 调用 Hindsight API，管理用户、Key、空间授权，并查看或修改各工作空间的内容。UI 不直接连接 PG；空间创建与删除仍走云管控。
-
-## PG 中的数据归属
-
-| 数据 | 内容 |
-| --- | --- |
-| 元数据 | 实例、工作空间、用户、API Key 摘要、授权、管理任务与审计 |
-| 用户数据 | 各空间的文档、记忆、知识、索引及后台任务 |
-
-每个工作空间对应独立 schema 中的唯一 Bank，`workspace_id = bank_id`。不同空间隔离，同空间获授权用户共享内容。API 和 Worker 共用一个 PG 数据库。
-
-接口、表结构和权限细节见 [V2 设计](member-apikey-bank-service-design-v2.md)。
+原 V2 架构说明已保留在[历史版本](archive/2026-10-16-before-architecture-redraw/contextdb-v2-architecture.md)；原 SVG、原 my_arch.drawio 和 v1 详细设计均未覆盖。

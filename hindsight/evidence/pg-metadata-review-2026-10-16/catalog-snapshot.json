@@ -1,0 +1,2426 @@
+{
+  "captured_at": "2026-10-16T11:22:59.012123",
+  "database": "contextdb_simple_20261016_091155",
+  "tables": [
+    {
+      "stats": {
+        "updates": 1,
+        "hot_updates": 1,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 1,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_meta.api_keys",
+      "columns": [
+        {
+          "name": "key_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "user_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "digest",
+          "type": "bytea",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "access_mode",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "workspace_ids",
+          "type": "text[]",
+          "comment": null,
+          "default": "'{}'::text[]",
+          "not_null": true
+        },
+        {
+          "name": "permission",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "version",
+          "type": "bigint",
+          "comment": null,
+          "default": "1",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "last_used_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "api_keys_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX api_keys_pkey ON ctxdb_meta.api_keys USING btree (key_id)"
+        },
+        {
+          "name": "keys_user_page",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX keys_user_page ON ctxdb_meta.api_keys USING btree (instance_id, user_id, created_at, key_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "api_keys_access_mode_check",
+          "definition": "CHECK ((access_mode = ANY (ARRAY['all'::text, 'selected'::text])))"
+        },
+        {
+          "name": "api_keys_access_mode_not_null",
+          "definition": "NOT NULL access_mode"
+        },
+        {
+          "name": "api_keys_check",
+          "definition": "CHECK ((((access_mode = 'all'::text) AND (cardinality(workspace_ids) = 0)) OR ((access_mode = 'selected'::text) AND (cardinality(workspace_ids) > 0))))"
+        },
+        {
+          "name": "api_keys_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "api_keys_created_by_not_null",
+          "definition": "NOT NULL created_by"
+        },
+        {
+          "name": "api_keys_digest_check",
+          "definition": "CHECK ((octet_length(digest) = 32))"
+        },
+        {
+          "name": "api_keys_digest_not_null",
+          "definition": "NOT NULL digest"
+        },
+        {
+          "name": "api_keys_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "api_keys_instance_id_user_id_fkey",
+          "definition": "FOREIGN KEY (instance_id, user_id) REFERENCES ctxdb_meta.users(instance_id, user_id)"
+        },
+        {
+          "name": "api_keys_key_id_check",
+          "definition": "CHECK ((key_id ~ '^[0-9a-f]{32}$'::text))"
+        },
+        {
+          "name": "api_keys_key_id_not_null",
+          "definition": "NOT NULL key_id"
+        },
+        {
+          "name": "api_keys_metadata_check",
+          "definition": "CHECK ((jsonb_typeof(metadata) = 'object'::text))"
+        },
+        {
+          "name": "api_keys_metadata_not_null",
+          "definition": "NOT NULL metadata"
+        },
+        {
+          "name": "api_keys_name_check",
+          "definition": "CHECK (((length(name) >= 1) AND (length(name) <= 64)))"
+        },
+        {
+          "name": "api_keys_name_not_null",
+          "definition": "NOT NULL name"
+        },
+        {
+          "name": "api_keys_permission_check",
+          "definition": "CHECK ((permission = ANY (ARRAY['read'::text, 'read_write'::text])))"
+        },
+        {
+          "name": "api_keys_permission_not_null",
+          "definition": "NOT NULL permission"
+        },
+        {
+          "name": "api_keys_pkey",
+          "definition": "PRIMARY KEY (key_id)"
+        },
+        {
+          "name": "api_keys_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "api_keys_user_id_not_null",
+          "definition": "NOT NULL user_id"
+        },
+        {
+          "name": "api_keys_version_not_null",
+          "definition": "NOT NULL version"
+        },
+        {
+          "name": "api_keys_workspace_ids_not_null",
+          "definition": "NOT NULL workspace_ids"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 6
+      },
+      "table": "ctxdb_meta.audit_events",
+      "columns": [
+        {
+          "name": "event_id",
+          "type": "bigint",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "cloud_tenant_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "user_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "key_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "control_key_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "actor_subject",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "action",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "result",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "audit_events_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX audit_events_pkey ON ctxdb_meta.audit_events USING btree (event_id)"
+        },
+        {
+          "name": "audit_workspace_time",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX audit_workspace_time ON ctxdb_meta.audit_events USING btree (instance_id, workspace_id, created_at)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "audit_events_action_not_null",
+          "definition": "NOT NULL action"
+        },
+        {
+          "name": "audit_events_actor_subject_not_null",
+          "definition": "NOT NULL actor_subject"
+        },
+        {
+          "name": "audit_events_cloud_tenant_id_not_null",
+          "definition": "NOT NULL cloud_tenant_id"
+        },
+        {
+          "name": "audit_events_control_key_id_not_null",
+          "definition": "NOT NULL control_key_id"
+        },
+        {
+          "name": "audit_events_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "audit_events_event_id_not_null",
+          "definition": "NOT NULL event_id"
+        },
+        {
+          "name": "audit_events_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "audit_events_pkey",
+          "definition": "PRIMARY KEY (event_id)"
+        },
+        {
+          "name": "audit_events_request_id_not_null",
+          "definition": "NOT NULL request_id"
+        },
+        {
+          "name": "audit_events_result_not_null",
+          "definition": "NOT NULL result"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_meta.instances",
+      "columns": [
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "cloud_tenant_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "instances_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX instances_pkey ON ctxdb_meta.instances USING btree (instance_id)"
+        },
+        {
+          "name": "instances_instance_id_cloud_tenant_id_key",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX instances_instance_id_cloud_tenant_id_key ON ctxdb_meta.instances USING btree (instance_id, cloud_tenant_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "instances_cloud_tenant_id_not_null",
+          "definition": "NOT NULL cloud_tenant_id"
+        },
+        {
+          "name": "instances_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "instances_created_by_not_null",
+          "definition": "NOT NULL created_by"
+        },
+        {
+          "name": "instances_instance_id_cloud_tenant_id_key",
+          "definition": "UNIQUE (instance_id, cloud_tenant_id)"
+        },
+        {
+          "name": "instances_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "instances_name_check",
+          "definition": "CHECK (((length(name) >= 1) AND (length(name) <= 64)))"
+        },
+        {
+          "name": "instances_name_not_null",
+          "definition": "NOT NULL name"
+        },
+        {
+          "name": "instances_pkey",
+          "definition": "PRIMARY KEY (instance_id)"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 9,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 9,
+        "estimated_live_rows": 3
+      },
+      "table": "ctxdb_meta.management_operations",
+      "columns": [
+        {
+          "name": "operation_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "workspace_version",
+          "type": "bigint",
+          "comment": null,
+          "default": "1",
+          "not_null": true
+        },
+        {
+          "name": "actor_subject",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "action",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "target_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "idempotency_key",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "request_hash",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "state",
+          "type": "text",
+          "comment": null,
+          "default": "'pending'::text",
+          "not_null": true
+        },
+        {
+          "name": "attempts",
+          "type": "integer",
+          "comment": null,
+          "default": "0",
+          "not_null": true
+        },
+        {
+          "name": "lease_token",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "lease_until",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "error_code",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "management_operations_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX management_operations_pkey ON ctxdb_meta.management_operations USING btree (operation_id)"
+        },
+        {
+          "name": "management_operations_instance_id_actor_subject_action_targ_key",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX management_operations_instance_id_actor_subject_action_targ_key ON ctxdb_meta.management_operations USING btree (instance_id, actor_subject, action, target_id, idempotency_key)"
+        },
+        {
+          "name": "operations_pending",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX operations_pending ON ctxdb_meta.management_operations USING btree (instance_id, state, lease_until, created_at)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "management_operations_action_check",
+          "definition": "CHECK ((action = ANY (ARRAY['create_workspace'::text, 'delete_workspace'::text])))"
+        },
+        {
+          "name": "management_operations_action_not_null",
+          "definition": "NOT NULL action"
+        },
+        {
+          "name": "management_operations_actor_subject_not_null",
+          "definition": "NOT NULL actor_subject"
+        },
+        {
+          "name": "management_operations_attempts_not_null",
+          "definition": "NOT NULL attempts"
+        },
+        {
+          "name": "management_operations_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "management_operations_idempotency_key_check",
+          "definition": "CHECK (((length(idempotency_key) >= 1) AND (length(idempotency_key) <= 128)))"
+        },
+        {
+          "name": "management_operations_idempotency_key_not_null",
+          "definition": "NOT NULL idempotency_key"
+        },
+        {
+          "name": "management_operations_instance_id_actor_subject_action_targ_key",
+          "definition": "UNIQUE (instance_id, actor_subject, action, target_id, idempotency_key)"
+        },
+        {
+          "name": "management_operations_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "management_operations_instance_id_workspace_id_fkey",
+          "definition": "FOREIGN KEY (instance_id, workspace_id) REFERENCES ctxdb_meta.workspaces(instance_id, workspace_id)"
+        },
+        {
+          "name": "management_operations_operation_id_not_null",
+          "definition": "NOT NULL operation_id"
+        },
+        {
+          "name": "management_operations_pkey",
+          "definition": "PRIMARY KEY (operation_id)"
+        },
+        {
+          "name": "management_operations_request_hash_not_null",
+          "definition": "NOT NULL request_hash"
+        },
+        {
+          "name": "management_operations_state_check",
+          "definition": "CHECK ((state = ANY (ARRAY['pending'::text, 'running'::text, 'succeeded'::text, 'failed'::text])))"
+        },
+        {
+          "name": "management_operations_state_not_null",
+          "definition": "NOT NULL state"
+        },
+        {
+          "name": "management_operations_target_id_not_null",
+          "definition": "NOT NULL target_id"
+        },
+        {
+          "name": "management_operations_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "management_operations_workspace_id_not_null",
+          "definition": "NOT NULL workspace_id"
+        },
+        {
+          "name": "management_operations_workspace_version_check",
+          "definition": "CHECK ((workspace_version > 0))"
+        },
+        {
+          "name": "management_operations_workspace_version_not_null",
+          "definition": "NOT NULL workspace_version"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": "2026-10-16T09:51:07.357008+08:00",
+        "estimated_dead_rows": 27,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_meta.request_admissions",
+      "columns": [
+        {
+          "name": "admission_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "owner_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "origin",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "state",
+          "type": "text",
+          "comment": null,
+          "default": "'active'::text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "request_admissions_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX request_admissions_pkey ON ctxdb_meta.request_admissions USING btree (admission_id)"
+        },
+        {
+          "name": "admissions_workspace",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX admissions_workspace ON ctxdb_meta.request_admissions USING btree (instance_id, workspace_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "request_admissions_admission_id_not_null",
+          "definition": "NOT NULL admission_id"
+        },
+        {
+          "name": "request_admissions_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "request_admissions_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "request_admissions_instance_id_workspace_id_fkey",
+          "definition": "FOREIGN KEY (instance_id, workspace_id) REFERENCES ctxdb_meta.workspaces(instance_id, workspace_id)"
+        },
+        {
+          "name": "request_admissions_origin_check",
+          "definition": "CHECK ((origin = ANY (ARRAY['http'::text, 'queue'::text])))"
+        },
+        {
+          "name": "request_admissions_origin_not_null",
+          "definition": "NOT NULL origin"
+        },
+        {
+          "name": "request_admissions_owner_id_not_null",
+          "definition": "NOT NULL owner_id"
+        },
+        {
+          "name": "request_admissions_pkey",
+          "definition": "PRIMARY KEY (admission_id)"
+        },
+        {
+          "name": "request_admissions_state_check",
+          "definition": "CHECK ((state = ANY (ARRAY['active'::text, 'interrupted'::text])))"
+        },
+        {
+          "name": "request_admissions_state_not_null",
+          "definition": "NOT NULL state"
+        },
+        {
+          "name": "request_admissions_workspace_id_not_null",
+          "definition": "NOT NULL workspace_id"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_meta.schema_versions",
+      "columns": [
+        {
+          "name": "version",
+          "type": "integer",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "format_id",
+          "type": "text",
+          "comment": null,
+          "default": "'contextdb-first-release'::text",
+          "not_null": true
+        },
+        {
+          "name": "installed_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "schema_versions_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX schema_versions_pkey ON ctxdb_meta.schema_versions USING btree (version)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "schema_versions_format_id_not_null",
+          "definition": "NOT NULL format_id"
+        },
+        {
+          "name": "schema_versions_installed_at_not_null",
+          "definition": "NOT NULL installed_at"
+        },
+        {
+          "name": "schema_versions_pkey",
+          "definition": "PRIMARY KEY (version)"
+        },
+        {
+          "name": "schema_versions_version_not_null",
+          "definition": "NOT NULL version"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_meta.users",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "comment": null,
+          "default": "'active'::text",
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "bigint",
+          "comment": null,
+          "default": "1",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "users_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX users_pkey ON ctxdb_meta.users USING btree (user_id)"
+        },
+        {
+          "name": "users_instance_id_user_id_key",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX users_instance_id_user_id_key ON ctxdb_meta.users USING btree (instance_id, user_id)"
+        },
+        {
+          "name": "users_instance_page",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX users_instance_page ON ctxdb_meta.users USING btree (instance_id, created_at, user_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "users_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "users_instance_id_fkey",
+          "definition": "FOREIGN KEY (instance_id) REFERENCES ctxdb_meta.instances(instance_id)"
+        },
+        {
+          "name": "users_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "users_instance_id_user_id_key",
+          "definition": "UNIQUE (instance_id, user_id)"
+        },
+        {
+          "name": "users_metadata_check",
+          "definition": "CHECK ((jsonb_typeof(metadata) = 'object'::text))"
+        },
+        {
+          "name": "users_metadata_not_null",
+          "definition": "NOT NULL metadata"
+        },
+        {
+          "name": "users_name_check",
+          "definition": "CHECK (((length(name) >= 1) AND (length(name) <= 64)))"
+        },
+        {
+          "name": "users_name_not_null",
+          "definition": "NOT NULL name"
+        },
+        {
+          "name": "users_pkey",
+          "definition": "PRIMARY KEY (user_id)"
+        },
+        {
+          "name": "users_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['active'::text, 'disabled'::text, 'deleted'::text])))"
+        },
+        {
+          "name": "users_status_not_null",
+          "definition": "NOT NULL status"
+        },
+        {
+          "name": "users_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "users_user_id_not_null",
+          "definition": "NOT NULL user_id"
+        },
+        {
+          "name": "users_version_not_null",
+          "definition": "NOT NULL version"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 3,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 3,
+        "estimated_live_rows": 3
+      },
+      "table": "ctxdb_meta.workspaces",
+      "columns": [
+        {
+          "name": "workspace_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "instance_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "cloud_tenant_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "schema_name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name_key",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "comment": null,
+          "default": "''::text",
+          "not_null": true
+        },
+        {
+          "name": "state",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "bigint",
+          "comment": null,
+          "default": "1",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "workspaces_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX workspaces_pkey ON ctxdb_meta.workspaces USING btree (workspace_id)"
+        },
+        {
+          "name": "workspaces_schema_name_key",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX workspaces_schema_name_key ON ctxdb_meta.workspaces USING btree (schema_name)"
+        },
+        {
+          "name": "workspaces_instance_id_workspace_id_key",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX workspaces_instance_id_workspace_id_key ON ctxdb_meta.workspaces USING btree (instance_id, workspace_id)"
+        },
+        {
+          "name": "workspaces_name_unique",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX workspaces_name_unique ON ctxdb_meta.workspaces USING btree (instance_id, name_key) WHERE (state <> 'deleted'::text)"
+        },
+        {
+          "name": "workspaces_instance_page",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX workspaces_instance_page ON ctxdb_meta.workspaces USING btree (instance_id, created_at, workspace_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspaces_cloud_tenant_id_not_null",
+          "definition": "NOT NULL cloud_tenant_id"
+        },
+        {
+          "name": "workspaces_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "workspaces_description_check",
+          "definition": "CHECK ((length(description) <= 512))"
+        },
+        {
+          "name": "workspaces_description_not_null",
+          "definition": "NOT NULL description"
+        },
+        {
+          "name": "workspaces_instance_id_cloud_tenant_id_fkey",
+          "definition": "FOREIGN KEY (instance_id, cloud_tenant_id) REFERENCES ctxdb_meta.instances(instance_id, cloud_tenant_id)"
+        },
+        {
+          "name": "workspaces_instance_id_not_null",
+          "definition": "NOT NULL instance_id"
+        },
+        {
+          "name": "workspaces_instance_id_workspace_id_key",
+          "definition": "UNIQUE (instance_id, workspace_id)"
+        },
+        {
+          "name": "workspaces_metadata_check",
+          "definition": "CHECK ((jsonb_typeof(metadata) = 'object'::text))"
+        },
+        {
+          "name": "workspaces_metadata_not_null",
+          "definition": "NOT NULL metadata"
+        },
+        {
+          "name": "workspaces_name_check",
+          "definition": "CHECK (((length(name) >= 1) AND (length(name) <= 64)))"
+        },
+        {
+          "name": "workspaces_name_key_not_null",
+          "definition": "NOT NULL name_key"
+        },
+        {
+          "name": "workspaces_name_not_null",
+          "definition": "NOT NULL name"
+        },
+        {
+          "name": "workspaces_pkey",
+          "definition": "PRIMARY KEY (workspace_id)"
+        },
+        {
+          "name": "workspaces_schema_name_check",
+          "definition": "CHECK ((schema_name ~ '^ctxdb_ws_[0-9a-f]{32}$'::text))"
+        },
+        {
+          "name": "workspaces_schema_name_key",
+          "definition": "UNIQUE (schema_name)"
+        },
+        {
+          "name": "workspaces_schema_name_not_null",
+          "definition": "NOT NULL schema_name"
+        },
+        {
+          "name": "workspaces_state_check",
+          "definition": "CHECK ((state = ANY (ARRAY['creating'::text, 'active'::text, 'frozen'::text, 'deleting'::text, 'deleted'::text, 'failed'::text])))"
+        },
+        {
+          "name": "workspaces_state_not_null",
+          "definition": "NOT NULL state"
+        },
+        {
+          "name": "workspaces_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "workspaces_version_check",
+          "definition": "CHECK ((version > 0))"
+        },
+        {
+          "name": "workspaces_version_not_null",
+          "definition": "NOT NULL version"
+        },
+        {
+          "name": "workspaces_workspace_id_not_null",
+          "definition": "NOT NULL workspace_id"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 103,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": "2026-10-16T09:13:06.923154+08:00",
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.alembic_version",
+      "columns": [
+        {
+          "name": "version_num",
+          "type": "character varying(32)",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "alembic_version_pkc",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX alembic_version_pkc ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.alembic_version USING btree (version_num)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "alembic_version_pkc",
+          "definition": "PRIMARY KEY (version_num)"
+        },
+        {
+          "name": "alembic_version_version_num_not_null",
+          "definition": "NOT NULL version_num"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations",
+      "columns": [
+        {
+          "name": "operation_id",
+          "type": "uuid",
+          "comment": null,
+          "default": "gen_random_uuid()",
+          "not_null": true
+        },
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "operation_type",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "comment": null,
+          "default": "'pending'::text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "error_message",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "result_metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        },
+        {
+          "name": "worker_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "claimed_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "retry_count",
+          "type": "integer",
+          "comment": null,
+          "default": "0",
+          "not_null": true
+        },
+        {
+          "name": "task_payload",
+          "type": "jsonb",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "serialization_key",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "pk_async_operations",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX pk_async_operations ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (operation_id)"
+        },
+        {
+          "name": "idx_async_operations_bank_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_bank_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (bank_id)"
+        },
+        {
+          "name": "idx_async_operations_status",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_status ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (status)"
+        },
+        {
+          "name": "idx_async_operations_bank_status",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_bank_status ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (bank_id, status)"
+        },
+        {
+          "name": "idx_async_operations_pending_claim",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_pending_claim ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (status, created_at) WHERE ((status = 'pending'::text) AND (task_payload IS NOT NULL))"
+        },
+        {
+          "name": "idx_async_operations_worker_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_worker_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (worker_id) WHERE (worker_id IS NOT NULL)"
+        },
+        {
+          "name": "idx_async_operations_result_metadata",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_result_metadata ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING gin (result_metadata)"
+        },
+        {
+          "name": "idx_async_operations_status_retry",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_status_retry ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (status, next_retry_at)"
+        },
+        {
+          "name": "idx_async_operations_terminal_cleanup",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_terminal_cleanup ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (updated_at, operation_id) WHERE (status = ANY (ARRAY['completed'::text, 'failed'::text, 'cancelled'::text]))"
+        },
+        {
+          "name": "idx_async_operations_bank_created_desc",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_bank_created_desc ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (bank_id, created_at DESC)"
+        },
+        {
+          "name": "idx_async_operations_serialization_key",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_async_operations_serialization_key ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.async_operations USING btree (bank_id, serialization_key) WHERE ((serialization_key IS NOT NULL) AND (status = ANY (ARRAY['pending'::text, 'processing'::text])))"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "async_operations_bank_id_not_null",
+          "definition": "NOT NULL bank_id"
+        },
+        {
+          "name": "async_operations_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "async_operations_operation_id_not_null",
+          "definition": "NOT NULL operation_id"
+        },
+        {
+          "name": "async_operations_operation_type_not_null",
+          "definition": "NOT NULL operation_type"
+        },
+        {
+          "name": "async_operations_result_metadata_not_null",
+          "definition": "NOT NULL result_metadata"
+        },
+        {
+          "name": "async_operations_retry_count_not_null",
+          "definition": "NOT NULL retry_count"
+        },
+        {
+          "name": "async_operations_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'processing'::text, 'completed'::text, 'failed'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "async_operations_status_not_null",
+          "definition": "NOT NULL status"
+        },
+        {
+          "name": "async_operations_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "fk_async_operations_bank_id",
+          "definition": "FOREIGN KEY (bank_id) REFERENCES ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.banks(bank_id) ON DELETE CASCADE"
+        },
+        {
+          "name": "pk_async_operations",
+          "definition": "PRIMARY KEY (operation_id)"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.audit_log",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "comment": null,
+          "default": "gen_random_uuid()",
+          "not_null": true
+        },
+        {
+          "name": "action",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "transport",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "request",
+          "type": "jsonb",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "response",
+          "type": "jsonb",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": false
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "audit_log_pkey",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX audit_log_pkey ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.audit_log USING btree (id)"
+        },
+        {
+          "name": "idx_audit_log_action_started",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_audit_log_action_started ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.audit_log USING btree (action, started_at DESC)"
+        },
+        {
+          "name": "idx_audit_log_bank_started",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_audit_log_bank_started ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.audit_log USING btree (bank_id, started_at DESC)"
+        },
+        {
+          "name": "idx_audit_log_started",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_audit_log_started ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.audit_log USING btree (started_at DESC)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "audit_log_action_not_null",
+          "definition": "NOT NULL action"
+        },
+        {
+          "name": "audit_log_id_not_null",
+          "definition": "NOT NULL id"
+        },
+        {
+          "name": "audit_log_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "audit_log_started_at_not_null",
+          "definition": "NOT NULL started_at"
+        },
+        {
+          "name": "audit_log_transport_not_null",
+          "definition": "NOT NULL transport"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 1,
+        "hot_updates": 1,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 1,
+        "estimated_live_rows": 1
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.banks",
+      "columns": [
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "disposition",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{\"empathy\": 3, \"literalism\": 3, \"skepticism\": 3}'::jsonb",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "mission",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "last_consolidated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "mission_changed_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "config",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        },
+        {
+          "name": "internal_id",
+          "type": "uuid",
+          "comment": null,
+          "default": "gen_random_uuid()",
+          "not_null": true
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "pk_banks",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX pk_banks ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.banks USING btree (bank_id)"
+        },
+        {
+          "name": "idx_banks_config",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_banks_config ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.banks USING gin (config)"
+        },
+        {
+          "name": "banks_internal_id_unique",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX banks_internal_id_unique ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.banks USING btree (internal_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "banks_bank_id_not_null",
+          "definition": "NOT NULL bank_id"
+        },
+        {
+          "name": "banks_config_not_null",
+          "definition": "NOT NULL config"
+        },
+        {
+          "name": "banks_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "banks_internal_id_not_null",
+          "definition": "NOT NULL internal_id"
+        },
+        {
+          "name": "banks_internal_id_unique",
+          "definition": "UNIQUE (internal_id)"
+        },
+        {
+          "name": "banks_personality_not_null",
+          "definition": "NOT NULL disposition"
+        },
+        {
+          "name": "banks_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "pk_banks",
+          "definition": "PRIMARY KEY (bank_id)"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.chunks",
+      "columns": [
+        {
+          "name": "chunk_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "document_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "chunk_index",
+          "type": "integer",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "chunk_text",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "content_hash",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "pk_chunks",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX pk_chunks ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.chunks USING btree (chunk_id)"
+        },
+        {
+          "name": "idx_chunks_document_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_chunks_document_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.chunks USING btree (document_id)"
+        },
+        {
+          "name": "idx_chunks_bank_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_chunks_bank_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.chunks USING btree (bank_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "chunks_bank_id_not_null",
+          "definition": "NOT NULL bank_id"
+        },
+        {
+          "name": "chunks_chunk_id_not_null",
+          "definition": "NOT NULL chunk_id"
+        },
+        {
+          "name": "chunks_chunk_index_not_null",
+          "definition": "NOT NULL chunk_index"
+        },
+        {
+          "name": "chunks_chunk_text_not_null",
+          "definition": "NOT NULL chunk_text"
+        },
+        {
+          "name": "chunks_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "chunks_document_fkey",
+          "definition": "FOREIGN KEY (document_id, bank_id) REFERENCES ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.documents(id, bank_id) ON DELETE CASCADE"
+        },
+        {
+          "name": "chunks_document_id_not_null",
+          "definition": "NOT NULL document_id"
+        },
+        {
+          "name": "pk_chunks",
+          "definition": "PRIMARY KEY (chunk_id)"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.documents",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "original_text",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "content_hash",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "retain_params",
+          "type": "jsonb",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "tags",
+          "type": "character varying[]",
+          "comment": null,
+          "default": "'{}'::character varying[]",
+          "not_null": true
+        },
+        {
+          "name": "file_storage_key",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "file_original_name",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "file_content_type",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "pk_documents",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX pk_documents ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.documents USING btree (id, bank_id)"
+        },
+        {
+          "name": "idx_documents_bank_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_documents_bank_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.documents USING btree (bank_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "documents_bank_id_not_null",
+          "definition": "NOT NULL bank_id"
+        },
+        {
+          "name": "documents_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "documents_id_not_null",
+          "definition": "NOT NULL id"
+        },
+        {
+          "name": "documents_tags_not_null",
+          "definition": "NOT NULL tags"
+        },
+        {
+          "name": "documents_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "pk_documents",
+          "definition": "PRIMARY KEY (id, bank_id)"
+        }
+      ]
+    },
+    {
+      "stats": {
+        "updates": 0,
+        "hot_updates": 0,
+        "last_analyze": null,
+        "last_autovacuum": null,
+        "estimated_dead_rows": 0,
+        "estimated_live_rows": 0
+      },
+      "table": "ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "comment": null,
+          "default": "gen_random_uuid()",
+          "not_null": true
+        },
+        {
+          "name": "bank_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "document_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": true
+        },
+        {
+          "name": "embedding",
+          "type": "vector(1024)",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "context",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "event_date",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "occurred_start",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "occurred_end",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "mentioned_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "fact_type",
+          "type": "text",
+          "comment": null,
+          "default": "'world'::text",
+          "not_null": true
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "comment": null,
+          "default": "'{}'::jsonb",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": "now()",
+          "not_null": true
+        },
+        {
+          "name": "chunk_id",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "tags",
+          "type": "character varying[]",
+          "comment": null,
+          "default": "'{}'::character varying[]",
+          "not_null": true
+        },
+        {
+          "name": "proof_count",
+          "type": "integer",
+          "comment": null,
+          "default": "1",
+          "not_null": false
+        },
+        {
+          "name": "source_memory_ids",
+          "type": "uuid[]",
+          "comment": null,
+          "default": "ARRAY[]::uuid[]",
+          "not_null": false
+        },
+        {
+          "name": "consolidated_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "observation_scopes",
+          "type": "jsonb",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "text_signals",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "consolidation_failed_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "edited_at",
+          "type": "timestamp with time zone",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        },
+        {
+          "name": "attachment_ids",
+          "type": "text[]",
+          "comment": null,
+          "default": "'{}'::text[]",
+          "not_null": true
+        },
+        {
+          "name": "search_vector",
+          "type": "text",
+          "comment": null,
+          "default": null,
+          "not_null": false
+        }
+      ],
+      "comment": null,
+      "indexes": [
+        {
+          "name": "pk_memory_units",
+          "valid": true,
+          "unique": true,
+          "definition": "CREATE UNIQUE INDEX pk_memory_units ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (id)"
+        },
+        {
+          "name": "idx_memory_units_bank_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id)"
+        },
+        {
+          "name": "idx_memory_units_document_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_document_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (document_id)"
+        },
+        {
+          "name": "idx_memory_units_event_date",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_event_date ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (event_date DESC)"
+        },
+        {
+          "name": "idx_memory_units_bank_date",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_date ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, event_date DESC)"
+        },
+        {
+          "name": "idx_memory_units_fact_type",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_fact_type ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (fact_type)"
+        },
+        {
+          "name": "idx_memory_units_bank_fact_type",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_fact_type ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type)"
+        },
+        {
+          "name": "idx_memory_units_bank_type_date",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_type_date ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type, event_date DESC)"
+        },
+        {
+          "name": "idx_memory_units_chunk_id",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_chunk_id ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (chunk_id)"
+        },
+        {
+          "name": "idx_memory_units_tags",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_tags ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING gin (tags)"
+        },
+        {
+          "name": "idx_memory_units_observations",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_observations ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type) WHERE (fact_type = 'observation'::text)"
+        },
+        {
+          "name": "idx_memory_units_unconsolidated",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_unconsolidated ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, created_at) WHERE ((consolidated_at IS NULL) AND (fact_type = ANY (ARRAY['experience'::text, 'world'::text])))"
+        },
+        {
+          "name": "idx_memory_units_bank_occurred_start",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_occurred_start ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type, occurred_start) WHERE (occurred_start IS NOT NULL)"
+        },
+        {
+          "name": "idx_memory_units_bank_occurred_end",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_occurred_end ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type, occurred_end) WHERE (occurred_end IS NOT NULL)"
+        },
+        {
+          "name": "idx_memory_units_bank_mentioned_at",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_mentioned_at ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, fact_type, mentioned_at) WHERE (mentioned_at IS NOT NULL)"
+        },
+        {
+          "name": "idx_memory_units_consolidation_failed",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_consolidation_failed ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, consolidation_failed_at) WHERE ((consolidation_failed_at IS NOT NULL) AND (fact_type = ANY (ARRAY['experience'::text, 'world'::text])))"
+        },
+        {
+          "name": "idx_memory_units_source_memory_ids",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_source_memory_ids ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING gin (source_memory_ids) WITH (fastupdate=off) WHERE (source_memory_ids IS NOT NULL)"
+        },
+        {
+          "name": "idx_memory_units_bank_updated_at",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_bank_updated_at ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING btree (bank_id, updated_at DESC)"
+        },
+        {
+          "name": "idx_memory_units_embedding_hnsw",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_embedding_hnsw ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING hnsw (embedding vector_cosine_ops)"
+        },
+        {
+          "name": "idx_memory_units_text_search",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_memory_units_text_search ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING pgroonga ((((((COALESCE(text, ''::text) || ' '::text) || COALESCE(context, ''::text)) || ' '::text) || COALESCE(text_signals, ''::text)))) WITH (tokenizer='TokenBigram', normalizer='NormalizerNFKC150')"
+        },
+        {
+          "name": "idx_mu_emb_worl_eed282359d0d45f0",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_mu_emb_worl_eed282359d0d45f0 ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING hnsw (embedding vector_cosine_ops) WHERE ((fact_type = 'world'::text) AND (bank_id = '9f781ec84f62d1d27a5d164252f6c106'::text))"
+        },
+        {
+          "name": "idx_mu_emb_expr_eed282359d0d45f0",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_mu_emb_expr_eed282359d0d45f0 ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING hnsw (embedding vector_cosine_ops) WHERE ((fact_type = 'experience'::text) AND (bank_id = '9f781ec84f62d1d27a5d164252f6c106'::text))"
+        },
+        {
+          "name": "idx_mu_emb_obsv_eed282359d0d45f0",
+          "valid": true,
+          "unique": false,
+          "definition": "CREATE INDEX idx_mu_emb_obsv_eed282359d0d45f0 ON ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.memory_units USING hnsw (embedding vector_cosine_ops) WHERE ((fact_type = 'observation'::text) AND (bank_id = '9f781ec84f62d1d27a5d164252f6c106'::text))"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "memory_units_attachment_ids_not_null",
+          "definition": "NOT NULL attachment_ids"
+        },
+        {
+          "name": "memory_units_bank_id_not_null",
+          "definition": "NOT NULL bank_id"
+        },
+        {
+          "name": "memory_units_chunk_fkey",
+          "definition": "FOREIGN KEY (chunk_id) REFERENCES ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.chunks(chunk_id) ON DELETE CASCADE"
+        },
+        {
+          "name": "memory_units_created_at_not_null",
+          "definition": "NOT NULL created_at"
+        },
+        {
+          "name": "memory_units_document_fkey",
+          "definition": "FOREIGN KEY (document_id, bank_id) REFERENCES ctxdb_ws_9f781ec84f62d1d27a5d164252f6c106.documents(id, bank_id) ON DELETE CASCADE"
+        },
+        {
+          "name": "memory_units_fact_type_check",
+          "definition": "CHECK ((fact_type = ANY (ARRAY['world'::text, 'experience'::text, 'observation'::text])))"
+        },
+        {
+          "name": "memory_units_fact_type_not_null",
+          "definition": "NOT NULL fact_type"
+        },
+        {
+          "name": "memory_units_id_not_null",
+          "definition": "NOT NULL id"
+        },
+        {
+          "name": "memory_units_metadata_not_null",
+          "definition": "NOT NULL metadata"
+        },
+        {
+          "name": "memory_units_tags_not_null",
+          "definition": "NOT NULL tags"
+        },
+        {
+          "name": "memory_units_text_not_null",
+          "definition": "NOT NULL text"
+        },
+        {
+          "name": "memory_units_updated_at_not_null",
+          "definition": "NOT NULL updated_at"
+        },
+        {
+          "name": "pk_memory_units",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    }
+  ]
+}
