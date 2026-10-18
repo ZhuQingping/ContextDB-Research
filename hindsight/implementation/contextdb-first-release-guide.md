@@ -1,5 +1,7 @@
 # ContextDB 首发部署与验收
 
+> **历史快照，不适用于当前首发版本。** 当前请使用[部署集成指南](contextdb-service-integration-guide.md)、[部署合同](contextdb-deployment-contract.md)与[API验证手册](contextdb-management-api-curl-guide.md)；下文保留旧版本对照，不能用于当前部署。
+
 2026-10-16。面向运维和开发者。本手册使用首发简化代码、新 UTF8 数据库；旧 V2 体验库和运行服务不变。命令是操作步骤，执行状态见 [验收报告](contextdb-first-release-review-2026-10-16.md)。
 
 ## 1 准备一个新部署

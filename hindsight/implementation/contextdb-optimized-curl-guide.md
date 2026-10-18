@@ -1,6 +1,6 @@
 # ContextDB 管理 API：curl 验证手册
 
-更新：2026-10-16。适用于 release-hardening 分支部署的元数据3实例，API路径v1；原8890/9998旧体验实例未升级。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
+更新：2026-10-17。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
 
 [设计](../member-apikey-bank-service-design-first-release.md) · [部署](contextdb-optimized-guide.md) · [OpenAPI](../api/contextdb-optimized.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
 
@@ -19,7 +19,7 @@ export PY="$CODE/.venv/bin/python"
 export RUN="$HOME/.contextdb/release"
 export ADMIN_KEY=$(jq -er '.secret' "$RUN/admin-key.json")
 export CASE_DIR=$(mktemp -d /tmp/contextdb-api-demo.XXXXXX)
-export DEMO_NAME="api-demo-$(date +%Y%m%d%H%M%S)-$$"
+export DEMO_NAME="api_demo_$(date +%Y%m%d%H%M%S)_$$"
 unset ALL_KEY_ID
 command -v curl
 command -v jq
@@ -91,7 +91,7 @@ curl -fsS \
 
 ## 3. 工作空间管理
 
-一个工作空间对应一个独立 PG schema；`workspace_id` 同时也是原生 REST/MCP 调用中的 `bank_id`。空间 ID 和 schema 由服务生成，客户端不能指定。
+一个工作空间对应一个独立 PG schema。新空间 name 规范化后同时是可读 bank_id；schema 由服务生成，例如 name=mysql → bank_id=mysql → schema=ctxdb_ws_mysql。内部 workspace_id 是不可复用 UUID，用于授权和执行身份，不作为业务地址。
 
 ### 3.1 创建工作空间（2/14）
 
@@ -100,7 +100,7 @@ curl -fsS \
 | 参数 | 位置 | 约束 |
 | --- | --- | --- |
 | `Idempotency-Key` | Header，必填 | 1～128个 ASCII 字母、数字、下划线或连字符；同次操作重试复用 |
-| `name` | JSON，必填 | 1～64 字符；服务归一化后校验名称冲突 |
+| `name` | JSON，必填 | NFKC、trim并转小写后符合 `[a-z][a-z0-9_]{0,53}`；最长54字符，不允许中文、空格或连字符 |
 | `description` | JSON，可选 | 最多 512 字符，默认空字符串 |
 
 ```bash
@@ -115,7 +115,8 @@ curl -fsS -X POST \
   }" \
   | tee "$CASE_DIR/workspace-create.json" | jq .
 
-export WORKSPACE_ID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-create.json")
+export BANK_ID="$DEMO_NAME"
+export WORKSPACE_UUID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-create.json")
 export CREATE_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-create.json")
 ```
 
@@ -176,6 +177,9 @@ wait_operation() {
   return 1
 }
 wait_operation "$CREATE_OPERATION_ID"
+curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_ID" -H "Authorization: Bearer $ADMIN_KEY" -o "$CASE_DIR/workspace-detail.json"
+test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-detail.json")" = "$WORKSPACE_UUID"
+export WORKSPACE_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-detail.json")
 ```
 
 函数只查询，不提交重试。失败或等待超时时停止后续授权步骤，先处理或继续查询原操作。
@@ -206,7 +210,9 @@ curl -fsS -G \
 {
   "items": [
     {
-      "workspace_id": "<工作空间ID>",
+      "workspace_id": "<工作空间UUID>",
+      "bank_id": "<可读bank_id>",
+      "etag": "\"<工作空间UUID>:<版本>\"",
       "name": "<测试空间名称>",
       "description": "用于手工验证管理接口",
       "state": "active",
@@ -225,7 +231,7 @@ curl -fsS -G \
 
 ### 3.4 查询单个工作空间（5/14）
 
-**接口：** `GET /ext/contextdb/v1/workspaces/{workspace_name}`。按规范化唯一名称精确查询；中文、空格等需 URL 编码，不作 UUID 回退。DELETE/业务 bank_id/授权仍用 workspace_id。
+**接口：** `GET /ext/contextdb/v1/workspaces/{bank_id}`。使用规范化可读 bank_id；DELETE、原生业务和授权选择也使用同一标识。升级保留的历史空间仍用其原有 UUID bank_id，不自动改名。
 
 ```bash
 curl -fsS \
@@ -245,11 +251,15 @@ curl -fsS -X POST \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H 'Content-Type: application/json' \
   -H "Idempotency-Key: $DEMO_NAME-create-b" \
-  -d "{\"name\":\"$DEMO_NAME-b\",\"description\":\"逐空间权限验证\"}" \
+  -d "{\"name\":\"${DEMO_NAME}_b\",\"description\":\"逐空间权限验证\"}" \
   | tee "$CASE_DIR/workspace-b-create.json" | jq .
-export WORKSPACE_B_ID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-create.json")
+export BANK_B_ID="${DEMO_NAME}_b"
+export WORKSPACE_B_UUID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-create.json")
 export CREATE_B_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-b-create.json")
 wait_operation "$CREATE_B_OPERATION_ID"
+curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_B_ID" -H "Authorization: Bearer $ADMIN_KEY" -o "$CASE_DIR/workspace-b-detail.json"
+test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-detail.json")" = "$WORKSPACE_B_UUID"
+export WORKSPACE_B_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-b-detail.json")
 ```
 
 预期202，操作成功后两个空间都为 active。当前没有工作空间修改接口；两个空间的删除安排在第6.2节。
@@ -374,19 +384,19 @@ export USER_VERSION=$(jq -er '.version' "$CASE_DIR/user-restored.json")
 | name | 必填，1～64字符，不能纯空白 |
 | authorization | 必填对象，只能使用下面两种模式之一 |
 | authorization.mode | 必填，selected / all |
-| selected 的 workspaces | 1～1000项，每项 workspace_id 不重复，且空间为 active |
+| selected 的 workspaces | 1～1000项，每项 bank_id 不重复，且空间为 active |
 | 每项 permission | read / read_write；新建时省略默认 read_write |
 | all 的 permission | 全部当前及未来空间的统一权限；省略默认 read_write |
 
-selected 不提交统一 permission；all 不提交 workspaces。旧平铺 access_mode、workspace_ids、permission 不再作为公开输入。
+selected 不提交统一 permission；all 不提交 workspaces。selected每项可选 workspace_id 是身份前置条件，UI始终发送；不传表示明确授权请求处理时该bank_id对应的当前对象。传入旧UUID返回409 workspace_generation_changed，整次创建/修改回滚。旧平铺 access_mode、workspace_ids、permission 不再作为公开输入。
 
 下面用同一个 Key 配置：**空间A读写、空间B只读**。创建响应包含明文，只保存到私有文件，终端展示时去掉 secret：
 
 ```bash
-jq -n --arg name "$DEMO_NAME-key" --arg a "$WORKSPACE_ID" --arg b "$WORKSPACE_B_ID" \
+jq -n --arg name "$DEMO_NAME-key" --arg a "$BANK_ID" --arg b "$BANK_B_ID" --arg au "$WORKSPACE_UUID" --arg bu "$WORKSPACE_B_UUID" \
   '{name:$name,authorization:{mode:"selected",workspaces:[
-    {workspace_id:$a,permission:"read_write"},
-    {workspace_id:$b,permission:"read"}
+    {bank_id:$a,workspace_id:$au,permission:"read_write"},
+    {bank_id:$b,workspace_id:$bu,permission:"read"}
   ]}}' > "$CASE_DIR/key-input.json"
 
 curl -fsS -X POST \
@@ -412,8 +422,8 @@ export BUSINESS_KEY=$(jq -er '.secret' "$CASE_DIR/key-create.json")
   "authorization": {
     "mode": "selected",
     "workspaces": [
-      {"workspace_id": "<空间A ID>", "workspace_name": "<空间A名称>", "permission": "read_write"},
-      {"workspace_id": "<空间B ID>", "workspace_name": "<空间B名称>", "permission": "read"}
+      {"bank_id":"<空间A bank_id>", "workspace_id": "<空间A内部UUID>", "workspace_name": "<空间A名称>", "permission": "read_write"},
+      {"bank_id":"<空间B bank_id>", "workspace_id": "<空间B内部UUID>", "workspace_name": "<空间B名称>", "permission": "read"}
     ]
   },
   "version": 1,
@@ -463,7 +473,7 @@ curl -fsS -G \
 
 ### 5.2.1 原生业务正向验证（在改权限与清理资源之前）
 
-本节使用刚创建的 BUSINESS_KEY，它对 WORKSPACE_ID 有读写权限。SDK 走原生 REST，bank_id 使用返回的 workspace_id；界面名不替代它。需同版发布 Python SDK、fastmcp，使用模型的 Retain/Reflect 会实际调用模型。
+本节使用刚创建的 BUSINESS_KEY，它对 BANK_ID 有读写权限。SDK 走原生 REST，bank_id 使用本手册的 BANK_ID 可读标识；内部 WORKSPACE_UUID 只作身份前置条件。需同版发布 Python SDK、fastmcp，使用模型的 Retain/Reflect 会实际调用模型。
 
 ```bash
 # 在同版源码环境安装公开SDK；不改变服务端源码。
@@ -473,13 +483,14 @@ import asyncio, os, time
 from hindsight_client import Hindsight
 async def main():
  client=Hindsight(base_url=os.environ['API'],api_key=os.environ['BUSINESS_KEY'])
- bank=os.environ['WORKSPACE_ID']
+ bank=os.environ['BANK_ID']
  try:
   accepted=await client.aretain(bank_id=bank,content='嘉木项目负责人是李明，使用PostgreSQL保存记忆。',retain_async=True)
   print('retain accepted:',accepted.operation_id)
   deadline=time.monotonic()+120
   while True:
    page=await client.operations.list_operations(bank,limit=100)
+   if any(op.status == 'failed' for op in page.operations): raise RuntimeError('任务失败，请检查原生operations，不重复retain')
    if not any(op.status in ('pending','processing') for op in page.operations): break
    if time.monotonic()>=deadline: raise TimeoutError('任务仍处理中，请查询原生operations，不重复retain')
    await asyncio.sleep(1)
@@ -492,14 +503,14 @@ PY
 
 预期：Retain 返回任务ID；等待终态后 Recall 返回相关记忆，Reflect 返回基于记忆的回答。还应查看任务是否 failed，不能只以 pending/processing 消失作为提取成功。实际文本由模型产生，不要求逐字匹配。
 
-MCP 单空间入口明确绑定同一个不可复用ID：
+MCP 单空间入口使用同一个可读 bank_id；服务端按当前空间身份鉴权：
 
 ```bash
 "$PY" - <<'PY'
 import asyncio, os
 from fastmcp import Client
 async def main():
- url=os.environ['API'].rstrip('/')+'/mcp/'+os.environ['WORKSPACE_ID']+'/'
+ url=os.environ['API'].rstrip('/')+'/mcp/'+os.environ['BANK_ID']+'/'
  async with Client(url,auth=os.environ['BUSINESS_KEY']) as client:
   print([tool.name for tool in await client.list_tools()])
   print(await client.call_tool('recall',{'query':'谁负责嘉木项目？'}))
@@ -535,8 +546,8 @@ export KEY_VERSION=$(jq -er '.version' "$CASE_DIR/key-renamed.json")
 再把空间A改为只读、移除空间B：
 
 ```bash
-jq -n --arg a "$WORKSPACE_ID" \
-  '{authorization:{mode:"selected",workspaces:[{workspace_id:$a,permission:"read"}]}}' \
+jq -n --arg a "$BANK_ID" --arg au "$WORKSPACE_UUID" \
+  '{authorization:{mode:"selected",workspaces:[{bank_id:$a,workspace_id:$au,permission:"read"}]}}' \
   > "$CASE_DIR/key-patch-input.json"
 curl -fsS -X PATCH \
   "$API/ext/contextdb/v1/users/$USER_ID/keys/$KEY_ID" \
@@ -558,10 +569,10 @@ export KEY_VERSION=$(jq -er '.version' "$CASE_DIR/key-update.json")
 
 ```bash
 curl -sS \
-  "$API/v1/default/banks/$WORKSPACE_ID/memories/list?limit=1" \
+  "$API/v1/default/banks/$BANK_ID/memories/list?limit=1" \
   -H "Authorization: Bearer $BUSINESS_KEY" -w '\nHTTP %{http_code}\n'
 curl -sS \
-  "$API/v1/default/banks/$WORKSPACE_B_ID/memories/list?limit=1" \
+  "$API/v1/default/banks/$BANK_B_ID/memories/list?limit=1" \
   -H "Authorization: Bearer $BUSINESS_KEY" -w '\nHTTP %{http_code}\n'
 ```
 
@@ -569,7 +580,7 @@ curl -sS \
 
 ```bash
 curl -sS -X POST \
-  "$API/v1/default/banks/$WORKSPACE_ID/memories" \
+  "$API/v1/default/banks/$BANK_ID/memories" \
   -H "Authorization: Bearer $BUSINESS_KEY" \
   -H 'Content-Type: application/json' \
   -d '{"items":[{"content":"只读写入拦截验证"}],"async":true}' \
@@ -613,7 +624,7 @@ fi
 
 ## 6. 清理测试资源
 
-只删除本手册生成的 USER_ID、WORKSPACE_ID、WORKSPACE_B_ID。第5.5节已经吊销测试 Key；两个测试空间都需要清理。
+只删除本手册生成的 USER_ID、BANK_ID、BANK_B_ID。第5.5节已经吊销测试 Key；两个测试空间都需要清理。
 
 ### 6.1 删除测试用户（13/14）
 
@@ -631,13 +642,14 @@ curl -sS -X DELETE \
 
 ### 6.2 删除测试工作空间（14/14）
 
-**接口：** `DELETE /ext/contextdb/v1/workspaces/{workspace_id}`。必填 Header Idempotency-Key，1～128 字符，无请求体。此操作会清理该空间的数据。
+**接口：** `DELETE /ext/contextdb/v1/workspaces/{bank_id}`。必填 Idempotency-Key（1～128字符）和 If-Match（之前读取的空间 ETag），无请求体。响应202只表示受理，状态succeeded才表示业务数据、schema和映射已清理。缺少If-Match返回428，旧对象条件返回412，不能删同名新对象。
 
 ```bash
 curl -fsS -X DELETE \
-  "$API/ext/contextdb/v1/workspaces/$WORKSPACE_ID" \
+  "$API/ext/contextdb/v1/workspaces/$BANK_ID" \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H "Idempotency-Key: $DEMO_NAME-delete" \
+  -H "If-Match: $WORKSPACE_ETAG" \
   | tee "$CASE_DIR/workspace-delete.json" | jq .
 
 export DELETE_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-delete.json")
@@ -679,15 +691,16 @@ curl -sS \
 
 ```bash
 curl -fsS -X DELETE \
-  "$API/ext/contextdb/v1/workspaces/$WORKSPACE_B_ID" \
+  "$API/ext/contextdb/v1/workspaces/$BANK_B_ID" \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H "Idempotency-Key: $DEMO_NAME-delete-b" \
+  -H "If-Match: $WORKSPACE_B_ETAG" \
   | tee "$CASE_DIR/workspace-b-delete.json" | jq .
 export DELETE_B_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-b-delete.json")
 wait_operation "$DELETE_B_OPERATION_ID"
 ```
 
-预期202，最后 succeeded。此时 Bank/文件、独立 schema、空间行和对应授权已清理，操作快照及审计仍可追溯。繁忙/未知执行者/外部依赖会阻止成功。默认操作结果保留168小时；相同 Idempotency-Key 在窗口内返回旧操作，过期不保证可重放。
+预期202，最后 succeeded。此时 Bank/文件、独立 schema、空间行和对应授权已清理，操作快照及审计仍可追溯。繁忙/未知执行者/外部依赖会阻止成功。默认操作结果保留168小时；相同 Idempotency-Key 和原 ETag 在窗口内返回原操作；超过窗口也不能将旧 UUID 条件套到同名新对象上。不要在重试时换取新对象的 ETag。
 
 ## 7. 返回码、重试与接口边界
 
@@ -702,7 +715,8 @@ wait_operation "$DELETE_B_OPERATION_ID"
 | 403 | 有效业务 Key 调用了管理员接口 |
 | 404 | 目标不存在 |
 | 409 | 名称、幂等请求或资源状态冲突 |
-| 412 | If-Match 版本过期，需要重新获取当前版本 |
+| 412 | If-Match的版本或对象身份不匹配；重新确认意图，不自动把旧删除改成新对象删除 |
+| 428 | 工作空间删除缺少If-Match条件 |
 | 503 | 元数据服务不可用 |
 
 错误体统一为：
@@ -718,33 +732,64 @@ wait_operation "$DELETE_B_OPERATION_ID"
 
 参数校验错误可附安全 fields 提示，字段只含 field/reason，不回显 secret、原始输入或数据库错误。
 
-管理请求响应包含 X-Request-ID 和 Cache-Control: no-store；用户与Key编辑响应含ETag；空间只读详情不发ETag。If-Match 为带双引号的正整数，最多22位数字；路径 ID 为32位小写十六进制。`curl -fsS` 遇 HTTP 错误会报错；需要查看错误 JSON 和状态码时，将该条改为 `curl -sS -i` 并去掉末尾 jq 管道。
+管理响应包含X-Request-ID和Cache-Control:no-store。用户/Key编辑ETag为带双引号正整数；空间详情ETag为带双引号的对象UUID:version，并在正文etag返回，DELETE须原样发送。空间路径为bank_id；用户、Key和操作ID为32位小写十六进制。`curl -fsS` 遇 HTTP 错误会报错；需要查看错误 JSON 和状态码时，将该条改为 `curl -sS -i` 并去掉末尾 jq 管道。
 
 工作空间创建/删除支持幂等重试。用户和 Key 创建当前没有幂等参数；请求超时、结果未知时先查询列表，避免直接重试造成重复创建。若 Key 已创建但明文丢失，列表无法找回 secret，需要吊销后重新签发。
 
-原生 Bank 创建、删除等生命周期接口被限制，管理员也必须使用工作空间接口，以维护空间和 schema 映射。原生 REST/MCP 内容操作另行使用 bank_id=workspace_id 调用。
+原生 Bank 创建、删除等生命周期接口被限制，管理员也必须使用工作空间接口，以维护空间和 schema 映射。原生 REST/MCP 内容操作另行使用 可读 bank_id 调用。
 
 ## 8. PG 只读核对
 
 以下命令使用本机 PG18 客户端连接**当前服务使用的新库**；不是原库。只读核对，不手动修改元数据：
 
 ```bash
-export PSQL=psql
-# PG_URL 从新实例私密配置加载，不能连接旧体验库。
-set -a; source "$RUN/api.env"; set +a
-export PG_URL="$HINDSIGHT_API_DATABASE_URL"
-"$PSQL" "$PG_URL" -X -v ON_ERROR_STOP=1 \
+export PSQL="${PSQL:-psql}"
+# 源码安装且未加入PATH时，先把PSQL设为自己的完整路径：/PG安装目录/bin/psql
+command -v "$PSQL"
+set -a
+source "$RUN/api.env"
+set +a
+# 在本手册的私密CASE_DIR生成libpq连接文件，避免URL密码进入进程参数。
+"$PY" - <<'PYCONF'
+import os
+from pathlib import Path
+from urllib.parse import urlsplit, unquote, parse_qs
+url = urlsplit(os.environ['HINDSIGHT_API_DATABASE_URL'])
+out = Path(os.environ['CASE_DIR'])
+fields = {'host': url.hostname or '', 'port': str(url.port or 5432),
+          'dbname': unquote(url.path.removeprefix('/')), 'user': unquote(url.username or '')}
+for key in ('sslmode', 'sslrootcert', 'sslcert', 'sslkey', 'connect_timeout'):
+    value = parse_qs(url.query).get(key)
+    if value:
+        fields[key] = value[0]
+password = unquote(url.password or '')
+if any('\n' in v or '\r' in v for v in [*fields.values(), password]):
+    raise SystemExit('Invalid connection file value')
+def save(name, value):
+    target = out / name
+    fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'w') as stream:
+        stream.write(value)
+save('pg_service.conf', '[contextdb]\n' + ''.join(f'{k}={v}\n' for k,v in fields.items()))
+def escape(value):
+    return value.replace('\\', '\\\\').replace(':', '\\:')
+save('pgpass', ':'.join(escape(fields[k]) for k in ('host','port','dbname','user')) + ':' + escape(password) + '\n')
+PYCONF
+export PGSERVICEFILE="$CASE_DIR/pg_service.conf"
+export PGPASSFILE="$CASE_DIR/pgpass"
+export PGSERVICE=contextdb
+"$PSQL" -X -v ON_ERROR_STOP=1 \
   -c 'SELECT instance_id,cloud_tenant_id,metadata_version,format_id,installed_at FROM ctxdb_meta.deployment_info;' \
   -c "SELECT tablename FROM pg_tables WHERE schemaname='ctxdb_meta' ORDER BY tablename;" \
   -c "SELECT to_regclass('ctxdb_meta.instances') AS old_instances,to_regclass('ctxdb_meta.schema_versions') AS old_versions;"
 ```
 
-预期 deployment_info 恰好1行、metadata_version=3、format_id=contextdb-first-release；8张管理表；两个旧表返回 NULL。这是数据库结构序号，API 路径仍为 v1。
+预期 deployment_info 恰好1行、metadata_version=1、format_id=contextdb-first-release；8张管理表；两个旧表返回 NULL。这是数据库结构序号，API 路径仍为 v1。
 
 查看本次 Key 的模式、吊销标记和逐空间权限，不查询 digest：
 
 ```bash
-"$PSQL" "$PG_URL" -X -v ON_ERROR_STOP=1 -v key_id="$KEY_ID" <<'SQL'
+"$PSQL" -X -v ON_ERROR_STOP=1 -v key_id="$KEY_ID" <<'SQL'
 SELECT key_id,user_id,name,access_mode,permission,revoked_at
 FROM ctxdb_meta.api_keys WHERE key_id = :'key_id';
 SELECT key_id,workspace_id,permission
@@ -759,8 +804,8 @@ selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一�
 ## 9. 本次新增边界验证
 
 - 新建同名、大小写等价/全角等价成员：409；停用仍占名，删除后可同名新建，新 user_id 不继承旧 Key。
-- 名称 GET：用实际名称查询200，传旧 UUID 名称查404（除非真实名称恰好就是它）；中文路径先 URL 编码。
-- selected 授权读包含只读 workspace_name，写入只传 workspace_id/permission，不能原样回传只读名称。
+- GET/DELETE、授权选择和原生REST/MCP使用同一可读bank_id；新建非法标识返回400。旧结构升级保留原地址。
+- selected 授权读包含 bank_id、workspace_id 和只读 workspace_name；写入传 bank_id/permission，并可携带预期 workspace_id 防止旧选择误授权同名新对象，不能原样回传只读名称。
 - 删除选定空间会移除对应授权、Key version加1；旧 If-Match 编辑412，刷新后只改名成功，余下权限不变。
 - 授权清成空 selected 仍可列出/编辑，但拒绝所有空间；同名新建不继承旧授权。
 - Key 列表 last_used_at 为60秒粒度近似值，无列表 ETag；创建/编辑响应不含该统计，保留编辑版本。

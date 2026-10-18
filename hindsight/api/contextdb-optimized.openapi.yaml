@@ -131,6 +131,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -269,6 +284,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -461,6 +491,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -476,23 +521,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /workspaces/{workspace_name}:
+  /workspaces/{bank_id}:
     get:
       tags:
       - ContextDB management
       summary: Get Workspace
-      operationId: get_workspace_ext_contextdb_v1_workspaces__workspace_name__get
+      operationId: get_workspace_ext_contextdb_v1_workspaces__bank_id__get
       security:
       - AdministratorKey: []
       parameters:
-      - name: workspace_name
+      - name: bank_id
         in: path
         required: true
         schema:
           type: string
-          minLength: 1
-          maxLength: 64
-          title: Workspace Name
+          pattern: ^[a-z0-9][a-z0-9_]{0,53}$
+          title: Bank Id
       responses:
         '200':
           description: Successful Response
@@ -509,6 +553,10 @@ paths:
                 type: string
                 enum:
                 - no-store
+            ETag:
+              schema:
+                type: string
+                example: '"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:2"'
         default:
           description: Sanitized management error
           headers:
@@ -614,6 +662,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -629,22 +692,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /workspaces/{workspace_id}:
     delete:
       tags:
       - ContextDB management
       summary: Delete Workspace
-      operationId: delete_workspace_ext_contextdb_v1_workspaces__workspace_id__delete
+      operationId: delete_workspace_ext_contextdb_v1_workspaces__bank_id__delete
       security:
       - AdministratorKey: []
       parameters:
-      - name: workspace_id
+      - name: bank_id
         in: path
         required: true
         schema:
           type: string
-          pattern: ^[0-9a-f]{32}$
-          title: Workspace Id
+          pattern: ^[a-z0-9][a-z0-9_]{0,53}$
+          title: Bank Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          pattern: ^"[0-9a-f]{32}:[1-9][0-9]{0,21}"$
+          example: '"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:2"'
       - name: Idempotency-Key
         in: header
         required: true
@@ -760,6 +829,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -912,6 +996,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -1096,6 +1195,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -1235,6 +1349,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -1420,6 +1549,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -1553,6 +1697,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -1744,6 +1903,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -1891,6 +2065,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -2082,6 +2271,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '428':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Sanitized management error
           headers:
@@ -2222,6 +2426,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '412':
+          description: Sanitized management error
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '428':
           description: Sanitized management error
           headers:
             X-Request-ID:
@@ -2395,16 +2614,24 @@ components:
       title: ExplicitSelectedAuthorization
     ExplicitWorkspaceGrant:
       properties:
-        workspace_id:
+        bank_id:
           type: string
-          pattern: ^[0-9a-f]{32}$
+          pattern: ^[a-z0-9][a-z0-9_]{0,53}$
+          title: Bank Id
+        workspace_id:
+          anyOf:
+          - type: string
+            pattern: ^[0-9a-f]{32}$
+          - type: 'null'
           title: Workspace Id
+          description: Optional expected generation from the workspace picker; a stale
+            generation is rejected rather than granting its same-name successor.
         permission:
           $ref: '#/components/schemas/Permission'
       additionalProperties: false
       type: object
       required:
-      - workspace_id
+      - bank_id
       - permission
       title: ExplicitWorkspaceGrant
     FieldError:
@@ -2709,6 +2936,10 @@ components:
       title: StoredSelectedAuthorization
     StoredWorkspaceGrant:
       properties:
+        bank_id:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9_]{0,53}$
+          title: Bank Id
         workspace_id:
           type: string
           pattern: ^[0-9a-f]{32}$
@@ -2725,6 +2956,7 @@ components:
       additionalProperties: false
       type: object
       required:
+      - bank_id
       - workspace_id
       title: StoredWorkspaceGrant
     User:
@@ -2789,9 +3021,11 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
+          maxLength: 54
           minLength: 1
           title: Name
+          description: 'Stable Bank ID: normalized to lowercase ASCII, starts with
+            a letter; remaining characters are letters, digits or _. Maximum 54 characters.'
         description:
           type: string
           maxLength: 512
@@ -2804,23 +3038,37 @@ components:
       title: WorkspaceCreate
     WorkspaceGrant:
       properties:
-        workspace_id:
+        bank_id:
           type: string
-          pattern: ^[0-9a-f]{32}$
+          pattern: ^[a-z0-9][a-z0-9_]{0,53}$
+          title: Bank Id
+        workspace_id:
+          anyOf:
+          - type: string
+            pattern: ^[0-9a-f]{32}$
+          - type: 'null'
           title: Workspace Id
+          description: Optional expected generation from the workspace picker; a stale
+            generation is rejected rather than granting its same-name successor.
         permission:
           $ref: '#/components/schemas/Permission'
           default: read_write
       additionalProperties: false
       type: object
       required:
-      - workspace_id
+      - bank_id
       title: WorkspaceGrant
     WorkspaceResponse:
       properties:
         workspace_id:
           type: string
           title: Workspace Id
+        bank_id:
+          type: string
+          title: Bank Id
+        etag:
+          type: string
+          title: Etag
         name:
           type: string
           title: Name
@@ -2845,6 +3093,8 @@ components:
       type: object
       required:
       - workspace_id
+      - bank_id
+      - etag
       - name
       - description
       - state
