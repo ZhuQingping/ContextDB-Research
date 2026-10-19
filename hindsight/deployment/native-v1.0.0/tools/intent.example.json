@@ -1,0 +1,12 @@
+{
+  "database_url_file": "/srv/hindsight/input/database-url",
+  "maas_api_key_file": "/srv/hindsight/input/maas-key",
+  "ui_password_file": "/srv/hindsight/input/ui-password",
+  "topology": "merged",
+  "text_search": "native",
+  "ui_api_url": "http://127.0.0.1:8888",
+  "api_port": 8888,
+  "ui_port": 9999,
+  "db_pool_max": 10,
+  "llm_model": "deepseek-v4.1-flash"
+}

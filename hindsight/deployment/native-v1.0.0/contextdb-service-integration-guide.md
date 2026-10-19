@@ -7,14 +7,15 @@
 节点需要Docker及Compose v2、Python3、psql、curl、jq。推荐直接使用官方slim镜像，外部MaaS模式不需要下载本地ML模型。固定版本后记录镜像摘要：
 
 ```bash
-export HELPERS=/opt/contextdb-source/hindsight-extensions/contextdb-service/deployment/native-v1.0.0
+export RESEARCH=/opt/ContextDB-Research
+export HELPERS="$RESEARCH/hindsight/deployment/native-v1.0.0/tools"
 export RUN=/srv/hindsight/runtime
 docker pull ghcr.io/vectorize-io/hindsight:1.0.0-slim
 export NATIVE_IMAGE=$(docker image inspect ghcr.io/vectorize-io/hindsight:1.0.0-slim --format '{{index .RepoDigests 0}}')
 docker image inspect "$NATIVE_IMAGE" --format '{{json .Config.Labels}}'
 ```
 
-核对镜像标签版本1.0.0-slim与revision `39c65ffe2f140d0c84cee58566cad8900c5b9908`。Agent持久保存批准的摘要，后续不要改用latest。HELPERS连同上一级prepare-pg.sql一起交付即可，不安装自研Python扩展。配置渲染与Compose是节点部署材料，运行镜像仍是上游原生镜像。
+核对镜像标签版本1.0.0-slim与revision `39c65ffe2f140d0c84cee58566cad8900c5b9908`。Agent持久保存批准的摘要，后续不要改用latest。RESEARCH 是本资料仓在节点上的检出路径；也可以只交付完整 tools 目录并调整 HELPERS。tools 已包含 prepare-pg.sql，不需要 ContextDB 自研源码或Python扩展。配置渲染与Compose是节点部署材料，运行镜像仍是上游原生镜像。
 
 若需要源码联调，构建机另装Git、Python3.11、uv、Node24/npm：
 
@@ -39,7 +40,7 @@ printf '\n'
 export CONTEXTDB_NEW_DB_PASSWORD
 psql -X "$PGADMIN_URL" -v ON_ERROR_STOP=1 \
   -v service_role=hindsight_service -v service_db=hindsight \
-  -f "$HELPERS/../prepare-pg.sql"
+  -f "$HELPERS/prepare-pg.sql"
 unset CONTEXTDB_NEW_DB_PASSWORD
 ```
 

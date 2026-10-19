@@ -1,0 +1,36 @@
+# One official upstream container; reuse its existing API/UI supervisor.
+services:
+  hindsight:
+    image: ${NATIVE_IMAGE:?Set the approved upstream v1.0.0 image digest}
+    user: "${HINDSIGHT_UID:-1000}:${HINDSIGHT_GID:-1000}"
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 45s
+    cpus: "${HINDSIGHT_CPUS:-2}"
+    mem_limit: ${HINDSIGHT_MEMORY:-4g}
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - >-
+        set -e; set -a; source /run/hindsight/api.env; source /run/hindsight/ui.env;
+        test "$$HINDSIGHT_API_WORKER_ENABLED" = true;
+        export HINDSIGHT_ENABLE_API=true HINDSIGHT_ENABLE_CP=true;
+        export HINDSIGHT_CP_PORT="$$PORT" HINDSIGHT_CP_HOSTNAME=0.0.0.0;
+        export HINDSIGHT_API_HEALTH_URL="http://127.0.0.1:$$HINDSIGHT_API_PORT/health/ready";
+        exec /app/start-all.sh
+    volumes:
+      - ${NATIVE_RUNTIME:?}/api.env:/run/hindsight/api.env:ro
+      - ${NATIVE_RUNTIME}/ui.env:/run/hindsight/ui.env:ro
+    ports:
+      - "${API_PORT:-8888}:${API_PORT:-8888}"
+      - "${UI_PORT:-9999}:${UI_PORT:-9999}"
+    healthcheck:
+      test: [CMD-SHELL, '. /run/hindsight/api.env; . /run/hindsight/ui.env; python -m hindsight_api.http_probe "http://127.0.0.1:$$HINDSIGHT_API_PORT/health/ready" 3 && python -m hindsight_api.http_probe "http://127.0.0.1:$$PORT/api/health" 3']
+      interval: 5s
+      timeout: 8s
+      retries: 24
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"

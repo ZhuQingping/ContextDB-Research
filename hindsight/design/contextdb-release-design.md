@@ -698,6 +698,8 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 
 **全部工作空间能设置个别只读例外吗？** 不能。all 是含未来空间的统一权限；需要差异权限时改为 selected。
 
+**是否提供客户面审计？** 当前只有管理变更留痕，记录在 `ctxdb_meta.audit_events`，覆盖工作空间、用户和 Key 的成功管理变更事务，包含管理员 Key ID、目标对象 ID、动作、请求 ID 和时间，不包含密钥明文。异步空间操作的受理记录不代表后台操作完成；失败请求和 Retain/Recall/Reflect 不在这份记录范围内。没有提供客户审计查询 API、审计 UI 或完整审计产品能力。原生 Audit 正文、LLM Trace 和 Webhook 在本版关闭，原因见运行边界与 TODO。
+
 **权限给用户还是 Key？** 给 Key；用户只管理归属和统一停用，一个用户可以有多个不同授权的 Key。
 
 **为什么 UI 吊销看起来像删除？** 列表移除该行，后台仍保留 revoked_at 和审计。删除用户则阻断该用户全部 Key，两者都不会删除空间内容。
@@ -745,14 +747,14 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 - **TODO：内部提交与 Worker 完整执行边界**：保留 Tenant 的 `async_submission_scope` / `async_execution_scope` 和引擎、Worker 的调用。公开结果回调不覆盖最终/延期状态写入，队列 processing=0 也不证明协程已结束。后续以统一通用保护域替代具体 quiescent 传播，须先覆盖取消、连接丢失、最终写失败及同名重建。
 - **TODO：MCP 故障结束语义**：保留原生 `failure_reporter`。原生工具会将未知异常包装成正常 JSON 响应，外围不能仅根据 HTTP 200 或异常是否抛出来判断安全结束；移除前须证明协议封装、取消与断连均能可靠识别。
 - **TODO：排空的多状态查询与 Append**：`list_operations(statuses=...)` 暂留，避免把一个一致快照拆成两次存在竞态的状态统计；后续比较外围只读统计适配与通用引擎接口。单文档 Append 冲突的结束证明不随身份恢复代码一起删除；多文档失败仍缺统一取消/排空证明。
-- **TODO：交付范围与测试依赖**：首版仍为 native 英文全文、合并 Worker。PGroonga 预检、独立 Worker 诊断以及原生镜像过渡材料有各自用途，暂留独立目录，不作为首版前提。系统测试直接启动服务端/PG 需要完整依赖，后续将 ContextDB 故事划为显式可选环境并同步 CI，再收敛重复版本约束；不能只删 lock 或默默跳过功能验收。
+- **TODO：交付范围与测试依赖**：首版仍为 native 英文全文、合并 Worker。PGroonga 预检、独立 Worker 诊断暂留独立目录，不作为首版前提。原生镜像过渡工具及其测试已在本地迁到资料仓 [tools/](../deployment/native-v1.0.0/tools/)，原生指南随文档交付，不再放在自研扩展中。系统测试直接启动服务端/PG 需要完整依赖，后续将 ContextDB 故事划为显式可选环境并同步 CI，再收敛重复版本约束；不能只删 lock 或默默跳过功能验收。
 - **TODO：可上游的通用修改**：数据库 URL 脱敏、独立 Worker 退出清理单独说明，不将其算作工作空间权限所必需。系统字体用于无网络构建，暂留；Next 配置已恢复原生形态。
 
 
 
 认证、SQL批量授权、连接预算、索引、真实身份及原生改动缩减的逐项结果见[优化状态](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)。原生v1.0.0的独立接入材料见[原生部署合同](../deployment/native-v1.0.0/contextdb-deployment-contract.md)及[操作指南](../deployment/native-v1.0.0/contextdb-service-integration-guide.md)；该模式没有ContextDB权限或元数据，不承诺原库直接切换。
 
-- **TODO：认证与目录性能**：少数原生管理员专属入口仍会额外核对role；后续可复用角色快照，但不能将目标空间授权误当完整授权目录。跨schema Bank列表仍按全部可见空间取得原生排序/搜索信息后分页。需要在存储适配层批量查询或维护可靠写入水位，不能牺牲q、全局最近写入排序或total来减少查询。
+- **TODO：认证与授权复用**：四个入口继续共用 `Repository.authenticate`，具体收敛点与安全约束见下节。跨 schema Bank 列表仍按全部可见空间取得原生排序/搜索信息后分页；后续需要批量查询或可靠写入水位，不能牺牲 q、全局最近写入排序或 total。
 - **TODO：契约规则复用**，将条件Header、OpenAPI和UI代理的重复规则继续统一，保留先鉴权、错误脱敏和固定目标转发。
 - **TODO：启动交付**，进一步合并language辅助参数，以镜像manifest代替固定镜像中的重复bundle扫描。调整Dockerfile的COPY次序与SOURCE_REVISION作用域，避免后端修改引起不必要的依赖/UI构建层失效；运行时UI指纹已缩小，但Docker构建缓存仍有改善空间。
 - **TODO：原生可选能力恢复**：首版继续关闭新增Trace/Audit正文和Webhook。它们的脱离请求写入需要接入完整代次、排空与恢复保护后才能重新启用；不能以核心记忆功能回归通过推断这些能力已经开放。
@@ -760,6 +762,27 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 - **TODO：生产验收**，目标ECS容器重建、安全扫描、RDS中文全文/备份/PITR、混合负载及管理并发压测与高可用验证。本文记录本机功能证据，不替代这些验收。
 
 本轮保留可读物理schema与内部不可复用UUID。删除安全链路、原生引擎鉴权、异步生命周期及持久未知写入屏障继续保留；剩余取舍应围绕实际复杂度和测试证据讨论。
+
+### 认证与授权复用评审（2026-10-19，待实施）
+
+**目标是一次目标认证、多个入口复用结果，不是删除引擎权限校验。** 目前四个扩展已经共用 `Repository.authenticate` 的 PG/HMAC 认证，并非四套密钥验证实现。一次受保护的空间操作通过 `AdmissionGuard.enter` 后，Tenant 和 Validator 可复用 `authenticated_principal`，不必每次执行钩子都查库。
+
+| 入口 | 保留的职责 | 不应重复实现的内容 |
+| --- | --- | --- |
+| Tenant | 将已认证的工作空间映射到 schema；填充原生 RequestContext | 密钥解析、摘要验证、用户/Key 状态规则 |
+| Validator | 将原生操作映射到读、写、管理员权限；校验内部任务身份 | 再写一套空间授权查询或角色规则 |
+| HTTP | 解析管理请求、校验管理员、转换响应 | 在各路由重复解析 Key 或计算权限 |
+| MCP | 从当前消息解析实际 Bank；适配目录、脱敏和传输生命周期 | 按会话缓存身份、重新维护一套读写策略 |
+
+确认的优化点：
+
+1. **MCP 普通工具调用减少一次认证查询。** 当前 `on_call_tool` 先执行不带 Bank 的认证，随后 `AdmissionGuard.enter` 再做目标空间认证；前者角色还用于任务结果脱敏。后续先在可信适配层解析目标，再以准入结果中的 `principal.role` 决定脱敏，避免读取无关空间授权。保持未认证请求不能取得业务信息或执行引擎；`list_banks`、`tools/list` 等无单一目标的目录请求单独处理，不套用某个空间的局部授权。
+2. **管理员操作复用同一次目标认证。** 当前 Validator 的部分分支先调用 `authenticate_admin(credential)`，再调用 `_authorize(..., bank_id)`；前者因没有 Bank，不能命中目标准入快照。后续让 `_authorize` 在同一 Principal 上同时检查角色和操作 scope，多个分支共用该检查；HTTP 管理接口仍执行无目标的管理员认证。
+3. **保留一个权限事实来源。** PG/HMAC、Key 撤销、用户停用、目标空间状态和授权装配留在 Repository；操作到权限的映射留在 Validator，REST/MCP 共用。各入口只做协议适配，不为了减少几个调用新增一层通用鉴权框架，也不通过合并四个扩展掩盖职责差异。
+
+复用边界：只在当前有效准入内、同一凭据、部署、目标 Bank 和工作空间 UUID 上复用；新请求和每条 MCP 消息重新认证。目标 Principal 只含该空间授权，不能当作完整目录权限使用。Worker 使用已接收任务的内部身份和代次保护，不缓存客户 Key、也不因客户后来撤销 Key 就跳过原有任务清理。
+
+实施前后比较 REST/MCP 的角色、读写、跨空间、撤销、停用和同名重建结果，并记录目标认证 SQL 次数。既有引擎钩子继续校验 schema、scope 和内部任务身份；不能以复用认证为由删掉。**本轮仅完成评审记录，尚未实施这些认证流程调整。**
 
 ### v1.0.0 Append冲突与删除保护
 

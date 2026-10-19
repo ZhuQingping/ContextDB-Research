@@ -1,6 +1,6 @@
 # 原生 Hindsight v1.0.0：节点部署合同
 
-供管控与 ECS 节点 Agent 对接。本文只使用上游 `v1.0.0`（`39c65ffe2f140d0c84cee58566cad8900c5b9908`），不加载 ContextDB 自研扩展。具体命令见[操作指南](contextdb-service-integration-guide.md)。辅助脚本在 [deployment/native-v1.0.0](https://github.com/ZhuQingping/hindsight/tree/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/deployment/native-v1.0.0)，脚本由节点 Agent 执行，不修改 Hindsight。
+供管控与 ECS 节点 Agent 对接。本文只使用上游 `v1.0.0`（`39c65ffe2f140d0c84cee58566cad8900c5b9908`），不加载 ContextDB 自研扩展。具体命令见[操作指南](contextdb-service-integration-guide.md)。辅助脚本在本资料仓的 [tools/](tools/)，脚本由节点 Agent 执行，不修改 Hindsight。
 
 ## 一、交付边界
 
@@ -20,7 +20,7 @@ API 默认监听 `0.0.0.0:8888`，UI 默认 `0.0.0.0:9999`，端口可配置；�
 
 ## 二、管控输入
 
-`intent.example.json` 是完整的非秘密配置示例。`render.py` 拒绝未知字段、错误端口及已有输出，避免重试时换掉凭据。
+[tools/intent.example.json](tools/intent.example.json) 是完整的非秘密配置示例。[tools/render.py](tools/render.py) 拒绝未知字段、错误端口及已有输出，避免重试时换掉凭据。原生部署工具与文档一起交付，不依赖 ContextDB 自研源码；建库脚本也包含在 [tools/prepare-pg.sql](tools/prepare-pg.sql) 中。
 
 | JSON 字段 | 规则 / 默认值 |
 | --- | --- |
@@ -104,3 +104,20 @@ Embedding 不设置 `HINDSIGHT_API_EMBEDDINGS_OPENAI_DIMENSIONS`；原生初始�
 
 
 容器材料：`compose.yaml`只启动一个服务 hindsight，挂载 api.env 和 ui.env；API、UI 属同一容器和 UID 的信任边界，原生子进程继承入口环境，不提供组件级秘密隔离。原生单Key模式下API本身仍需要共享Key明文；这与ContextDB版本的PG摘要认证不同。Agent以非rootUID运行容器，并保证0600配置与此UID匹配。文件更新须在停服务后完成，再重建相关容器挂载，不删除PG数据或更换凭据。
+
+
+## 六、工具自测
+
+从资料仓根目录执行：
+
+```bash
+python3 -m pip install 'pytest>=7,<10'
+PYTHONDONTWRITEBYTECODE=1 python3 -m pytest \
+  hindsight/deployment/native-v1.0.0/tools/tests -q -p no:cacheprovider
+bash -n hindsight/deployment/native-v1.0.0/tools/run.sh
+NATIVE_IMAGE=ghcr.io/vectorize-io/hindsight:1.0.0-slim \
+NATIVE_RUNTIME=/tmp/native-hindsight-config-check \
+  docker compose -f hindsight/deployment/native-v1.0.0/tools/compose.yaml config --quiet
+```
+
+上述检查不启动容器、不调用 MaaS、不连接 PG。渲染测试使用临时目录和合成秘密，并以 `python -I -S` 执行渲染器，确认不需要安装 Hindsight 或 ContextDB 扩展。资料仓 CI 自动运行同样的测试、Shell 语法和 Compose 配置检查。

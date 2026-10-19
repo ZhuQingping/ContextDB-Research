@@ -10,7 +10,7 @@
 | 检视相对原生 Hindsight 的代码改动 | [代码检视指南](design/code-review-guide.md) |
 | 查看管理 API、参数、返回值并执行测试 | [API 与 curl 手册](api/contextdb-management-api-curl-guide.md) |
 | 部署自研 ContextDB | [联调操作指南](deployment/contextdb-service-integration-guide.md)；配置字段查 [部署合同](deployment/contextdb-deployment-contract.md) |
-| 先对接官方原生 Hindsight | [原生联调操作指南](deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [原生部署合同](deployment/native-v1.0.0/contextdb-deployment-contract.md) |
+| 先对接官方原生 Hindsight | [原生联调操作指南](deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [原生部署合同](deployment/native-v1.0.0/contextdb-deployment-contract.md) · [部署工具](deployment/native-v1.0.0/tools/) |
 | 运行问题定位、恢复 | [运维手册](operations/contextdb-operations-runbook.md) |
 | 了解验证结果及尚未覆盖的环境 | [验证摘要](testing/contextdb-validation-summary.md) |
 
