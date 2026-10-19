@@ -1,12 +1,13 @@
 # Hindsight / ContextDB 文档
 
-当前实现基于 **Hindsight v1.0.0**，代码分支 `contextdb/v1.0.0`。本目录只将一套当前文档放在主目录中；旧方案、重复手册和过程记录放入 [archive](archive/README.md)。完整设计与实现细节保留，未按篇幅删减。
+当前实现基于 **Hindsight v1.0.0**，代码分支 `contextdb/v1.0.0`。本目录只将一套当前文档放在主目录中；旧方案、重复手册和过程记录放入 [archive](archive/README.md)。完整设计与实现细节保留，未按篇幅删减。本轮同步管理简化已在本地实现，本地回归与 Hindsight/PG 独立检视已完成（见验证摘要）；本轮以 amend 整理为一个代码提交及配套资料提交，尚未推送，远程旧评审提交不包含本轮简化。
 
 ## 从这里开始
 
 | 你要做什么 | 先看哪份 |
 | --- | --- |
 | 理解方案、评审架构 | [完整设计](design/contextdb-release-design.md) |
+| 查看简化实施状态、核对依赖与验收 | [简化与实施清单](design/contextdb-simplification-plan.md) |
 | 检视相对原生 Hindsight 的代码改动 | [代码检视指南](design/code-review-guide.md) |
 | 查看管理 API、参数、返回值并执行测试 | [API 与 curl 手册](api/contextdb-management-api-curl-guide.md) |
 | 部署自研 ContextDB | [联调操作指南](deployment/contextdb-service-integration-guide.md)；配置字段查 [部署合同](deployment/contextdb-deployment-contract.md) |
@@ -20,8 +21,8 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `design/` | 当前完整设计、代码检视；后续决策与 TODO 统一更新设计正文 |
-| `api/` | 14 个管理操作、原生业务接口与权限验证用例 |
+| `design/` | 当前完整设计、代码检视、简化实施清单；规格与决策更新设计正文，实施范围和状态维护清单 |
+| `api/` | 13 个管理操作、原生业务接口与权限验证用例 |
 | `deployment/` | 自研部署；`native-v1.0.0/` 单独放官方原生部署，不能混用初始化及认证 |
 | `operations/` | 日志、健康检查、PG 与后台任务诊断、恢复边界 |
 | `testing/` | 验证范围、结果及生产环境待验项 |

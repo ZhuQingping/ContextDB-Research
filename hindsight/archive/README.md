@@ -17,3 +17,11 @@
 | 阿里云用户管理试验截图 | [证据](2026-10-19-before-reorganization/design/evidence/alibaba-user-management-2026-10-16/) |
 
 更早的带日期目录保持原样。此次备份不删除本地未提交草稿、图片或 drawio 自动备份；它们也已按原路径保存在本机快照中，但未自动纳入远程发布。历史原文中的“当前版本”等描述仅指当时，不指本轮交付。
+
+## 代码补丁
+
+[1b96e975 完整补丁](patches/1b96e97584fda118efc5dc6c7cb76d5236060563.patch)保留同步简化前的完整特性提交，含原提交说明和二进制补丁；不是仅保存本轮增量。基线为官方 Hindsight v1.0.0 `39c65ffe2f140d0c84cee58566cad8900c5b9908`，可在该基线的独立检出中用 `git am` 还原。已使用临时 Git index 应用并核对还原 tree 与旧提交完全一致，未改动运行工作区。
+
+- 原提交：`1b96e97584fda118efc5dc6c7cb76d5236060563`
+- 补丁 SHA-256：`6e5c4f2ee1a3bf8517771927a9519943134ee8cae229002a0c398bafe871e87d`
+- 旧版本包含异步管理及执行保护；当前同步方案和取舍依据见[设计第5.2节](../design/contextdb-release-design.md#lifecycle)。恢复旧补丁不代表这些机制仍是本期要求。

@@ -1,25 +1,24 @@
 # ContextDB 管理 API：curl 验证手册
 
-更新：2026-10-19。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
+更新：2026-10-19。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖13个管理操作。本轮同步方案已在本地实现，本地回归及独立检视已完成，代码通过 amend 整理提交；尚未推送，不能用旧远程提交部署本轮同步方案。
 
-[设计](../design/contextdb-release-design.md) · [部署](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
+[设计](../design/contextdb-release-design.md) · [部署](../deployment/contextdb-service-integration-guide.md) · [OpenAPI旧评审快照](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。本轮机器合同取同版源码 `hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml`；远程9d51cac快照尚未包含同步改造，不作为当前合同。
 
 ## 接口速查
 
-管理前缀统一为 `/ext/contextdb/v1`，以下均需管理员 Bearer Key。创建、删除工作空间异步返回 `202`，使用 operation_id 查询；其余管理操作同步。详细参数、请求头、返回值和可执行 curl 按后文章节展开。实例初始化是离线命令，没有创建实例 HTTP 接口。
+管理前缀统一为 `/ext/contextdb/v1`，以下均需管理员Bearer Key。管理操作均同步；工作空间创建完成返回201和资源，删除完成返回204空正文，没有管理操作查询或强制幂等键。原生异步记忆任务保持原生接口。详细参数、请求头、返回值和可执行 curl 按后文章节展开。实例初始化是离线命令，没有创建实例 HTTP 接口。
 
 | 方法 | 路径（省略前缀） | 用途 |
 | --- | --- | --- |
 | GET | `/admin/identity` | 核对管理员与实例身份 |
 | GET / POST | `/workspaces` | 分页列举 / 创建工作空间 |
 | GET / DELETE | `/workspaces/{bank_id}` | 查看 / 删除空间；bank_id 为可读名称 |
-| GET | `/operations/{operation_id}` | 查询空间创建、删除进度 |
 | GET / POST | `/users` | 分页列举 / 创建用户 |
 | PATCH / DELETE | `/users/{user_id}` | 修改 / 删除用户 |
 | GET / POST | `/users/{user_id}/keys` | 列举 / 签发用户的 API Key |
 | PATCH / DELETE | `/users/{user_id}/keys/{key_id}` | 修改授权 / 撤销 Key |
 
-共 14 个管理操作。业务 Retain、Recall、Reflect 继续使用 Hindsight 原生 REST/MCP，见后文业务用例。UI 登录路由属于 UI 服务，不是新增管理 REST 合同。
+共13个管理操作。业务 Retain、Recall、Reflect 继续使用 Hindsight 原生 REST/MCP，见后文业务用例。UI 登录路由属于 UI 服务，不是新增管理 REST 合同。
 
 ## 1. 准备
 
@@ -85,7 +84,7 @@ curl -fsS \
 
 实际还包含连接池统计，数值会变化。
 
-### 2.3 检查管理员身份（管理操作 1/14）
+### 2.3 检查管理员身份（管理操作 1/13）
 
 **接口：** `GET /ext/contextdb/v1/admin/identity`。无业务参数。
 
@@ -110,15 +109,14 @@ curl -fsS \
 
 ## 3. 工作空间管理
 
-一个工作空间对应一个独立 PG schema。新空间 name 规范化后同时是可读 bank_id；schema 由服务生成，例如 name=mysql → bank_id=mysql → schema=ctxdb_ws_mysql。内部 workspace_id 是不可复用 UUID，用于授权和执行身份，不作为业务地址。
+一个工作空间对应一个独立 PG schema。新空间 name 规范化后同时是可读 bank_id；schema 由服务生成，例如 name=mysql → bank_id=mysql → schema=ctxdb_ws_mysql。内部 workspace_id 是不可复用 UUID，用于授权关联和管理对象身份，不作为业务地址。
 
-### 3.1 创建工作空间（2/14）
+### 3.1 创建工作空间（2/13）
 
 **接口：** `POST /ext/contextdb/v1/workspaces`。
 
 | 参数 | 位置 | 约束 |
 | --- | --- | --- |
-| `Idempotency-Key` | Header，必填 | 1～128个 ASCII 字母、数字、下划线或连字符；同次操作重试复用 |
 | `name` | JSON，必填 | NFKC、trim并转小写后符合 `[a-z][a-z0-9_]{0,53}`；最长54字符，不允许中文、空格或连字符 |
 | `description` | JSON，可选 | 最多 512 字符，默认空字符串 |
 
@@ -127,7 +125,6 @@ curl -fsS -X POST \
   "$API/ext/contextdb/v1/workspaces" \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H 'Content-Type: application/json' \
-  -H "Idempotency-Key: $DEMO_NAME-create" \
   -d "{
     \"name\": \"$DEMO_NAME\",
     \"description\": \"用于手工验证管理接口\"
@@ -136,75 +133,37 @@ curl -fsS -X POST \
 
 export BANK_ID="$DEMO_NAME"
 export WORKSPACE_UUID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-create.json")
-export CREATE_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-create.json")
 ```
 
-预期 HTTP `202`，响应结构如下。尖括号内容均为说明，真实 ID 已由上面的命令自动保存。
+预期HTTP `201`，创建完成后直接返回空间；没有 `operation_id` 或操作查询Location。示例：
 
 ```json
 {
-  "operation_id": "<操作ID>",
-  "workspace_id": "<工作空间ID>",
-  "action": "create_workspace",
-  "state": "pending",
-  "error_code": null
+  "workspace_id": "<本次工作空间UUID>",
+  "bank_id": "<规范化可读名称>",
+  "etag": "\"<本次工作空间UUID>:2\"",
+  "name": "<规范化可读名称>",
+  "description": "用于手工验证管理接口",
+  "state": "active",
+  "version": 2,
+  "created_at": "<创建时间>"
 }
 ```
 
-`202` 只表示受理，需要继续查询进度；响应 Location 指向 `/ext/contextdb/v1/operations/{operation_id}`。相同幂等 Key 和相同内容复用已有操作；同 Key 不同内容返回409。failed 操作在满足状态条件时可用原 Key 重试执行，不保证永远只返回旧失败结果。GET 查询不会重启任务。
-
-### 3.2 查询操作进度（3/14）
-
-**接口：** `GET /ext/contextdb/v1/operations/{operation_id}`。URL 参数为创建/删除响应中的操作 ID。
+版本以实际响应为准；不要在脚本中固定为2。原生默认模板可能触发记忆任务，创建成功不代表所有后台任务完成。继续核对同一资源并保存删除条件：
 
 ```bash
-curl -fsS \
-  "$API/ext/contextdb/v1/operations/$CREATE_OPERATION_ID" \
-  -H "Authorization: Bearer $ADMIN_KEY" | jq .
-```
-
-预期 HTTP `200`，返回 `operation_id、workspace_id、action、state、error_code`。
-
-| state | 含义 |
-| --- | --- |
-| `pending` | 等待执行 |
-| `running` | 正在执行 |
-| `succeeded` | 已完成 |
-| `failed` | 失败，检查 error_code |
-
-重复执行直到 `succeeded`，再继续授权。超时未完成时继续查同一个操作，不要换幂等 Key 重复创建。
-
-为避免每次手动查询，可在当前 Bash 中定义函数，并等待本次创建完成：
-
-```bash
-wait_operation() {
-  local op="$1" state i
-  for ((i=0; i<60; i++)); do
-    curl -fsS \
-      "$API/ext/contextdb/v1/operations/$op" \
-      -H "Authorization: Bearer $ADMIN_KEY" \
-      -o "$CASE_DIR/operation-$op.json" || return 1
-    state=$(jq -er '.state' "$CASE_DIR/operation-$op.json") || return 1
-    case "$state" in
-      succeeded) jq . "$CASE_DIR/operation-$op.json"; return 0 ;;
-      failed) jq . "$CASE_DIR/operation-$op.json"; return 1 ;;
-      pending|running) sleep 2 ;;
-      *) echo "未知操作状态：$state"; return 1 ;;
-    esac
-  done
-  echo "等待超时：继续 GET 查询原操作 $op，不代表服务端已取消"
-  return 1
-}
-wait_operation "$CREATE_OPERATION_ID"
-curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_ID" -H "Authorization: Bearer $ADMIN_KEY" -o "$CASE_DIR/workspace-detail.json"
+test "$(jq -er '.state' "$CASE_DIR/workspace-create.json")" = active
+curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_ID" \
+  -H "Authorization: Bearer $ADMIN_KEY" \
+  -o "$CASE_DIR/workspace-detail.json"
 test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-detail.json")" = "$WORKSPACE_UUID"
 export WORKSPACE_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-detail.json")
 ```
 
-函数只查询，不提交重试。失败或等待超时时停止后续授权步骤，先处理或继续查询原操作。
+请求超时或断连不等于已取消或回滚。先GET同名资源并核对UUID及状态，不自动重发POST；查到creating/deleting也不能按等待时长判定执行者结束。首次响应丢失且未取得UUID时，应结合请求ID、名称、时间和管理日志人工核对，不能把任意同名空间当成本次结果。
 
-
-### 3.3 查询工作空间列表（4/14）
+### 3.2 查询工作空间列表（3/13）
 
 **接口：** `GET /ext/contextdb/v1/workspaces`。
 
@@ -236,8 +195,7 @@ curl -fsS -G \
       "description": "用于手工验证管理接口",
       "state": "active",
       "version": 1,
-      "created_at": "<创建时间>",
-      "latest_operation_id": "<本次创建操作ID>"
+      "created_at": "<创建时间>"
     }
   ],
   "total": 1,
@@ -248,9 +206,9 @@ curl -fsS -G \
 
 示例版本号以实际响应为准。列表可能包含处于创建、删除等中间状态的空间，已删除空间不返回。
 
-### 3.4 查询单个工作空间（5/14）
+### 3.3 查询单个工作空间（4/13）
 
-**接口：** `GET /ext/contextdb/v1/workspaces/{bank_id}`。使用规范化可读 bank_id；DELETE、原生业务和授权选择也使用同一标识。升级保留的历史空间仍用其原有 UUID bank_id，不自动改名。
+**接口：** `GET /ext/contextdb/v1/workspaces/{bank_id}`。使用规范化可读 bank_id；DELETE、原生业务和授权选择也使用同一标识。首发验证使用新建当前格式数据库，不自动接管开发期旧结构。
 
 ```bash
 curl -fsS \
@@ -260,7 +218,7 @@ curl -fsS \
 
 预期 HTTP `200`，返回上述单个工作空间对象，创建完成后为 `state: "active"`。
 
-### 3.5 再创建一个空间，用于验证逐空间权限
+### 3.4 再创建一个空间，用于验证逐空间权限
 
 仍是第2个管理操作的另一组测试数据，不增加新接口。两个空间全部由本手册创建，避免给已有业务空间授予测试 Key。
 
@@ -269,25 +227,22 @@ curl -fsS -X POST \
   "$API/ext/contextdb/v1/workspaces" \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H 'Content-Type: application/json' \
-  -H "Idempotency-Key: $DEMO_NAME-create-b" \
   -d "{\"name\":\"${DEMO_NAME}_b\",\"description\":\"逐空间权限验证\"}" \
   | tee "$CASE_DIR/workspace-b-create.json" | jq .
 export BANK_B_ID="${DEMO_NAME}_b"
 export WORKSPACE_B_UUID=$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-create.json")
-export CREATE_B_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-b-create.json")
-wait_operation "$CREATE_B_OPERATION_ID"
 curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_B_ID" -H "Authorization: Bearer $ADMIN_KEY" -o "$CASE_DIR/workspace-b-detail.json"
 test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-detail.json")" = "$WORKSPACE_B_UUID"
 export WORKSPACE_B_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-b-detail.json")
 ```
 
-预期202，操作成功后两个空间都为 active。当前没有工作空间修改接口；两个空间的删除安排在第6.2节。
+预期201；返回时两个空间均已active。当前没有工作空间修改接口；两个空间的删除安排在第6.2节。
 
 ## 4. 用户管理
 
 用户是业务 Key 的归属主体。创建时只填写名称，不设置角色或空间权限，也不自动生成 Key。停用用户可以统一阻断其所有 Key。
 
-### 4.1 创建用户（6/14）
+### 4.1 创建用户（5/13）
 
 **接口：** `POST /ext/contextdb/v1/users`。JSON 参数 `name` 必填，1～64 字符。
 
@@ -317,7 +272,7 @@ export USER_VERSION=$(jq -er '.version' "$CASE_DIR/user-create.json")
 
 响应 Header 包含 `ETag: "1"`。当前没有供普通成员选择管理员角色的参数。
 
-### 4.2 查询用户列表（7/14）
+### 4.2 查询用户列表（6/13）
 
 **接口：** `GET /ext/contextdb/v1/users`。`q、limit、offset` 的含义和范围与工作空间列表一致。
 
@@ -332,7 +287,7 @@ curl -fsS -G \
 
 预期 HTTP `200`，返回 `items、total、limit、offset`，每项为用户对象。列表包含 active/disabled 用户，排除已删除用户。当前没有单独的 `GET /users/{user_id}`。
 
-### 4.3 修改名称或状态（8/14）
+### 4.3 修改名称或状态（7/13）
 
 **接口：** `PATCH /ext/contextdb/v1/users/{user_id}`。
 
@@ -394,7 +349,7 @@ export USER_VERSION=$(jq -er '.version' "$CASE_DIR/user-restored.json")
 
 授权配置在 Key 上，一个用户可以有多个 Key；用户本身不再另配角色和空间权限。业务 Key 不能调用任何管理接口，包括创建/删除空间、用户或其他 Key。
 
-### 5.1 创建业务 Key（9/14）
+### 5.1 创建业务 Key（8/13）
 
 **接口：** `POST /ext/contextdb/v1/users/{user_id}/keys`。用户必须 active。
 
@@ -471,7 +426,7 @@ export ALL_KEY_ID=$(jq -er '.key_id' "$CASE_DIR/key-all-create.json")
 
 预期201，authorization 为 all + read_write，不含 workspaces。
 
-### 5.2 查询用户的 Key 列表（10/14）
+### 5.2 查询用户的 Key 列表（9/13）
 
 **接口：** `GET /ext/contextdb/v1/users/{user_id}/keys`。q、limit、offset 同前。
 
@@ -541,7 +496,7 @@ PY
 
 权限编辑、停用或吊销后再请求应立即按新权限拒绝；不能依赖重建MCP会话才生效。保持旧MCP会话并从另一个管理终端收权的自动用例见 test_110_contextdb_tenant_admin.py、test_113_contextdb_optimized_authorization.py；同名重建与旧Key用例见 test_115_contextdb_workspace_recreation.py。
 
-### 5.3 修改 Key 名称或授权（11/14）
+### 5.3 修改 Key 名称或授权（10/13）
 
 **接口：** `PATCH /ext/contextdb/v1/users/{user_id}/keys/{key_id}`。
 
@@ -582,7 +537,7 @@ export KEY_VERSION=$(jq -er '.version' "$CASE_DIR/key-update.json")
 
 ### 5.4 用业务 Key 检查权限边界
 
-以下是原生接口的补充验证，不计入14个管理操作。读取不调用模型，只读写入应在调用模型前被拒绝。
+以下是原生接口的补充验证，不计入13个管理操作。读取不调用模型，只读写入应在调用模型前被拒绝。
 
 空间A的读取应200；已从授权移除的空间B应403：
 
@@ -615,7 +570,7 @@ curl -sS "$API/ext/contextdb/v1/workspaces" \
 
 也可回到第4.3节停用用户，再执行空间A读取，预期401；恢复用户后读取恢复200。只读支持 Recall、Reflect 和内容读取；读写增加 Retain 等内容写入，但都不包含管理资源。Retain/Recall/Reflect 的模型功能验收另见业务验收文档。
 
-### 5.5 吊销 Key（12/14）
+### 5.5 吊销 Key（11/13）
 
 **接口：** `DELETE /ext/contextdb/v1/users/{user_id}/keys/{key_id}`。无请求体，无需 If-Match。
 
@@ -645,7 +600,7 @@ fi
 
 只删除本手册生成的 USER_ID、BANK_ID、BANK_B_ID。第5.5节已经吊销测试 Key；两个测试空间都需要清理。
 
-### 6.1 删除测试用户（13/14）
+### 6.1 删除测试用户（12/13）
 
 **接口：** `DELETE /ext/contextdb/v1/users/{user_id}`。无请求体，无需 If-Match。
 
@@ -659,81 +614,82 @@ curl -sS -X DELETE \
 
 预期 HTTP `204`，无返回体。用户软删除，其全部 Key 无法通过后续认证；空间和记忆数据保留。重新查询用户列表不再展示该用户。
 
-### 6.2 删除测试工作空间（14/14）
+### 6.2 删除测试工作空间（13/13）
 
-**接口：** `DELETE /ext/contextdb/v1/workspaces/{bank_id}`。必填 Idempotency-Key（1～128字符）和 If-Match（之前读取的空间 ETag），无请求体。响应202只表示受理，状态succeeded才表示业务数据、schema和映射已清理。缺少If-Match返回428，旧对象条件返回412，不能删同名新对象。
+**接口：** `DELETE /ext/contextdb/v1/workspaces/{bank_id}`。必填原对象 `If-Match`，无请求体；成功返回204，无JSON正文。缺少条件428、格式错误400、旧对象或版本条件412。
+
+**先停止应用对测试空间的新请求，等待已受理调用、原生后台任务及相关维护工作结束。** 服务不自动排空所有执行者；任务取消或任务列表为空不能单独证明执行结束。本例不支持业务与删除并发。
+
+先查询并核对原UUID，再取得同一对象的当前条件。UUID变化时停止；不能用同名新空间的ETag继续旧删除意图：
 
 ```bash
-curl -fsS -X DELETE \
+curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_ID" \
+  -H "Authorization: Bearer $ADMIN_KEY" \
+  -o "$CASE_DIR/workspace-before-delete.json"
+unset WORKSPACE_ETAG
+test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-before-delete.json")" = "$WORKSPACE_UUID" && \
+  export WORKSPACE_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-before-delete.json")
+```
+
+确认上面的UUID检查成功后删除，不把204空响应传给jq：
+
+```bash
+http_status=$(curl -sS -X DELETE \
   "$API/ext/contextdb/v1/workspaces/$BANK_ID" \
   -H "Authorization: Bearer $ADMIN_KEY" \
-  -H "Idempotency-Key: $DEMO_NAME-delete" \
-  -H "If-Match: $WORKSPACE_ETAG" \
-  | tee "$CASE_DIR/workspace-delete.json" | jq .
-
-export DELETE_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-delete.json")
-wait_operation "$DELETE_OPERATION_ID"
+  -H "If-Match: ${WORKSPACE_ETAG:?先核对原工作空间UUID并取得ETag}" \
+  -o "$CASE_DIR/workspace-delete-response.txt" -w '%{http_code}')
+printf 'HTTP %s\n' "$http_status"
+if [ "$http_status" = 204 ]; then
+  test ! -s "$CASE_DIR/workspace-delete-response.txt"
+  curl -sS "$API/ext/contextdb/v1/workspaces/$BANK_ID" \
+    -H "Authorization: Bearer $ADMIN_KEY" -w '\nHTTP %{http_code}\n'
+else
+  cat "$CASE_DIR/workspace-delete-response.txt"
+  printf '\n删除未确认成功；停止后续步骤，先核对资源和日志。\n'
+fi
 ```
 
-预期 HTTP `202`：
+预期DELETE204、随后GET404。网络错误/超时可能没有可靠HTTP状态，必须核对原对象和实际结果，不自动重发。failed对象确认原调用结束后，可重新查询同一UUID及当前ETag再DELETE；creating/deleting状态冲突返回409，不提供自动恢复或强制接管接口，必要时由运维停相关执行者后核对残留。
 
-```json
-{
-  "operation_id": "<删除操作ID>",
-  "workspace_id": "<工作空间ID>",
-  "action": "delete_workspace",
-  "state": "pending",
-  "error_code": null
-}
-```
-
-查询删除进度，重复到 succeeded：
+第一个空间删除确认成功后，第二个空间按相同身份条件删除：
 
 ```bash
-curl -fsS \
-  "$API/ext/contextdb/v1/operations/$DELETE_OPERATION_ID" \
-  -H "Authorization: Bearer $ADMIN_KEY" | jq .
-```
-
-确认空间已删除：
-
-```bash
-curl -sS \
-  "$API/ext/contextdb/v1/workspaces/$DEMO_NAME" \
+curl -fsS "$API/ext/contextdb/v1/workspaces/$BANK_B_ID" \
   -H "Authorization: Bearer $ADMIN_KEY" \
-  -w '\nHTTP %{http_code}\n'
-```
-
-预期 HTTP `404`。如操作仍 pending/running，继续查同一个操作；如 failed，先检查 error_code，不要据 202 判断删除已完成。
-
-第二个测试空间按相同步骤删除：
-
-```bash
-curl -fsS -X DELETE \
+  -o "$CASE_DIR/workspace-b-before-delete.json"
+unset WORKSPACE_B_ETAG
+test "$(jq -er '.workspace_id' "$CASE_DIR/workspace-b-before-delete.json")" = "$WORKSPACE_B_UUID" && \
+  export WORKSPACE_B_ETAG=$(jq -er '.etag' "$CASE_DIR/workspace-b-before-delete.json")
+# 仅在上述UUID核对成功且B空间也已停止访问、等待已有工作结束后执行。
+http_status=$(curl -sS -X DELETE \
   "$API/ext/contextdb/v1/workspaces/$BANK_B_ID" \
   -H "Authorization: Bearer $ADMIN_KEY" \
-  -H "Idempotency-Key: $DEMO_NAME-delete-b" \
-  -H "If-Match: $WORKSPACE_B_ETAG" \
-  | tee "$CASE_DIR/workspace-b-delete.json" | jq .
-export DELETE_B_OPERATION_ID=$(jq -er '.operation_id' "$CASE_DIR/workspace-b-delete.json")
-wait_operation "$DELETE_B_OPERATION_ID"
+  -H "If-Match: ${WORKSPACE_B_ETAG:?先核对原工作空间UUID并取得ETag}" \
+  -o "$CASE_DIR/workspace-b-delete-response.txt" -w '%{http_code}')
+printf 'HTTP %s\n' "$http_status"
+if [ "$http_status" = 204 ]; then
+  test ! -s "$CASE_DIR/workspace-b-delete-response.txt"
+else
+  cat "$CASE_DIR/workspace-b-delete-response.txt"
+  printf '\n删除未确认成功，先核对。\n'
+fi
 ```
 
-预期202，最后 succeeded。此时 Bank/文件、独立 schema、空间行和对应授权已清理，操作快照及审计仍可追溯。繁忙/未知执行者/外部依赖会阻止成功。默认操作结果保留168小时；相同 Idempotency-Key 和原 ETag 在窗口内返回原操作；超过窗口也不能将旧 UUID 条件套到同名新对象上。不要在重试时换取新对象的 ETag。
+成功时最终PG事务清理schema、空间行及selected授权，Key对其他空间的权限不受影响；管理审计保留。原生文件清理仍为best-effort，不承诺文件零残留。没有管理操作快照、保留窗口或幂等重放；旧UUID条件不能删除同名新对象。正常删除后可同名重建，生成新的UUID。
 
 ## 7. 返回码、重试与接口边界
 
 | HTTP | 说明 |
 | --- | --- |
 | 200 | 查询或修改成功 |
-| 201 | 用户或 Key 创建成功 |
-| 202 | 空间操作受理，需查询进度 |
-| 204 | 用户删除或 Key 吊销成功，无响应体 |
-| 400 | 参数、幂等 Header 或版本 Header 不合法 |
+| 201 | 工作空间、用户或Key创建成功 |
+| 204 | 工作空间/用户删除或Key吊销成功，无响应体 |
+| 400 | 参数或版本Header不合法 |
 | 401 | 缺少或无效凭据 |
 | 403 | 有效业务 Key 调用了管理员接口 |
 | 404 | 目标不存在 |
-| 409 | 名称、幂等请求或资源状态冲突 |
+| 409 | 名称、资源状态、schema归属或依赖冲突 |
 | 412 | If-Match的版本或对象身份不匹配；重新确认意图，不自动把旧删除改成新对象删除 |
 | 428 | 工作空间删除缺少If-Match条件 |
 | 503 | 元数据服务不可用 |
@@ -751,9 +707,9 @@ wait_operation "$DELETE_B_OPERATION_ID"
 
 参数校验错误可附安全 fields 提示，字段只含 field/reason，不回显 secret、原始输入或数据库错误。
 
-管理响应包含X-Request-ID和Cache-Control:no-store。用户/Key编辑ETag为带双引号正整数；空间详情ETag为带双引号的对象UUID:version，并在正文etag返回，DELETE须原样发送。空间路径为bank_id；用户、Key和操作ID为32位小写十六进制。`curl -fsS` 遇 HTTP 错误会报错；需要查看错误 JSON 和状态码时，将该条改为 `curl -sS -i` 并去掉末尾 jq 管道。
+管理响应包含X-Request-ID和Cache-Control:no-store。用户/Key编辑ETag为带双引号正整数；空间详情ETag为带双引号的对象UUID:version，并在正文etag返回，DELETE须原样发送。空间路径为bank_id；用户和Key ID为32位小写十六进制。`curl -fsS` 遇 HTTP 错误会报错；需要查看错误 JSON 和状态码时，将该条改为 `curl -sS -i` 并去掉末尾 jq 管道。
 
-工作空间创建/删除支持幂等重试。用户和 Key 创建当前没有幂等参数；请求超时、结果未知时先查询列表，避免直接重试造成重复创建。若 Key 已创建但明文丢失，列表无法找回 secret，需要吊销后重新签发。
+工作空间没有持久管理操作重放；结果未知先查询原资源并核对身份和状态，不自动重复写请求。用户和 Key 创建当前没有幂等参数；请求超时、结果未知时先查询列表，避免直接重试造成重复创建。若 Key 已创建但明文丢失，列表无法找回 secret，需要吊销后重新签发。
 
 原生 Bank 创建、删除等生命周期接口被限制，管理员也必须使用工作空间接口，以维护空间和 schema 映射。原生 REST/MCP 内容操作另行使用 可读 bank_id 调用。
 
@@ -800,10 +756,11 @@ export PGSERVICE=contextdb
 "$PSQL" -X -v ON_ERROR_STOP=1 \
   -c 'SELECT instance_id,cloud_tenant_id,metadata_version,format_id,installed_at FROM ctxdb_meta.deployment_info;' \
   -c "SELECT tablename FROM pg_tables WHERE schemaname='ctxdb_meta' ORDER BY tablename;" \
-  -c "SELECT to_regclass('ctxdb_meta.instances') AS old_instances,to_regclass('ctxdb_meta.schema_versions') AS old_versions;"
+  -c "SELECT to_regclass('ctxdb_meta.instances') AS old_instances,to_regclass('ctxdb_meta.schema_versions') AS old_versions;" \
+  -c "SELECT to_regclass('ctxdb_meta.management_operations') AS removed_operations,to_regclass('ctxdb_meta.request_admissions') AS removed_admissions;"
 ```
 
-预期 deployment_info 恰好1行、metadata_version=1、format_id=contextdb-first-release；8张管理表；两个旧表返回 NULL。这是数据库结构序号，API 路径仍为 v1。
+预期 deployment_info 恰好1行、metadata_version=1、format_id=contextdb-first-release；6张管理表；旧instances/schema_versions及本轮删除的management_operations/request_admissions均返回NULL。这是数据库结构序号，API 路径仍为 v1。
 
 查看本次 Key 的模式、吊销标记和逐空间权限，不查询 digest：
 
@@ -816,9 +773,9 @@ FROM ctxdb_meta.key_workspace_permissions WHERE key_id = :'key_id';
 SQL
 ```
 
-selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一权限在 api_keys.permission，关联表无记录。吊销后主表仍有 revoked_at，不代表 Key 仍有效。成员软删除和 Key 吊销保留记录；空间正常删除后物理移除行与授权，仅留独立操作/审计历史。
+selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一权限在 api_keys.permission，关联表无记录。吊销后主表仍有 revoked_at，不代表 Key 仍有效。成员软删除和 Key 吊销保留记录；空间正常删除后物理移除行与授权，仅留管理审计历史。
 
-完整 API 合同见 [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
+完整 API 合同见 [OpenAPI旧评审快照](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
 
 ## 9. 本次新增边界验证
 
@@ -828,7 +785,7 @@ selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一�
 - 删除选定空间会移除对应授权、Key version加1；旧 If-Match 编辑412，刷新后只改名成功，余下权限不变。
 - 授权清成空 selected 仍可列出/编辑，但拒绝所有空间；同名新建不继承旧授权。
 - Key 列表 last_used_at 为60秒粒度近似值，无列表 ETag；创建/编辑响应不含该统计，保留编辑版本。
-- UI 创建/删除中自动 GET 刷新，正常行无“查询进度”；未知写超过24小时不继续重放。
+- UI等待同步请求；两个创建入口均支持描述；没有管理进度轮询、24小时恢复意图或自动写请求重放。超时先查询资源，列表长文本可查看。
 - 系统管理员不在成员列表，已知其内部 ID 也不能用普通用户/Key CRUD 修改或删除。
 
-完整真实进程故事位于代码仓 test_115_contextdb_workspace_recreation.py；同时覆盖内嵌与独立 Worker。模型功能测试使用本地模拟服务，真实 MaaS 质量另验收。
+同名重建、权限及真实进程故事位于代码仓 `hindsight-system-tests/tests/`，最终执行选择和结果见[验证摘要](../testing/contextdb-validation-summary.md)。ContextDB故事需显式 `uv sync --frozen --group contextdb`，再用 `uv run --frozen --group contextdb pytest ...` 执行。模型功能测试采用本地模拟服务；真实MaaS质量及目标云环境另验收，不沿用旧执行屏障故事的通过数。

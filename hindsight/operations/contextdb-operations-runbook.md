@@ -50,7 +50,7 @@ curl 成功建立 HTTP 连接不等于业务成功，核对状态码和返回体
 | 401/403 | Key、用户状态、授权空间、只读/读写、pepper | 区分认证失败与授权拒绝；不把 Admin Key 交给业务规避检查 |
 | 404 | bank_id 是否存在且 active，是否错误使用内部 UUID/旧名称 | 从空间目录核对可读 bank_id 与对象身份 |
 | 管理写入 409/412/428 | 名称冲突、版本或 If-Match、操作状态 | 读取最新对象；不能无条件重放删除来“消除报错” |
-| 创建/删除空间长时间处理中 | management_operations、request_admissions、原生任务 | 区分管理生命周期与原生 Worker；不要清空准入记录 |
+| 创建/删除空间等待或失败 | 空间 state、请求 ID、API 日志、PG 锁/DDL、原生任务 | 同步响应未知不等于回滚；核对原对象及实际执行进程 |
 | 外部机器访问失败 | 监听地址、端口映射、安全组、入口 TLS/反向代理 | 默认监听0.0.0.0不等于安全组已开放；按实际部署地址验证 |
 
 健康检查的原生说明见 [Monitoring](https://hindsight.vectorize.io/developer/monitoring)。liveness 使用 `/health/live`，readiness 使用 `/health/ready`；后者会检查数据库。健康通过不证明 MaaS、中文效果或业务授权均正常。
@@ -80,7 +80,7 @@ curl -fsS --max-time 10 "$API_URL/metrics" > "$CASE_DIR/api-metrics.txt"
 
 定位链路分两条：
 
-- 管理请求：记录响应 `X-Request-ID` / 错误体 `request_id`、HTTP 状态、管理 `operation_id`、可读 bank_id 和内部 workspace_id。同一个异步创建/删除操作的后续执行不一定沿用同一 HTTP 请求，需以 operation_id 继续追踪。
+- 管理请求：记录响应 `X-Request-ID` / 错误体 `request_id`、HTTP 状态、可读 bank_id、内部 workspace_id 和状态。创建、删除同步执行，不返回管理 operation_id。
 - 原生业务：记录 bank_id、请求时间、原生返回的 operation_id（异步时），以及可用的 trace ID。不要假定所有原生接口都返回 ContextDB 管理层的 X-Request-ID。
 
 本期没有承诺一条现成的全链路日志系统；Agent 负责统一采集 stdout/stderr、保留和检索。日志轮转应设置大小/文件数或接入平台采集，不能让容器日志无限占满 ECS 磁盘。
@@ -129,8 +129,10 @@ SELECT extname, extversion FROM pg_extension ORDER BY extname;
 SELECT instance_id, cloud_tenant_id, metadata_version FROM ctxdb_meta.deployment_info;
 SELECT workspace_id, bank_id, schema_name, state, version
 FROM ctxdb_meta.workspaces ORDER BY created_at;
-SELECT state, count(*) FROM ctxdb_meta.management_operations GROUP BY state;
-SELECT origin, state, count(*) FROM ctxdb_meta.request_admissions GROUP BY origin,state;
+SELECT state, count(*) FROM ctxdb_meta.workspaces GROUP BY state;
+SELECT workspace_id,bank_id,schema_name,state,version,updated_at,
+       metadata->>'error_code' AS error_code
+FROM ctxdb_meta.workspaces WHERE state<>'active' ORDER BY updated_at;
 SELECT state, wait_event_type, wait_event, count(*)
 FROM pg_stat_activity WHERE datname=current_database()
 GROUP BY state,wait_event_type,wait_event ORDER BY count(*) DESC;
@@ -143,9 +145,9 @@ SELECT pg_size_pretty(pg_database_size(current_database())) AS database_size;
 SQL
 ```
 
-普通服务角色看到的其他会话信息可能受限；只在授权诊断账号中查看更多，不为运行服务赋予 SUPERUSER。管理元数据只读排查，不手工修改 state、lease_token、version、workspace_id 或清空 request_admissions。
+普通服务角色看到的其他会话信息可能受限；只在授权诊断账号中查看更多，不为运行服务赋予 SUPERUSER。管理元数据只读排查，不手工修改 state、version 或 workspace_id。
 
-连接池按**总进程数**估算：每个 API 进程和独立 Worker 都有池，ContextDB 管理池、迁移、监控和其他客户端也要留余量。增加进程或 Worker 时，不能简单沿用单进程 pool_max 后相乘超出 RDS max_connections。先看 acquire 等待、活跃查询、锁和模型耗时，再决定加池还是降并发。
+连接池按**总进程数**估算：每个 API 进程和独立 Worker 都有池，ContextDB 元数据复用主池；迁移、监控和其他客户端另留余量。增加进程或 Worker 时，不能简单沿用单进程 pool_max 后相乘超出 RDS max_connections。先看 acquire 等待、活跃查询、锁和模型耗时，再决定加池还是降并发。
 
 `pg_stat_statements` 不是业务必需。平台允许时由 RDS 配置预加载并重启，目标数据库再 CREATE EXTENSION；只安装扩展不能保证统计已启用。不要在故障现场未经安排修改 shared_preload_libraries 或重启 PG。
 
@@ -184,7 +186,7 @@ Worker ID 必须稳定且每个执行者唯一。确认旧 Worker 已停止/失�
 hindsight-admin decommission-worker 'ctxdb-demo-worker-0' --schema "$SCHEMA"
 ```
 
-优雅 SIGTERM、等待在途任务结束应先于强制退出。不要批量释放所有健康 Worker，也不要直接把所有 processing 更新为 pending。原生任务恢复不能自动解除 ContextDB 的未知请求准入；后者保护删除安全，需要依据执行者证据单独处理。[原生 Admin CLI](https://hindsight.vectorize.io/developer/admin-cli)。
+优雅 SIGTERM、等待在途任务结束应先于强制退出。不要批量释放所有健康 Worker，也不要直接把所有 processing 更新为 pending。空间响应未知时须另行核对原调用与残留，任务恢复不等于空间管理恢复。[原生 Admin CLI](https://hindsight.vectorize.io/developer/admin-cli)。
 
 ## 6. MaaS、检索和权限问题
 
@@ -220,7 +222,7 @@ pg_restore --list "$CASE_DIR/contextdb.dump" > "$CASE_DIR/restore-list.txt"
 
 ## 8. 告警、故障记录和学习顺序
 
-优先告警：API错误率与p95、ready状态、Worker最旧pending/processing任务年龄、管理操作失败及未知准入、PG连接/锁/磁盘、MaaS失败/429/延迟、容器OOM/重启、日志磁盘与最近成功备份时间。阈值根据实例规格和基线压测设置，不提供未经实测的通用吞吐承诺。
+优先告警：API错误率与p95、ready状态、Worker最旧pending/processing任务年龄、空间管理失败及未知状态、PG连接/锁/磁盘、MaaS失败/429/延迟、容器OOM/重启、日志磁盘与最近成功备份时间。阈值根据实例规格和基线压测设置，不提供未经实测的通用吞吐承诺。
 
 每次故障使用以下模板，保留时间线，不记录秘密：
 
@@ -241,18 +243,21 @@ MaaS状态与耗时：
 
 复现时使用同版最小配置、脱敏数据和可重复步骤，先搜索 [Hindsight Issues](https://github.com/vectorize-io/hindsight/issues)；准备版本、预期/实际结果、最小复现和安全日志再提问。官网可能描述比本交付更新的版本，操作参数以本镜像的 --help 与代码为准。
 
-## 首版诊断功能边界与未知写入恢复
+## 首版功能边界与空间失败处理
 
-`HINDSIGHT_API_LLM_TRACE_ENABLED=false`、`HINDSIGHT_API_AUDIT_LOG_ENABLED=false`固定关闭，原生调用正文及业务审计页不产生新记录；不是日志路径错误。原生Webhook也不支持。原因是这些独立后台写入尚未接入空间代次保护，不能为排障临时打开。`ctxdb_meta.audit_events`管理事务审计、JSON运行日志、任务状态、PG统计与按需OTEL仍保留。
+`HINDSIGHT_API_LLM_TRACE_ENABLED=false`、`HINDSIGHT_API_AUDIT_LOG_ENABLED=false`固定关闭，原生持久调用正文、业务审计和 Webhook 尚未完成独立 schema 路由与存储归属验收，不为排障临时开启。`ctxdb_meta.audit_events` 管理事务审计、运行日志、原生任务、PG 统计与按需 OTEL 保留。
 
-原生任务cancelled只表示取消请求已登记，不等于执行者已退出。Worker完整执行和最终状态写入持有持久准入；异常、未知结果保留屏障，所以空间删除可能停在waiting_for_admissions。这是保护数据，不应直接删除准入记录。先保存诊断材料，确认所有旧API/Worker及迁移执行者实际退出，检查原生任务及客户端响应，然后由服务所有者按具体admission_id和owner核实恢复；本期没有自动强制清理接口。
+原生任务 cancelled 不证明执行者已退出。本版复用原生执行、取消和缓存机制，不提供完整执行屏障、可靠繁忙探测、跨进程瞬时缓存失效或删除后旧请求隔离保证。删除前管理员必须停业务、等待已受理任务及后台工作结束；同名重建也遵守该前提。内置 Worker 没有独立8889探针，结合原生任务积压和异步 retain 最终完成判断。
 
-Worker领取缺少或不匹配workspace UUID的任务时，不写目标schema状态；可能保留processing等待人工核查。不要把旧版本任务复制到新schema。未来正式版本升级前须排空pending/processing，停所有写入者、备份，再按该版本手册离线升级。首发初始化不接管开发期试验库。已有Bank原生审计或enabled Webhook也须先停用；启动/迁移检查拒绝时不要绕过校验。
+| 查询结果 | 处理方法 |
+| --- | --- |
+| active | 正常访问；删除前停业务并等待，保存对象 UUID 和 ETag |
+| failed | 确认原调用已结束，核对同一 UUID、schema 归属及外部依赖，再用当前 ETag 发 DELETE；不以 POST 接管同名残留 |
+| creating/deleting 或响应未知 | 先查 API 日志、PG 锁/DDL 和相关进程；不按等待时长判定结束，不自动重发写入。当前 API 返回409，无自动恢复/强制解锁入口。必要时停止所有可能执行的相关进程，再由服务所有者核对残留 |
+| 空间行不存在但同名 schema 尚在 | CREATE 返回 schema_conflict409；核对归属和备份后人工处理，不自动接管 |
+| DELETE204 | schema、对应授权和空间行完成最终事务清理，保留管理审计；原生外部文件清理遵守 best-effort，不承诺零残留 |
 
-Compose 只发布 API/UI 端口。内置 Worker 没有独立 HTTP 探针；结合任务状态、积压和异步 retain 最终完成判断其工作情况，不向 8889 发送请求。
-
-同名重建后的旧mission/config缓存已在扩展层按UUID变化失效，同代继续使用原生缓存；升级时整体替换同一 API/内置 Worker/UI 容器；须确认旧容器与旧执行者均已退出。若怀疑旧配置，先核对全部进程版本/镜像及workspace UUID，不用手工改UUID或关闭鉴权来排障。
-
+旧对象 ETag 不可更新为同名新对象的 ETag 后重试删除。原生 v1.0.0 数据库连接串日志可能含凭据的问题未随本特性修复，由[独立 Issue #3](https://github.com/ZhuQingping/ContextDB-Research/issues/3)跟踪；采集和分享日志前须受控脱敏。
 
 ## 容器启动报 Illegal instruction / SIGILL
 
@@ -280,34 +285,3 @@ Next图片处理入口在校验请求前初始化缓存，即便外部图片URL�
 ```
 
 该缓存可丢弃，不要改成整个 `/app` 可写，也不要为消除日志而放开图片远程域名。当前UI没有配置images.remotePatterns；依赖审计命中版本不等于该部署满足漏洞触发条件，实际适用性及完整发行扫描仍须分别核查。
-
-### 按精确 owner 核销未知准入（停写维护操作）
-
-先只读查询，记录结果，不按记录年龄推断执行者死亡：
-
-```sql
-SELECT admission_id,owner_id,workspace_id,origin,state,created_at
-FROM ctxdb_meta.request_admissions ORDER BY created_at;
-SELECT operation_id,workspace_id,state,lease_token,lease_until,error_code
-FROM ctxdb_meta.management_operations WHERE state IN ('pending','running');
-```
-
-API/Worker启动日志包含`ContextDB executor owner=... origin=... host=... pid=...`；随机owner代表一次进程启动代次，PID可以复用，须同时匹配owner及Agent记录的容器/进程启动时间。异常日志带精确admission及owner。lifecycle日志记录operation、admission、host及pid；其准入owner为对应management_operations.lease_token，可按operation_id和租约联查；不得仅凭租约过期认定旧迁移已停止。
-
-由节点Agent停该实例**全部API/Worker及仍存活迁移子进程**，确认服务监督器不再重启旧容器，保存任务与数据库备份；核对实际进程/容器已退出。只在此维护窗口内，对已经证明无执行者的某一行进行核销。以下psql变量必须填入刚才核对的精确值：
-
-```sql
-BEGIN;
-LOCK TABLE ctxdb_meta.request_admissions IN EXCLUSIVE MODE;
-SELECT * FROM ctxdb_meta.request_admissions
- WHERE admission_id=:'admission_id' AND owner_id=:'owner_id' FOR UPDATE;
-DELETE FROM ctxdb_meta.request_admissions
- WHERE admission_id=:'admission_id' AND owner_id=:'owner_id'
- RETURNING admission_id,owner_id,workspace_id;
-COMMIT;
-```
-
-预期只删除一行。返回零行就停止核查，不扩大为按空间或全表删除。核销不会取消任务或修复损坏数据；原生任务状态及重试策略另行核查，不能手改工作空间version/UUID。重新启动同版进程后观察生命周期能否继续，验证同名重建没有旧数据。无法证明旧执行者结束时保留屏障并升级处理。
-
-
-原生同步单输入Append的已结束CAS冲突不再仅因HTTP500保留未知写入记录。普通模型/SQL故障、取消和未证明已退出的多文档并行失败仍保留屏障；不要按错误字符串“看起来像冲突”批量核销。具体范围见设计文档的v1.0.0适配说明。

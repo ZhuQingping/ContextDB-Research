@@ -15,19 +15,16 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | --- | --- | --- |
 | format | 整数1，部署输入格式；不是数据库版本 | 默认1 |
 | instance_id、cloud_tenant_id | 1–128字符，ASCII 字母/数字/下划线/连字符；绑定数据库归属，不能重启时换值 | 必填 |
-| topology | 首版固定 `merged`，一个容器含 API/内置 Worker 和 UI；split 仅为调研能力 | **必填，填 merged** |
+| topology | 首版固定 `merged`，一个容器含 API/内置 Worker 和 UI；split 不属于可部署选项，输入时拒绝 | 默认 merged |
 | database_url_file | 绝对路径；0600普通文件，禁止符号链接；单行 `postgresql://user:encoded-password@host:port/database?...`，必须选择预建数据库 | 必填 |
 | maas_api_key_file | 绝对路径；0600普通文件；单行 MaaS Key | 必填 |
 | ui_password_file | 绝对路径；0600普通文件；单行至少12字符，不能使用 API Key 作为密码 | 必填 |
 | api_port、ui_port | 整数1024–65535，不相等；程序监听端口 | 8888、9999 |
 | ui_api_url | UI服务端可访问的 HTTP(S) API origin，无路径、查询串和内嵌凭据；首版同容器`http://127.0.0.1:8888` | 必填 |
-| language | 首版 RDS 填 english，表示英文全文预检；不限制中文输入或向量召回 | 必填 |
-| text_search | 首版 RDS 填 native；PGroonga/Groonga 不作为部署依赖 | 必填 |
-| pg_search_tokenizer | 首版不填，不引入额外中文全文插件 | 默认null |
+| language | 固定 english，表示英文全文预检；不限制中文输入或向量召回 | 默认 english |
+| text_search | 固定 native；PGroonga/Groonga 不作为部署依赖 | 默认 native |
 | worker_id | 稳定且部署内唯一的1–128字符标识，ASCII字母/数字/下划线/连字符；不要沿用随机容器主机名 | 必填 |
 | db_pool_max | 每进程主池/读池各自最大连接数，2–100；多个进程和空间池需另计容量 | 默认10 |
-| metadata_pool_max | 每API/Worker进程管理池最大连接，2–1000 | 默认10 |
-| admission_pool_max | 每API进程准入池最大连接，2–10000；长请求持锁时同时限制在途操作数 | 默认64 |
 | llm_model | 1–128字符，运维批准的模型；Embedding/Rerank固定，不提供任意环境变量透传 | `deepseek-v4.1-flash` |
 | ca_bundle_file | 可选绝对路径；必须在各容器相同路径存在，另挂载只读CA；不会关闭证书校验 | 默认null |
 
@@ -42,9 +39,7 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | 输出配置 | 来源/含义 |
 | --- | --- |
 | CONTEXTDB_INSTANCE_ID、CONTEXTDB_CLOUD_TENANT_ID | 归属字段；同一PG库必须匹配 |
-| CONTEXTDB_METADATA_POOL_MAX_SIZE / CONTEXTDB_ADMISSION_POOL_MAX_SIZE | 分别来自metadata_pool_max / admission_pool_max，不受主池大小替代 |
 | PYTHON_DOTENV_DISABLED | 固定1，复用依赖的标准开关阻止.env覆盖 |
-| CONTEXTDB_VALIDATION_LANGUAGE | 选择 preflight 语言门槛 |
 | HINDSIGHT_API_DATABASE_URL | 秘密文件PG URI；初始化、管理员离线轮换和运行时统一使用此连接 |
 | HINDSIGHT_API_HOST、HINDSIGHT_CP_HOST | 固定`0.0.0.0`；外部访问由安全组/HTTPS入口控制 |
 | HINDSIGHT_API_PORT、HINDSIGHT_CP_PORT | api_port、ui_port |
@@ -56,9 +51,9 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | HINDSIGHT_API_OPERATION_VALIDATOR_EXTENSION | `hindsight_ext_contextdb.validator:ContextDBOperationValidator` |
 | HINDSIGHT_API_HTTP_EXTENSION | `hindsight_ext_contextdb.http:ContextDBHttpExtension` |
 | HINDSIGHT_API_MCP_EXTENSION | `hindsight_ext_contextdb.mcp:ContextDBMCPExtension`；MCP_ENABLED=`true`，不设置共享MCP_AUTH_TOKEN |
-| HINDSIGHT_API_MIGRATION_ISOLATION | `false`，当前生命周期的进程隔离限制 |
-| HINDSIGHT_API_RUN_MIGRATIONS_ON_STARTUP | `false`，阻止API启动不带工作空间身份的通用schema迁移；空间创建由受保护的生命周期流程显式迁移 |
-| HINDSIGHT_API_LLM_TRACE_ENABLED / HINDSIGHT_API_AUDIT_LOG_ENABLED | 固定false；原生异步诊断正文写入尚无空间代次保护，不能单独开启 |
+| HINDSIGHT_API_MIGRATION_ISOLATION | `false`，沿用受控迁移入口的配置 |
+| HINDSIGHT_API_RUN_MIGRATIONS_ON_STARTUP | `false`，阻止API启动不带工作空间身份的通用schema迁移；空间创建在同步受信管理上下文中显式迁移 |
+| HINDSIGHT_API_LLM_TRACE_ENABLED / HINDSIGHT_API_AUDIT_LOG_ENABLED | 固定false；这些后台功能的独立 schema 路由和存储归属尚未完成验收，不能单独开启 |
 | HINDSIGHT_API_VECTOR_EXTENSION | `pgvector` |
 | HINDSIGHT_API_TEXT_SEARCH_EXTENSION | 首版 text_search=native |
 | HINDSIGHT_API_TEXT_SEARCH_EXTENSION_NATIVE_LANGUAGE | 固定 english；不代表中文关键词全文已支持 |
@@ -91,7 +86,7 @@ PG/插件/网络准备完成
  → 业务验收 → 运行
 ```
 
-文件模板：[intent.example.json](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/deployment/intent.example.json)。以下是非容器本机执行的合同，命令由能读取输入秘密、拥有 runtime 目录的同一个服务账号执行；若采用集成指南的 UID10001/0700 容器目录，主机 Agent 必须以该账号或管理权限执行，不能以无权读取的普通账号照抄。容器命令见集成指南。`CONTEXTDB_PYTHON`必须指向匹配源码安装的Python3.11–3.14环境；Node22.12+或24仅用于UI构建/运行。
+文件模板位于同版代码仓 `hindsight-extensions/contextdb-service/deployment/intent.example.json`；本轮简化版本通过 amend 整理提交，尚未推送，不能混用旧远程模板。以下是非容器本机执行的合同，命令由能读取输入秘密、拥有 runtime 目录的同一个服务账号执行；若采用集成指南的 UID10001/0700 容器目录，主机 Agent 必须以该账号或管理权限执行，不能以无权读取的普通账号照抄。容器命令见集成指南。`CONTEXTDB_PYTHON`必须指向匹配源码安装的Python3.11–3.14环境；Node22.12+或24仅用于UI构建/运行。
 
 ```bash
 cd /opt/contextdb/source
@@ -107,7 +102,7 @@ bash "$SERVICE" init
 bash "$SERVICE" all
 ```
 
-`service.sh preflight` 手动调用时显式传 `--language`；`init/api/worker` 会读取渲染的 `CONTEXTDB_VALIDATION_LANGUAGE`。非容器UI地址应在意图中设置为本机API地址，而非旧分容器示例的`api`DNS名。源码UI先执行 `python -m hindsight_ext_contextdb build-ui --source-root "$PWD"`，Dockerfile已在构建期完成此步骤；不能混用旧构建。
+`service.sh preflight` 手动调用时显式传 `--language`；`init/api/worker` 固定执行英文预检，不再生成或读取 `CONTEXTDB_VALIDATION_LANGUAGE`。非容器UI地址应在意图中设置为本机API地址，而非旧分容器示例的`api`DNS名。源码UI先执行 `python -m hindsight_ext_contextdb build-ui --source-root "$PWD"`，Dockerfile已在构建期完成此步骤；不能混用旧构建。
 
 | 命令 | 成功/失败及重试规则 |
 | --- | --- |
@@ -123,7 +118,7 @@ bash "$SERVICE" all
 
 `service.sh init`在管理表初始化之后，显式执行原生`python -m hindsight_api.admin.cli run-db-migration --schema public --embedding-dimension 1024`。该条命令局部禁用TENANT扩展，不做租户发现，只初始化共享任务表所在的public；不变更后续API/Worker扩展配置。该步失败不得启动API。
 
-升级已有空间的原生业务表时，先停止全部API和Worker，再从`ctxdb_meta.workspaces.schema_name`逐个确定目标schema，按批准的升级步骤执行下面命令。不能不带`--schema`使用通用租户发现，也不能为省事把启动迁移改成true；否则旧启动请求可能误操作同名重建后的空间。必须由发行版本的升级手册列出具体目标和回退点。
+升级已有空间的原生业务表时，先停止全部API和Worker，再从`ctxdb_meta.workspaces.schema_name`逐个确定目标schema，按批准的升级步骤执行下面命令。不能不带`--schema`使用通用租户发现，也不能为省事把启动迁移改成true；启动迁移不能代替发行版本明确的升级流程。必须由发行版本的升级手册列出具体目标和回退点。
 
 逐空间升级的具体命令（全部写入者已停止，SCHEMA来自元数据且已审核；PG认证按同版私密api.env加载）：
 
@@ -166,13 +161,19 @@ Compose示例提供只读运行期文件系统、只读秘密卷、临时目录�
 
 首发管理元数据结构版本固定为1。migrate仅初始化新库，或核对已经采用当前结构的数据库；开发期试验结构不作为已发布版本，不自动升级或直接改号。已有试验库先保留数据和配置备份，再使用新的专用数据库验证；不能仅修改metadata_version冒充结构匹配。未来正式发布结构变更时，再从版本1增加有序迁移。
 
-首版不支持原生 Webhook、持久 LLM Trace 和原生业务 Audit：非空 WEBHOOK_URL、缺省或开启的 LLM_TRACE_ENABLED、开启的 AUDIT_LOG_ENABLED 均拒绝。Admin/内部配置不能开启 audit_log_enabled，旧Bank开启审计或enabled Webhook时须先停用再升级。ContextDB管理审计audit_events和运行日志/指标不受影响；详见[功能边界及原因](../archive/2026-10-19-before-reorganization/design/contextdb-service-research-validation.md#4-删除重建保护与首版限制)。
+首版不支持原生 Webhook、持久 LLM Trace 和原生业务 Audit：非空 WEBHOOK_URL、缺省或开启的 LLM_TRACE_ENABLED、开启的 AUDIT_LOG_ENABLED 均拒绝。Admin/内部配置不能开启 audit_log_enabled，旧Bank开启审计或enabled Webhook时须先停用再升级。ContextDB管理审计audit_events和运行日志/指标不受影响；详见[功能边界及原因](../design/contextdb-release-design.md)。
 
 
 数据库连接只配置 HINDSIGHT_API_DATABASE_URL；初始化、管理员离线轮换及API/Worker使用相同目标库和专用服务账号。管控预建数据库和安装插件，服务账号运行时须能创建空间schema、表和索引。不支持单独的bootstrap连接地址，遗留设置不能覆盖或替代此变量。
 
 ### 连接容量预算
 
-每个API进程除原生主池、读池外，还有管理池（默认10）和准入池（默认64）。HTTP/MCP长操作持有准入连接至结束，这是删除排空保护，也构成明确的并发上限。独立Worker还需原生主/读池及管理池；按API副本、进程数、Worker数量累加，并给迁移、监控及运维留余量。不要直接把所有上限同时调大。
+ContextDB 元数据复用原生主连接池，不再创建管理池或准入池，也不在整个模型请求期间占用额外连接。`db_pool_max` 配置原生池上限，不是实例并发请求数。按实际 API/Worker 进程数、启用的原生主/读池、迁移连接、监控和运维余量核算 PG `max_connections`；原生读池是否独立启用以同版配置为准。首版一个 API/内置 Worker 进程；扩容前重新测量池等待和 PG 负载，不能将单池10连接当成整个实例的固定预算。
 
-示例：一个API、主/读池各10、管理池10、准入池64，容量上界至少94；独立Worker另计。连接池按需增长，不会启动时占满所有上限。上线前在目标规格测混合负载与PG max_connections，不能只用“主池=10”估算整个实例。
+### 产物一致性检查
+
+构建时生成 manifest，启动时仍完整核对源码及 UI 产物，防止部署了不匹配的 API/UI。Dockerfile 已调整依赖缓存层次；可信固定镜像免启动扫描仍是 TODO，当前没有跳过校验开关，也不能只凭 manifest 存在即信任产物。
+
+### 工作空间管理响应
+
+`POST /ext/contextdb/v1/workspaces` 同步返回201和工作空间正文；`DELETE /ext/contextdb/v1/workspaces/{bank_id}` 使用原对象 `If-Match`，完成后返回204空正文。没有管理操作轮询接口或持久幂等重放。删除前由管理员停止业务并等待原生已受理任务及后台工作结束；请求超时或响应丢失时先查询同名资源并核对原 UUID/状态，不自动重发写入。`creating/deleting` 未知状态须核对日志、PG 和执行进程，当前接口返回409，不自动接管。

@@ -1,6 +1,44 @@
 # ContextDB 代码检视指南
 
-## PR #1 修复与后续评审（2026-10-19）
+> **当前本地实现（2026-10-19）：** 工作空间同步POST201/DELETE204，13个管理操作、6张管理表；自研管理调度、持久在途屏障、额外池和七个原生运行文件差异已撤销。原生运行目录与官方v1.0.0 `39c65ffe2f140d0c84cee58566cad8900c5b9908` 一致。保留正常授权、schema映射、UUID及If-Match，删除前管理员停止访问并等待已有工作结束。
+>
+> **交付状态：** 本轮采用 amend 保持一个特性提交，本地回归和独立Hindsight/PG专家检视已完成；尚未推送，不替代目标环境验收。最新结果见[验证摘要](../testing/contextdb-validation-summary.md)，逐项实施状态见[简化清单7.8](contextdb-simplification-plan.md#r01-r07-review-plan)。数据库敏感日志恢复原生后仍有风险，由[Issue #3](https://github.com/ZhuQingping/ContextDB-Research/issues/3)独立处理。
+
+## 本轮代码检视入口
+
+先看[完整设计](contextdb-release-design.md)和[规格约束](contextdb-release-design.md#feature-specification)，再看特性提交相对官方基线的差异。不要先阅读旧163项文件清单来理解新实现。
+
+| 范围 | 当前实现与检视重点 |
+| --- | --- |
+| 原生运行目录 | `hindsight-api-slim/hindsight_api`与官方基线一致；未修改记忆算法、原生MCP错误处理、任务取消重试和Worker终态写入 |
+| authorization.py / transport.py | 认证快照、受信用途和目标、REST身份/路由/诊断边界；没有Admission表、长事务和传输执行追踪 |
+| lifecycle.py / repository.py | 同步请求、短管理事务与原生DDL分开；六表、普通状态和失败占名、最终清理事务 |
+| 四扩展 / ASGI入口 | Tenant/Validator/HTTP/MCP保留正常职责；ASGI复用原生应用lifespan，仍不可绕过自研入口使用原生CLI |
+| UI / 管理代理 | 同步响应和未知结果查询；共享名称/描述表单、表格可读性；会话、同源、固定目标和秘密保护 |
+| 部署 / 产物 | merged/native/english固定；无旧池/语言/retention变量；manifest及完整启动校验保持，免扫描TODO |
+| 回归 / CI | 原生行为、读写和跨空间、当前MCP消息、失败/重建/旧条件；系统故事显式contextdb依赖组 |
+
+```bash
+# 在代码仓查看本轮amend后的提交；提交正文固定对应的资料仓快照。
+git log -1 --format=fuller
+# 旧1b96e975的完整补丁见资料仓archive/patches/，不是当前实现。
+git status --short
+git diff --stat 39c65ffe2f140d0c84cee58566cad8900c5b9908 HEAD
+git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 HEAD -- hindsight-api-slim/hindsight_api
+git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 HEAD -- hindsight-extensions/contextdb-service hindsight-control-plane
+# ContextDB系统故事在独立环境显式安装，不能让CI静默跳过。
+cd hindsight-system-tests
+uv sync --frozen --group contextdb
+# 具体测试选择及结果以本轮验证记录为准。
+```
+
+## 历史评审与验证说明
+
+以下章节保留上一轮提交的原始统计、意见和当时结果，供追溯；其中“当前”“继续保留”“已推送”等均指该章节固定的历史提交，不是本轮状态。原保护机制的必要性按最新规格已取消，不能将历史表格重新当成保留执行屏障的要求。新结构/API及本轮未关闭事项以上方入口和当前设计为准。
+
+## 历史：PR #1 修复与后续评审（2026-10-19）
+
+**后续实施补充：** 额外扩展连接池及独立Worker的配套关闭补丁按[设计5.2.2.3](contextdb-release-design.md#extension-pool-removal-decision)移除，管理元数据复用原生主库池。数据库日志脱敏从本特性剥离，由[Issue #3](https://github.com/ZhuQingping/ContextDB-Research/issues/3)跟踪独立修复。下文“通用加固保留”等内容描述先前代码/评审快照，不替代这两项最新决策。
 
 本节对应 `9d51cac` 的检视结果，以下修复随本次代码 amend 交付；是否进入远程 CI 以 PR 的 head 提交为准，本地通过不代表远程 CI 已通过。下文固定为 `9d51cac` 的统计保留为历史快照。
 
@@ -35,17 +73,17 @@
 | --- | --- |
 | 原生父提交 | `39c65ffe2f140d0c84cee58566cad8900c5b9908`（v1.0.0） |
 | 本次整理前的代码提交 | [c60d409](https://github.com/ZhuQingping/hindsight/commit/c60d409cfb4f879051a4fe258bbcaff8872df09e)；详细文档已移至资料仓，提交内 docs/README.md 为链接入口 |
-| 当前代码 | [9d51cacde496baa628408e4b474f0f949220a90f](https://github.com/ZhuQingping/hindsight/commit/9d51cacde496baa628408e4b474f0f949220a90f)；已 amend 并推送到 `contextdb/v1.0.0`，相对原生仍为一个特性提交；本轮收敛见[落实结果](#extension-implementation) |
-| 当前人工文档 | [本目录总入口](../README.md)、[完整设计](contextdb-release-design.md)；以包含本次目录整理的资料仓提交为快照 |
+| 上一轮远程评审快照 | [9d51cacde496baa628408e4b474f0f949220a90f](https://github.com/ZhuQingping/hindsight/commit/9d51cacde496baa628408e4b474f0f949220a90f)；已 amend 并推送到 `contextdb/v1.0.0`，相对原生仍为一个特性提交；本轮收敛见[落实结果](#extension-implementation) |
+| 人工文档 | [本目录总入口](../README.md)、[完整设计](contextdb-release-design.md)；以包含本次目录整理的资料仓提交为快照 |
 | 机器接口合同 | [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)，由代码生成并校验 |
 
 `c60d409` 的详细设计、部署指南、API 用例和运维手册由资料仓维护；本轮整理前完整目录见[备份](../archive/2026-10-19-before-reorganization/README.md)。代码仓只保留入口，不再双份同步人工文档。
 
 先看[原生扩展机制复评与10项原生改动处理建议](#extension-reevaluation)，再按需查[c60d409 的163项逐文件变更说明](#c60-file-review)。逐文件表保留历史实现意图，必要性以复评结论为准。
 
-## 专家检视顺序
+## 历史：上一轮专家检视顺序
 
-先读[设计](contextdb-release-design.md)，再按下表查看相对 v1.0.0 的差异，不需要先通读历史过程记录。
+先读[设计](contextdb-release-design.md)，尤其是[第6.1节特性规格约束](contextdb-release-design.md#feature-specification)，再按下表查看相对 v1.0.0 的差异，不需要先通读历史过程记录。精确判断请求/Worker退出及最终状态写入的增强保护已决定随同步管理一并撤销；检视须保留正常鉴权和隔离，不再以违反删除使用前提的并发场景要求恢复该体系。
 
 | 范围 | 代码路径 | 重点 |
 | --- | --- | --- |
@@ -63,7 +101,7 @@ git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f
 git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f949220a90f -- hindsight-control-plane
 ```
 
-## 当前评审边界
+## 历史：上一轮评审边界
 
 单容器 API 内置 Worker，独立 UI 进程；用户属于实例，Key 独立授权，selected 可逐空间读写/只读，all 包含未来空间。工作空间使用可读 bank_id 与 schema，内部 UUID 区分删除后同名重建对象。
 
@@ -74,7 +112,7 @@ git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f
 
 <a id="c60-file-review"></a>
 
-## c60d409：163 项文件变更说明
+## 历史：c60d409 的163项文件变更说明
 
 核对日期：2026-10-19。只审视用户指定提交 `c60d409cfb4f879051a4fe258bbcaff8872df09e` 相对其直接父提交原生 v1.0.0 的净差异；当前分支后来仅修改了资料仓导航链接。实际状态为新增112项、修改50项、重命名1项。以下是变更目的、范围与简化判断，不是逐条证明实现正确的安全审计，逐文件说明阶段没有修改运行代码或执行业务测试；后续原生扩展复评另做了隔离验证，见[复评结果](#extension-reevaluation)。
 
@@ -436,7 +474,7 @@ REST原生URL
 
 
 <a id="extension-implementation"></a>
-## 复评后的落实结果（2026-10-19，已 amend 并推送供评审）
+## 历史：复评后的落实结果（9d51cac，已 amend 并推送供评审）
 
 本节对应提交 `9d51cacde496baa628408e4b474f0f949220a90f`；前面的163项表仍描述固定的 c60d409 历史提交，不改写历史统计。当前相对原生净差异为147个文件，其中原生 Python 运行文件7个。
 
