@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-19",
+  "branch": "contextdb/v1.0.0",
+  "published_code_commit": "75ae4b7ed806c6c6e54d6306b9420e5fd9535014",
+  "implementation_state": "local uncommitted changes; not published",
+  "upstream_commit": "39c65ffe2f140d0c84cee58566cad8900c5b9908",
+  "native_runtime_diff": {
+    "before": {
+      "files": 10,
+      "added_lines": 341,
+      "removed_lines": 44
+    },
+    "after": {
+      "files": 7,
+      "added_lines": 234,
+      "removed_lines": 43
+    }
+  },
+  "completed_suites": [
+    {
+      "suite": "contextdb extension",
+      "passed": 440,
+      "skipped": 1
+    },
+    {
+      "suite": "targeted native MCP Worker dotenv and log regression",
+      "passed": 506,
+      "skipped": 4
+    },
+    {
+      "suite": "UI unit component and catalog checks",
+      "passed": 414
+    },
+    {
+      "suite": "API MCP Worker lifecycle and isolation system stories",
+      "passed": 52
+    },
+    {
+      "suite": "production UI to API system stories",
+      "passed": 2
+    },
+    {
+      "suite": "native compatibility fixture cleanup diagnostic identity",
+      "passed": 5
+    },
+    {
+      "suite": "embedded env templates",
+      "passed": 8
+    }
+  ],
+  "checks": {
+    "project_lint": "passed",
+    "extension_ruff": "passed",
+    "extension_types": "passed",
+    "production_ui_build": "passed",
+    "ui_source_bundle_fingerprint": "passed",
+    "git_diff_check": "passed"
+  },
+  "advisory_scan": "completed; existing upstream and UI export warnings remain",
+  "not_counted": "An interrupted 680-item broad native run is not a complete-suite result. Focused reruns appear above.",
+  "limitations": [
+    "No published code commit for this local implementation yet",
+    "Deterministic provider stub, no real MaaS quality or performance claim",
+    "No ECS RDS deployment capacity backup or image safety certification",
+    "Remaining execution-lifecycle and protocol fault protection is intentionally retained"
+  ]
+}

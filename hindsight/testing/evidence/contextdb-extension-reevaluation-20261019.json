@@ -1,0 +1,159 @@
+{
+  "baseline_commit": "39c65ffe2f140d0c84cee58566cad8900c5b9908",
+  "source_files_verified_unchanged": 1006,
+  "runtime_source_changes": 0,
+  "environment": "CPython 3.11; isolated local pg0; real native API, MCP and in-process worker; deterministic provider stub",
+  "test_count": 22,
+  "passed": 22,
+  "warnings": 2,
+  "warning_kind": "upstream websockets deprecation",
+  "tests": [
+    {
+      "name": "test_01_native_provenance_and_dynamic_multiple_keys[native-mcp]",
+      "seconds": 3.413
+    },
+    {
+      "name": "test_02_native_rest_routes_one_key_to_independent_schemas[native-mcp]",
+      "seconds": 3.361
+    },
+    {
+      "name": "test_03_immediate_key_grant_revocation_and_user_disable[native-mcp]",
+      "seconds": 0.043
+    },
+    {
+      "name": "test_04_mcp_cross_schema_switch_and_known_gap[native-mcp]",
+      "seconds": 0.084
+    },
+    {
+      "name": "test_05_native_list_scope_is_per_schema_not_cross_schema_catalog[native-mcp]",
+      "seconds": 0.024
+    },
+    {
+      "name": "test_06_same_mcp_session_changes_key_without_native_patch[native-mcp]",
+      "seconds": 0.104
+    },
+    {
+      "name": "test_07_retain_result_hook_does_not_cover_worker_terminal_write[native-mcp]",
+      "seconds": 0.005
+    },
+    {
+      "name": "test_08_cancelled_row_still_has_live_native_worker[native-mcp]",
+      "seconds": 0.378
+    },
+    {
+      "name": "test_09_read_permission_can_run_native_reflect[native-mcp]",
+      "seconds": 0.043
+    },
+    {
+      "name": "test_10_concurrent_rest_schema_context_isolation[native-mcp]",
+      "seconds": 0.055
+    },
+    {
+      "name": "test_11_bank_bound_mcp_does_not_require_mcp_extension_for_routing[native-mcp]",
+      "seconds": 0.048
+    },
+    {
+      "name": "test_01_native_provenance_and_dynamic_multiple_keys[extension-mcp]",
+      "seconds": 3.963
+    },
+    {
+      "name": "test_02_native_rest_routes_one_key_to_independent_schemas[extension-mcp]",
+      "seconds": 3.166
+    },
+    {
+      "name": "test_03_immediate_key_grant_revocation_and_user_disable[extension-mcp]",
+      "seconds": 0.045
+    },
+    {
+      "name": "test_04_mcp_cross_schema_switch_and_known_gap[extension-mcp]",
+      "seconds": 0.966
+    },
+    {
+      "name": "test_05_native_list_scope_is_per_schema_not_cross_schema_catalog[extension-mcp]",
+      "seconds": 0.036
+    },
+    {
+      "name": "test_06_same_mcp_session_changes_key_without_native_patch[extension-mcp]",
+      "seconds": 0.075
+    },
+    {
+      "name": "test_07_retain_result_hook_does_not_cover_worker_terminal_write[extension-mcp]",
+      "seconds": 0.005
+    },
+    {
+      "name": "test_08_cancelled_row_still_has_live_native_worker[extension-mcp]",
+      "seconds": 0.197
+    },
+    {
+      "name": "test_09_read_permission_can_run_native_reflect[extension-mcp]",
+      "seconds": 0.042
+    },
+    {
+      "name": "test_10_concurrent_rest_schema_context_isolation[extension-mcp]",
+      "seconds": 0.059
+    },
+    {
+      "name": "test_11_bank_bound_mcp_does_not_require_mcp_extension_for_routing[extension-mcp]",
+      "seconds": 0.611
+    }
+  ],
+  "controls": {
+    "mcp-native": {
+      "mcp_extension": false,
+      "correct_alpha_recalled": false,
+      "correct_beta_recalled": true,
+      "tool_is_error": false
+    },
+    "mcp-adapted": {
+      "mcp_extension": true,
+      "correct_alpha_recalled": true,
+      "correct_beta_recalled": true,
+      "tool_is_error": false
+    },
+    "session-native": {
+      "same_session": true,
+      "new_key_alpha_data": true,
+      "adapter": false
+    },
+    "session-adapted": {
+      "same_session": true,
+      "new_key_alpha_data": true,
+      "adapter": true
+    },
+    "hook-native": {
+      "processing_at_retain_hook": [
+        1,
+        1,
+        1
+      ],
+      "beta_pending_after_completion": 0
+    },
+    "hook-adapted": {
+      "processing_at_retain_hook": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "beta_pending_after_completion": 0
+    },
+    "worker-native": {
+      "processing_rows": 0,
+      "live_worker_coroutines": 1,
+      "provider_step_still_held": true
+    },
+    "worker-adapted": {
+      "processing_rows": 0,
+      "live_worker_coroutines": 1,
+      "provider_step_still_held": true
+    }
+  },
+  "original_dotenv_test": "1 passed; pytest cache-path warning",
+  "scope_limitations": [
+    "No actual physical DROP/recreate acceptance for the replacement prototype",
+    "No complete cancellation/fault/streaming/tool-surface replacement validation",
+    "No real MaaS or ECS/RDS certification",
+    "No upgrade from unreleased development instances",
+    "No production code replacement in this reevaluation"
+  ]
+}

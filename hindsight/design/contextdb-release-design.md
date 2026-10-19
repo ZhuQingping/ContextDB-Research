@@ -2,6 +2,8 @@
 
 > **状态：内部方案评审中。** 当前实现供专家检视，功能测试通过不代表简洁性、性能或最小侵入设计已定稿。当前待决定事项集中在[本文TODO](#本轮实现收敛与-todo)；[历史复审与验证](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)仅用于追溯，不是检视前置阅读。
 
+> **接入收敛（2026-10-19，本地实现，尚未提交发布）：** HTTP 准入改由扩展自己的 ASGI 启动入口安装，三个原生 HTTP 文件恢复；MCP 当前 Key 由 Tenant 从公开 Request 读取，删除原生身份快照/恢复中间件。原生 Python 运行改动由10个文件缩为7个；任务提交、完整执行及可靠故障结束的保护继续保留。验证及未解决边界见[评审指南](code-review-guide.md#extension-implementation)。
+
 更新（2026-10-19，基于原生 v1.0.0 的首发方案）：新空间对外统一使用可读 bank_id，对内保留 UUID；工作空间名称仅允许字母、数字、下划线，最长54字符，统一小写。新 schema 为 ctxdb_ws_<bank_id>；彻底删除后允许同名重建，并隔离旧授权和旧执行者。本轮功能回归与原生v1.0.0部署证据见[验证摘要](../testing/contextdb-validation-summary.md)；目标ECS/RDS、镜像安全与生产性能仍须单独验收。
 
 本文按总体设计、实例管理、UI 管理、应用访问、核心实现和本期边界组织。接口、数据结构、安全依据及异常恢复规则完整保留在本文，便于连续阅读和实现核对。 当前版本与检视入口见[代码检视指南](code-review-guide.md)；历史手册中的配置和接口不作为本版本部署依据。
@@ -168,7 +170,7 @@ export HINDSIGHT_CP_ACCESS_KEY="$(python3 -c 'import secrets; print(secrets.toke
 
 <a id="deployment"></a>
 
-### 2.4 部署、启停、升级与兼容
+### 2.4 部署、启停与未来升级
 
 离线顺序：准备专用 UTF8 PG 与扩展 → 私密目录保存配置和生成凭据 → 离线 migrate 导入管理员摘要 → 启动 API/Worker → readiness 通过后启动 UI。使用代码仓 `hindsight-extensions/contextdb-service/scripts/service.sh`，由已有节点 Agent/systemd/容器监督器管理前台进程；不引入新常驻管理服务。
 
@@ -176,7 +178,7 @@ export HINDSIGHT_CP_ACCESS_KEY="$(python3 -c 'import secrets; print(secrets.toke
 
 部署目录保存 `api.env`/`ui.env`、`admin-key.json`、`api-secrets.json`、`ui-secrets.json`，秘密文件0600、目录0700。API/Worker 加载 PG、模型、实例及扩展配置，另从秘密文件加载 pepper，不加载 Admin Key 明文或 UI 密码；UI 只得到登录密码/后台 Admin Key/API URL，不接收 PG 或模型密钥。重复初始化保留原值；已初始化但秘密文件缺失时拒绝补生，要求恢复备份。托管启动设置标准`PYTHON_DOTENV_DISABLED=1`，利用python-dotenv已有能力阻止意外.env覆盖；扩展依赖要求python-dotenv>=1.2.1，无须改原生config.py。
 
-首发管理元数据结构版本固定为1。migrate仅初始化新库，或核对已经采用当前结构的数据库；开发期试验结构不作为已发布版本，不自动升级或直接改号。已有试验库先保留数据和配置备份，再使用新的专用数据库验证；不能仅修改metadata_version冒充结构匹配。未来正式发布结构变更时，再从版本1增加有序迁移。正常重启不执行结构迁移或重新生成凭据。
+首发管理元数据结构版本固定为1。migrate仅初始化新库，或核对已经采用当前结构的数据库；开发期试验结构不作为已发布版本，不自动升级或直接改号。本期不存在旧实例升级到当前版本的场景，不提供旧开发结构迁移；不支持结构或归属不一致的数据库明确拒绝接管，不能手改metadata_version冒充匹配。未来正式发布结构变更时，再从版本1增加有序迁移。正常重启不执行结构迁移或重新生成凭据。
 
 预检检查真实导入路径、扩展接口、Python3.11～3.14、Node22.12+/24及平台 esbuild、目标 PG 扩展和语言后端。外部 PG 不必安装 pg0；测试/内嵌路径使用 `hindsight-api-slim[embedded-db]`，发行包名 pg0-embedded，导入名 pg0。UI 使用系统字体，构建不下载 Google Fonts。Node22/24 的生产构建已在本机验证；源码路径检查不能替代部署方对镜像摘要和供应链的记录。
 
@@ -403,7 +405,7 @@ Admin Key 与业务 Key 使用相同的 Bearer 携带方式、相同的认证入
 
 ### 4.3 可读寻址与对象身份条件
 
-GET、DELETE 使用 `/workspaces/{bank_id}`，Key选择也使用 bank_id。新建名称同时就是规范化 bank_id；不接受中文、空格或连字符，不额外提供显示名、别名或改名接口。首发使用新建专用库；不自动接管开发期 UUID bank_id/schema 结构。既有试验数据若需迁移，须另行设计、验证迁移流程。
+GET、DELETE 使用 `/workspaces/{bank_id}`，Key选择也使用 bank_id。新建名称同时就是规范化 bank_id；不接受中文、空格或连字符，不额外提供显示名、别名或改名接口。首发使用新建专用库；不自动接管开发期 UUID bank_id/schema 结构。本期不设计旧开发实例到当前版本的迁移流程。
 
 空间列表和详情返回 bank_id、workspace_id、version、etag；详情同时发送ETag头。DELETE 必须发送原对象的 If-Match 与本次 Idempotency-Key：缺条件428，代次/版本不匹配412。条件缺失或旧对象消失不能改为删除当前同名对象；幂等重试仍绑定原操作和UUID。
 
@@ -690,7 +692,7 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 4. 运维 Key 是服务凭据，不是 PG 超级用户。一个 PG 数据库内无法防止真正 SUPERUSER 或 OS root 读取和修改数据；客户 SQL 账号应为非超级用户，且不拥有服务 schema。
 5. 实例运维、空间任务、原生记忆任务各用现有入口；只保留必要的准入、租约、并发和审计机制。本期不实现共享多租户、组织 IAM、子 Key、个人 UI 登录或跨空间联合查询。
 
-### 6.2 Q&A 与旧结构恢复边界
+### 6.2 Q&A 与首发初始化、未来升级边界
 
 **可以给 MySQL 读写、PG 只读吗？** 可以。使用 selected，在两个 workspaces 条目分别设置 read_write 和 read。同一个明文 Key 可访问两者，URL 用各自 bank_id。
 
@@ -729,6 +731,24 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 扩展层在每个进程记住最近见到的工作空间UUID，首次访问或UUID变化时调用原生缓存失效方法；同一代次继续使用原生缓存。HTTP/MCP认证、Worker完整执行准入和内部任务提交入口均覆盖，映射有界，不新增PG表或客户参数。PG统计缓存实际保存在业务schema表中，随DROP清理，无须一并禁用。测试使用1小时缓存TTL，通过真实API/Worker验证新空间的抽取提示词不含旧空间mission。
 
 ## 本轮实现收敛与 TODO
+
+已落地的收敛：
+
+- `hindsight_ext_contextdb.asgi:create_app` 复用原生 `server.app`，最后安装纯 ASGI 准入中间件，使其位于原生 MCP 挂载层之外。部署脚本通过 uvicorn factory 启动此入口；原生应用继续负责 lifespan、内置 Worker 和关闭。没有增加新的 HttpExtension 接口。
+- `ContextDBHttpExtension` 仍只提供原有管理路由与生命周期，准备准入对象；Tenant 必须确认外围入口已安装，否则拒绝客户认证与启动。仅设置四个插件变量后直接执行原生 API CLI，不是本版受支持的启动方法。
+- `ContextDBTenantExtension` 在 MCP 工具调用时通过 FastMCP 公开 `get_http_request()` 取得当前消息 Key，再复用统一 PG 认证。`ContextDBMCPExtension` 承担实际 Bank 目标、跨 schema 目录及传输任务排空；不新增记忆工具，不改原生记忆算法。原生 MCP 身份快照/恢复中间件已撤销；扩展内仍有局部 Bank ContextVar 适配，用来对接原生工具的默认 Bank resolver，不承担身份认证。
+- 原生 `.env.example` 及嵌入式副本恢复，托管注入与 UI 模式说明只放扩展模板；删除不存在的 `HINDSIGHT_API_ENV_FILE` 说明，恢复原生 dotenv/信号量初始化测试。
+- 原生十份语言包和 `next.config.ts` 恢复；ContextDB 新文案集中在扩展 UI catalog，未翻译项共用英文，保留中文及其他语言已有翻译。完整旧开发 DDL fixture 缩为最小拒绝结构，测试按首发初始化和当前权限改名。没有实现旧开发库升级。
+
+后续继续分析，当前不删除：
+
+- **TODO：内部提交与 Worker 完整执行边界**：保留 Tenant 的 `async_submission_scope` / `async_execution_scope` 和引擎、Worker 的调用。公开结果回调不覆盖最终/延期状态写入，队列 processing=0 也不证明协程已结束。后续以统一通用保护域替代具体 quiescent 传播，须先覆盖取消、连接丢失、最终写失败及同名重建。
+- **TODO：MCP 故障结束语义**：保留原生 `failure_reporter`。原生工具会将未知异常包装成正常 JSON 响应，外围不能仅根据 HTTP 200 或异常是否抛出来判断安全结束；移除前须证明协议封装、取消与断连均能可靠识别。
+- **TODO：排空的多状态查询与 Append**：`list_operations(statuses=...)` 暂留，避免把一个一致快照拆成两次存在竞态的状态统计；后续比较外围只读统计适配与通用引擎接口。单文档 Append 冲突的结束证明不随身份恢复代码一起删除；多文档失败仍缺统一取消/排空证明。
+- **TODO：交付范围与测试依赖**：首版仍为 native 英文全文、合并 Worker。PGroonga 预检、独立 Worker 诊断以及原生镜像过渡材料有各自用途，暂留独立目录，不作为首版前提。系统测试直接启动服务端/PG 需要完整依赖，后续将 ContextDB 故事划为显式可选环境并同步 CI，再收敛重复版本约束；不能只删 lock 或默默跳过功能验收。
+- **TODO：可上游的通用修改**：数据库 URL 脱敏、独立 Worker 退出清理单独说明，不将其算作工作空间权限所必需。系统字体用于无网络构建，暂留；Next 配置已恢复原生形态。
+
+
 
 认证、SQL批量授权、连接预算、索引、真实身份及原生改动缩减的逐项结果见[优化状态](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)。原生v1.0.0的独立接入材料见[原生部署合同](../deployment/native-v1.0.0/contextdb-deployment-contract.md)及[操作指南](../deployment/native-v1.0.0/contextdb-service-integration-guide.md)；该模式没有ContextDB权限或元数据，不承诺原库直接切换。
 
