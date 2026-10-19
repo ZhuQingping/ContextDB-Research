@@ -1,8 +1,8 @@
 {
   "date": "2026-10-19",
   "branch": "contextdb/v1.0.0",
-  "published_code_commit": "75ae4b7ed806c6c6e54d6306b9420e5fd9535014",
-  "implementation_state": "local uncommitted changes; not published",
+  "published_code_commit": "9d51cacde496baa628408e4b474f0f949220a90f",
+  "implementation_state": "amended and pushed for internal review; production acceptance remains incomplete",
   "upstream_commit": "39c65ffe2f140d0c84cee58566cad8900c5b9908",
   "native_runtime_diff": {
     "before": {
@@ -59,7 +59,6 @@
   "advisory_scan": "completed; existing upstream and UI export warnings remain",
   "not_counted": "An interrupted 680-item broad native run is not a complete-suite result. Focused reruns appear above.",
   "limitations": [
-    "No published code commit for this local implementation yet",
     "Deterministic provider stub, no real MaaS quality or performance claim",
     "No ECS RDS deployment capacity backup or image safety certification",
     "Remaining execution-lifecycle and protocol fault protection is intentionally retained"

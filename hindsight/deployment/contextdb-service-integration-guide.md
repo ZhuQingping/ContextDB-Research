@@ -13,7 +13,7 @@
 
 数据库不存在时，外部 PG 部署会失败；Hindsight 不会替管控创建数据库或 RDS。实例启动与工作空间初始化是不同步骤：启动完成后，由管理员在 UI 创建空间，也可调用管理 REST 接口验证。
 
-**版本提醒（2026-10-19）：** 当前远程代码仍为 `75ae4b7`，下文部署命令适用于该版本。本地待发布的收敛实现改用扩展 `hindsight_ext_contextdb.asgi:create_app`，由 `service.sh api/all` 自动选择；尚未推送代码，其他环境不要手工引用此新入口。两版均通过部署脚本选择匹配的传输保护和原生生命周期。
+**版本提醒（2026-10-19）：** 当前代码已 amend 并推送至 `contextdb/v1.0.0`，固定提交为 `9d51cacde496baa628408e4b474f0f949220a90f`。下文部署脚本已自动使用扩展 `hindsight_ext_contextdb.asgi:create_app`，包住原生 REST/MCP 并复用其生命周期。其他环境须使用同版源码、扩展、API、UI和脚本；不要绕过 `service.sh api/all` 直接启动原生 API CLI。
 
 ## 2 PG 需要提供什么
 
@@ -91,7 +91,7 @@ sudo chown 10001:10001 /srv/contextdb/input/database-url /srv/contextdb/input/ma
 sudo chmod 0600 /srv/contextdb/input/database-url /srv/contextdb/input/maas-key /srv/contextdb/input/ui-password
 ```
 
-从 [意图模板](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/deployment/intent.example.json) 复制 `intent.json`，修改实例、租户、秘密文件路径、端口和明确的拓扑选择。首版固定 topology=merged；示例 `ui_api_url=http://127.0.0.1:8888` 是同容器内 UI 服务端访问 API 的地址，不是浏览器地址。
+从 [意图模板](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/deployment/intent.example.json) 复制 `intent.json`，修改实例、租户、秘密文件路径、端口和明确的拓扑选择。首版固定 topology=merged；示例 `ui_api_url=http://127.0.0.1:8888` 是同容器内 UI 服务端访问 API 的地址，不是浏览器地址。
 
 ```bash
 cd /opt/contextdb/source

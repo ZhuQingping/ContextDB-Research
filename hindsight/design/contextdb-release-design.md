@@ -2,13 +2,13 @@
 
 > **状态：内部方案评审中。** 当前实现供专家检视，功能测试通过不代表简洁性、性能或最小侵入设计已定稿。当前待决定事项集中在[本文TODO](#本轮实现收敛与-todo)；[历史复审与验证](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)仅用于追溯，不是检视前置阅读。
 
-> **接入收敛（2026-10-19，本地实现，尚未提交发布）：** HTTP 准入改由扩展自己的 ASGI 启动入口安装，三个原生 HTTP 文件恢复；MCP 当前 Key 由 Tenant 从公开 Request 读取，删除原生身份快照/恢复中间件。原生 Python 运行改动由10个文件缩为7个；任务提交、完整执行及可靠故障结束的保护继续保留。验证及未解决边界见[评审指南](code-review-guide.md#extension-implementation)。
+> **接入收敛（2026-10-19，已推送 `9d51cac` 供评审）：** HTTP 准入改由扩展自己的 ASGI 启动入口安装，三个原生 HTTP 文件恢复；MCP 当前 Key 由 Tenant 从公开 Request 读取，删除原生身份快照/恢复中间件。原生 Python 运行改动由10个文件缩为7个；任务提交、完整执行及可靠故障结束的保护继续保留。验证及未解决边界见[评审指南](code-review-guide.md#extension-implementation)。
 
 更新（2026-10-19，基于原生 v1.0.0 的首发方案）：新空间对外统一使用可读 bank_id，对内保留 UUID；工作空间名称仅允许字母、数字、下划线，最长54字符，统一小写。新 schema 为 ctxdb_ws_<bank_id>；彻底删除后允许同名重建，并隔离旧授权和旧执行者。本轮功能回归与原生v1.0.0部署证据见[验证摘要](../testing/contextdb-validation-summary.md)；目标ECS/RDS、镜像安全与生产性能仍须单独验收。
 
 本文按总体设计、实例管理、UI 管理、应用访问、核心实现和本期边界组织。接口、数据结构、安全依据及异常恢复规则完整保留在本文，便于连续阅读和实现核对。 当前版本与检视入口见[代码检视指南](code-review-guide.md)；历史手册中的配置和接口不作为本版本部署依据。
 
-[管控部署指南](../deployment/contextdb-service-integration-guide.md) · [Agent部署合同](../deployment/contextdb-deployment-contract.md) · [运维手册](../operations/contextdb-operations-runbook.md) · [原生v1.0.0对接](../deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)
+[管控部署指南](../deployment/contextdb-service-integration-guide.md) · [Agent部署合同](../deployment/contextdb-deployment-contract.md) · [运维手册](../operations/contextdb-operations-runbook.md) · [原生v1.0.0对接](../deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)
 
 | 章节 | 主要内容 |
 | --- | --- |
@@ -98,7 +98,7 @@ MCP 扩展复用原生工具，不新增工作空间、用户或 Key 的管理 M
 
 本次统一管理员与业务 Key 认证，落实成员名唯一、删除空间的物理清理、按名称查询详情、自动状态刷新和部署脚本。[优化前完整设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/archive/2026-10-16-before-release-hardening/design-research.md)保留作对照。本轮统一 GET/DELETE、授权输入及原生 REST/MCP 使用可读 bank_id；授权存储与任务仍绑定内部 UUID。首发从当前完整结构的版本1开始；不提供开发期旧结构的自动升级，新空间使用可读标识。历史设计保留在Git历史，不能用历史测试代替本轮验收。
 
-[API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [部署与升级](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml) · [优化前设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/contextdb-first-release-design.md)
+[API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [部署与升级](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml) · [优化前设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/contextdb-first-release-design.md)
 
 <a id="instance"></a>
 

@@ -1,6 +1,6 @@
 # 原生 Hindsight v1.0.0：节点部署合同
 
-供管控与 ECS 节点 Agent 对接。本文只使用上游 `v1.0.0`（`39c65ffe2f140d0c84cee58566cad8900c5b9908`），不加载 ContextDB 自研扩展。具体命令见[操作指南](contextdb-service-integration-guide.md)。辅助脚本在 [deployment/native-v1.0.0](https://github.com/ZhuQingping/hindsight/tree/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/deployment/native-v1.0.0)，脚本由节点 Agent 执行，不修改 Hindsight。
+供管控与 ECS 节点 Agent 对接。本文只使用上游 `v1.0.0`（`39c65ffe2f140d0c84cee58566cad8900c5b9908`），不加载 ContextDB 自研扩展。具体命令见[操作指南](contextdb-service-integration-guide.md)。辅助脚本在 [deployment/native-v1.0.0](https://github.com/ZhuQingping/hindsight/tree/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/deployment/native-v1.0.0)，脚本由节点 Agent 执行，不修改 Hindsight。
 
 ## 一、交付边界
 

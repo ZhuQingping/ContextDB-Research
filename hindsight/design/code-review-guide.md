@@ -8,9 +8,9 @@
 | --- | --- |
 | 原生父提交 | `39c65ffe2f140d0c84cee58566cad8900c5b9908`（v1.0.0） |
 | 本次整理前的代码提交 | [c60d409](https://github.com/ZhuQingping/hindsight/commit/c60d409cfb4f879051a4fe258bbcaff8872df09e)；详细文档已移至资料仓，提交内 docs/README.md 为链接入口 |
-| 当前代码 | [75ae4b7ed806c6c6e54d6306b9420e5fd9535014](https://github.com/ZhuQingping/hindsight/commit/75ae4b7ed806c6c6e54d6306b9420e5fd9535014)；此已发布提交运行代码与 c60d409 相同；本地未提交的收敛实现另见[落实结果](#extension-implementation) |
+| 当前代码 | [9d51cacde496baa628408e4b474f0f949220a90f](https://github.com/ZhuQingping/hindsight/commit/9d51cacde496baa628408e4b474f0f949220a90f)；已 amend 并推送到 `contextdb/v1.0.0`，相对原生仍为一个特性提交；本轮收敛见[落实结果](#extension-implementation) |
 | 当前人工文档 | [本目录总入口](../README.md)、[完整设计](contextdb-release-design.md)；以包含本次目录整理的资料仓提交为快照 |
-| 机器接口合同 | [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)，由代码生成并校验 |
+| 机器接口合同 | [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)，由代码生成并校验 |
 
 `c60d409` 的详细设计、部署指南、API 用例和运维手册由资料仓维护；本轮整理前完整目录见[备份](../archive/2026-10-19-before-reorganization/README.md)。代码仓只保留入口，不再双份同步人工文档。
 
@@ -30,10 +30,10 @@
 
 ```bash
 # 先在本地检出下面固定提交；这些命令只读，不运行部署或测试。
-git show --stat 75ae4b7ed806c6c6e54d6306b9420e5fd9535014
-git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 75ae4b7ed806c6c6e54d6306b9420e5fd9535014 -- hindsight-api-slim/hindsight_api
-git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 75ae4b7ed806c6c6e54d6306b9420e5fd9535014 -- hindsight-extensions/contextdb-service
-git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 75ae4b7ed806c6c6e54d6306b9420e5fd9535014 -- hindsight-control-plane
+git show --stat 9d51cacde496baa628408e4b474f0f949220a90f
+git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f949220a90f -- hindsight-api-slim/hindsight_api
+git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f949220a90f -- hindsight-extensions/contextdb-service
+git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 9d51cacde496baa628408e4b474f0f949220a90f -- hindsight-control-plane
 ```
 
 ## 当前评审边界
@@ -318,7 +318,7 @@ git diff 39c65ffe2f140d0c84cee58566cad8900c5b9908 75ae4b7ed806c6c6e54d6306b9420e
 
 ## 原生扩展机制复评：保留每空间独立 schema
 
-2026-10-19，按用户补充约束重新验证：每个工作空间独立schema；首发只建新库，不提供旧开发实例/旧配置/旧结构的迁移兼容；需要保留当前正式版本将来升级的路径。当前发布代码尚未按本节替换；以下区分“已验证的替代能力”和“尚未完成的生产安全迁移”。
+2026-10-19，按用户补充约束重新验证：每个工作空间独立schema；首发只建新库，不提供旧开发实例/旧配置/旧结构的迁移兼容；需要保留当前正式版本将来升级的路径。本节保留复评时的机制判断；已落地部分见[落实结果](#extension-implementation)，尚未替代的生命周期保护继续保留。
 
 ### 结论
 
@@ -409,9 +409,9 @@ REST原生URL
 
 
 <a id="extension-implementation"></a>
-## 复评后的落实结果（2026-10-19，代码尚未提交、推送）
+## 复评后的落实结果（2026-10-19，已 amend 并推送供评审）
 
-本节是本地代码状态；前面的163项表仍描述固定的 c60d409 历史提交，不改写历史统计。
+本节对应提交 `9d51cacde496baa628408e4b474f0f949220a90f`；前面的163项表仍描述固定的 c60d409 历史提交，不改写历史统计。当前相对原生净差异为147个文件，其中原生 Python 运行文件7个。
 
 | 项目 | 本轮处理 |
 | --- | --- |
@@ -445,4 +445,4 @@ REST原生URL
 
 跳过项未计入通过数。另一次680项原生广选运行已中断，不计为全套原生验收；上表为最终完成的针对性回归。死代码扫描已执行，仍有上游代码和既有 UI 导出的提示，不宣称零告警。
 
-结果摘要见[本轮实现验证 JSON](../testing/evidence/contextdb-extension-implementation-20261019.json)。测试在本机临时 PG / API / Worker 和确定性模型桩上执行；不代表真实 MaaS 质量、RDS/ECS 性能或生产灾备验收。当前源代码仍是本地未提交修改，不能在其他机器直接检出这份代码；发布前须固定代码提交并同步部署版本说明。
+结果摘要见[本轮实现验证 JSON](../testing/evidence/contextdb-extension-implementation-20261019.json)。测试在本机临时 PG / API / Worker 和确定性模型桩上执行；不代表真实 MaaS 质量、RDS/ECS 性能或生产灾备验收。源代码已推送到 `contextdb/v1.0.0`，固定检视提交为 `9d51cacde496baa628408e4b474f0f949220a90f`。其他环境应检出该提交并使用同版扩展、API、UI和部署脚本；分支经过 amend，不应把旧提交的本地分叉误当作新增功能提交。

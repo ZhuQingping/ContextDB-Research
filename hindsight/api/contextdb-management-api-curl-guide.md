@@ -2,7 +2,7 @@
 
 更新：2026-10-19。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
 
-[设计](../design/contextdb-release-design.md) · [部署](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
+[设计](../design/contextdb-release-design.md) · [部署](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
 
 ## 接口速查
 
@@ -818,7 +818,7 @@ SQL
 
 selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一权限在 api_keys.permission，关联表无记录。吊销后主表仍有 revoked_at，不代表 Key 仍有效。成员软删除和 Key 吊销保留记录；空间正常删除后物理移除行与授权，仅留独立操作/审计历史。
 
-完整 API 合同见 [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
+完整 API 合同见 [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/9d51cacde496baa628408e4b474f0f949220a90f/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
 
 ## 9. 本次新增边界验证
 
