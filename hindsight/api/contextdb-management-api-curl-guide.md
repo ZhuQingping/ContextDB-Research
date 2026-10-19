@@ -1,10 +1,25 @@
 # ContextDB 管理 API：curl 验证手册
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-optimized-curl-guide.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
+更新：2026-10-19。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
 
-更新：2026-10-17。适用于本轮服务化分支的新建首发元数据1实例，API路径v1；开发期试验结构不自动升级，请使用新数据库验证。按“初始化→工作空间→成员→Key→清理”覆盖14个管理操作。
+[设计](../design/contextdb-release-design.md) · [部署](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
 
-[设计](contextdb-release-design.md) · [部署](contextdb-service-integration-guide.md) · [OpenAPI](contextdb-control-plane.openapi.yaml)。优化前完整用例已归档，不混用旧服务、旧身份路径和配置摘要认证。
+## 接口速查
+
+管理前缀统一为 `/ext/contextdb/v1`，以下均需管理员 Bearer Key。创建、删除工作空间异步返回 `202`，使用 operation_id 查询；其余管理操作同步。详细参数、请求头、返回值和可执行 curl 按后文章节展开。实例初始化是离线命令，没有创建实例 HTTP 接口。
+
+| 方法 | 路径（省略前缀） | 用途 |
+| --- | --- | --- |
+| GET | `/admin/identity` | 核对管理员与实例身份 |
+| GET / POST | `/workspaces` | 分页列举 / 创建工作空间 |
+| GET / DELETE | `/workspaces/{bank_id}` | 查看 / 删除空间；bank_id 为可读名称 |
+| GET | `/operations/{operation_id}` | 查询空间创建、删除进度 |
+| GET / POST | `/users` | 分页列举 / 创建用户 |
+| PATCH / DELETE | `/users/{user_id}` | 修改 / 删除用户 |
+| GET / POST | `/users/{user_id}/keys` | 列举 / 签发用户的 API Key |
+| PATCH / DELETE | `/users/{user_id}/keys/{key_id}` | 修改授权 / 撤销 Key |
+
+共 14 个管理操作。业务 Retain、Recall、Reflect 继续使用 Hindsight 原生 REST/MCP，见后文业务用例。UI 登录路由属于 UI 服务，不是新增管理 REST 合同。
 
 ## 1. 准备
 
@@ -18,7 +33,8 @@ export API='http://127.0.0.1:8888'
 # 已完成部署的同版源码和Python环境，原生SDK/MCP示例使用。
 : "${CODE:?先按部署手册设置同版CODE路径}"
 export PY="$CODE/.venv/bin/python"
-export RUN="$HOME/.contextdb/release"
+# 已部署实例的宿主机私密目录；按实际部署位置修改。
+export RUN="${CONTEXTDB_DEPLOY_DIR:-/srv/contextdb/runtime}"
 export ADMIN_KEY=$(jq -er '.secret' "$RUN/admin-key.json")
 export CASE_DIR=$(mktemp -d /tmp/contextdb-api-demo.XXXXXX)
 export DEMO_NAME="api_demo_$(date +%Y%m%d%H%M%S)_$$"
@@ -37,13 +53,14 @@ Admin Key 用于管理和所有空间的原生 REST/MCP；UI 密码独立。业�
 
 当前实例已经完成初始化，不要为执行本手册重新生成它的 Key 或 pepper。
 
-新实例先配置私密目录、PG/模型/扩展，执行同版脚本 init，再启动 api/ui：
+新实例先配置私密目录、PG/模型/扩展，执行同版脚本 init，再使用单容器部署。源码前台调试可使用合并入口：
 
 ```bash
 export CONTEXTDB_DEPLOY_DIR="$RUN"
 export SERVICE="$CODE/hindsight-extensions/contextdb-service/scripts/service.sh"
 "$SERVICE" init
-# 在各自监督器/终端前台执行："$SERVICE" api / "$SERVICE" ui
+"$SERVICE" all
+# 前台持续运行；后续 curl 在另一个已设置同样变量的终端执行。
 ```
 
 init 离线保存秘密并导入 PG 的管理员 HMAC，不依赖运行中的 API；已有实例不要重新生成 pepper。重复初始化保留原秘密。所有详细命令见部署手册。
@@ -801,12 +818,12 @@ SQL
 
 selected 的 api_keys.permission 为 NULL，权限在关联表；all 的统一权限在 api_keys.permission，关联表无记录。吊销后主表仍有 revoked_at，不代表 Key 仍有效。成员软删除和 Key 吊销保留记录；空间正常删除后物理移除行与授权，仅留独立操作/审计历史。
 
-完整 API 合同见 [OpenAPI](contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
+完整 API 合同见 [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)。旧体验目录的 management-api-cases.sh 使用旧请求体，不用于验证本优化版；本手册的 curl 用例替代该旧入口。
 
 ## 9. 本次新增边界验证
 
 - 新建同名、大小写等价/全角等价成员：409；停用仍占名，删除后可同名新建，新 user_id 不继承旧 Key。
-- GET/DELETE、授权选择和原生REST/MCP使用同一可读bank_id；新建非法标识返回400。旧结构升级保留原地址。
+- GET/DELETE、授权选择和原生REST/MCP使用同一可读bank_id；新建非法标识返回400。首发不自动接管开发期旧结构，验证使用新建专用数据库。
 - selected 授权读包含 bank_id、workspace_id 和只读 workspace_name；写入传 bank_id/permission，并可携带预期 workspace_id 防止旧选择误授权同名新对象，不能原样回传只读名称。
 - 删除选定空间会移除对应授权、Key version加1；旧 If-Match 编辑412，刷新后只改名成功，余下权限不变。
 - 授权清成空 selected 仍可列出/编辑，但拒绝所有空间；同名新建不继承旧授权。

@@ -1,7 +1,5 @@
 # PostgreSQL 插件安装与运行配置
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/postgresql-extensions.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 **首版华为云 RDS 使用 `vector + pg_trgm + btree_gin`，全文后端固定 `native + english`；不安装 PGroonga/Groonga。** `pg_stat_statements` 是可选监控插件。`btree_gin` 不是全文分词器；中文内容仍可写入并通过 MaaS 向量召回，中文分词关键词全文尚未适配。不要自动用 pg_search/zhparser 替换，后续方案见[设计 TODO](contextdb-release-design.md#本轮实现收敛与-todo)。
 
 RDS 上通过平台支持的插件管理方式在目标数据库启用基础扩展，先查询 `SELECT name FROM pg_available_extensions;`；不能在 ECS 编译插件后替外部 RDS 安装。官方说明：[RDS 插件列表](https://support.huaweicloud.com/intl/zh-cn/usermanual-rds-pg/rds_09_0045.html)。本文件后面的本机源码安装命令用于自建 PG，历史 PGroonga 命令移到附录，不属于首版交付步骤。

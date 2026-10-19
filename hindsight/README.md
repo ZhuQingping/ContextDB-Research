@@ -1,34 +1,37 @@
-# Hindsight 服务化文档
+# Hindsight / ContextDB 文档
 
-当前代码基于原生 Hindsight v1.0.0，全部特性集中在一个提交中。首版一个容器运行 API/内置 Worker 和 UI；RDS 全文使用 native + english，不要求 PGroonga/Groonga；数据库 SSL 可选，默认示例不指定 sslmode。
+当前实现基于 **Hindsight v1.0.0**，代码分支 `contextdb/v1.0.0`。本目录只将一套当前文档放在主目录中；旧方案、重复手册和过程记录放入 [archive](archive/README.md)。完整设计与实现细节保留，未按篇幅删减。
 
-| 阅读目的 | 文档 | 适用范围 |
-| --- | --- | --- |
-| 确认管控输入、PG、模型、端口与凭据 | [原生部署合同](native-v1.0.0/contextdb-deployment-contract.md) | 官方 Hindsight v1.0.0，不含自研权限和元数据 |
-| 按命令完成部署与联调 | [原生联调操作指南](native-v1.0.0/contextdb-service-integration-guide.md) | 首版单容器；脚本及模板链接固定到代码提交 |
-| 评审总体架构、接口、PG 表和安全边界 | [特性设计](design/contextdb-release-design.md) | ContextDB 自研扩展版 |
-| 查看剩余优化项 | [设计文档 TODO](design/contextdb-release-design.md#本轮实现收敛与-todo) | 后续设计讨论统一在此维护 |
-| 核对已实施改动与测试依据 | [优化实施状态](design/contextdb-optimization-status.md) | 历史证据按文内快照区分 |
-| 按范围检视代码 | [版本与代码对比](design/version-comparison.md#专家检视顺序) | 原生接入、外围扩展、UI、部署、测试分开查看 |
-| 部署自研扩展版 | [部署合同](design/contextdb-deployment-contract.md) / [联调指南](design/contextdb-service-integration-guide.md) | 不能与原生认证和初始化混用 |
-| 了解资源开销和采样 | [CPU、内存与磁盘说明](design/contextdb-resource-sizing.md) | 示例限制与实测分开，生产规格待压测 |
-| 定位故障与验证接口 | [运维手册](design/contextdb-operations-runbook.md) / [curl 用例](design/contextdb-optimized-curl-guide.md) | 原生排障跳过自研专属元数据命令 |
+## 从这里开始
 
-## 版本来源与代码评审
+| 你要做什么 | 先看哪份 |
+| --- | --- |
+| 理解方案、评审架构 | [完整设计](design/contextdb-release-design.md) |
+| 检视相对原生 Hindsight 的代码改动 | [代码检视指南](design/code-review-guide.md) |
+| 查看管理 API、参数、返回值并执行测试 | [API 与 curl 手册](api/contextdb-management-api-curl-guide.md) |
+| 部署自研 ContextDB | [联调操作指南](deployment/contextdb-service-integration-guide.md)；配置字段查 [部署合同](deployment/contextdb-deployment-contract.md) |
+| 先对接官方原生 Hindsight | [原生联调操作指南](deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [原生部署合同](deployment/native-v1.0.0/contextdb-deployment-contract.md) |
+| 运行问题定位、恢复 | [运维手册](operations/contextdb-operations-runbook.md) |
+| 了解验证结果及尚未覆盖的环境 | [验证摘要](testing/contextdb-validation-summary.md) |
 
-- 代码仓：[ZhuQingping/hindsight](https://github.com/ZhuQingping/hindsight)
-- 分支：`contextdb/v1.0.0`
-- 同步提交：[`00770662e`](https://github.com/ZhuQingping/hindsight/commit/00770662e52a5368432d65563eb07517a7329060)，已推送；一个完整特性提交。
-- 原生基线：`v1.0.0` / `39c65ffe2f140d0c84cee58566cad8900c5b9908`，也是特性提交的直接父提交。
-- [完整代码差异](https://github.com/ZhuQingping/hindsight/compare/39c65ffe2f140d0c84cee58566cad8900c5b9908...00770662e52a5368432d65563eb07517a7329060)；[代码仓特性入口](https://github.com/ZhuQingping/hindsight/tree/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service)。
-- 同步时间：`2026-10-19T11:13:38+08:00`；[同步清单](design/sync-manifest.json)记录每个源文件与副本的 SHA-256。
+评审先看设计与代码检视两份即可。部署合同解释“管控传什么”，联调指南解释“节点逐步怎么执行”，两者分工不同。
+
+## 目录与配套资料
+
+| 目录 | 内容 |
+| --- | --- |
+| `design/` | 当前完整设计、代码检视；后续决策与 TODO 统一更新设计正文 |
+| `api/` | 14 个管理操作、原生业务接口与权限验证用例 |
+| `deployment/` | 自研部署；`native-v1.0.0/` 单独放官方原生部署，不能混用初始化及认证 |
+| `operations/` | 日志、健康检查、PG 与后台任务诊断、恢复边界 |
+| `testing/` | 验证范围、结果及生产环境待验项 |
+| `diagrams/` | 正文使用的两张 SVG；`source/` 是可编辑 drawio 原稿 |
+| `archive/` | 历史版本与本次整理前备份，不作为部署依据 |
+
+PG 插件见 [插件说明](deployment/postgresql-extensions.md)，CPU/内存/磁盘见 [资源说明](deployment/contextdb-resource-sizing.md)。首版为单容器 API/内置 Worker/UI；RDS 基础扩展为 vector、pg_trgm、btree_gin，采用 native 英文全文，中文分词全文仍为 TODO，PG SSL 可选。
 
 ## 维护规则
 
-代码仓为准，资料仓保存同步阅读副本。设计和 TODO 先在代码仓特性设计文档更新，再同步这里；副本不独立维护另一套方案。优化实施状态解释已经完成的工作及验证依据，不另建重复待办。
+资料仓是人工文档的维护位置；[代码仓文档入口](https://github.com/ZhuQingping/hindsight/tree/contextdb/v1.0.0/hindsight-extensions/contextdb-service/docs)只提供链接。脚本、模板、测试和机器可读 OpenAPI 留在代码仓，版本对应及固定链接见[代码检视指南](design/code-review-guide.md)。
 
-同步 `docs/native-v1.0.0/` 到本目录 `native-v1.0.0/`，其余当前 `docs/` 材料到 `design/`，保留图示、drawio原稿及引用证据。副本仅增加来源标注和调整链接，不删改设计正文；每次记录源提交、日期及摘要。
-
-部署脚本与配置模板保留在代码仓。副本中的源文档、脚本、模板链接均固定到上述提交，不依赖作者本机路径。在其他环境检出同一代码提交，再按指南设置 HELPERS/REPO 等实际路径；不要用过期材料或直接使用未经核对的 latest。
-
-本目录其他草稿保留作历史对照，当前部署和评审从本页进入。原生模式使用原生共享 Key/Bank，不含自研多用户及逐空间授权。自研设计仍处于内部评审，未开放能力及目标ECS/RDS验收以设计边界和 TODO 为准。
+接口、配置或安全边界变化时，更新对应的当前文档与设计 TODO；不要在目录外新建另一份“最新版”。验证记录要注明代码与环境，不能用历史试验结果替代当前验收。查早期 V1/V2 讨论时从归档入口进入。

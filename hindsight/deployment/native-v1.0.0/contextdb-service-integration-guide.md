@@ -1,7 +1,5 @@
 # 原生 Hindsight v1.0.0：管控联调操作指南
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/native-v1.0.0/contextdb-service-integration-guide.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 本指南与[部署合同](contextdb-deployment-contract.md)配套。目标是先打通“管控 → 节点 Agent → 原生 API/Worker/UI → RDS PG/MaaS”。没有 ContextDB 管理接口和用户管理。所有示例面向一个新建专用库，不接管客户已有业务库。
 
 ## 1. 准备官方原生镜像
@@ -49,7 +47,7 @@ unset CONTEXTDB_NEW_DB_PASSWORD
 
 首版 RDS 配置只启用上述三个基础扩展，全文后端固定 `native`，使用 PG 内置 `english` 配置；**不安装 PGroonga/Groonga，也不要求 pg_search 或 zhparser**。这是明确的首版能力取舍，不是部署失败后的静默降级。
 
-英文全文可按原生路径验证；中文内容仍可写入并通过 MaaS bge-m3 向量召回，但中文分词/关键词全文不作已完成能力承诺。不能把中文 recall 返回非空当作中文全文验收通过。后续中文全文适配见[设计 TODO](../design/contextdb-release-design.md#本轮实现收敛与-todo)，基础插件及选型边界见[PG 插件说明](../design/postgresql-extensions.md)。
+英文全文可按原生路径验证；中文内容仍可写入并通过 MaaS bge-m3 向量召回，但中文分词/关键词全文不作已完成能力承诺。不能把中文 recall 返回非空当作中文全文验收通过。后续中文全文适配见[设计 TODO](../../design/contextdb-release-design.md#本轮实现收敛与-todo)，基础插件及选型边界见[PG 插件说明](../postgresql-extensions.md)。
 
 ## 3. 写入私密输入并渲染
 
@@ -97,7 +95,7 @@ python3 "$HELPERS/render.py" /srv/hindsight/intent.json "$RUN"
 
 容器内有两个应用主进程，另有 init/启动监督脚本和临时健康检查进程。Worker 是 Python 进程内的后台任务执行器，不额外启动 `hindsight-worker`。PG、模型服务和节点 Agent 均不放入本容器。原生镜像已有 `/app/start-all.sh`，直接复用它启动、等待 API 就绪、转发停止信号并清理进程，不修改 Hindsight 原生源码。
 
-这样选择是为了减少首版部署对象、配置和故障排查分支；代价是 API、Worker、UI 共享资源上限和容器生命周期，不能独立限额或重启。只有明确出现后台任务挤占查询资源、需要独立扩容等场景后，才扩展分容器交付；分离并不自动改善模型耗时或实现高可用。CPU、内存和磁盘预算见[资源说明](../design/contextdb-resource-sizing.md)。
+这样选择是为了减少首版部署对象、配置和故障排查分支；代价是 API、Worker、UI 共享资源上限和容器生命周期，不能独立限额或重启。只有明确出现后台任务挤占查询资源、需要独立扩容等场景后，才扩展分容器交付；分离并不自动改善模型耗时或实现高可用。CPU、内存和磁盘预算见[资源说明](../contextdb-resource-sizing.md)。
 
 ```bash
 export NATIVE_RUNTIME="$RUN"
@@ -213,7 +211,7 @@ unset API_KEY
 
 不要由通用清理脚本 DROP 客户数据库。原生删除 Bank 不等于删除整个实例。实例释放由管控/Agent 处理容器、配置、备份和 RDS 生命周期。
 
-故障定位先看 Agent 的启动退出码、API/Worker JSON 日志、UI 日志、PG 连接和 MaaS HTTP 状态。重点区分：ready 失败（DB/迁移/模型初始化）、401（共享 Key 不匹配）、异步一直 pending（Worker 未启动/未发现同库）、模型 400（模型名/端点/字段错误）、连接耗尽（主读池按进程累加）。不要把秘密配置或完整错误响应发到工单。详细方法见[运维手册](../design/contextdb-operations-runbook.md)，其中 ContextDB 专属元数据与恢复命令不适用于本原生模式。
+故障定位先看 Agent 的启动退出码、API/Worker JSON 日志、UI 日志、PG 连接和 MaaS HTTP 状态。重点区分：ready 失败（DB/迁移/模型初始化）、401（共享 Key 不匹配）、异步一直 pending（Worker 未启动/未发现同库）、模型 400（模型名/端点/字段错误）、连接耗尽（主读池按进程累加）。不要把秘密配置或完整错误响应发到工单。详细方法见[运维手册](../../operations/contextdb-operations-runbook.md)，其中 ContextDB 专属元数据与恢复命令不适用于本原生模式。
 
 ## 8. 本机验证与环境差异
 

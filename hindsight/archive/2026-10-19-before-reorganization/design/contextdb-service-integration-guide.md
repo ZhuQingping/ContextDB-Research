@@ -1,7 +1,5 @@
 # ContextDB 独享版：管控与节点部署指南
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-service-integration-guide.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 本指南用于管控、ECS 节点 Agent 与 Hindsight 开发人员联调。字段规范及自动化入口见 [部署合同](contextdb-deployment-contract.md)。必须使用同一次构建的 ContextDB API、扩展和 UI；上游通用镜像不包含本仓新增功能。
 
 ## 1 谁负责什么

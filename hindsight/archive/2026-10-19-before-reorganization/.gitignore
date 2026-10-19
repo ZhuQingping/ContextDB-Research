@@ -1,0 +1,14 @@
+# 本机未提交的草稿、图片和自动备份仅本地保留，不自动发布。
+/.$my_arch.drawio.bkp
+/competitive-differentiation/evidence/source-hindsight-pr2262-analysis.md
+/diagrams/.$contextdb-first-release-architecture.drawio.bkp
+/evidence/pgroonga-review-2026-10-16/lgpl-cloud-source-checks.json
+/evidence/pgroonga-review-2026-10-16/query-expansion-probe.json
+/evidence/pgroonga-review-2026-10-16/runtime-linkage.json
+/evidence/pgroonga-review-2026-10-16/source-checks.json
+/evidence/pgroonga-review-2026-10-16/sql-probe.json
+/implementation/contextdb-v1-local-validation-guide.md
+/my_arch-console.png
+/pgroonga-introduction-review.md
+/scripts/tests/__pycache__/test_contextdb_v2_control.cpython-314.pyc
+/遗留任务.md

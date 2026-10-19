@@ -1,7 +1,5 @@
 # ContextDB 版本与代码对比
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/version-comparison.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 当前交付分支为 `contextdb/v1.0.0`，直接基于上游 Hindsight v1.0.0，功能集中为一个提交。管理 API 和元数据均从版本1开始；早期开发分支里的“V1/V2”不代表已发布的升级合同。
 
 | 快照 | 提交 | 用途 |

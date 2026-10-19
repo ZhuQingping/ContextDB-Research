@@ -1,14 +1,12 @@
 # ContextDB 首发设计：工作空间、用户与 API Key
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-release-design.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
+> **状态：内部方案评审中。** 当前实现供专家检视，功能测试通过不代表简洁性、性能或最小侵入设计已定稿。当前待决定事项集中在[本文TODO](#本轮实现收敛与-todo)；[历史复审与验证](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)仅用于追溯，不是检视前置阅读。
 
-> **状态：内部方案评审中。** 当前实现供专家检视，功能测试通过不代表简洁性、性能或最小侵入设计已定稿。本轮已识别的优化点及待决定事项见[复审清单](contextdb-optimization-status.md#simplicity-review)；本轮已实施的改动与剩余TODO分别列明。
+更新（2026-10-19，基于原生 v1.0.0 的首发方案）：新空间对外统一使用可读 bank_id，对内保留 UUID；工作空间名称仅允许字母、数字、下划线，最长54字符，统一小写。新 schema 为 ctxdb_ws_<bank_id>；彻底删除后允许同名重建，并隔离旧授权和旧执行者。本轮功能回归与原生v1.0.0部署证据见[验证摘要](../testing/contextdb-validation-summary.md)；目标ECS/RDS、镜像安全与生产性能仍须单独验收。
 
-更新（2026-10-18首发基线）：新空间对外统一使用可读 bank_id，对内保留 UUID；工作空间名称仅允许字母、数字、下划线，最长54字符，统一小写。新 schema 为 ctxdb_ws_<bank_id>；彻底删除后允许同名重建，并隔离旧授权和旧执行者。本轮功能回归与原生v1.0.0部署证据见优化状态；目标ECS/RDS、镜像安全与生产性能仍须单独验收。
+本文按总体设计、实例管理、UI 管理、应用访问、核心实现和本期边界组织。接口、数据结构、安全依据及异常恢复规则完整保留在本文，便于连续阅读和实现核对。 当前版本与检视入口见[代码检视指南](code-review-guide.md)；历史手册中的配置和接口不作为本版本部署依据。
 
-本文按总体设计、实例管理、UI 管理、应用访问、核心实现和本期边界组织。接口、数据结构、安全依据及异常恢复规则完整保留在本文，便于连续阅读和实现核对。 当前文档与代码的统一核对结果见[优化清单第0.6节](contextdb-optimization-status.md#document-consistency)；历史手册中的配置和接口不作为本版本部署依据。
-
-[管控部署指南](contextdb-service-integration-guide.md) · [Agent部署合同](contextdb-deployment-contract.md) · [运维手册](contextdb-operations-runbook.md) · [原生v1.0.0对接](../native-v1.0.0/contextdb-service-integration-guide.md) · [API curl 验证手册](contextdb-optimized-curl-guide.md) · [OpenAPI](contextdb-control-plane.openapi.yaml)
+[管控部署指南](../deployment/contextdb-service-integration-guide.md) · [Agent部署合同](../deployment/contextdb-deployment-contract.md) · [运维手册](../operations/contextdb-operations-runbook.md) · [原生v1.0.0对接](../deployment/native-v1.0.0/contextdb-service-integration-guide.md) · [API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml)
 
 | 章节 | 主要内容 |
 | --- | --- |
@@ -23,15 +21,15 @@
 
 ## 1. 总体设计
 
-以下架构图和对象关系图沿用当前版本。
+以下为逻辑架构与对象关系；API、Worker、UI 的框不代表独立容器。首版部署形态见第2.5节：单容器、API 内置 Worker、独立 UI 进程。
 
 ### 1.1 三个入口
 
 一个独享实例使用一个 PG 数据库。用户与工作空间同属实例；用户可以持有多个 API Key，每个 Key 独立配置空间范围和权限。工作空间与 Hindsight Bank 一对一，每空间使用独立 schema。
 
-![ContextDB 总体架构：Console、Agent、Hindsight UI 三个入口](diagrams/contextdb-first-release-architecture.svg)
+![ContextDB 总体架构：Console、Agent、Hindsight UI 三个入口](../diagrams/contextdb-first-release-architecture.svg)
 
-[可编辑 drawio 源文件](diagrams/contextdb-first-release-architecture.drawio) · [PNG 预览](diagrams/contextdb-first-release-architecture.png)
+[可编辑 drawio 源文件](../diagrams/source/contextdb-first-release-architecture.drawio)
 
 实线表示请求或数据访问，虚线表示部署运维。节点管理 Agent 负责配置、启停、升级及离线初始化；业务 Agent 和 Hindsight UI 的请求直接由 Hindsight API 处理。
 
@@ -47,9 +45,9 @@
 
 ### 1.2 工作空间、用户与 Key
 
-![工作空间、用户与 API Key 的关系](diagrams/contextdb-first-release-workspace-model.svg)
+![工作空间、用户与 API Key 的关系](../diagrams/contextdb-first-release-workspace-model.svg)
 
-[可编辑 drawio 源文件](diagrams/contextdb-first-release-workspace-model.drawio) · [PNG 预览](diagrams/contextdb-first-release-workspace-model.png)
+[可编辑 drawio 源文件](../diagrams/source/contextdb-first-release-workspace-model.drawio)
 
 用户与工作空间同属实例，彼此没有从属关系。用户 A 可以持有多个 Key；Key A2 可同时访问研发和客服空间，并分别设置只读、读写。不同用户的 Key 可以访问同一个空间，空间内的内容共享。
 
@@ -94,11 +92,11 @@ MCP 扩展复用原生工具，不新增工作空间、用户或 Key 的管理 M
 
 ### 1.4 实现版本与变更说明
 
-更新：2026-10-18。当前交付分支为`contextdb/v1.0.0`，直接基于原生v1.0.0（39c65ffe2f140d0c84cee58566cad8900c5b9908）；优化对照提交为be6f12c4；不覆盖已停止的旧体验实例。本文描述该分支的目标实现；公开管理 API 仍为 `/ext/contextdb/v1`，首发管理元数据结构为 **1**。结构序号、API v1、资源 version 是三个概念。
+更新：2026-10-19。当前交付分支为 `contextdb/v1.0.0`，直接基于原生 v1.0.0（39c65ffe2f140d0c84cee58566cad8900c5b9908）；代码与资料版本见[代码检视指南](code-review-guide.md)。本文描述该分支的当前实现；公开管理 API 仍为 `/ext/contextdb/v1`，首发管理元数据结构为 **1**。结构序号、API v1、资源 version 是三个概念。
 
 本次统一管理员与业务 Key 认证，落实成员名唯一、删除空间的物理清理、按名称查询详情、自动状态刷新和部署脚本。[优化前完整设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/archive/2026-10-16-before-release-hardening/design-research.md)保留作对照。本轮统一 GET/DELETE、授权输入及原生 REST/MCP 使用可读 bank_id；授权存储与任务仍绑定内部 UUID。首发从当前完整结构的版本1开始；不提供开发期旧结构的自动升级，新空间使用可读标识。历史设计保留在Git历史，不能用历史测试代替本轮验收。
 
-[API curl 验证手册](contextdb-optimized-curl-guide.md) · [部署与升级](contextdb-service-integration-guide.md) · [OpenAPI](contextdb-control-plane.openapi.yaml) · [优化前设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/contextdb-first-release-design.md)
+[API curl 验证手册](../api/contextdb-management-api-curl-guide.md) · [部署与升级](../deployment/contextdb-service-integration-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml) · [优化前设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/contextdb-first-release-design.md)
 
 <a id="instance"></a>
 
@@ -110,7 +108,7 @@ MCP 扩展复用原生工具，不新增工作空间、用户或 Key 的管理 M
 
 数据库连接不强制 SSL：部署示例不附加 sslmode，PGADMIN_URL 与 HINDSIGHT_API_DATABASE_URL 均按调用方提供的 URL 连接。未开启 SSL 的 PG 可接入；需要证书校验时部署方再显式配置 sslmode 和 CA，不由服务自动升级或降级策略。MaaS HTTPS 和 UI/API 对外入口的 TLS 配置独立。
 
-管控具体输入、PG权限和命令以[人工部署指南](contextdb-service-integration-guide.md)为入口；自动化严格按[Agent配置合同](contextdb-deployment-contract.md)及 JSON Schema 校验。PG数据库必须先存在；管控接收用户UI密码并提供秘密文件。节点渲染配置后初始化管理表和原生public共享表，再启动API/Worker、检查ready及实例身份，最后启动UI。模型、插件和端口不依赖人工临时export。
+管控具体输入、PG权限和命令以[人工部署指南](../deployment/contextdb-service-integration-guide.md)为入口；自动化严格按[Agent配置合同](../deployment/contextdb-deployment-contract.md)及 JSON Schema 校验。PG数据库必须先存在；管控接收用户UI密码并提供秘密文件。节点渲染配置后初始化管理表和原生public共享表，再启动API/Worker、检查ready及实例身份，最后启动UI。模型、插件和端口不依赖人工临时export。
 
 管控调用已有节点管理 Agent 完成部署。本期不新增“创建实例”的 Hindsight HTTP 接口，工作空间目录也不在 Console 维护。
 
@@ -122,7 +120,7 @@ MCP 扩展复用原生工具，不新增工作空间、用户或 Key 的管理 M
 | 4. 启动服务 | 启动 API、Worker，检查 readiness，再启动 UI | 管理与业务接口可用 |
 | 5. 交付 | 提供 UI 地址和密码；管理员进入 UI 创建空间、用户与业务 Key | 应用可以接入 |
 
-具体命令见[原生v1.0.0对接](../native-v1.0.0/contextdb-service-integration-guide.md)。已有 `service.sh` 用于部署和启动，由节点 Agent、systemd 或容器监督器管理前台进程。
+自研实例的具体命令见[管控部署指南](../deployment/contextdb-service-integration-guide.md)。原生联调指南不包含 ContextDB 初始化与管理接口，不能混用。已有 `service.sh` 用于部署和启动，由节点 Agent、systemd 或容器监督器管理前台进程。
 
 ### 2.2 三种凭据及保存位置
 
@@ -228,13 +226,13 @@ Console → 管控 → 节点 Agent → 一个 Hindsight 容器
 
 API 与 Worker 仍通过 PG 原生任务系统协作；同步 Recall、Reflect 在 API 执行。ContextDB 工作空间创建/删除由 API 的扩展生命周期执行器处理，不另起任务服务。单容器不会改变授权、在途保护或物理删除规则。
 
-[组件资源与磁盘预算](contextdb-resource-sizing.md)给出 CPU/内存开销、磁盘分类、初始规格、采样方法和验收边界。Compose示例上限为2 vCPU/4 GiB，可按节点调整，不是官方推荐规格；ECS与容器的生产规格均待目标负载压测，不固定要求4 vCPU/8 GiB节点或扣留一半资源。后续明确出现后台挤占、需独立扩容或恢复的场景后，再评审 API/Worker/UI 分容器；历史分离模式测试保留为机制证据，不作为本期交付选项。
+[组件资源与磁盘预算](../deployment/contextdb-resource-sizing.md)给出 CPU/内存开销、磁盘分类、初始规格、采样方法和验收边界。Compose示例上限为2 vCPU/4 GiB，可按节点调整，不是官方推荐规格；ECS与容器的生产规格均待目标负载压测，不固定要求4 vCPU/8 GiB节点或扣留一半资源。后续明确出现后台挤占、需独立扩容或恢复的场景后，再评审 API/Worker/UI 分容器；历史分离模式测试保留为机制证据，不作为本期交付选项。
 
 ### 首版后台写入边界
 
 旧空间任务被标记 cancelled 不表示实际执行者已退出；原生 Worker 的可选 async_execution_scope 将持久准入持有到实际执行及最终状态写入完成。未知失败保留屏障，不按 TTL 清除。新空间不能继承旧 UUID、准入或 selected 授权。
 
-原生 LLM Trace 和原生业务 Audit 使用独立后台 INSERT，原生 Webhook 队列缺少不可复用的空间身份，本期不扩大内核改造来接入它们：`HINDSIGHT_API_LLM_TRACE_ENABLED=false` 必填（原生缺省true，所以缺省也拒绝），`HINDSIGHT_API_AUDIT_LOG_ENABLED=false`；不支持非空 `HINDSIGHT_API_WEBHOOK_URL`。Admin/内部默认模板不能开启 audit_log_enabled，旧 Bank 开启原生审计或 enabled Webhook 时先停用，启动/迁移会拒绝。`ctxdb_meta.audit_events` 管理事务审计继续保留。UI原生调用正文/原生审计不产生新记录，运维使用JSON日志、任务、PG统计和按需OTEL，详见[运维手册](contextdb-operations-runbook.md)。
+原生 LLM Trace 和原生业务 Audit 使用独立后台 INSERT，原生 Webhook 队列缺少不可复用的空间身份，本期不扩大内核改造来接入它们：`HINDSIGHT_API_LLM_TRACE_ENABLED=false` 必填（原生缺省true，所以缺省也拒绝），`HINDSIGHT_API_AUDIT_LOG_ENABLED=false`；不支持非空 `HINDSIGHT_API_WEBHOOK_URL`。Admin/内部默认模板不能开启 audit_log_enabled，旧 Bank 开启原生审计或 enabled Webhook 时先停用，启动/迁移会拒绝。`ctxdb_meta.audit_events` 管理事务审计继续保留。UI原生调用正文/原生审计不产生新记录，运维使用JSON日志、任务、PG统计和按需OTEL，详见[运维手册](../operations/contextdb-operations-runbook.md)。
 
 <a id="fulltext-selection"></a>
 
@@ -283,7 +281,7 @@ PGroonga 是 PG 扩展，依赖的 Groonga 是搜索引擎库，不是必须另�
 3. **可新增插件的 PG 平台：** 并行评估 PGroonga；通过 LGPL 依赖核查、RDS 接入及恢复测试后，才决定是否作为固定中英文方案。pg_search 在可接受授权成立后参与同条件比较。
 4. 当前首版固定 native 英文全文；中文分词关键词全文待适配，不声称已发布中英文全文组合。不向客户暴露复杂选型开关。保留原生后端配置能力供运维使用；更换全文后端必须执行受控索引重建/迁移，不能视为无状态参数切换。
 
-对照使用相同 PG 版本、数据、embedding、reranker 和查询集，分别记录“只测关键词”和“完整混合召回”的结果：中文术语/新词、中英混写、英文词形、标识符/错误码、短查询、误匹配和空间隔离；统计 Recall@K、排序质量、p95、索引体积及写入成本。另验证备份恢复、异常退出后索引一致性和目标 PG 主备机制。本轮已执行独立PG18.4的12条材料/7查询 SQL 对照及 pg_dump/restore一致性检查，也验证真实MaaS中英完整调用链；这些小样本不替代生产并发、中文质量基准或云 RDS 实测。结果和局限见[补充验证记录](contextdb-service-research-validation.md)。
+对照使用相同 PG 版本、数据、embedding、reranker 和查询集，分别记录“只测关键词”和“完整混合召回”的结果：中文术语/新词、中英混写、英文词形、标识符/错误码、短查询、误匹配和空间隔离；统计 Recall@K、排序质量、p95、索引体积及写入成本。另验证备份恢复、异常退出后索引一致性和目标 PG 主备机制。本轮已执行独立PG18.4的12条材料/7查询 SQL 对照及 pg_dump/restore一致性检查，也验证真实MaaS中英完整调用链；这些小样本不替代生产并发、中文质量基准或云 RDS 实测。结果和局限见[补充验证记录](../archive/2026-10-19-before-reorganization/design/contextdb-service-research-validation.md)。
 
 <a id="ui"></a>
 
@@ -405,7 +403,7 @@ Admin Key 与业务 Key 使用相同的 Bearer 携带方式、相同的认证入
 
 ### 4.3 可读寻址与对象身份条件
 
-GET、DELETE 使用 `/workspaces/{bank_id}`，Key选择也使用 bank_id。新建名称同时就是规范化 bank_id；不接受中文、空格或连字符，不额外提供显示名、别名或改名接口。旧结构升级保留历史UUID bank_id及原schema，不自动改动原生数据。
+GET、DELETE 使用 `/workspaces/{bank_id}`，Key选择也使用 bank_id。新建名称同时就是规范化 bank_id；不接受中文、空格或连字符，不额外提供显示名、别名或改名接口。首发使用新建专用库；不自动接管开发期 UUID bank_id/schema 结构。既有试验数据若需迁移，须另行设计、验证迁移流程。
 
 空间列表和详情返回 bank_id、workspace_id、version、etag；详情同时发送ETag头。DELETE 必须发送原对象的 If-Match 与本次 Idempotency-Key：缺条件428，代次/版本不匹配412。条件缺失或旧对象消失不能改为删除当前同名对象；幂等重试仍绑定原操作和UUID。
 
@@ -732,7 +730,7 @@ Key 的 revoked_at 留在后台，普通响应不再带 status/revoked_at；用�
 
 ## 本轮实现收敛与 TODO
 
-认证、SQL批量授权、连接预算、索引、真实身份及原生改动缩减的逐项结果见[优化状态](contextdb-optimization-status.md#simplicity-review)。原生v1.0.0的独立接入材料见[原生部署合同](../native-v1.0.0/contextdb-deployment-contract.md)及[操作指南](../native-v1.0.0/contextdb-service-integration-guide.md)；该模式没有ContextDB权限或元数据，不承诺原库直接切换。
+认证、SQL批量授权、连接预算、索引、真实身份及原生改动缩减的逐项结果见[优化状态](../archive/2026-10-19-before-reorganization/design/contextdb-optimization-status.md#simplicity-review)。原生v1.0.0的独立接入材料见[原生部署合同](../deployment/native-v1.0.0/contextdb-deployment-contract.md)及[操作指南](../deployment/native-v1.0.0/contextdb-service-integration-guide.md)；该模式没有ContextDB权限或元数据，不承诺原库直接切换。
 
 - **TODO：认证与目录性能**：少数原生管理员专属入口仍会额外核对role；后续可复用角色快照，但不能将目标空间授权误当完整授权目录。跨schema Bank列表仍按全部可见空间取得原生排序/搜索信息后分页。需要在存储适配层批量查询或维护可靠写入水位，不能牺牲q、全局最近写入排序或total来减少查询。
 - **TODO：契约规则复用**，将条件Header、OpenAPI和UI代理的重复规则继续统一，保留先鉴权、错误脱敏和固定目标转发。

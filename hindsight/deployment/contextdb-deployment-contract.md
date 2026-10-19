@@ -1,7 +1,5 @@
 # ContextDB 节点 Agent 部署合同
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-deployment-contract.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 本合同是节点自动化的文件与命令接口，不新增网络管理服务。人读顺序见 [集成指南](contextdb-service-integration-guide.md)。插件可用性、API/Worker 拓扑选型和产品边界见总体设计；这里明确如何执行。
 
 ## 1 输入格式
@@ -52,7 +50,7 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | HINDSIGHT_API_PORT、HINDSIGHT_CP_PORT | api_port、ui_port |
 | HINDSIGHT_API_WORKER_ENABLED | 首版固定 true，API 内置 Worker |
 | HINDSIGHT_API_WORKER_ID | worker_id，重启保持稳定；本期只有一个内置执行者 |
-| HINDSIGHT_API_WORKER_HTTP_PORT | 独立Worker健康/指标端口8889，不向客户发布 |
+| HINDSIGHT_API_WORKER_HTTP_PORT | 原生独立 Worker 的端口配置；首版使用内置 Worker，不设置、不发布此端口 |
 | HINDSIGHT_API_DB_POOL_MIN_SIZE/MAX_SIZE | 2/db_pool_max；READ_DB_POOL_MIN_SIZE/MAX_SIZE同值 |
 | HINDSIGHT_API_TENANT_EXTENSION | `hindsight_ext_contextdb.tenant:ContextDBTenantExtension` |
 | HINDSIGHT_API_OPERATION_VALIDATOR_EXTENSION | `hindsight_ext_contextdb.validator:ContextDBOperationValidator` |
@@ -93,7 +91,7 @@ PG/插件/网络准备完成
  → 业务验收 → 运行
 ```
 
-文件模板：[intent.example.json](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/deployment/intent.example.json)。以下是非容器本机执行的合同，命令由能读取输入秘密、拥有 runtime 目录的同一个服务账号执行；若采用集成指南的 UID10001/0700 容器目录，主机 Agent 必须以该账号或管理权限执行，不能以无权读取的普通账号照抄。容器命令见集成指南。`CONTEXTDB_PYTHON`必须指向匹配源码安装的Python3.11–3.14环境；Node22.12+或24仅用于UI构建/运行。
+文件模板：[intent.example.json](https://github.com/ZhuQingping/hindsight/blob/75ae4b7ed806c6c6e54d6306b9420e5fd9535014/hindsight-extensions/contextdb-service/deployment/intent.example.json)。以下是非容器本机执行的合同，命令由能读取输入秘密、拥有 runtime 目录的同一个服务账号执行；若采用集成指南的 UID10001/0700 容器目录，主机 Agent 必须以该账号或管理权限执行，不能以无权读取的普通账号照抄。容器命令见集成指南。`CONTEXTDB_PYTHON`必须指向匹配源码安装的Python3.11–3.14环境；Node22.12+或24仅用于UI构建/运行。
 
 ```bash
 cd /opt/contextdb/source
@@ -142,7 +140,7 @@ HINDSIGHT_API_TENANT_EXTENSION='' "$CONTEXTDB_PYTHON" -m hindsight_api.admin.cli
 
 ## 4 容器交付边界
 
-首版只有一个长期运行的 hindsight 容器，入口 `service.sh all`；一个 Python 主进程运行 API/内置 Worker，一个 Node.js 主进程运行 UI。init/监督器负责转发 SIGTERM、等待退出及故障时清理另一进程；不是启动后不再管理的后台进程。自研版另有执行后退出的 initialize 一次性命令。部署选择和资源依据见[设计](contextdb-release-design.md#api-worker-deployment)与[资源说明](contextdb-resource-sizing.md)。
+首版只有一个长期运行的 hindsight 容器，入口 `service.sh all`；一个 Python 主进程运行 API/内置 Worker，一个 Node.js 主进程运行 UI。init/监督器负责转发 SIGTERM、等待退出及故障时清理另一进程；不是启动后不再管理的后台进程。自研版另有执行后退出的 initialize 一次性命令。部署选择和资源依据见[设计](../design/contextdb-release-design.md#api-worker-deployment)与[资源说明](contextdb-resource-sizing.md)。
 
 Compose示例提供只读运行期文件系统、只读秘密卷、临时目录、UI独立64MiB Next缓存tmpfs、日志轮转、独立一次性初始化和API/Worker健康检查。它不创建RDS/插件，不代替ECS Agent的实例调度，不证明云上HA。API与Worker分离不自动带来完整高可用，也不隔离PG和模型配额。
 
@@ -168,7 +166,7 @@ Compose示例提供只读运行期文件系统、只读秘密卷、临时目录�
 
 首发管理元数据结构版本固定为1。migrate仅初始化新库，或核对已经采用当前结构的数据库；开发期试验结构不作为已发布版本，不自动升级或直接改号。已有试验库先保留数据和配置备份，再使用新的专用数据库验证；不能仅修改metadata_version冒充结构匹配。未来正式发布结构变更时，再从版本1增加有序迁移。
 
-首版不支持原生 Webhook、持久 LLM Trace 和原生业务 Audit：非空 WEBHOOK_URL、缺省或开启的 LLM_TRACE_ENABLED、开启的 AUDIT_LOG_ENABLED 均拒绝。Admin/内部配置不能开启 audit_log_enabled，旧Bank开启审计或enabled Webhook时须先停用再升级。ContextDB管理审计audit_events和运行日志/指标不受影响；详见[功能边界及原因](contextdb-service-research-validation.md#4-删除重建保护与首版限制)。
+首版不支持原生 Webhook、持久 LLM Trace 和原生业务 Audit：非空 WEBHOOK_URL、缺省或开启的 LLM_TRACE_ENABLED、开启的 AUDIT_LOG_ENABLED 均拒绝。Admin/内部配置不能开启 audit_log_enabled，旧Bank开启审计或enabled Webhook时须先停用再升级。ContextDB管理审计audit_events和运行日志/指标不受影响；详见[功能边界及原因](../archive/2026-10-19-before-reorganization/design/contextdb-service-research-validation.md#4-删除重建保护与首版限制)。
 
 
 数据库连接只配置 HINDSIGHT_API_DATABASE_URL；初始化、管理员离线轮换及API/Worker使用相同目标库和专用服务账号。管控预建数据库和安装插件，服务账号运行时须能创建空间schema、表和索引。不支持单独的bootstrap连接地址，遗留设置不能覆盖或替代此变量。

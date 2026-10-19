@@ -1,7 +1,5 @@
 # ContextDB 优化清单、实施状态与待讨论项
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-optimization-status.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 > 2026-10-19 数据库连接策略更新：PG SSL 非强制，默认部署示例移除 sslmode=verify-full；渲染器原样保留用户输入的数据库 URL，可按需使用非 SSL 或 SSL。
 
 > 2026-10-19 全文决策更新：RDS 首版固定 native + english，去掉 PGroonga/Groonga 安装要求；中文分词全文待适配，中文向量召回不等于关键词全文验收。
@@ -10,7 +8,7 @@
 
 当前交付分支：`contextdb/v1.0.0`，直接基于上游v1.0.0（39c65ffe）；上一阶段优化对照提交为be6f12c4。管理 API v1、首发元数据1。WS-02/03/05 已联合落地，下面记录实现及快照对应的验证证据；保留历史分析和阿里 UI 实测，不将历史通过计数替代最终复跑。本轮已重建v1.0.0自研镜像，并分别验证自研/官方原生镜像的merged和split功能；镜像中的Worker代码摘要与最终源码相符。本机Colima ARM使用OPENSSL_armcap=0兼容覆盖，不将它作为目标ECS默认配置。目标RDS中文全文仍有插件/适配/恢复依赖。
 
-[当前设计](contextdb-release-design.md) · [部署与升级](contextdb-service-integration-guide.md) · [curl验收](contextdb-optimized-curl-guide.md) · [OpenAPI](contextdb-control-plane.openapi.yaml) · [管控集成](contextdb-service-integration-guide.md) · [Agent合同](contextdb-deployment-contract.md) · [运维](contextdb-operations-runbook.md)
+[当前设计](contextdb-release-design.md) · [部署与升级](contextdb-service-integration-guide.md) · [curl验收](contextdb-optimized-curl-guide.md) · [OpenAPI](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-control-plane.openapi.yaml) · [管控集成](contextdb-service-integration-guide.md) · [Agent合同](contextdb-deployment-contract.md) · [运维](contextdb-operations-runbook.md)
 
 <a id="simplicity-review"></a>
 

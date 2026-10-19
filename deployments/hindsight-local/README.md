@@ -128,6 +128,6 @@ python3 deployments/hindsight-local/scripts/cell_b.py stop
 
 逻辑备份在 `.runtime/backups/hindsight-local.dump`；恢复目标是第二 PG 上的 `contextdb_research_restore` 数据库。[恢复脚本](scripts/backup_restore_check.py) 故意拒绝覆盖已有恢复库。没有建立客户业务资源，也没有删除机器上其他项目的数据。
 
-服务化决策请看[架构](../../hindsight/cloud-service-architecture.md)、[竞争力与投入](../../hindsight/cloud-service-priorities.md)、[来源核验](../../hindsight/cloud-service-evidence.md)。
+服务化决策请看[架构](../../hindsight/archive/2026-10-19-before-reorganization/cloud-service-architecture.md)、[竞争力与投入](../../hindsight/archive/2026-10-19-before-reorganization/cloud-service-priorities.md)、[来源核验](../../hindsight/archive/2026-10-19-before-reorganization/cloud-service-evidence.md)。
 
 成本控制更新：LLM并发1，自动整合默认关闭；8个现有Bank有效配置均关闭自动整合。启动最小模型调用与服务健康通过，见[运行证据](round2/evidence/runtime-cost-control.json)。历史客户端测试使用此前模型，未为此次切换重跑收费测试。

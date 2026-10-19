@@ -1,0 +1,395 @@
+<mxfile host="Electron" pages="4">
+  <diagram name="第 1 页" id="EekQn86kqp9zN9Xe_WzU">
+    <mxGraphModel dx="1012" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="490" x="181" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="100" width="474.5" x="189" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 1" vertex="1">
+          <mxGeometry height="60" width="60" x="242" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-9" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="348.5" y="250" />
+              <mxPoint x="348.5" y="250" />
+            </Array>
+            <mxPoint x="348.5" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 2" vertex="1">
+          <mxGeometry height="60" width="70" x="313.5" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Huawei API Gateway" vertex="1">
+          <mxGeometry height="50" width="474.5" x="187.5" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight API 1" vertex="1">
+          <mxGeometry height="60" width="100" x="192" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 3" vertex="1">
+          <mxGeometry height="60" width="70" x="396.5" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 4" vertex="1">
+          <mxGeometry height="60" width="70" x="476.5" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-8" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.082;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="272.4090000000001" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight Worker 1" vertex="1">
+          <mxGeometry height="60" width="110" x="302" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 5" vertex="1">
+          <mxGeometry height="60" width="70" x="557" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight API 2" vertex="1">
+          <mxGeometry height="60" width="100" x="442" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight Worker 2" vertex="1">
+          <mxGeometry height="60" width="110" x="552" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-15" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG1" vertex="1">
+          <mxGeometry height="80" width="60" x="274" y="479" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-16" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG2" vertex="1">
+          <mxGeometry height="80" width="60" x="364" y="479" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-17" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG3" vertex="1">
+          <mxGeometry height="80" width="60" x="454" y="479" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-21" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="Metadata&lt;br&gt;DB" vertex="1">
+          <mxGeometry height="80" width="60" x="92" y="468" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-23" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;endArrow=classic;endFill=1;startArrow=classic;startFill=1;" target="7EgG22FxRA6GGNb6-Ije-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-24" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-22" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="7EgG22FxRA6GGNb6-Ije-20" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="432.1" y="440" as="sourcePoint" />
+            <mxPoint x="502" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-26" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-4" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="7EgG22FxRA6GGNb6-Ije-22" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="512" y="460" as="sourcePoint" />
+            <mxPoint x="512" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-27" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="OBS" vertex="1">
+          <mxGeometry height="80" width="60" x="542" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-28" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430.5" y="250" />
+              <mxPoint x="430.5" y="250" />
+            </Array>
+            <mxPoint x="431" y="210" as="sourcePoint" />
+            <mxPoint x="431" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-29" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="250" />
+              <mxPoint x="510" y="250" />
+            </Array>
+            <mxPoint x="510.5" y="210" as="sourcePoint" />
+            <mxPoint x="510.5" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-30" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="251" />
+              <mxPoint x="590" y="251" />
+            </Array>
+            <mxPoint x="590.5" y="211" as="sourcePoint" />
+            <mxPoint x="590.5" y="261" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-31" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=27;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L0: Customer Agents&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="666" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-32" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L1: Huawei API Gateway&lt;br&gt;Self-developed module&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="666" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-33" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L2: Hindsight&lt;br&gt;Align with open source&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="666" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-34" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L4: Huawei Storage&lt;br&gt;RDS PG + OBS&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="666" y="499" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-36" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=6;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L3: API Check&lt;br&gt;Permission Control&lt;br&gt;Tenant and data mapping relationship&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="32" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="7EgG22FxRA6GGNb6-Ije-37" edge="1" parent="1" source="7EgG22FxRA6GGNb6-Ije-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;" target="7EgG22FxRA6GGNb6-Ije-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="修正版 HLD" id="contextdb-hld-v2">
+    <mxGraphModel dx="1265" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="v2-0" />
+        <mxCell id="v2-1" parent="v2-0" />
+        <mxCell id="v2-title" parent="v2-1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;align=center;" value="Huawei Cloud ContextDB — Corrected High Level Design" vertex="1">
+          <mxGeometry height="40" width="880" x="260" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-agent" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;" value="Customer Agents / SDK / MCP / Console" vertex="1">
+          <mxGeometry height="50" width="440" x="480" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-apig" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" value="Huawei Cloud APIG / WAF&#xa;TLS · external identity · request limits · coarse rate limit · request_id" vertex="1">
+          <mxGeometry height="65" width="620" x="390" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-front" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;" value="ContextDB Front Door (Product Data Plane)&#xa;Credential · Bank ACL · Idempotency · Quota · Compatibility · workspace → Cell routing" vertex="1">
+          <mxGeometry height="70" width="740" x="330" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-control-box" parent="v2-1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;startSize=28;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" value="Control Plane" vertex="1">
+          <mxGeometry height="310" width="310" x="30" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-meta" parent="v2-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Metadata PG&#xa;identity · grants · placement&#xa;jobs · source versions · usage" vertex="1">
+          <mxGeometry height="100" width="110" x="70" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-coord" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Coordinator / Provisioner&#xa;promotion · revoke · migration&#xa;Bank/index DDL" vertex="1">
+          <mxGeometry height="100" width="120" x="195" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-key" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Key / Policy / Placement Cache&#xa;authoritative state remains in Metadata PG" vertex="1">
+          <mxGeometry height="70" width="245" x="70" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-cell-a" parent="v2-1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Data Cell A — fixed RDS / OBS / model profile / schema version" vertex="1">
+          <mxGeometry height="390" width="450" x="390" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-api-a" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" value="Hindsight API Pool&#xa;stateless HTTP · worker off&#xa;no DDL / no maintenance" vertex="1">
+          <mxGeometry height="85" width="180" x="420" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-worker-a" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" value="Hindsight Worker Pool&#xa;PG queue · extraction · embedding&#xa;consolidation · retry" vertex="1">
+          <mxGeometry height="85" width="190" x="620" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-maint-a" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" value="Maintenance Worker&#xa;periodic discovery" vertex="1">
+          <mxGeometry height="60" width="190" x="620" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-pg-a" parent="v2-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#82b366;" value="RDS PG A&#xa;multiple workspace schemas&#xa;memory · vector · task queue" vertex="1">
+          <mxGeometry height="105" width="150" x="430" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-obs-a" parent="v2-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#82b366;" value="OBS A / prefix&#xa;original files · attachments&#xa;import/export archives" vertex="1">
+          <mxGeometry height="105" width="145" x="645" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-cell-b" parent="v2-1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Data Cell B … N&#xa;same structure; new workspace placement and migration add capacity" vertex="1">
+          <mxGeometry height="250" width="300" x="880" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-api-b" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" value="API Pool" vertex="1">
+          <mxGeometry height="55" width="100" x="915" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-worker-b" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" value="Worker Pool" vertex="1">
+          <mxGeometry height="55" width="110" x="1035" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-pg-b" parent="v2-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#82b366;" value="RDS PG B" vertex="1">
+          <mxGeometry height="70" width="95" x="915" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-obs-b" parent="v2-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#82b366;" value="OBS B" vertex="1">
+          <mxGeometry height="70" width="95" x="1042" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-model" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" value="Shared model access used by API and Worker: LLM · Embedding · Rerank · cluster quotas · metering" vertex="1">
+          <mxGeometry height="55" width="790" x="390" y="805" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-note" parent="v2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Placement rule: multiple workspaces per Cell; all Banks of one workspace stay in one Cell; one Bank never spans PGs." vertex="1">
+          <mxGeometry height="50" width="850" x="330" y="890" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e1" edge="1" parent="v2-1" source="v2-agent" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-apig">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e2" edge="1" parent="v2-1" source="v2-apig" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-front">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e3" edge="1" parent="v2-1" source="v2-front" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-meta" value="auth / policy / placement">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e4" edge="1" parent="v2-1" source="v2-front" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-api-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e5" edge="1" parent="v2-1" source="v2-front" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-api-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e6" edge="1" parent="v2-1" source="v2-api-a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-pg-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e7" edge="1" parent="v2-1" source="v2-worker-a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-pg-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e8" edge="1" parent="v2-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="711" y="535" as="sourcePoint" />
+            <mxPoint x="713.5" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v2-e10" edge="1" parent="v2-1" source="v2-coord" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" target="v2-cell-a" value="provision / promote / migrate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e12" edge="1" parent="v2-1" source="v2-api-b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-pg-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e13" edge="1" parent="v2-1" source="v2-worker-b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-pg-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v2-e14" edge="1" parent="v2-1" source="v2-worker-b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="v2-obs-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="FODORXxmmxTd9CIu8d24" name="Version-1">
+    <mxGraphModel dx="1012" dy="682" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-63" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="490" x="219" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="100" width="474.5" x="227" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-65" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 1" vertex="1">
+          <mxGeometry height="60" width="60" x="280" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-66" edge="1" parent="1" source="dh3YqwVn_v40FGiwcG7g-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="386.5" y="190" />
+              <mxPoint x="386.5" y="190" />
+            </Array>
+            <mxPoint x="386.5" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-67" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 2" vertex="1">
+          <mxGeometry height="60" width="70" x="351.5" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-68" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Huawei API Gateway" vertex="1">
+          <mxGeometry height="50" width="474.5" x="225.5" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-69" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight API 1" vertex="1">
+          <mxGeometry height="60" width="100" x="230" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-70" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 3" vertex="1">
+          <mxGeometry height="60" width="70" x="434.5" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-71" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 4" vertex="1">
+          <mxGeometry height="60" width="70" x="514.5" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-72" edge="1" parent="1" source="dh3YqwVn_v40FGiwcG7g-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.082;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310.4090000000001" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-73" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight Worker 1" vertex="1">
+          <mxGeometry height="60" width="110" x="340" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-74" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Tenant 5" vertex="1">
+          <mxGeometry height="60" width="70" x="595" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-75" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight API 2" vertex="1">
+          <mxGeometry height="60" width="100" x="480" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-76" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight Worker 2" vertex="1">
+          <mxGeometry height="60" width="110" x="590" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-77" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG1" vertex="1">
+          <mxGeometry height="80" width="60" x="312" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-78" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG2" vertex="1">
+          <mxGeometry height="80" width="60" x="402" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-79" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PG3" vertex="1">
+          <mxGeometry height="80" width="60" x="492" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-80" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="Metadata&lt;br&gt;DB" vertex="1">
+          <mxGeometry height="80" width="60" x="130" y="408" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-82" edge="1" parent="1" source="dh3YqwVn_v40FGiwcG7g-63" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="dh3YqwVn_v40FGiwcG7g-64" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="470.1" y="380" as="sourcePoint" />
+            <mxPoint x="540" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-83" edge="1" parent="1" source="dh3YqwVn_v40FGiwcG7g-68" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="dh3YqwVn_v40FGiwcG7g-63" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="550" y="400" as="sourcePoint" />
+            <mxPoint x="550" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-84" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="OBS" vertex="1">
+          <mxGeometry height="80" width="60" x="580" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-85" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="468.5" y="190" />
+              <mxPoint x="468.5" y="190" />
+            </Array>
+            <mxPoint x="469" y="150" as="sourcePoint" />
+            <mxPoint x="469" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-86" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="548" y="190" />
+              <mxPoint x="548" y="190" />
+            </Array>
+            <mxPoint x="548.5" y="150" as="sourcePoint" />
+            <mxPoint x="548.5" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-87" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="628" y="191" />
+              <mxPoint x="628" y="191" />
+            </Array>
+            <mxPoint x="628.5" y="151" as="sourcePoint" />
+            <mxPoint x="628.5" y="201" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-88" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=27;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L0: Customer Agents&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="704" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-89" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L1: Huawei API Gateway&lt;br&gt;Self-developed module&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="704" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-90" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L2: Hindsight&lt;br&gt;Align with open source&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="704" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-91" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L4: Huawei Storage&lt;br&gt;RDS PG + OBS&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="704" y="439" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-92" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=6;fontStyle=1;verticalAlign=middle;align=center;autosizeText=1;" value="&lt;font style=&quot;font-size: 12px;&quot; face=&quot;Comic Sans MS&quot;&gt;L3: API Check&lt;br&gt;Permission Control&lt;br&gt;Tenant and data mapping relationship&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="70" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="dh3YqwVn_v40FGiwcG7g-93" edge="1" parent="1" source="dh3YqwVn_v40FGiwcG7g-68" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;" target="dh3YqwVn_v40FGiwcG7g-80">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="6L1R-nTQ3yhqNCu9o8rY" name="独享版本">
+    <mxGraphModel dx="1012" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Ry0dzr6yGixV97iPQWmY-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="120" x="180" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Ry0dzr6yGixV97iPQWmY-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Hindsight API&lt;div&gt;Hindsight Worker&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="180" y="230" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

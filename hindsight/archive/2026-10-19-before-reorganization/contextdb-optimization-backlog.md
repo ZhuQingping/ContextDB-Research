@@ -4,6 +4,74 @@
 
 [当前设计](member-apikey-bank-service-design-first-release.md) · [部署与升级](implementation/contextdb-optimized-guide.md) · [curl验收](implementation/contextdb-management-api-curl-guide.md) · [OpenAPI](api/contextdb-optimized.openapi.yaml) · [管控集成](implementation/contextdb-service-integration-guide.md) · [Agent合同](implementation/contextdb-deployment-contract.md) · [运维](implementation/contextdb-operations-runbook.md)
 
+<a id="simplicity-review"></a>
+
+## 专家评审前复审：简洁性、效率与原生改动（2026-10-18）
+
+**结论：REVISE，建议完成本节收敛后再进行正式方案评审。** 本期仍处于内部方案评审，分支名first-release和既有功能测试通过不表示方案已经定稿。本节核对代码提交`07028c356`、资料提交`bf4a8b4`；下文是待优化建议，尚未修改运行代码或表结构。此前验收记录仅作为各快照的功能证据。
+
+### 先处理的效率与接口问题
+
+P1表示进入联调或性能验收前优先处理；不是已确认的数据泄漏或生产故障等级。
+
+| 编号 | 证据位置 | 问题及影响 | 建议 |
+| --- | --- | --- | --- |
+| SIM-01 / P1 | repository.py:311–345、348–352；admission.py:294；tenant.py:115；validator.py:120；UI lib/contextdb.ts:135 | 同一次业务请求在准入、租户解析、预检查和操作检查处反复认证；一次带Bank的authenticate已执行4条SQL，记使用时间时5条，且加载该Key的全部空间授权。UI管理代理还先调identity，再转发给再次鉴权的管理API | 首先将归属、Key/用户、目标空间授权合并查询，目标请求不聚合全部授权；定义请求内受信上下文，合并重复查询。新HTTP/MCP消息和独立任务仍重新校验，不能改成跨请求权限缓存。管理代理保留UI会话/同源校验，复用上游管理API的管理员校验；启动身份检查保留 |
+| SIM-02 / P1 | admission.py:280–319；tenant.py:62–79；deployment.py:179–182 | 准入池固定max_size=10，整个REST请求/MCP工具执行持有一个连接及事务；长时间LLM请求会占住槽位。另有固定10连接的管理池，两者不受db_pool_max控制。主池调大仍不能消除这个并发上限 | 给出统一的每进程连接预算和明确并发上限，保留管理/业务分池避免死锁；先测长Reflect与Recall混合负载。短事务登记＋进程存活证明可作为后续替代方案，未补齐fencing前不能直接删长锁 |
+| SIM-03 / P1 | routing.py:66–109；repository.py:375–382；UI contextdb-users-view.tsx:171–220、415–418 | Bank目录先加载全部可见空间，再逐空间认证/查Bank并排序，最后才分页；limit=0仍遍历全部空间。用户页已有grant中的workspace_name，展示时仍为未缓存空间逐条GET，最多4个并发只限制并发、不减少总请求 | 保留原生Bank列表的排序、q和total语义，批量收集授权与轻量目录信息，只对本页补全；不能先按另一种排序分页再冒充等价结果。用户列表直接使用已有grant名称，编辑时再验证目标UUID及新鲜状态，减少逐行补查 |
+| SIM-04 / P1 | repository.py:473–495；schema.sql:218–236 | 授权逐条查空间、逐条INSERT；1000条授权需2001次SQL调用，另触发1001次重复COUNT检查。完整替换含删除与新增，重复更多；last_used_at等非授权更新也触发检查 | 先批量查询并核对空间/UUID，再批量写授权，避免2N次往返；保留PK/FK/唯一/CHECK。当前禁止直接SQL写权限，建议在服务授权事务末尾按Key校验一次模式与数量；若专家要求DB独立保证跨表约束，再选择受控数据库入口/批量方案，避免继续叠加逐行检查 |
+| SIM-05 / P1 | repository.py:170；schema.sql:72–94 | 每个空间查询最近操作的相关子查询缺少workspace_id、created_at、operation_id组合索引。隔离库1000空间/2万操作的EXPLAIN显示SubPlan对management_operations执行Seq Scan和Sort | 保留latest_operation_id作为失败追踪入口；先验证(workspace_id,created_at DESC,operation_id DESC)索引，或等价的批量查询。用实际分页执行计划确认收益，不凭“已分页”认定查询工作量有界 |
+| SIM-06 / P1 | admission.py:111–148、278；tenant.py:32；运维手册“未知写入恢复” | 异常准入长期保留合理，但owner_id是随机进程标识，缺少到节点/进程启动代次的稳定诊断映射；日志只提示保留记录。运维文档要求“按owner核实”，尚不足以直接实施定向恢复 | 补结构化的owner/节点/进程代次映射及保留原因，提供只读排查和受控恢复步骤；可以复用日志，不必新增调度系统或表。必须先证明旧执行者结束，不能用TTL自动清空 |
+| SIM-07 / P1 | http.py:383–390；repository.py:384–388；models.py:237–241 | identity响应的user_id实际取actor_subject，固定为instance-admin，不是users表主键；统一认证后仍转成旧ControlPrincipal并补固定actor字段，增加模型转换和语义混淆 | UI只消费role，建议移除本期无消费方的user_id响应字段；确需用户标识时返回真实PG主键。管理入口沿用统一认证结果，移除不承担真实授权职责的固定subject适配；这不是发现了第二套认证 |
+
+### 可以缩减的代码和数据设计
+
+P2表示明确的简化候选；完成方式仍需与既定接口、安全边界一起评审。
+
+| 编号 | 证据位置 | 问题及建议 |
+| --- | --- | --- |
+| SIM-08 / P2 | repository.py:364；validator.py:165、226；原生extensions/operation_validator.py:524、memory_engine.py:14628、19541 | 当前read/read_write都同时获得memory.read、knowledge.read、reflect；新增read_origin区分知识页和记忆读取，没有当前可配置权限差异。建议统一到当前两档权限，撤回这项原生字段/调用改动；保留正常读取鉴权。memory_engine还有其他必要钩子，不能整文件还原 |
+| SIM-09 / P2 | http.py:156–183、243–322；UI app/api/contextdb/[...path]/route.ts:36–123 | HTTP运行校验、手工OpenAPI参数、UI代理分别维护路径/字段/条件头规则；admin_headers还是仅为OpenAPI服务的空依赖。建议让FastAPI类型化参数/依赖生成契约，保留必要的鉴权顺序和安全错误包装；UI代理只维护固定路由、方法、会话及安全转发，避免再次复制领域字段规则 |
+| SIM-10 / P2 | 原生config.py:55–65；.env.example:1；deployment.py:172；scripts/service.sh:10、37、44、61；launch.py:58 | .env控制同时支持缺省/禁用/指定路径，托管流程实际只用禁用；语言又经language→环境变量→CLI转交。建议保留启动前禁用意外.env覆盖的能力，裁掉没有调用需求的路径模式；启动参数应从启动环境设置，不能暗示写进待读取.env就能控制自身加载。语言检查保留一个部署输入，不成为客户额外配置。两份env模板相同是上游同步要求，不应只删其中一份 |
+| SIM-11 / P2 | lifecycle.py:155–160；schema.sql:22；repository.py:280–285、375；models.py:206–241 | 已拒绝开发期旧库，但仍有“迁移回收deleted墓碑”的分支/注释、无正常写入入口的frozen状态、try:key=name的无效异常处理、未使用的readable参数，以及补固定actor/instance字段的模型。建议按当前状态机删除无来源兼容逻辑，未知状态拒绝；保留操作终态和真正的对象身份，勿误删删除安全保护 |
+| SIM-12 / P2 | artifacts.py:18–94；launch.py:16 | UI启动散列整份API/扩展/UI/客户端源码；任意API内部调整都会要求重建UI，固定镜像部署仍重复扫描源码及bundle，交付与运行耦合偏强。建议构建时生成release清单，发行以镜像摘要和版本匹配；全源码校验留给开发模式或CI。保留防混用产物的目的，不把全源码扫描当必需运行功能 |
+| SIM-13 / P2 | repository.py:228–261；schema.sql:15–28；models.py:workspace_name | 当前空间name、name_key和bank_id在合法创建路径始终相同，仍存三份并维护两套名称唯一性。建议bank_id作为唯一规范化名称，先删除空间name_key及重复索引、name在响应中派生；schema_name暂保留为物理映射，待下方决策。用户名称允许Unicode，users.name_key仍有用途，不能一起删除 |
+
+### 评审材料必须收敛
+
+**SIM-14 / P1：先整理评审入口，再交专家。** 资料提交bf4a8b4的32个文件中，15个历史副本新增5874行，约占新增内容77%；两份curl指南内容相同。代码提交205个文件中也含13份归档和多份过程性REVIEW。这些数量不能用于推断运行代码复杂度，但确实增加评审负担。
+
+建议只维护设计主文、部署指南/参数合同、运维指南、API示例与自动生成OpenAPI、当前待讨论项；同一契约不在多个正文手工重复。历史版本通过Git查看，原始drawio等有独立用途的源文件继续保留；不再每轮复制整份文档。两份curl保留一个正文，另一入口只链接。已有过程记录先退出正式评审入口；是否清理已入库归档另作明确变更，本轮不删除用户文件。
+
+主设计保留总体架构、对象模型、14接口和PG结构，但必须把“当前实现”“建议调整”“待专家决定”分开。功能测试结果按提交标注；撤回将功能验收等同“简洁、可商用方案已经认可”的表达。本节状态为待处理，之前的历史通过记录不覆盖这些发现。
+
+### 专家需要先决定的架构取舍
+
+**可读bank_id可以保留；物理schema是否也必须可读、可复用，应单独评审。** 当前ctxdb_ws_jiamu在同名重建时复用，带来旧Worker、迁移线程、进程缓存及后台诊断晚写的保护成本，并导致Trace/Audit/Webhook功能限制。若物理schema使用内部UUID，可让同名新空间使用新命名空间，减少这类复用风险；仍需处理旧任务停止、授权、文件和残留清理，不能据此直接删除全部屏障。
+
+本轮不推翻已确认的可读schema要求。请专家在其运维可读性收益与代码/限制成本之间明确选择；若保持当前要求，就应承认必要的执行保护成本。异步创建/删除、内部UUID、身份ETag、管理操作/准入/审计分工以及四个扩展入口，不宜仅为减少文件数而删除。
+
+原生12个运行文件、+288/-30行改动需要按原因检视：环境装载控制；HTTP/MCP传输及当前消息身份；后台提交/完整执行保护；Bank读取来源和任务状态查询；日志脱敏及关闭钩子。优先撤回没有当前权限差异的read_origin；保留消息身份、完整执行期限和日志脱敏等有明确风险证据的改动。statuses多状态查询解决一致排空快照，不建议简单改成两次查询。
+
+### 建议顺序与验证依据
+
+1. 先处理SIM-07/14及SIM-11中确定的残留，专家能看到一致、精简的接口与材料。
+2. 集中优化SIM-01～05：减少SQL往返、全量遍历、隐藏连接上限、重复触发与缺失索引；每项单独验证，避免混成大重构。
+3. 补SIM-06故障恢复闭环；确定物理schema取舍，再处理SIM-08～10/12/13。保留当前功能和隔离语义，不以减少代码行为唯一指标。
+
+| 验证 | 本轮结果/边界 |
+| --- | --- |
+| RUN：认证调用计数 | 调用实际Repository.authenticate，使用只记录SQL的替身池；带Bank时4次，record_use时5次。不是完整HTTP请求计数或吞吐基准 |
+| RUN：分页调用计数 | 调用实际bank_list，25个可见空间的替身后端；limit=0仍执行25次原生Bank扫描及25次租户认证 |
+| RUN：授权SQL调用计数 | 调用实际_replace_authorization，使用计数连接；1000条授权为1000次查空间、1000次INSERT及1次DELETE，共2001次SQL调用 |
+| RUN：授权触发器 | 独立PG18.1，仅加载当前管理DDL；1/100/500/1000条授权分别触发2/101/501/1001次检查。统计按调用增量读取；不把本机耗时当RDS容量结论 |
+| RUN：SQL执行计划 | 独立库1000空间、2万操作；相关子查询显示management_operations的Seq Scan和Sort。尚未执行加索引后的对照或生产压测 |
+| RUN：源码与文档走读 | 复核原生12个运行文件改动、认证/准入/生命周期、目录/授权SQL、UI管理代理和页面、部署和文档入口；未声称逐条路径均已动态覆盖 |
+| NOT RUN：全量功能/云上验收 | 本轮没有改运行代码，未重跑原生/UI/425项扩展测试，也未部署或调用MaaS；旧结果仍按旧快照使用 |
+| RECOMMENDED：修改后的验证 | 保留即时吊销、跨空间拒绝、MCP会话换Key、在途删除、Worker取消/故障、同名重建回归；增加每请求SQL计数、列表规模、并发连接预算、授权批量更新与恢复演练 |
+
+本机探针和执行计划保存在artifacts/contextdb-simplicity-review-20261018，不加入评审源码包。仅本节和主设计的评审状态更新；运行代码、既有归档和远程提交保持原样。
+
 <a id="workspace-pending"></a>
 
 ## 0. 本轮三个优化点：已联合实现

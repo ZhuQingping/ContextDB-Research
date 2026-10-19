@@ -1,7 +1,5 @@
 # ContextDB 运维与故障定位手册
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-operations-runbook.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 适用：华为云独享实例，节点 Agent 管理 ECS 上的 Hindsight 容器，外部 PG 保存管理元数据与工作空间数据。命令以本分支代码为准；默认 API 8888、UI 9999、独立 Worker 指标 8889，实际地址由部署合同传入。值班时先定位层次，再处理；不要用重建实例或清空任务表作为通用修复。
 
 ## 1. 运维时先准备什么

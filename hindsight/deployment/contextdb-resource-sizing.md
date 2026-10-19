@@ -1,7 +1,5 @@
 # 首版部署形态与资源预算
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-resource-sizing.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 适用范围：Hindsight v1.0.0 原生联调及当前 ContextDB 自研版。**一个容器、两个应用主进程**：Python 运行 API 和内置 Worker，Node.js 运行 UI。RDS PG、MaaS 和宿主机节点 Agent 在容器外；不启动本地模型或嵌入式 PG。
 
 ## 1. 为什么首版这样部署

@@ -1,7 +1,5 @@
 # 服务化补充调研与验证记录
 
-> 代码仓同步副本；请在[源文档](https://github.com/ZhuQingping/hindsight/blob/00770662e52a5368432d65563eb07517a7329060/hindsight-extensions/contextdb-service/docs/contextdb-service-research-validation.md)修改。分支 `contextdb/v1.0.0`，提交 `00770662e52a5368432d65563eb07517a7329060`，同步时间 `2026-10-19T11:13:38+08:00`。
-
 2026-10-17。本轮代码基于 `1e188ac306b85f6f58699592aae80bd0880c8864`，独立工作分支 `contextdb/service-night-20261017-225618`。本文区分实际验证、工程选择和云上前提，不能作为生产容量承诺。下列夜间模型/容器实测对应00a921b52快照；之后管理元数据重定首发1，未将这些旧结果改写为新基线的容器实测。
 
 ## 1. API 与 Worker 的选择

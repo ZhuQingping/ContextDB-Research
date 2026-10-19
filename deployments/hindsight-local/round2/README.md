@@ -1,6 +1,6 @@
 # 第二轮研究与验证交付
 
-入口：[Huawei ContextDB Service Develop.md](<../../../hindsight/Huawei ContextDB Service Develop.md>)。原演示服务仍使用8888/9999/55432；本轮使用新Bank、独立schema和测试PG，未修改Hindsight原源码。
+入口：[Huawei ContextDB Service Develop.md](<../../../hindsight/archive/2026-10-19-before-reorganization/Huawei ContextDB Service Develop.md>)。原演示服务仍使用8888/9999/55432；本轮使用新Bank、独立schema和测试PG，未修改Hindsight原源码。
 
 ## 结果按范围阅读
 
@@ -9,7 +9,7 @@
 - [测试流水线](reports/tests.md)：每条命令、JUnit、失败与skip。不能把部分suite通过汇总成全部功能完备。
 - [真实客户端](reports/clients.md)：Codex/Claude/OpenClaw CLI与Hermes实际Agent核心；模型、版本、自动hooks、失败反例和复验命令。
 - [设计审阅](reports/design-review.md)：参数/权限缺陷、参考DDL和21项PG约束检查。
-- [具体架构/任务板](../../../hindsight/cloud-service-architecture.md)：HLD/LLD、12任务包、依赖、负责人、工期估算和上线门禁。
+- [具体架构/任务板](../../../hindsight/archive/2026-10-19-before-reorganization/cloud-service-architecture.md)：HLD/LLD、12任务包、依赖、负责人、工期估算和上线门禁。
 
 `evidence/`保留JSON/JUnit和成功、失败日志；`scripts/`保留可复验探针。`clients-work/`、`tests-work/`、`.runtime/`等是忽略的依赖/隔离运行目录，可能含私有客户端配置，不作为可发布文档。
 
