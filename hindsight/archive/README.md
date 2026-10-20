@@ -25,3 +25,7 @@
 - 原提交：`1b96e97584fda118efc5dc6c7cb76d5236060563`
 - 补丁 SHA-256：`6e5c4f2ee1a3bf8517771927a9519943134ee8cae229002a0c398bafe871e87d`
 - 旧版本包含异步管理及执行保护；当前同步方案和取舍依据见[设计第5.2节](../design/contextdb-release-design.md#lifecycle)。恢复旧补丁不代表这些机制仍是本期要求。
+
+## 模块检视前的指南
+
+[旧版代码检视指南](2026-10-19-before-module-review/code-review-guide.md)保留逐文件历史分析及原始评审经过；当时的“当前版本”和状态按原文理解。最新代码按模块阅读及测试归组建议见[当前指南](../design/code-review-guide.md)。

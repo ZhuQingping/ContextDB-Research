@@ -1,6 +1,6 @@
 # ContextDB 首发设计：工作空间、用户与 API Key
 
-> **状态：本轮简化已实现并采用 amend 整理提交，本地回归及 Hindsight/PG 独立检视已完成。** 本文描述新的同步管理实现；代码仍集中为官方 v1.0.0 之上的一个特性提交；本轮尚未推送，精确代码及资料版本按代码提交正文核对。结果以[验证摘要](../testing/contextdb-validation-summary.md)为准，本机回归不替代目标ECS/RDS或生产验收。
+> **状态（2026-10-20）：设计已同步当前实现，四批优化、测试接线及UI简化随本次 amend 整理，尚未推送。** 交付分支为 `contextdb/v1.0.0`；验收源码树为 `ce1c7def06cf26d9450fcef34acbad4e47268e6f`，替代原特性提交 `ddf5c3600` 的提交说明固定本资料仓版本。最新实现已完成本地回归及自检；此前 Hindsight/PG 独立检视只覆盖当时快照，本轮UI调整未重新组织独立检视。结果与未验证项见[验证摘要](../testing/contextdb-validation-summary.md)，本机回归不替代目标ECS/RDS或生产验收。
 
 > **首版决策（2026-10-19）：工作空间创建、删除同步返回201/204；同名schema、bank_id复用接受原生Bank并发边界。** 删除前由管理员停止访问、等待已有工作结束；没有全局执行排空、代次或持久故障屏障。当前管理API为13项，管理表为6张。
 
@@ -23,7 +23,7 @@
 
 <a id="overview"></a>
 
-本轮机器契约位于同版代码仓 `hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml`，须按本轮源码生成/校验。本文固定远程OpenAPI链接是旧评审快照；本轮尚未推送，不能用旧快照验证同步接口。
+本轮机器契约位于同版代码仓 `hindsight-extensions/contextdb-service/schemas/contextdb-control-plane.openapi.yaml`，须按本轮源码生成/校验。本文固定远程OpenAPI链接是旧评审快照，不能据此核验当前工作区；应以同版源码生成的契约为准。
 
 ## 1. 总体设计
 
@@ -100,7 +100,7 @@ MCP 扩展复用原生工具，不新增工作空间、用户或 Key 的管理 M
 
 ### 1.4 实现版本与变更说明
 
-更新：2026-10-19。当前交付分支为 `contextdb/v1.0.0`，直接基于原生 v1.0.0（39c65ffe2f140d0c84cee58566cad8900c5b9908）；代码与资料版本见[代码检视指南](code-review-guide.md)。本文描述本轮本地实现，待验收项明确列在TODO；公开管理 API 仍为 `/ext/contextdb/v1`，首发管理元数据结构为 **1**。结构序号、API v1、资源 version 是三个概念。
+更新：2026-10-20。当前交付分支为 `contextdb/v1.0.0`，直接基于原生 v1.0.0（39c65ffe2f140d0c84cee58566cad8900c5b9908）；代码与资料版本见[代码检视指南](code-review-guide.md)。本文描述本轮本地实现，待验收项明确列在TODO；公开管理 API 仍为 `/ext/contextdb/v1`，首发管理元数据结构为 **1**。结构序号、API v1、资源 version 是三个概念。
 
 本次统一管理员与业务 Key 认证，落实成员名唯一、删除空间的物理清理、按名称查询详情、同步管理和部署脚本。[优化前完整设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/archive/2026-10-16-before-release-hardening/design-research.md)保留作对照。本轮统一 GET/DELETE、授权输入及原生 REST/MCP 使用可读 bank_id；授权存储及管理条件绑定内部UUID；原生记忆任务继续沿用原生上下文和schema机制，不增加全程执行代次。首发从当前完整结构的版本1开始；不提供开发期旧结构的自动升级，新空间使用可读标识。历史设计保留在Git历史，不能用历史测试代替本轮验收。
 
@@ -315,6 +315,14 @@ PGroonga 是 PG 扩展，依赖的 Groonga 是搜索引擎库，不是必须另�
 
 Key 明文只在本次创建结果中展示和复制，不写入 localStorage/sessionStorage。工作空间操作不持久保存操作ID、幂等标识或待重放请求；提交中禁止重复点击。超时或断连显示结果未知，只查询普通资源并核对UUID/状态，不自动POST或DELETE。成员和 Key 创建不透明重试；结果未知时先核对列表，不能按模糊名称或“最新一条”自动吊销。
 
+本轮进一步简化页面职责：
+
+- 创建用户成功后显示名称和返回ID，刷新当前搜索；不自动遍历所有页定位并展开。用户主动展开目标行管理Key。
+- Key编辑使用已有响应中的授权快照，分页目录仅提供可选空间，不为每个已有授权额外GET。保存时携带原workspace_id及Key版本；后端在同一管理事务中检查UUID、版本和权限，过期返回400/409/412。只改名称不重发授权。目录已观察到同名不同UUID时提示旧项不可用，不自动换绑。
+- 用户/Key写入结果未知或冲突时保留原目标信息，管理员刷新、搜索普通列表后明确处理；取消全量ID扫描。刷新不证明原请求已停止，也不重放写入；签发明文丢失仍不能补取。
+- ContextDB工作空间删除只在工作空间管理目录执行；原生Bank详情提供管理链接，不再维护第二套删除快照和恢复交互。原生模式Bank删除照常保留，服务端生命周期旁路限制不变。
+- UI服务器保留会话、同源、固定目标、路径/方法和敏感字段保护，业务请求字段与权限由Python模型统一校验，避免两份业务字段白名单。组件集中`components/contextdb/`，无新API、生产参数或状态管理框架。
+
 ### 3.3 空间授权及请求格式
 
 | 授权方式 | 适用情况 | 权限规则 |
@@ -492,7 +500,7 @@ pepper 在实例首次部署时生成并持久保存，正常重启、扩容和�
 
 本决策替代此前“必须证明全部执行者退出，才能允许删除/同名重建”“忙时409加完整执行屏障”“补齐原生所有并发缺口”的设计要求。原生存在同样的并发现象，本期聚焦工作空间、用户和 Key 管理，不为解决这一原生边界扩大内核修改。
 
-**实施状态：同步流程、13项管理API、六表结构及增强保护删除已在本地实施。** `Lifecycle.create/delete` 直接调用原生迁移和Bank方法；没有后台管理调度。本地回归及 Hindsight/PG 独立终审已完成，结果见验证摘要；尚未推送，不代表远程旧版本已更新。原生依据、约束和失败处理如下。
+**实施状态：同步流程、13项管理API、六表结构及增强保护删除已在本地实施。** `Lifecycle.create/delete` 直接调用原生迁移和Bank方法；没有后台管理调度。同步管理在此前提交中已完成本地回归及 Hindsight/PG 独立终审；最新工作区另经回归和自检，结果见验证摘要。最新优化尚未推送，远程旧快照不包含这些变化。原生依据、约束和失败处理如下。
 
 #### 5.2.1 原生 Bank 语义与验证结论
 
@@ -925,6 +933,8 @@ UI删除说明、API调用说明和部署/运维手册须采用同一规格：�
 
 **客户直连 PG 的边界：** 客户 SQL 账号不拥有、也不授权读写服务 schema；不支持绕过服务直接修改元数据、并发向服务表建立跨 schema 依赖。删除前和最终 DROP 前的依赖检查用于拒绝已有异常依赖，不构成对数据库所有者任意并发 DDL 的隔离承诺。
 
+部署辅助 SQL 保留在插件 deployment/：prepare-pg.sql 用于部署前建库、建服务账号和启用插件；pg-role-boundary.sql 是客户普通 SQL 账号的受保护 schema 权限示例。两者不由 API 或服务初始化自动执行，后者须对元数据和各工作空间逐个配置，新空间也需落实；不能限制 PG 超级用户、服务对象所有者或主机管理员。API 空间隔离仍由插件授权和独立 schema 负责。具体步骤见[PG 准备与权限边界](../deployment/contextdb-service-integration-guide.md#pg-preparation)。
+
 [重新编排前的完整设计](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/archive/before-scenario-restructure-20261016-201640/member-apikey-bank-service-design-first-release.md) · [精简版归档](https://github.com/ZhuQingping/hindsight/blob/07028c3561bd6601dd72af137ea5d96658210ae9/hindsight-extensions/contextdb-service/docs/archive/before-full-detail-restore-20261016-201944/member-apikey-bank-service-design-first-release.md)
 
 ## 同名重建的进程缓存处理
@@ -935,7 +945,29 @@ UI删除说明、API调用说明和部署/运维手册须采用同一规格：�
 
 ## 本轮实现收敛与 TODO
 
-实施范围与逐项状态见[简化实施清单](contextdb-simplification-plan.md)，R01～R07最新核对入口见[第7.8节](contextdb-simplification-plan.md#r01-r07-review-plan)。下列实现已完成本地回归及 Hindsight/PG 独立检视，以 amend 合并提交，尚未推送。
+2026-10-20补充：测试接线继续收敛。共享pytest模块只保留模型替身和调用校验（253行→79行），原生服务器/客户端/Bank fixture仍放原conftest；原函数体及装饰器与官方一致。CI直接调用插件用例，UI fixture在启动前统一检查产物及源码，结果脚本仅检查双Worker JUnit完整性（67行→38行），不再重复检查产物。不新增测试调度器或生产配置，Vitest/类型/lint路径接线保留。
+
+### 2026-10-20 四批内聚优化
+
+本轮以ddf5c3600为基线完成优化，与最新UI简化一同通过amend交付，尚未推送；六张管理表、13项管理操作、同步空间管理、四原生扩展槽位及外围ASGI边界保持。原生Python运行目录仍与官方v1.0.0零差异。
+
+| 范围 | 当前实现与保持的边界 |
+| --- | --- |
+| 响应与类型 | 错误JSON先作为unknown检查，null/数组/标量不再抛未分类TypeError；空间POST校验201、提交名称、UUID和ETag，Key签发校验目标及必需secret后才成功关窗。KeyEditable/Metadata/Issued区分编辑、列表、签发；PATCH不要求secret，DELETE204允许空正文。 |
+| 检查与SQL | database_checks.py共用格式、归属和后台政策检查；调用者保持原连接/事务。授权聚合用固定源码predicate，移除字符串replace，仍单条SELECT同快照核对部署、用户、Key与目标。 |
+| MCP目录 | 当前消息无目标Principal的完整授权与active空间UUID求并集，不逐空间select_workspace；目录仅决定展示工具，tools/call继续重新检查实际目标权限，保留HTTP scope时序适配，无跨消息缓存。单次filter三条元数据SQL，不承诺整消息总数或吞吐。管理员原有非生命周期工具规则保留。 |
+| UI状态 | UsersView只管理成员；KeyPanel按user_id拥有Key目录和内存secret；KeyEditor拥有草稿/原版本，picker仅分页提供空间选项，已有授权不逐个GET。name-only编辑不重发授权，保存仍使用原UUID/版本，后端拒绝过期目标。 |
+| 未知结果 | 当前尝试不自动重发；Key签发未知只查元数据，明文不能补取，管理员显式处理后再新发。400可修正，412重新读取后显式确认；空间核对保留原UUID/ETag，只GET，不用继任对象条件重复删除，不证明原执行已停止。 |
+| 测试与门禁 | 自研测试集中插件tests/python、system、ui、contracts，复用原宿主环境和一个Vitest/Node锁。共享准备不导入test文件、不用fixture.__wrapped__；同版正式生产UI构建与双Worker JUnit必跑纳入CI，无新生产参数。 |
+
+lib/contextdb.ts增加server-only标记，仅在测试中映射为空模块；实际Next生产构建已验证客户端误导入会失败。secret仍只保留内存，离页、隐藏、60秒清理；旧尝试隐藏后迟到的secret不再显示，返回可见页面的新签发独立重置状态。
+
+这轮减少的是重复查询、私有方法反向依赖和状态混杂，不声称所有模块行数下降；新增只读结果核对和回归也产生代码。没有引入万能兼容层、通用CRUD、第二测试工程、权限缓存、管理表或复杂删除保护。同步/异步与原生删除取舍仍按第5章，不因目录整理重新扩大保证。
+
+实际验收和局限见[验证摘要](../testing/contextdb-validation-summary.md)，模块和测试入口见[检视指南](code-review-guide.md)。
+
+
+实施范围与逐项状态见[简化实施清单](contextdb-simplification-plan.md)，R01～R07最新核对入口见[第7.8节](contextdb-simplification-plan.md#r01-r07-review-plan)。下列同步管理收敛已在此前以 amend 整理的 `ddf5c3600` 中提交、推送，并完成当时的 Hindsight/PG 独立检视；其上的最新优化随本次amend归入同一特性提交；不能把旧检视或旧远程快照当作本轮全部变更的验收结果。
 
 已实施：
 
@@ -950,6 +982,9 @@ UI删除说明、API调用说明和部署/运维手册须采用同一规格：�
 - 原生env模板、语言包与Next配置保持原生形态；扩展配置和文案独立。系统字体用于无网络构建；原生过渡部署工具由资料仓独立管理。
 
 继续保留的TODO：
+
+- **MCP消息级SQL测量。** 当前证明单次filter的元数据预算；完整消息可能多次过滤并写使用遥测，后续规模验收另计，不以此推算整体吞吐。
+- **UI只读核对交互。** 用户/Key全量ID核对扫描已移除，不再追加该协调机制。真实浏览器焦点、剪贴板和窄屏视觉仍待验收。
 
 - **R05固定镜像启动免扫描。** 构建manifest和源码/bundle完整匹配检查保持。现有启动路径尚无可信的不可变镜像及挂载身份校验，不能仅凭manifest或环境变量跳过扫描。本轮保守保留完整检查；待交付链有充分依据后再精简，不新增产物平台，也不声称启动性能已有提升。
 - **跨空间目录性能。** 原生Bank全局q、最近写入排序及total语义保持；后续评估批量查询或可靠水位，不能提前分页改变结果。

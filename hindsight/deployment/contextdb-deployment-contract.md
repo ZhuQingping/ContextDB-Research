@@ -2,6 +2,17 @@
 
 本合同是节点自动化的文件与命令接口，不新增网络管理服务。人读顺序见 [集成指南](contextdb-service-integration-guide.md)。插件可用性、API/Worker 拓扑选型和产品边界见总体设计；这里明确如何执行。
 
+## PG 准备责任
+
+PG 数据库必须先由管控/PG 管理员准备，不能等待服务启动后自动建库。两个辅助 SQL 与插件同版保存在代码仓 `hindsight-extensions/contextdb-service/deployment/`，README 提供入口，本文不复制 SQL。
+
+| 文件 | 责任与边界 |
+| --- | --- |
+| `prepare-pg.sql` | 首次建专用账号、UTF8 数据库并启用 vector、pg_trgm、btree_gin；数据库端插件文件及管理员权限先就绪。非幂等，已有同名对象会停止；不创建管理元数据表。 |
+| `pg-role-boundary.sql` | 仅在开放客户普通 SQL 账号时，针对已存在的元数据/工作空间 schema 配置权限；不创建角色，不随空间创建自动应用，不替代 API 授权，不能限制 PG 超级用户或服务对象所有者。 |
+
+两个脚本均不由服务初始化自动调用。新建库脚本可能在中途失败后留下已创建对象，不能直接当作可重复执行的初始化命令；先由 PG 管理员核对状态再处理。可执行命令、前提及检查见[集成指南：PG 准备与权限边界](contextdb-service-integration-guide.md#pg-preparation)。
+
 ## 1 输入格式
 
 输入模型由 `hindsight_ext_contextdb.deployment.DeploymentConfig` 校验，拒绝未知字段和隐式拓扑。JSON Schema 从实际模型生成，避免文档与校验器独立漂移：

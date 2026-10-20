@@ -13,7 +13,9 @@
 
 数据库不存在时，外部 PG 部署会失败；Hindsight 不会替管控创建数据库或 RDS。实例启动与工作空间初始化是不同步骤：启动完成后，由管理员在 UI 创建空间，也可调用管理 REST 接口验证。
 
-**版本提醒（2026-10-19）：** 本轮同步简化实现以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，尚未推送；代码提交正文固定资料仓版本。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
+**版本提醒（2026-10-20）：** 同步管理、四批优化及UI简化以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，尚未推送；代码提交正文固定资料仓版本。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
+
+<a id="pg-preparation"></a>
 
 ## 2 PG 需要提供什么
 
@@ -29,7 +31,11 @@
 
 ### 新库准备命令
 
-由 PG 管理员执行。命令只创建新对象，遇到已有同名库/角色就停止，不接管、不删除旧库。
+由 PG 管理员执行同版代码仓的 [prepare-pg.sql](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/deployment/prepare-pg.sql)。脚本创建专用 LOGIN 账号、UTF8 数据库，收紧 PUBLIC 权限，并在目标库启用 vector、pg_trgm、btree_gin；它不初始化 ctxdb_meta 或工作空间表，这些由后续服务初始化和空间创建完成。
+
+前提是数据库端已安装插件文件，管理账号具备建角色、建库和启用这些扩展的权限。云 RDS 如限制相关命令，由管控按平台能力完成等价准备。
+
+脚本只创建新对象，遇到已有同名库/角色就停止，不接管、不删除旧库。它不是整体原子事务，也不是幂等脚本；中途失败可能已留下账号或数据库，须先核对 PG 状态再处理，不能直接循环重跑。
 
 ```bash
 export REPO=/opt/contextdb/source
@@ -54,6 +60,42 @@ unset CONTEXTDB_NEW_DB_PASSWORD
 客户普通 SQL 账号不要拥有服务数据库、服务角色或 `ctxdb_meta`、`ctxdb_ws_*` schema，不授予这些表的 SELECT/DML/DDL，不允许 SET ROLE 为服务角色。服务账户不交付给业务使用；不要把工作空间权限映射成数据库超级权限。
 
 客户若拥有同一 PG 的超级用户、数据库所有者或底层主机控制权，就能修改/删除服务数据，**不能保证元数据不被破坏**。这属于部署信任边界；备份、变更约束和检测只能帮助恢复，不能替代权限隔离。禁止为“保护元数据”错误地承诺能阻止 root。
+
+### 客户 SQL 账号的权限示例（按需）
+
+执行文件为同版代码仓的 [pg-role-boundary.sql](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/deployment/pg-role-boundary.sql)。仅通过 API 使用服务、未开放客户 SQL 账号时，无须执行。该文件不由 API、`service.sh init` 或工作空间创建自动调用。
+
+执行前，服务数据库及受保护对象应归服务账号所有；客户角色须已存在且无超级用户、建库、建角色、BYPASSRLS 等权限，也不能通过角色继承取得服务角色或其他高权限。客户不能在共享 public schema 创建对象。脚本会检查这些前提，遇到不满足的条件即报错；不要为通过检查而将服务账号交给客户。
+
+先完成服务初始化，使 ctxdb_meta 存在，再由具备相应权限的 PG 管理员执行。以下示例使用 contextdb_service、customer_sql 和 ctxdb_meta；替换为已审核的实际名称。认证使用受保护的 .pgpass/平台秘密注入，不在 URI 写密码。
+
+```bash
+export REPO=/opt/contextdb/source
+export PGADMIN_SERVICE_URL='postgresql://provisioner@pg.example.internal:5432/contextdb'
+(
+  cd "$REPO/hindsight-extensions/contextdb-service/deployment"
+  psql -X "$PGADMIN_SERVICE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+BEGIN;
+SET LOCAL contextdb.boundary_owner = 'contextdb_service';
+SET LOCAL contextdb.boundary_customer = 'customer_sql';
+SET LOCAL contextdb.boundary_schema = 'ctxdb_meta';
+\i pg-role-boundary.sql
+COMMIT;
+SQL
+)
+```
+
+每个实际工作空间 schema 也需单独执行，将 boundary_schema 改为 ctxdb_meta.workspaces.schema_name 中已核对的值。今后创建新空间时，部署方必须继续落实该策略；这不是当前服务的自动能力。同一 schema 内由同一服务角色新建对象时，脚本利用 schema 权限和默认权限提供保护；角色授权、对象所有权改变后需重新检查。
+
+执行后检查客户角色权限（将 schema 和角色名替换为实际值）：
+
+```sql
+SELECT has_schema_privilege('customer_sql', 'ctxdb_meta', 'USAGE') AS can_use_schema,
+       has_schema_privilege('customer_sql', 'ctxdb_meta', 'CREATE') AS can_create_objects;
+-- 两项均应为 false；另用客户账号确认读取 ctxdb_meta.users 被拒绝。
+```
+
+这只能限制受控的普通 PG 账号，不能限制真正的 PG 超级用户、服务对象所有者、可提升权限的云管理账号或主机管理员；系统目录仍可能展示对象名称。它与 API Key 的逐工作空间读写授权是两层不同的控制，不能互相替代。
 
 ## 3 下发配置与第一次启动
 
