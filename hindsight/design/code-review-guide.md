@@ -1,6 +1,6 @@
 # ContextDB 代码检视指南
 
-更新：2026-10-20。本文按模块说明当前实现与检视顺序。本次将 `ddf5c3600` 与四批优化、测试接线及UI简化通过 amend 整理为官方 v1.0.0（`39c65ffe`）之上的单一特性提交，尚未推送。验收源码树为 `ce1c7def06cf26d9450fcef34acbad4e47268e6f`；实际代码提交号用 `git show contextdb/v1.0.0` 核对，提交正文固定本资料仓快照。下列代码链接使用交付分支作路径导航，推送前远程仍为旧代码；正式检视须固定代码与资料提交。
+更新：2026-10-20。本文按模块说明当前实现与检视顺序。`ddf5c3600` 与四批优化、测试接线及UI简化已通过 amend 整理为官方 v1.0.0（`39c65ffe`）之上的单一特性提交，并推送：[a05b808](https://github.com/ZhuQingping/hindsight/commit/a05b80885883b36f879abdb2ce8a9c8f63b0922c)。代码提交正文固定资料快照 `370f8fa`；本次文档后续只更新发布状态与固定代码链接。下列代码链接均定位该提交，正式检视不使用浮动分支冒充固定快照。
 
 完整规格和关键取舍见[设计](contextdb-release-design.md)，接口例子见[curl手册](../api/contextdb-management-api-curl-guide.md)，测试结果见[验证摘要](../testing/contextdb-validation-summary.md)。同步/异步管理、同名重建、内部UUID及失败处理的分析继续保留在设计第5.2～5.3节，不在本指南重复一份。
 
@@ -62,11 +62,11 @@ UI的登录密码只用于界面会话；后台Admin Key保留在UI服务器。�
 
 | 文件 | 负责什么 | 检视重点 |
 | --- | --- | --- |
-| [models.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/models.py) | 定义空间、用户、Key和授权的数据结构、输入约束 | 名称规范化；selected逐空间权限与all统一权限；未知字段拒绝 |
-| [schema.sql](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/schema.sql) | 定义六张管理表、唯一约束、外键、延迟校验及索引 | 空间和用户名称唯一；授权关联UUID；摘要不存明文；反向授权索引 |
-| [repository.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/repository.py) | 执行管理SQL和事务，统一查询身份与授权 | SQL是否绑定对象身份；事务是否完整；Key批量授权；审计及失败状态 |
-| [http.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/http.py) | 注册13个管理操作，解析参数、鉴权和If-Match，构造响应 | 管理员才能访问；201/204及错误码；秘密和原始错误不回显 |
-| [lifecycle.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/lifecycle.py) | 把空间创建/删除的几个步骤串起来，直接等待原生Bank方法 | 不再自建调度器；原生操作前后释放管理连接；失败不冒充整体回滚 |
+| [models.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/models.py) | 定义空间、用户、Key和授权的数据结构、输入约束 | 名称规范化；selected逐空间权限与all统一权限；未知字段拒绝 |
+| [schema.sql](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/schema.sql) | 定义六张管理表、唯一约束、外键、延迟校验及索引 | 空间和用户名称唯一；授权关联UUID；摘要不存明文；反向授权索引 |
+| [repository.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/repository.py) | 执行管理SQL和事务，统一查询身份与授权 | SQL是否绑定对象身份；事务是否完整；Key批量授权；审计及失败状态 |
+| [http.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/http.py) | 注册13个管理操作，解析参数、鉴权和If-Match，构造响应 | 管理员才能访问；201/204及错误码；秘密和原始错误不回显 |
+| [lifecycle.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/lifecycle.py) | 把空间创建/删除的几个步骤串起来，直接等待原生Bank方法 | 不再自建调度器；原生操作前后释放管理连接；失败不冒充整体回滚 |
 
 `Repository`可以理解为“管理数据访问层”，`Lifecycle`是“工作空间流程”，`HTTP`是“协议入口”。创建用户/Key主要是元数据事务；创建空间还要迁移业务schema、初始化原生Bank，因此另有Lifecycle组织步骤。
 
@@ -88,16 +88,16 @@ UI的登录密码只用于界面会话；后台Admin Key保留在UI服务器。�
 
 | 文件 | 负责什么 | 为什么需要 |
 | --- | --- | --- |
-| [security.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/security.py) | 生成随机Key、计算HMAC摘要、提取Bearer凭据 | 把密码学和Header解析集中在一处 |
-| [config.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/config.py) | 读取部署归属及pepper，校验不支持配置；取得原生池并创建Repository | 避免各扩展创建额外连接池或各自解析配置 |
-| [authorization.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/authorization.py) | 保存本次目标认证结果、同步管理调用的受信上下文 | 同一请求减少重复查询；客户端不能伪造管理生命周期权限 |
-| [asgi.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/asgi.py) | 在原生应用外安装ContextDB中间件 | 使用自研启动入口，不改原生API初始化顺序 |
-| [transport.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/transport.py) | 从REST URL识别Bank，处理目录和诊断边界，阻止原生生命周期旁路 | 普通REST、原生Bank路径和MCP挂载均需覆盖 |
-| [tenant.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/tenant.py) | 校验身份，把工作空间映射到PG schema | 回答“这个请求访问哪个schema” |
-| [validator.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/validator.py) | 把操作映射到只读、读写或管理员权限 | 回答“这个身份能否执行这项操作”；原生内部任务也需校验归属 |
-| [mcp.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/mcp.py) | 从当前MCP消息获取Key/Bank，适配目录、工具权限及结果脱敏 | 同一MCP连接可访问多个空间，不能固定沿用初始化时的身份 |
-| [routing.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/routing.py) | 保存本次目标Bank，聚合跨schema Bank目录 | 原生单schema列表不能直接代表实例下全部可见空间 |
-| [diagnostics.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/diagnostics.py) | 对业务Key可见的原生任务响应裁剪敏感字段 | 正常任务进度可读，不因此暴露后台请求配置 |
+| [security.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/security.py) | 生成随机Key、计算HMAC摘要、提取Bearer凭据 | 把密码学和Header解析集中在一处 |
+| [config.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/config.py) | 读取部署归属及pepper，校验不支持配置；取得原生池并创建Repository | 避免各扩展创建额外连接池或各自解析配置 |
+| [authorization.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/authorization.py) | 保存本次目标认证结果、同步管理调用的受信上下文 | 同一请求减少重复查询；客户端不能伪造管理生命周期权限 |
+| [asgi.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/asgi.py) | 在原生应用外安装ContextDB中间件 | 使用自研启动入口，不改原生API初始化顺序 |
+| [transport.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/transport.py) | 从REST URL识别Bank，处理目录和诊断边界，阻止原生生命周期旁路 | 普通REST、原生Bank路径和MCP挂载均需覆盖 |
+| [tenant.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/tenant.py) | 校验身份，把工作空间映射到PG schema | 回答“这个请求访问哪个schema” |
+| [validator.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/validator.py) | 把操作映射到只读、读写或管理员权限 | 回答“这个身份能否执行这项操作”；原生内部任务也需校验归属 |
+| [mcp.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/mcp.py) | 从当前MCP消息获取Key/Bank，适配目录、工具权限及结果脱敏 | 同一MCP连接可访问多个空间，不能固定沿用初始化时的身份 |
+| [routing.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/routing.py) | 保存本次目标Bank，聚合跨schema Bank目录 | 原生单schema列表不能直接代表实例下全部可见空间 |
+| [diagnostics.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/diagnostics.py) | 对业务Key可见的原生任务响应裁剪敏感字段 | 正常任务进度可读，不因此暴露后台请求配置 |
 
 共享认证结果仅在**同一有效调用、同一凭据和同一目标**内使用。新请求、新MCP消息重新认证；不是进程级Key权限缓存。`authorization.py`里的ContextVar可理解为随当前调用传递的变量；它不登记执行者、不持有连接，也不负责取消任务。
 
@@ -132,7 +132,7 @@ UI的登录密码只用于界面会话；后台Admin Key保留在UI服务器。�
 
 `[bankId]`、`[...path]`是Next.js的动态路径写法，不是另一套对象ID。例如浏览器请求`/api/contextdb/workspaces`，由服务器代理转为API的`/ext/contextdb/v1/workspaces`。浏览器拿不到代理配置中的Admin Key。
 
-[交付分支UI目录](https://github.com/ZhuQingping/hindsight/tree/contextdb/v1.0.0/hindsight-control-plane/src)。检视顺序建议：空间页面 → 共享创建表单 → 用户页面 → 请求函数 → 服务器鉴权和代理；不必先读React所有基础组件。
+[固定版本UI目录](https://github.com/ZhuQingping/hindsight/tree/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-control-plane/src)。检视顺序建议：空间页面 → 共享创建表单 → 用户页面 → 请求函数 → 服务器鉴权和代理；不必先读React所有基础组件。
 
 本轮UI简化保留用户目录、Key面板、Key编辑器三个状态边界，组件和局部hook集中在`components/contextdb/`。请求错误分类合入`lib/contextdb-api.ts`，授权比较函数放回唯一使用它的编辑器，删除两份小工具文件。
 
@@ -142,14 +142,14 @@ UI的登录密码只用于界面会话；后台Admin Key保留在UI服务器。�
 
 | 文件 | 负责什么 | 检视重点 |
 | --- | --- | --- |
-| [__main__.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__main__.py) | `python -m hindsight_ext_contextdb`命令入口 | generate-admin-key、migrate等均是本机命令，不是HTTP接口 |
-| [bootstrap.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/bootstrap.py) | 生成/读取持久秘密、初始化/轮换管理员 | 首次离线可完成；重复初始化不换pepper或丢失原Key |
-| [migrations.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/migrations.py) | 初始化管理结构、检查部署归属和结构格式 | 首发版本1；拒绝开发期旧结构，不虚构历史兼容升级 |
-| [deployment.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/deployment.py) | 校验部署JSON、渲染api.env/ui.env、状态检查 | 首版merged/native/english；路径和秘密权限；无任意环境透传 |
-| [preflight.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/preflight.py) | 在迁移前检查PG权限、扩展和检索条件 | 不创建数据库；托管固定英文；手工研究的PGroonga检查不等于本期依赖 |
-| [launch.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/launch.py) | 按进程加载秘密，校验产物并启动API/Worker/UI | UI进程不注入PG、MaaS及pepper环境 |
-| [artifacts.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/artifacts.py) | 构建UI并生成指纹，启动前核对源码/产物 | 当前完整扫描保留；可信固定镜像免扫描仍为TODO |
-| [__init__.py](https://github.com/ZhuQingping/hindsight/blob/contextdb/v1.0.0/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__init__.py) | Python包初始化与管理元数据格式/版本常量 | 不是另一个服务 |
+| [__main__.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__main__.py) | `python -m hindsight_ext_contextdb`命令入口 | generate-admin-key、migrate等均是本机命令，不是HTTP接口 |
+| [bootstrap.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/bootstrap.py) | 生成/读取持久秘密、初始化/轮换管理员 | 首次离线可完成；重复初始化不换pepper或丢失原Key |
+| [migrations.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/migrations.py) | 初始化管理结构、检查部署归属和结构格式 | 首发版本1；拒绝开发期旧结构，不虚构历史兼容升级 |
+| [deployment.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/deployment.py) | 校验部署JSON、渲染api.env/ui.env、状态检查 | 首版merged/native/english；路径和秘密权限；无任意环境透传 |
+| [preflight.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/preflight.py) | 在迁移前检查PG权限、扩展和检索条件 | 不创建数据库；托管固定英文；手工研究的PGroonga检查不等于本期依赖 |
+| [launch.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/launch.py) | 按进程加载秘密，校验产物并启动API/Worker/UI | UI进程不注入PG、MaaS及pepper环境 |
+| [artifacts.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/artifacts.py) | 构建UI并生成指纹，启动前核对源码/产物 | 当前完整扫描保留；可信固定镜像免扫描仍为TODO |
+| [__init__.py](https://github.com/ZhuQingping/hindsight/blob/a05b80885883b36f879abdb2ce8a9c8f63b0922c/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__init__.py) | Python包初始化与管理元数据格式/版本常量 | 不是另一个服务 |
 
 插件的 `scripts/service.sh`、`node-agent.sh`、`run_combined.py` 分别提供服务命令、节点Agent命令入口和单容器进程监督。`deployment/`保存Docker/Compose、PG权限和意图模板；`schemas/`是生成的管理OpenAPI，不是另一个HTTP实现。
 
@@ -199,7 +199,7 @@ git diff --stat 39c65ffe2f140d0c84cee58566cad8900c5b9908 -- hindsight-system-tes
 
 ## 9. 当前结论和后续事项
 
-四批优化已按[模块内聚建议](contextdb-cohesion-review.md)落地，并选择自研测试全部集中插件。响应边界、Key三投影、生产UI门禁、共享检查、固定SQL投影、MCP目录查询和UI状态归属已实现，并与最新UI简化一同纳入本次amend交付；尚未推送。
+四批优化已按[模块内聚建议](contextdb-cohesion-review.md)落地，并选择自研测试全部集中插件。响应边界、Key三投影、生产UI门禁、共享检查、固定SQL投影、MCP目录查询和UI状态归属已实现，并与最新UI简化一同纳入本次amend交付；已推送，固定代码提交见文首。
 
 单次MCP工具目录filter的元数据查询在1/10/1000空间下均为3条：认证、目录归属检查、可见空间；实际工具调用继续按当前Key和目标认证。这不代表一条真实MCP消息总共只有3条SQL，原生可能重复filter，遥测UPDATE另计；无吞吐提升承诺。
 

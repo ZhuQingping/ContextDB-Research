@@ -1,6 +1,6 @@
 # ContextDB 模块内聚与测试组织检视
 
-> 实施状态（2026-10-20）：四批优化及后续UI简化已完成验收，随本次amend整理为单一特性提交，尚未推送。测试组织已选择方案B（自研测试物理集中插件），不再是待决项。本文第1～6节保留实施前的评审与取舍，当前实现看[检视指南](code-review-guide.md)，实际验收看[验证摘要](../testing/contextdb-validation-summary.md)。后端与UI交叉检视已完成，发现的secret重置问题已修复并补回归；没有恢复复杂删除保护。
+> 实施状态（2026-10-20）：四批优化及后续UI简化已完成验收，已通过amend整理为单一特性提交 `a05b808` 并推送。测试组织已选择方案B（自研测试物理集中插件），不再是待决项。本文第1～6节保留实施前的评审与取舍，当前实现看[检视指南](code-review-guide.md)，实际验收看[验证摘要](../testing/contextdb-validation-summary.md)。后端与UI交叉检视已完成，发现的secret重置问题已修复并补回归；没有恢复复杂删除保护。
 
 2026-10-20。对象：[ddf5c3600](https://github.com/ZhuQingping/hindsight/commit/ddf5c360001f1db46f925b1822803ac9bff1119e)，分支`contextdb/v1.0.0`，已推送；官方基线`39c65ffe`（v1.0.0）。本轮由Hindsight、Python、TS、测试、UI五个角色先独立审查，再交叉质疑，根Agent复核证据和裁定范围。**以下都是待实施建议，本轮没有修改代码、配置或测试，没有提交推送。**
 

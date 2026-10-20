@@ -13,7 +13,7 @@
 
 数据库不存在时，外部 PG 部署会失败；Hindsight 不会替管控创建数据库或 RDS。实例启动与工作空间初始化是不同步骤：启动完成后，由管理员在 UI 创建空间，也可调用管理 REST 接口验证。
 
-**版本提醒（2026-10-20）：** 同步管理、四批优化及UI简化以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，尚未推送；代码提交正文固定资料仓版本。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
+**版本提醒（2026-10-20）：** 同步管理、四批优化及UI简化以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，已推送为 `a05b808`；代码提交正文固定资料快照 `370f8fa`。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
 
 <a id="pg-preparation"></a>
 
