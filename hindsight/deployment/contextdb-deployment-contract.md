@@ -1,5 +1,8 @@
 # ContextDB 节点 Agent 部署合同
 
+> 版本更新（2026-10-22）：下述Trace/Webhook适配已进入本地新提交`9fb57bc04`（未推送，父提交003bbe032）。默认Trace关闭、Audit仍禁止开启；固定镜像启动优化O03属于自研部署逻辑，不改变管理功能或权限。
+
+
 本合同是节点自动化的文件与命令接口，不新增网络管理服务。人读顺序见 [集成指南](contextdb-service-integration-guide.md)。插件可用性、API/Worker 拓扑选型和产品边界见总体设计；这里明确如何执行。
 
 ## PG 准备责任
@@ -38,6 +41,11 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | db_pool_max | 每进程主池/读池各自最大连接数，2–100；多个进程和空间池需另计容量 | 默认10 |
 | llm_model | 1–128字符，运维批准的模型；Embedding/Rerank固定，不提供任意环境变量透传 | `deepseek-v4.1-flash` |
 | ca_bundle_file | 可选绝对路径；必须在各容器相同路径存在，另挂载只读CA；不会关闭证书校验 | 默认null |
+| llm_trace_enabled | 布尔值；启用原生LLM正文Trace，输入输出按授权空间读取 | 默认false |
+| webhook_url | 可选HTTP(S)回调地址，不含账户密码；沿用原生地址保护 | 默认null |
+| webhook_secret_file | 签名秘密的绝对路径，0600普通单行文件；配置时必须同时有webhook_url | 默认null |
+| webhook_event_types | 原生事件名数组，渲染为逗号分隔环境值 | 默认["retain.completed"] |
+| webhook_allowed_hosts | 原生受信目标例外列表；仅运维明确批准时填写 | 默认[] |
 
 首版 RDS 固定 native + english，不安装 PGroonga/Groonga。language 是全文验收门槛，不是模型输入语言限制；中文向量召回不等于中文关键词全文。`native + chinese/multilingual` 仍被拒绝。原生其他后端的代码保留，不属于本期RDS部署选项。已使用其他全文索引的库不能靠改一个变量原地切换。
 
@@ -64,7 +72,8 @@ bash hindsight-extensions/contextdb-service/scripts/node-agent.sh validate --con
 | HINDSIGHT_API_MCP_EXTENSION | `hindsight_ext_contextdb.mcp:ContextDBMCPExtension`；MCP_ENABLED=`true`，不设置共享MCP_AUTH_TOKEN |
 | HINDSIGHT_API_MIGRATION_ISOLATION | `false`，沿用受控迁移入口的配置 |
 | HINDSIGHT_API_RUN_MIGRATIONS_ON_STARTUP | `false`，阻止API启动不带工作空间身份的通用schema迁移；空间创建在同步受信管理上下文中显式迁移 |
-| HINDSIGHT_API_LLM_TRACE_ENABLED / HINDSIGHT_API_AUDIT_LOG_ENABLED | 固定false；这些后台功能的独立 schema 路由和存储归属尚未完成验收，不能单独开启 |
+| HINDSIGHT_API_LLM_TRACE_ENABLED / HINDSIGHT_API_AUDIT_LOG_ENABLED | Trace来自llm_trace_enabled，默认false、可选true；Audit仍固定false，原生MCP去重尚未完成 |
+| HINDSIGHT_API_WEBHOOK_URL/SECRET/EVENT_TYPES/ALLOWED_HOSTS | 可选全局投递；来自webhook_url、0600 webhook_secret_file、webhook_event_types、webhook_allowed_hosts，仅写API私有环境 |
 | HINDSIGHT_API_VECTOR_EXTENSION | `pgvector` |
 | HINDSIGHT_API_TEXT_SEARCH_EXTENSION | 首版 text_search=native |
 | HINDSIGHT_API_TEXT_SEARCH_EXTENSION_NATIVE_LANGUAGE | 固定 english；不代表中文关键词全文已支持 |
@@ -92,7 +101,7 @@ PG/插件/网络准备完成
  → validate（只读文件）
  → render（写本地私有配置）
  → service.sh preflight（只读PG）
- → service.sh init（写秘密文件、迁移管理表、导入管理员、显式迁移原生public共享表）
+ → service.sh init（写秘密文件、迁移管理表、导入管理员、准备ctxdb_meta及原生全局维护函数，不迁移public业务表）
  → all（一个前台监督器管理 API/内置 Worker + UI）
  → 业务验收 → 运行
 ```
@@ -127,7 +136,7 @@ bash "$SERVICE" all
 
 配置生成是两个独立原子文件，不是跨文件事务。更新时必须先停止实例，渲染失败不能启动；使用相同意图修正后重跑。初始化仅一个控制者，禁止多节点同时生成同一目录的秘密。
 
-`service.sh init`在管理表初始化之后，显式执行原生`python -m hindsight_api.admin.cli run-db-migration --schema public --embedding-dimension 1024`。该条命令局部禁用TENANT扩展，不做租户发现，只初始化共享任务表所在的public；不变更后续API/Worker扩展配置。该步失败不得启动API。
+`service.sh init`准备管理元数据、管理员身份、私密文件，以及原生全局维护函数（配置的公共schema，默认为public）；不迁移public业务表。创建工作空间时才调用原生迁移初始化目标`ctxdb_ws_<bank_id>`。public保留vector等扩展对象及原生全局维护函数，业务与原生异步任务表均属于工作空间schema。本文对应本地代码提交9fb57bc04（含其父提交修复），尚未推送；不能混用a05b808等旧版本脚本。
 
 升级已有空间的原生业务表时，先停止全部API和Worker，再从`ctxdb_meta.workspaces.schema_name`逐个确定目标schema，按批准的升级步骤执行下面命令。不能不带`--schema`使用通用租户发现，也不能为省事把启动迁移改成true；启动迁移不能代替发行版本明确的升级流程。必须由发行版本的升级手册列出具体目标和回退点。
 
@@ -142,7 +151,7 @@ HINDSIGHT_API_TENANT_EXTENSION='' "$CONTEXTDB_PYTHON" -m hindsight_api.admin.cli
   --schema "$SCHEMA" --embedding-dimension 1024
 ```
 
-这里局部清除Tenant扩展，与public离线迁移相同；不把缺失pepper的裸CLI当成可运行的托管升级入口。完整逐schema循环及失败停止规则见[离线升级步骤](contextdb-service-integration-guide.md#offline-upgrade)。
+这里仅对显式目标schema的迁移局部清除Tenant扩展；不把缺失pepper的裸CLI当成可运行的托管升级入口。完整逐schema循环及失败停止规则见[离线升级步骤](contextdb-service-integration-guide.md#offline-upgrade)。
 
 ## 4 容器交付边界
 
@@ -172,7 +181,7 @@ Compose示例提供只读运行期文件系统、只读秘密卷、临时目录�
 
 首发管理元数据结构版本固定为1。migrate仅初始化新库，或核对已经采用当前结构的数据库；开发期试验结构不作为已发布版本，不自动升级或直接改号。已有试验库先保留数据和配置备份，再使用新的专用数据库验证；不能仅修改metadata_version冒充结构匹配。未来正式发布结构变更时，再从版本1增加有序迁移。
 
-首版不支持原生 Webhook、持久 LLM Trace 和原生业务 Audit：非空 WEBHOOK_URL、缺省或开启的 LLM_TRACE_ENABLED、开启的 AUDIT_LOG_ENABLED 均拒绝。Admin/内部配置不能开启 audit_log_enabled，旧Bank开启审计或enabled Webhook时须先停用再升级。ContextDB管理审计audit_events和运行日志/指标不受影响；详见[功能边界及原因](../design/contextdb-release-design.md)。
+代码9fb57bc04支持可选Trace和原生全局/Bank级Webhook；托管渲染配置默认Trace关闭、未配置全局回调。Audit仍关闭，Admin/内部模板和已有Bank不能开启audit_log_enabled，等待原生MCP审计去重问题独立处理。Trace写入与两空间保留期清理、双Worker的签名与隔离已通过；Webhook重启恢复等完整故障矩阵仍需补验。ContextDB管理审计audit_events不受影响；详见[本轮状态](../design/contextdb-release-design.md)。
 
 
 数据库连接只配置 HINDSIGHT_API_DATABASE_URL；初始化、管理员离线轮换及API/Worker使用相同目标库和专用服务账号。管控预建数据库和安装插件，服务账号运行时须能创建空间schema、表和索引。不支持单独的bootstrap连接地址，遗留设置不能覆盖或替代此变量。

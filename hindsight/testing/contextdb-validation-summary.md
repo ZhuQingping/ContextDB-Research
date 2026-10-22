@@ -1,6 +1,67 @@
 # ContextDB 验证摘要
 
+> **最新本地代码（2026-10-22）：`9fb57bc04`，新增提交，父提交`003bbe032`，未推送。** 本轮复检425 Python／560 UI／75系统／484相关原生测试通过；Audit继续关闭。最新状态见文末“2026-10-22 提交前复检与本地新提交”，前文旧提交及“未提交”表述保留作历史记录。
+
+
+> O01～O08最新方案与状态见[简化清单第16章](../design/contextdb-simplification-plan.md#o01-o08-current-status)。本摘要保留历史验收记录；新增O03/O04/O05方案未实施，O08明确暂不实施，历史测试不能视为新方案通过。
+
 更新：2026-10-20。对象为 `contextdb/v1.0.0` 的完整特性：原 `ddf5c360001f1db46f925b1822803ac9bff1119e` 加四批优化、测试接线与UI简化，通过 amend 归为官方 v1.0.0（`39c65ffe`）之上的单一提交。验收源码树为 `ce1c7def06cf26d9450fcef34acbad4e47268e6f`，已推送为 `a05b80885883b36f879abdb2ce8a9c8f63b0922c`；代码提交正文固定资料快照 `370f8fa`。旧远程快照不能复现本轮新行为。
+
+## O01真实浏览器补验与O02复核（2026-10-21，最新结果）
+
+用户提供的[O01报告](/Users/zhuqingping/Documents/Codex/2026-10-21/pets-plugin-work-pets-openai-curated/outputs/o01-browser/report.md)已读取，与任务证据副本SHA256核对一致。真实Chrome、隔离PG/API及正式UI执行，59张截图；未改源码。**O01已执行，未全部通过**：新增N-P008（390页头溢出）、N-P009（关闭焦点不恢复）、N-P010（超长成员名提示不清楚）；复制反馈通过，但复制内容核对失败、归因未定。三项均待修复，不能沿用前轮独立复核ACCEPT将其关闭。完整复现与清理证据见[质量记录第11章](contextdb-quality-improvement-plan.md#11-o01-补验2026-10-21-真实-chrome)。下文历史“浏览器未执行”保留当时语境，以本节为当前状态。
+
+O02追加最小复核：同一构建镜像在本机Colima（Ubuntu24.04 ARM）中独立运行cryptography50 RSA探针，默认SIGILL/132，临时诊断OPENSSL_armcap=0后通过。无需PG或ContextDB运行即可复现。默认init仍未通过；覆盖后已有完整冒烟通过，云上原样部署尚未验证。见质量记录第12章及`o02-recheck-20261021/results.json`。未改生产默认、依赖或服务。 **用户随后决定跳过本机后续O02验证，转其他开发环境；不是标记通过。** 原因、外部密码库探针及容器验收矩阵见质量记录12.1。
+
+## 夜间质量复核（2026-10-21，独立分支，未提交）
+
+基于c56c7ac17，在`contextdb/quality-20261021-004226`完成新增修复。完整清单、问题闭环、命令与本机证据见[夜间质量记录](contextdb-quality-improvement-plan.md)。下文360/505/67是上一轮，不是本轮计数。
+
+| 本轮最终检查 | 结果 | 边界 |
+| --- | --- | --- |
+| 插件Python / 全UI / 完整系统 | 391 / 523（54文件） / 73通过，零跳过 | 真实PG/API，模型HTTP替身；包括双Worker |
+| 原生相关8文件 / Key合同 | 121 / 1通过 | 非上游全部测试 |
+| 生产UI独立2故事及门禁 | 通过，零跳过 | 已包含在73项，不重复累加；生产HTTP不等于浏览器视觉 |
+| 正式构建、指纹、类型、lint、knip@5、diff-check | 通过 | 原生Python运行目录无变更 |
+| 四项故意破坏保护 | 4/4被目标语义断言检出，控制组通过 | 安全抽样，不是全部变体证明 |
+| 独立检视 | 权限/PG、UI/TS、测试有效性均接受 | 本轮必修项关闭，云环境/视觉仍待验 |
+| Docker | 原样构建成功；默认ARM启动SIGILL失败；诊断覆盖后业务冒烟通过 | Linux ARM/Node24.22，cryptography50；生产默认未修改，详见N-P007 |
+| 完整调用SQL | REST recall 2、MCP recall 6、tools/list 15次元数据语句 | 含遥测；授权1/10空间各3次，非吞吐测试，重复检查待分析 |
+
+修复：空间创建关闭后迟到导航、用户创建损坏201错报成功、prompt preview配置越权、MCP元数据内部异常原文。补强真实初始化默认执行、撤权必须401、拒绝后数据/队列不变、真实原生提交故障恢复；简化User展开ID及无用权限转发。没有新增表、生产参数、原生运行钩子或测试框架。
+
+当前缺口：O01已执行，3项UI待修复及复制内容待归因；默认ARM容器启动、目标x86/ECS/RDS、真实MaaS及生产负载/HA/备份恢复仍未验收。现有服务、用户数据库、源仓及RSIXDB未修改；代码与资料均未自动提交/推送。最终补丁、三份独立复核及测试日志位于任务工件目录。
+
+## 本轮修复验收（2026-10-21，已amend为c56c7ac17，未推送）
+
+以下结果对应S16～S25修复，已amend为`c56c7ac17ff438228d257be42072a12c7f72e7c5`，未推送；不属于旧a05b808。新增夜间质量任务单独记录在[任务清单](contextdb-quality-improvement-plan.md)，不能复用本节结果冒充该任务已执行。原生Python运行目录本轮无修改；实施前的Bank配置响应凭证投影及相关测试保留。生产8888/9999服务和用户数据库未变更，PG5432仅用于创建并销毁随机命名的任务自有部署测试库/角色。
+
+| 范围 | 本轮结果 | 覆盖与边界 |
+| --- | --- | --- |
+| 插件Python全量 | **360通过，零跳过** | 真实隔离元数据PG；本次显式提供测试管理员URL，包含真实service.sh init、非超级用户新库、重复初始化及public无表 |
+| 全部UI测试 | **505通过，54文件，零跳过** | 原生UI与插件测试共同运行；TZ=UTC。含secret保留/清除/复制竞态、读取失败、选择器分页搜索、locale、users空间导航反例 |
+| ContextDB完整系统故事 | **67通过，零跳过** | 两Worker、原生SDK/REST/MCP、同步生命周期/重建、默认模板、知识/记忆、真实生产UI代理及权限。模型为确定性替身 |
+| 生产UI双Worker独立门禁 | **2通过，零跳过** | 另行重跑112故事，现有JUnit完整性检查通过；已包含在67项范围内，不重复累加 |
+| 新增chunk专项 | **4通过** | 两种文档ID×两Worker；SDK异步retain→等待完成→recall含chunks→list/get，三类合法Key、跨空间、匿名/无效/吊销及不存在 |
+| 原生相关回归 | **121通过** | chunk codec、扩展上下文、透传、MCP/tenant扩展及schema模式等8文件；本轮未重跑原生全量或模型质量测试 |
+| 跨语言Key合同 | **1通过** | 既有提取器、响应字段/required/nullable/enum合同 |
+| 正式生产UI构建 | **通过** | 临时隔离源码和依赖克隆构建，Next TypeScript与standalone成功；manifest完整性及与当前源码指纹匹配 |
+| 静态检查 | **通过** | 仓库lint hook、类型、diff-check、与CI一致的knip@5 files/dependencies阻断检查；advisory unused保留原生告警 |
+| 独立检视 | **代码/自动化范围无阻塞项** | 后端、UI及测试完整性只读检视；导航误判、搜索/日期/public断言问题已补齐并复核 |
+
+S16完整系统fixture不再预迁移public；全部故事完成后、停止自有进程前，明确断言public没有表。因此不是通过测试准备补建public依赖。public仍保留插件类型、函数等对象。没有删除当前用户库中的任何历史表；旧库受控清理由用户另行安排。
+
+本轮出现的验证问题已核对：隔离构建的node_modules外部软链接被Turbopack拒绝，改为任务目录内APFS依赖克隆；随后构建发现测试误用Testing Library的exact参数，已移除并重构建通过。最终全量Python运行需显式PYTHONPATH指向源码扩展，根lint的uv sync后扩展并非根workspace已安装包；修正调用环境后重跑，不以跳过或改产品断言掩盖。早期失败日志保留。
+
+独立UI检视发现`/banks/users`误判，改为完整管理路径/locale白名单并补两项反例。测试检视补强了运行后public断言、Key日期、慢搜索迟到与clear复位。没有新增内核钩子、配置、管理表、测试框架或复杂生命周期保护。
+
+**未验收：** 本机浏览器工具apps/browsers为空，native pipe启动失败，iab不可用；未完成真实浏览器390/1024/1440px、浅深色、焦点/键盘和真实剪贴板验收，不能用JSDOM或HTTP代理故事替代。S25/S26保留此缺口。Node为本机23.11；Node24/Linux、原样Docker、远程CI、ECS/RDS、真实MaaS、生产性能与备份恢复未执行。S13固定镜像启动免扫描仍为TODO。
+
+主要证据：`/tmp/contextdb-python-acceptance.log/xml`、`/tmp/contextdb-ui-acceptance.log`、`/tmp/contextdb-system-acceptance.log/xml`、`/tmp/contextdb-ui-production-acceptance.log/xml`、`/tmp/contextdb-chunk-system-expanded.log`、`/tmp/contextdb-native-regression.log`、`/tmp/contextdb-production-build-final.log`、`/tmp/contextdb-lint-acceptance.log`、`/tmp/contextdb-types-acceptance.log`、`/tmp/contextdb-knip5-acceptance.log`。本机任务工件目录由`/tmp/contextdb-current-a05-fixes-path`定位。日志、秘密和构建产物不进代码仓。
+
+## a05b808原提交验收记录（2026-10-20，历史）
+
+下述结果保留原时点，本轮secret交互和public表初始化行为以上文为准。
 
 ## 完整特性提交前复核（2026-10-20）
 
@@ -93,6 +154,26 @@ MCP测量限于单次工具目录filter：1/10/1000空间、all/selected均为1�
 
 此前真实 MaaS、单容器部署、PG SSL 渲染和 PGroonga 试验对应旧实现，保留于[历史验证材料](../archive/2026-10-19-before-reorganization/design/contextdb-service-research-validation.md)。不能以这些结果宣称本轮原样容器、真实模型或目标云环境已经通过。Colima ARM 曾使用 `OPENSSL_armcap=0` 兼容覆盖，正式镜像未写入该覆盖。
 
-目标 ECS/RDS 原样启动、插件版本/权限/网络、混合负载及延迟、备份/PITR和故障恢复、依赖与镜像安全仍须验收。首版 native+english 覆盖英文全文，中文向量可用性不能替代中文关键词全文验收。R05可信固定镜像免启动扫描仍为 TODO，当前完整校验保留。后续事项统一在[设计 TODO](../design/contextdb-release-design.md#本轮实现收敛与-todo)维护。
+目标 ECS/RDS 原样启动、插件版本/权限/网络、混合负载及延迟、备份/PITR和故障恢复、依赖与镜像安全仍须验收。首版 native+english 覆盖英文全文，中文向量可用性不能替代中文关键词全文验收。R05/O03方案已于2026-10-21确认：固定镜像在构建/CI检查一致性，运行时参照原生直接启动；源码部署保留检查。代码待实施，当前仍执行启动扫描；详见简化清单第11章。后续事项统一在[设计 TODO](../design/contextdb-release-design.md#本轮实现收敛与-todo)维护。
 
 工作空间删除前须由管理员停止新业务，并等待已受理请求与原生后台工作结束；本版不提供并发删除重建时的完整执行隔离。手工验证使用[API/curl 手册](../api/contextdb-management-api-curl-guide.md)，部署使用[联调指南](../deployment/contextdb-service-integration-guide.md)。
+
+
+## 2026-10-22 提交前复检与本地新提交
+
+验证代码：本地新提交`9fb57bc04`，父提交003bbe032；未推送。
+
+| 本轮重新执行 | 结果 |
+| --- | --- |
+| 插件Python | 425通过，零跳过 |
+| UI | 560通过，55文件，TZ=UTC、2 workers |
+| 系统 | 75通过，双Worker、真实隔离PG、匹配生产UI |
+| 相关原生MCP/扩展/Webhook/Trace | 484通过；缺Groq凭据的真实模型用例在命令中明确排除 |
+| 维护函数测试独立执行 | 修复前失败；修复后1通过；完整回归也通过 |
+| 静态及构建检查 | TypeScript、lint、blocking knip、当前源码/产物指纹、diff检查通过 |
+| 生产UI门禁 | 从完整系统XML提取两个真实执行项，通过严格JUnit检查；不重复累计为新测试 |
+| Git提交钩子 | 全部通过；原生运行代码无本轮差异 |
+
+证据目录：`/Users/zhuqingping/Work/Database/Context/test/contextdb-amend-review-20261022/`，见review-report.md。目录沿用先前任务名，实际按最新指令创建新commit，未amend。
+
+未完成项：Audit保持关闭；O02、真实MaaS/ECS/RDS及生产负载/恢复、中文全文、O07、Bank API统一不在本轮验收范围；O04全链路量化和Trace/Webhook完整故障矩阵仍需补验。本轮未重新操作浏览器，先前匹配源码的Chrome证据保留。

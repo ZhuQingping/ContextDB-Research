@@ -1,5 +1,8 @@
 # ContextDB 独享版：管控与节点部署指南
 
+> 版本更新（2026-10-22）：下述Trace/Webhook适配已进入本地新提交`9fb57bc04`（未推送，父提交003bbe032）。默认Trace关闭、Audit仍禁止开启；固定镜像启动优化O03属于自研部署逻辑，不改变管理功能或权限。
+
+
 本指南用于管控、ECS 节点 Agent 与 Hindsight 开发人员联调。字段规范及自动化入口见 [部署合同](contextdb-deployment-contract.md)。必须使用同一次构建的 ContextDB API、扩展和 UI；上游通用镜像不包含本仓新增功能。
 
 ## 1 谁负责什么
@@ -13,7 +16,7 @@
 
 数据库不存在时，外部 PG 部署会失败；Hindsight 不会替管控创建数据库或 RDS。实例启动与工作空间初始化是不同步骤：启动完成后，由管理员在 UI 创建空间，也可调用管理 REST 接口验证。
 
-**版本提醒（2026-10-20）：** 同步管理、四批优化及UI简化以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，已推送为 `a05b808`；代码提交正文固定资料快照 `370f8fa`。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
+**历史版本提醒（2026-10-20，不作为本次部署版本）：** 同步管理、四批优化及UI简化以 `contextdb/v1.0.0` 的单一特性提交交付，采用 amend 整理，已推送为 `a05b808`；代码提交正文固定资料快照 `370f8fa`。修改前的 `1b96e975` 已保存补丁作历史对照。原生基线为官方 v1.0.0（`39c65ffe`）。部署脚本使用扩展 `hindsight_ext_contextdb.asgi:create_app`，复用原生生命周期并统一校验 REST/MCP；其他环境须使用同版源码、扩展、API、UI 和脚本，不绕过 `service.sh api/all` 直接启动原生 API CLI。
 
 <a id="pg-preparation"></a>
 
@@ -215,7 +218,19 @@ status校验私密文件格式与权限、API健康正文，并用后台Admin Ke
 
 首版固定一个容器合并部署，先减少交付复杂度；以后明确有独立扩容、资源隔离需求时再扩展分容器。历史对照见[补充调研](../archive/2026-10-19-before-reorganization/design/contextdb-service-research-validation.md)，当前决策见[设计](../design/contextdb-release-design.md#api-worker-deployment)。
 
-渲染器固定关闭原生持久 LLM Trace/Audit，并禁止原生 Webhook；这些后台功能的独立 schema 路由和存储归属尚未完成验收，不能临时 export 打开。ContextDB管理审计继续保留，详情见[首版限制](../design/contextdb-release-design.md)。
+代码9fb57bc04支持可选Trace和全局/Bank级Webhook。可在已有intent.json中增加以下字段，保留原有PG、MaaS和UI配置，再按原流程validate、render及启动；运行中的实例先停服务，再使用render --replace并重启。签名输入文件须0600，只在render阶段读取，值进入API私有配置，不进入UI配置。
+
+```json
+{
+  "llm_trace_enabled": true,
+  "webhook_url": "https://hooks.example.com/contextdb",
+  "webhook_secret_file": "/srv/contextdb/input/webhook-secret",
+  "webhook_event_types": ["retain.completed"],
+  "webhook_allowed_hosts": []
+}
+```
+
+这是可选字段片段，不是替换整个intent的完整配置。Bank级Webhook继续使用原生REST，由Admin创建/更新/删除；全局和Bank回调可叠加。原生Audit仍固定关闭，原因是尚未修正的MCP重复审计；不使用临时export绕过检查。Trace正文含客户输入/模型输出，不承诺自动脱敏，已授权成员按原生策略可读取本空间Trace。详细验收与限制见[设计](../design/contextdb-release-design.md)。本节对应本地提交9fb57bc04，尚未推送；003bbe032不包含本节适配。
 
 源码镜像构建使用BuildKit。依赖安装通过锁文件固定；Docker构建关闭npm安装时的隐式audit/fund网络请求以保证构建职责明确，发行流水线须单独执行批准的依赖/镜像安全扫描，不能把安装成功当成安全扫描通过。
 
@@ -260,7 +275,7 @@ async def schemas():
         if busy:
             raise SystemExit('实例尚有未完成工作；先核对排空及恢复，不执行迁移')
         rows = await conn.fetch('SELECT schema_name FROM ctxdb_meta.workspaces ORDER BY schema_name')
-        return ['public', *[row['schema_name'] for row in rows]]
+        return [row['schema_name'] for row in rows]
     finally:
         await conn.close()
 
@@ -271,7 +286,7 @@ for schema in asyncio.run(schemas()):
 PY
 ```
 
-脚本先核对当前结构、实例归属、原生审计/Webhook限制及空间状态，再显式迁移public及各空间；不触发未绑定引擎的通用租户发现。检查空间状态不能证明任务已结束，排空和停止全部写入者仍须由运维确认。升级后重开全部连接池，逐空间验证REST/MCP，再恢复入口。仅在发布说明要求时运行；不要手改metadata_version绕过检查。
+脚本先核对当前结构、实例归属、原生审计限制及空间状态，再仅迁移已记录的各空间schema，public不迁移业务表；不触发未绑定引擎的通用租户发现。检查空间状态不能证明任务已结束，排空和停止全部写入者仍须由运维确认。升级后重开全部连接池，逐空间验证REST/MCP，再恢复入口。仅在发布说明要求时运行；不要手改metadata_version绕过检查。
 
 管理员Key遗失时，服务所有者停服务后离线轮换，保留原pepper。此操作更新PG摘要、Admin Key和UI秘密文件，不覆盖业务Key：
 
