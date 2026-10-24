@@ -1,0 +1,11 @@
+{
+  "source_unchanged": true,
+  "runtime_generated_files": ".next/server/route-cache/**",
+  "restart_guard_false_positive": true,
+  "compiled_files_modified": false,
+  "manifest_rewritten": false,
+  "cache_backed_up": true,
+  "verified_after_cache_removed": true,
+  "ui_restart_pid": 53466,
+  "code_fix_applied": false
+}

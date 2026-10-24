@@ -1,0 +1,68 @@
+[
+  {
+    "id": "default-search-path",
+    "sql": "SHOW search_path",
+    "sqlstate": "00000",
+    "result": [
+      {
+        "search_path": "\"$user\", public"
+      }
+    ]
+  },
+  {
+    "id": "default-pg-trgm-schema",
+    "sql": "SELECT extname,nspname FROM pg_extension JOIN pg_namespace ON extnamespace=pg_namespace.oid WHERE extname='pg_trgm'",
+    "sqlstate": "00000",
+    "result": [
+      {
+        "extname": "pg_trgm",
+        "nspname": "public"
+      }
+    ]
+  },
+  {
+    "id": "existing-vs-future-acl",
+    "sql": "SELECT has_table_privilege('doc_app_20261024_cx','public.before_cx','SELECT') AS existing_table,has_table_privilege('doc_app_20261024_cx','public.after_cx','INSERT') AS future_table,has_sequence_privilege('doc_app_20261024_cx','public.after_cx_id_seq','USAGE') AS serial_sequence,has_schema_privilege('doc_app_20261024_cx','public','CREATE') AS create_public",
+    "sqlstate": "00000",
+    "result": [
+      {
+        "existing_table": false,
+        "future_table": true,
+        "serial_sequence": false,
+        "create_public": false
+      }
+    ]
+  },
+  {
+    "id": "valid-until",
+    "sql": "ALTER ROLE doc_app_20261024_cx VALID UNTIL '2027-12-31'",
+    "sqlstate": "00000",
+    "result": []
+  },
+  {
+    "id": "valid-until-read",
+    "sql": "SELECT rolname,rolvaliduntil FROM pg_roles WHERE rolname='doc_app_20261024_cx'",
+    "sqlstate": "00000",
+    "result": [
+      {
+        "rolname": "doc_app_20261024_cx",
+        "rolvaliduntil": "2027-12-30 16:00:00+00:00"
+      }
+    ]
+  },
+  {
+    "id": "schema-public-acl",
+    "sql": "SELECT nspname,nspacl FROM pg_namespace WHERE nspname='public'",
+    "sqlstate": "00000",
+    "result": [
+      {
+        "nspname": "public",
+        "nspacl": [
+          "pg_database_owner=UC/pg_database_owner",
+          "=U/pg_database_owner",
+          "doc_app_20261024_cx=U/pg_database_owner"
+        ]
+      }
+    ]
+  }
+]

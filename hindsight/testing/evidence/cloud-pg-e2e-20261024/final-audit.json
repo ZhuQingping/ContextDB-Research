@@ -1,0 +1,50 @@
+{
+  "source_commit": "9fb57bc0470e7784d8766fdfb19d837f603b9638",
+  "api_ready": 200,
+  "ui_http": 307,
+  "root_membership_unchanged": true,
+  "database_count": 6,
+  "role_count": 33,
+  "temporary_customer_roles": 0,
+  "temporary_customer_databases": 0,
+  "persisted_database": "contextbase_e2e_20261024",
+  "persisted_role": "cb_e2e_service_20261024",
+  "service_identity": {
+    "current_user": "cb_e2e_service_20261024",
+    "current_database": "contextbase_e2e_20261024",
+    "ssl": true,
+    "tls_version": "TLSv1.3",
+    "cipher": "TLS_AES_256_GCM_SHA384"
+  },
+  "runtime_connections": [
+    {
+      "usename": "cb_e2e_service_20261024",
+      "application_name": "",
+      "count": 3
+    }
+  ],
+  "public_business_table_count": 0,
+  "metadata_tables": 6,
+  "workspaces": [
+    {
+      "bank_id": "cloud_merged_a",
+      "state": "active"
+    },
+    {
+      "bank_id": "cloud_merged_b",
+      "state": "active"
+    },
+    {
+      "bank_id": "cloud_split_a",
+      "state": "active"
+    },
+    {
+      "bank_id": "cloud_split_b",
+      "state": "active"
+    }
+  ],
+  "temporary_customer_schema_count": 0,
+  "active_task_count": 0,
+  "supabase_user_table_count": 50,
+  "supabase_policy_count": 0
+}

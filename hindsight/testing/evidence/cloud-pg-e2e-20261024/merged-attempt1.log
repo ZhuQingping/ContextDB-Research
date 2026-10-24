@@ -1,0 +1,53 @@
+api-readiness PASS
+ui-login PASS
+ui-proxy-management PASS
+admin-identity PASS
+workspace-create-a PASS
+workspace-create-b PASS
+workspace-search PASS
+workspace-search-result PASS
+workspace-get PASS
+workspace-etag PASS
+user-create PASS
+user-list PASS
+user-list-match PASS
+user-edit PASS
+key-create-rw PASS
+key-create-ro PASS
+key-create-other PASS
+key-list PASS
+key-list-secret-not-returned PASS
+key-edit PASS
+anonymous-denied PASS
+invalid-key-denied PASS
+cross-space-denied PASS
+readonly-write-denied PASS
+business-management-denied PASS
+business-config-projection PASS
+business-config-has-no-visible-fields PASS
+sdk-async-retain-accepted PASS
+worker-completes-retain PASS
+sdk-readonly-recall PASS
+sdk-list-document-chunks PASS
+sdk-get-chunk-rw PASS
+sdk-get-chunk-ro PASS
+sdk-get-chunk-admin PASS
+cross-space-chunk-denied PASS
+other-schema-empty PASS
+sdk-reflect PASS
+mcp-tool-scope FAIL
+FAILED AssertionError
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x10a464790>
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x10a4464d0>
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x10a467110>
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x10a453850>
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x10a44d5d0>, 8105143.70262525)])']
+connector: <aiohttp.connector.TCPConnector object at 0x10a447a10>
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x10a44f550>, 8105120.315240291)])']
+connector: <aiohttp.connector.TCPConnector object at 0x10a452550>

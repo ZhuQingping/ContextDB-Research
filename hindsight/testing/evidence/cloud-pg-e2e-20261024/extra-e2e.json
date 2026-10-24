@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "case": "all-read-cloud_merged_a",
+      "passed": true,
+      "result_count": 3
+    },
+    {
+      "case": "all-read-cloud_merged_b",
+      "passed": true,
+      "result_count": 0
+    },
+    {
+      "case": "all-read-cloud_split_a",
+      "passed": true,
+      "result_count": 3
+    },
+    {
+      "case": "all-read-cloud_split_b",
+      "passed": true,
+      "result_count": 0
+    },
+    {
+      "case": "key-authorization-all-to-selected",
+      "passed": true
+    },
+    {
+      "case": "updated-key-loses-other-space",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "case": "existing-bank-empty-put-is-read-noop",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "case": "native-bank-change-denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "case": "native-unregistered-bank-create-denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "case": "native-bank-delete-denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "case": "business-key-not-ui-password",
+      "passed": true,
+      "status": 401
+    },
+    {
+      "case": "revoked-key-mcp-denied",
+      "passed": true,
+      "status": 401
+    }
+  ]
+}

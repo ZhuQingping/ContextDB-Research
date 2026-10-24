@@ -1,0 +1,35 @@
+[
+  {
+    "severity": "INFO",
+    "message": "Worker cloud-split-worker claimed 1 tasks (0 consolidation): batch_retain:1 (schemas: ctxdb_ws_cloud_split_a)",
+    "timestamp": "2026-10-24T02:53:13.787005+00:00",
+    "logger": "hindsight_api.worker.poller"
+  },
+  {
+    "severity": "INFO",
+    "message": "Marked async operation as completed: 8f57a378-12d9-4e78-81b3-26fdcea9d19b",
+    "timestamp": "2026-10-24T02:53:45.326936+00:00",
+    "logger": "hindsight_api.engine.memory_engine",
+    "tenant": "ctxdb_ws_cloud_split_a"
+  },
+  {
+    "severity": "INFO",
+    "message": "Updated parent operation 21578219-d40d-4d8d-9c86-7307d14af37b to status 'completed' (all children done)",
+    "timestamp": "2026-10-24T02:53:45.610780+00:00",
+    "logger": "hindsight_api.engine.memory_engine",
+    "tenant": "ctxdb_ws_cloud_split_a"
+  },
+  {
+    "severity": "INFO",
+    "message": "Worker cloud-split-worker claimed 1 tasks (1 consolidation): consolidation:1 (schemas: ctxdb_ws_cloud_split_a)",
+    "timestamp": "2026-10-24T02:53:45.960418+00:00",
+    "logger": "hindsight_api.worker.poller"
+  },
+  {
+    "severity": "INFO",
+    "message": "Marked async operation as completed: 745c2f5f-d759-4930-b428-bbc2a5b89e5b",
+    "timestamp": "2026-10-24T02:54:24.617670+00:00",
+    "logger": "hindsight_api.engine.memory_engine",
+    "tenant": "ctxdb_ws_cloud_split_a"
+  }
+]

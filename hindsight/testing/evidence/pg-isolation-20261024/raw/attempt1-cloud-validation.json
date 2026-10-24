@@ -1,0 +1,9 @@
+[
+  {
+    "id": "role-iso_20261024_service_cx",
+    "sql": "CREATE ROLE iso_20261024_service_cx LOGIN PASSWORD '<generated-secret>' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS",
+    "error": "password is too long.",
+    "sqlstate": "22023",
+    "expected": null
+  }
+]

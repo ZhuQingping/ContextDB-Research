@@ -1,0 +1,81 @@
+- button "所有工作空间"
+- combobox:
+  - generic: cloud_merged_a
+- button "用户管理"
+- button "添加文档":
+  - generic: 添加文档
+- link "GitHub":
+  - /url: https://github.com/vectorize-io/hindsight
+  - generic: GitHub
+- button "切换到深色模式":
+- button "切换语言":
+- button "Logout":
+- button "展开侧边栏":
+  - navigation:
+    - list:
+      - link "首页":
+        - /url: /banks/cloud_merged_a?view=home
+      - link "记忆":
+        - /url: /banks/cloud_merged_a?view=data
+      - link "知识库":
+        - /url: /banks/cloud_merged_a?view=knowledge
+      - link "Recall":
+        - /url: /banks/cloud_merged_a?view=recall
+      - link "Reflect":
+        - /url: /banks/cloud_merged_a?view=reflect
+      - link "文档":
+        - /url: /banks/cloud_merged_a?view=documents
+      - link "实体":
+        - /url: /banks/cloud_merged_a?view=entities
+      - link "工作空间配置":
+        - /url: /banks/cloud_merged_a?view=profile
+  - generic "Hindsight API v1.0.0": v1.0.0
+  - button "展开侧边栏":
+- main:
+  - heading "Recall 分析器" [level=1]
+  - paragraph: 用详细的追踪信息和检索方法分析记忆 Recall。
+  - textbox "你想召回什么？": Who maintains Lighthouse?
+  - button "召回"
+  - generic: 类型：
+  - button "世界": 世界
+  - button "经历": 经历
+  - button "观察": 观察
+  - button "要搜索的记忆层：世界事实、工作空间自身的经历以及整合后的观察。":
+  - generic: 预算
+  - button "检索的力度。预算越高，探索的候选和图谱链接越多：召回更好，延迟也更高。":
+  - radiogroup "预算":
+    - radio "低"
+    - radio "中" [checked]
+    - radio "高"
+  - button "选项":
+    - generic: 选项
+  - generic: 结果：
+  - generic: "2"
+  - generic: 耗时：
+  - generic: 3.41s
+  - generic: 已访问节点：
+  - generic: "2"
+  - button "结果"
+  - button "追踪"
+  - button "JSON"
+  - generic: "1"
+  - paragraph: "Alice maintains the Lighthouse project; the project verification code is LIGHTHOUSE-20261024. | Involving: Alice"
+  - generic: world
+  - generic "2026-10-24T02:47:53.838523+00:00":
+    - text: 提及于 2026年10月24日 02:47
+  - generic: Lighthouse
+  - generic: Alice
+  - generic "1.0935519239742344": "1.094"
+  - generic: 分数
+  - generic: "2"
+  - paragraph: "Bob maintains the separate Atlas project. | Involving: Bob"
+  - generic: world
+  - generic "2026-10-24T02:47:53.848523+00:00":
+    - text: 提及于 2026年10月24日 02:47
+  - generic: Atlas
+  - generic: Bob
+  - generic "0.005417237897271502": "0.005417"
+  - generic: 分数
+- region "Notifications alt+T"
+- alert: Hindsight Control Plane
+- generic: "0"

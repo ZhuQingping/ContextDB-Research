@@ -1,0 +1,1 @@
+{"command": ["/Users/zhuqingping/Work/Database/Context/hindsight/.venv/bin/python", "-m", "hindsight_ext_contextdb", "build-ui", "--source-root", "/Users/zhuqingping/Work/Database/Context/hindsight/.git/deployments/cloud-pg-e2e-20261024/source"], "exit_code": 0}

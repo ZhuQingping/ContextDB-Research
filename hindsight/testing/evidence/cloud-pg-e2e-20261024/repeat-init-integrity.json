@@ -1,0 +1,14 @@
+{
+  "secrets_unchanged": true,
+  "exit_code": 0,
+  "before_sha256": {
+    "admin-key.json": "6d50cddb063ae7321ce6362872cd524027cc2c05bfe3022ed98f58368aa5dd2a",
+    "api-secrets.json": "5e3946050ed925c0d7c69d9ea85e7b0c6f0e7e98671ead20cce624e2f0f623a7",
+    "ui-secrets.json": "493af21e3e2242fc159ae4886e7a40840aefb0f1d5576f84e2443de25f820fb4"
+  },
+  "after_sha256": {
+    "admin-key.json": "6d50cddb063ae7321ce6362872cd524027cc2c05bfe3022ed98f58368aa5dd2a",
+    "api-secrets.json": "5e3946050ed925c0d7c69d9ea85e7b0c6f0e7e98671ead20cce624e2f0f623a7",
+    "ui-secrets.json": "493af21e3e2242fc159ae4886e7a40840aefb0f1d5576f84e2443de25f820fb4"
+  }
+}

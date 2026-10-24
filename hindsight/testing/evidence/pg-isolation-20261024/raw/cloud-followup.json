@@ -1,0 +1,354 @@
+[
+  {
+    "id": "role-follow_service_20261024_cx",
+    "sql": "CREATE ROLE follow_service_20261024_cx LOGIN PASSWORD '<generated-secret>' NOSUPERUSER NOCREATEROLE NOCREATEDB NOREPLICATION NOBYPASSRLS",
+    "result": "CREATE ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "role-follow_customer_20261024_cx",
+    "sql": "CREATE ROLE follow_customer_20261024_cx LOGIN PASSWORD '<generated-secret>' NOSUPERUSER NOCREATEROLE NOCREATEDB NOREPLICATION NOBYPASSRLS",
+    "result": "CREATE ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-auto-membership-before-explicit-grant",
+    "sql": "SELECT r.rolname,m.admin_option,m.inherit_option,m.set_option FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid WHERE m.member=(SELECT oid FROM pg_roles WHERE rolname='root') AND r.rolname IN ('follow_service_20261024_cx','follow_customer_20261024_cx')",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "grant-temporary",
+    "sql": "GRANT follow_service_20261024_cx TO root;GRANT follow_customer_20261024_cx TO root",
+    "result": "GRANT ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "create-db",
+    "sql": "CREATE DATABASE follow_db_20261024_cx OWNER follow_service_20261024_cx TEMPLATE template0",
+    "result": "CREATE DATABASE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "restrict-db",
+    "sql": "REVOKE ALL ON DATABASE follow_db_20261024_cx FROM PUBLIC;GRANT CONNECT ON DATABASE follow_db_20261024_cx TO follow_customer_20261024_cx",
+    "result": "GRANT",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "customer-schema",
+    "sql": "CREATE SCHEMA own_customer_cx AUTHORIZATION follow_customer_20261024_cx;REVOKE CREATE ON SCHEMA public FROM PUBLIC",
+    "result": "REVOKE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "representative-objects",
+    "sql": "CREATE SCHEMA meta_cx;CREATE SCHEMA bank_cx;CREATE TABLE meta_cx.users(id int primary key,name text);INSERT INTO meta_cx.users VALUES(1,'protected');CREATE TABLE bank_cx.banks(id int primary key,content text);INSERT INTO bank_cx.banks VALUES(1,'memory');CREATE SEQUENCE bank_cx.seq;CREATE TABLE bank_cx.future(id int);CREATE TYPE bank_cx.future_type AS ENUM('protected');CREATE FUNCTION bank_cx.future_fn() RETURNS text LANGUAGE sql AS $$SELECT 'protected'$$",
+    "result": "CREATE FUNCTION",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "boundary-meta_cx",
+    "sql": "-- EXAMPLE ONLY: never run this against an existing customer database unchecked.\n-- Run as the platform provisioning principal in the ContextDB service database.\n-- owner/customer roles and the protected schema must already exist. Repeat for\n-- ctxdb_meta and each workspace schema, including every newly created workspace.\n-- Supply identifiers using session settings (no password is embedded here):\n--   SET contextdb.boundary_owner = 'platform_service';\n--   SET contextdb.boundary_customer = 'customer_sql';\n--   SET contextdb.boundary_schema = 'ctxdb_meta';\n--   \\i pg-role-boundary.sql\n-- The protected database must also be platform-owned; give customers their own\n-- schema for SQL work, not ownership of this database or the protected schemas.\n-- This example does NOT implement cloud-provider privileged-account restrictions.\n-- True PG SUPERUSER, host OS root, and cloud roles able to assume the owner or\n-- override ACLs cannot be contained by this SQL. Verify provider semantics first.\n-- Merely checking rolsuper=false is insufficient (e.g. Tencent cloud's restricted\n-- superuser role has BYPASSRLS and extra object privileges).\n-- References: https://www.postgresql.org/docs/18/role-attributes.html\n-- https://www.postgresql.org/docs/18/ddl-schemas.html\n-- https://www.postgresql.org/docs/18/sql-alterdefaultprivileges.html\n\nDO $boundary$\nDECLARE\n    owner_name text := current_setting('contextdb.boundary_owner', true);\n    customer_name text := current_setting('contextdb.boundary_customer', true);\n    schema_name text := current_setting('contextdb.boundary_schema', true);\n    owner_id oid;\n    customer_id oid;\n    schema_id oid;\n    dangerous_role text;\nBEGIN\n    IF COALESCE(owner_name, '') = '' OR COALESCE(customer_name, '') = ''\n       OR COALESCE(schema_name, '') = '' OR owner_name = customer_name\n       OR schema_name IN ('public', 'information_schema') OR schema_name LIKE 'pg\\_%' ESCAPE '\\' THEN\n        RAISE EXCEPTION 'Supply distinct pre-created owner/customer roles and a protected non-system schema'\n            USING ERRCODE = '22023';\n    END IF;\n    SELECT oid INTO owner_id FROM pg_roles WHERE rolname = owner_name;\n    SELECT oid INTO customer_id FROM pg_roles WHERE rolname = customer_name;\n    IF owner_id IS NULL OR customer_id IS NULL THEN\n        RAISE EXCEPTION 'Both roles must already exist' USING ERRCODE = '22023';\n    END IF;\n    IF EXISTS (SELECT 1 FROM pg_roles WHERE oid = customer_id\n               AND (rolsuper OR rolcreaterole OR rolcreatedb OR rolreplication OR rolbypassrls)) THEN\n        RAISE EXCEPTION 'Customer must be NOSUPERUSER NOCREATEROLE NOCREATEDB NOREPLICATION NOBYPASSRLS'\n            USING ERRCODE = '42501';\n    END IF;\n    -- MEMBER catches indirect grants too, even if INHERIT/SET are disabled.\n    IF pg_has_role(customer_id, owner_id, 'MEMBER') OR EXISTS\n       (SELECT 1 FROM pg_database WHERE datname = current_database() AND datdba = customer_id) THEN\n        RAISE EXCEPTION 'Customer cannot own this database or belong to the service owner role'\n            USING ERRCODE = '42501';\n    END IF;\n    -- Hindsight resolves shared extension functions/types in public. Customer\n    -- CREATE there would make public an untrusted search_path entry. Provisioning\n    -- may separately REVOKE CREATE ON SCHEMA public FROM PUBLIC, customer_sql;\n    -- keep its USAGE and extension-function permissions intact.\n    IF has_schema_privilege(customer_id, 'public', 'CREATE') THEN\n        RAISE EXCEPTION 'Customer must not have CREATE on shared public schema'\n            USING ERRCODE = '42501';\n    END IF;\n    FOREACH dangerous_role IN ARRAY ARRAY[\n        'pg_read_all_data', 'pg_write_all_data', 'pg_read_server_files',\n        'pg_write_server_files', 'pg_execute_server_program', 'pg_checkpoint',\n        'pg_maintain', 'pg_signal_backend'\n    ] LOOP\n        IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = dangerous_role)\n           AND pg_has_role(customer_id, dangerous_role, 'MEMBER') THEN\n            RAISE EXCEPTION 'Customer belongs to privileged role %', dangerous_role USING ERRCODE = '42501';\n        END IF;\n    END LOOP;\n    SELECT oid INTO schema_id FROM pg_namespace WHERE nspname = schema_name AND nspowner = owner_id;\n    IF schema_id IS NULL OR EXISTS\n       (SELECT 1 FROM pg_class WHERE relnamespace = schema_id AND relowner <> owner_id)\n       OR EXISTS (SELECT 1 FROM pg_proc WHERE pronamespace = schema_id AND proowner <> owner_id)\n       OR EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = schema_id AND typowner <> owner_id) THEN\n        RAISE EXCEPTION 'Protected schema and existing objects must belong to the platform service owner'\n            USING ERRCODE = '42501';\n    END IF;\n    -- Other inherited roles may carry schema privileges; reject rather than\n    -- silently weaken those unrelated roles. Cloud-defined override roles need\n    -- an additional provider-specific check outside this community-PG example.\n    EXECUTE format('REVOKE ALL ON SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL ROUTINES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON TABLES FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON SEQUENCES FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON FUNCTIONS FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    IF has_schema_privilege(customer_id, schema_id, 'USAGE')\n       OR has_schema_privilege(customer_id, schema_id, 'CREATE') THEN\n        RAISE EXCEPTION 'Customer retains inherited access to protected schema; review role memberships'\n            USING ERRCODE = '42501';\n    END IF;\nEND\n$boundary$;\n\n-- Schema USAGE denial is the boundary for future functions/types too. Per-schema\n-- default REVOKE cannot cancel PostgreSQL's global defaults (PUBLIC EXECUTE on\n-- functions, PUBLIC USAGE on types), nor owner-wide explicit default grants.\n-- Do not globally revoke PUBLIC access to public: vector/PGroonga objects shared\n-- there must remain usable. Run migrations as the owner, and reapply this block\n-- if object ownership or the customer's memberships change. Customers must not\n-- receive service credentials. Catalogs can still disclose object names; this\n-- protects contents and modifications, not the existence of schema/table names.\n",
+    "result": "DO",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "boundary-bank_cx",
+    "sql": "-- EXAMPLE ONLY: never run this against an existing customer database unchecked.\n-- Run as the platform provisioning principal in the ContextDB service database.\n-- owner/customer roles and the protected schema must already exist. Repeat for\n-- ctxdb_meta and each workspace schema, including every newly created workspace.\n-- Supply identifiers using session settings (no password is embedded here):\n--   SET contextdb.boundary_owner = 'platform_service';\n--   SET contextdb.boundary_customer = 'customer_sql';\n--   SET contextdb.boundary_schema = 'ctxdb_meta';\n--   \\i pg-role-boundary.sql\n-- The protected database must also be platform-owned; give customers their own\n-- schema for SQL work, not ownership of this database or the protected schemas.\n-- This example does NOT implement cloud-provider privileged-account restrictions.\n-- True PG SUPERUSER, host OS root, and cloud roles able to assume the owner or\n-- override ACLs cannot be contained by this SQL. Verify provider semantics first.\n-- Merely checking rolsuper=false is insufficient (e.g. Tencent cloud's restricted\n-- superuser role has BYPASSRLS and extra object privileges).\n-- References: https://www.postgresql.org/docs/18/role-attributes.html\n-- https://www.postgresql.org/docs/18/ddl-schemas.html\n-- https://www.postgresql.org/docs/18/sql-alterdefaultprivileges.html\n\nDO $boundary$\nDECLARE\n    owner_name text := current_setting('contextdb.boundary_owner', true);\n    customer_name text := current_setting('contextdb.boundary_customer', true);\n    schema_name text := current_setting('contextdb.boundary_schema', true);\n    owner_id oid;\n    customer_id oid;\n    schema_id oid;\n    dangerous_role text;\nBEGIN\n    IF COALESCE(owner_name, '') = '' OR COALESCE(customer_name, '') = ''\n       OR COALESCE(schema_name, '') = '' OR owner_name = customer_name\n       OR schema_name IN ('public', 'information_schema') OR schema_name LIKE 'pg\\_%' ESCAPE '\\' THEN\n        RAISE EXCEPTION 'Supply distinct pre-created owner/customer roles and a protected non-system schema'\n            USING ERRCODE = '22023';\n    END IF;\n    SELECT oid INTO owner_id FROM pg_roles WHERE rolname = owner_name;\n    SELECT oid INTO customer_id FROM pg_roles WHERE rolname = customer_name;\n    IF owner_id IS NULL OR customer_id IS NULL THEN\n        RAISE EXCEPTION 'Both roles must already exist' USING ERRCODE = '22023';\n    END IF;\n    IF EXISTS (SELECT 1 FROM pg_roles WHERE oid = customer_id\n               AND (rolsuper OR rolcreaterole OR rolcreatedb OR rolreplication OR rolbypassrls)) THEN\n        RAISE EXCEPTION 'Customer must be NOSUPERUSER NOCREATEROLE NOCREATEDB NOREPLICATION NOBYPASSRLS'\n            USING ERRCODE = '42501';\n    END IF;\n    -- MEMBER catches indirect grants too, even if INHERIT/SET are disabled.\n    IF pg_has_role(customer_id, owner_id, 'MEMBER') OR EXISTS\n       (SELECT 1 FROM pg_database WHERE datname = current_database() AND datdba = customer_id) THEN\n        RAISE EXCEPTION 'Customer cannot own this database or belong to the service owner role'\n            USING ERRCODE = '42501';\n    END IF;\n    -- Hindsight resolves shared extension functions/types in public. Customer\n    -- CREATE there would make public an untrusted search_path entry. Provisioning\n    -- may separately REVOKE CREATE ON SCHEMA public FROM PUBLIC, customer_sql;\n    -- keep its USAGE and extension-function permissions intact.\n    IF has_schema_privilege(customer_id, 'public', 'CREATE') THEN\n        RAISE EXCEPTION 'Customer must not have CREATE on shared public schema'\n            USING ERRCODE = '42501';\n    END IF;\n    FOREACH dangerous_role IN ARRAY ARRAY[\n        'pg_read_all_data', 'pg_write_all_data', 'pg_read_server_files',\n        'pg_write_server_files', 'pg_execute_server_program', 'pg_checkpoint',\n        'pg_maintain', 'pg_signal_backend'\n    ] LOOP\n        IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = dangerous_role)\n           AND pg_has_role(customer_id, dangerous_role, 'MEMBER') THEN\n            RAISE EXCEPTION 'Customer belongs to privileged role %', dangerous_role USING ERRCODE = '42501';\n        END IF;\n    END LOOP;\n    SELECT oid INTO schema_id FROM pg_namespace WHERE nspname = schema_name AND nspowner = owner_id;\n    IF schema_id IS NULL OR EXISTS\n       (SELECT 1 FROM pg_class WHERE relnamespace = schema_id AND relowner <> owner_id)\n       OR EXISTS (SELECT 1 FROM pg_proc WHERE pronamespace = schema_id AND proowner <> owner_id)\n       OR EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = schema_id AND typowner <> owner_id) THEN\n        RAISE EXCEPTION 'Protected schema and existing objects must belong to the platform service owner'\n            USING ERRCODE = '42501';\n    END IF;\n    -- Other inherited roles may carry schema privileges; reject rather than\n    -- silently weaken those unrelated roles. Cloud-defined override roles need\n    -- an additional provider-specific check outside this community-PG example.\n    EXECUTE format('REVOKE ALL ON SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('REVOKE ALL ON ALL ROUTINES IN SCHEMA %I FROM PUBLIC, %I', schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON TABLES FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON SEQUENCES FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    EXECUTE format('ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA %I REVOKE ALL ON FUNCTIONS FROM PUBLIC, %I',\n                   owner_name, schema_name, customer_name);\n    IF has_schema_privilege(customer_id, schema_id, 'USAGE')\n       OR has_schema_privilege(customer_id, schema_id, 'CREATE') THEN\n        RAISE EXCEPTION 'Customer retains inherited access to protected schema; review role memberships'\n            USING ERRCODE = '42501';\n    END IF;\nEND\n$boundary$;\n\n-- Schema USAGE denial is the boundary for future functions/types too. Per-schema\n-- default REVOKE cannot cancel PostgreSQL's global defaults (PUBLIC EXECUTE on\n-- functions, PUBLIC USAGE on types), nor owner-wide explicit default grants.\n-- Do not globally revoke PUBLIC access to public: vector/PGroonga objects shared\n-- there must remain usable. Run migrations as the owner, and reapply this block\n-- if object ownership or the customer's memberships change. Customers must not\n-- receive service credentials. Catalogs can still disclose object names; this\n-- protects contents and modifications, not the existence of schema/table names.\n",
+    "result": "DO",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "revoke-temporary",
+    "sql": "REVOKE follow_service_20261024_cx FROM root;REVOKE follow_customer_20261024_cx FROM root",
+    "result": "REVOKE ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-fresh-connect",
+    "sql": "SELECT session_user,current_user,current_database()",
+    "result": [
+      {
+        "session_user": "root",
+        "current_user": "root",
+        "current_database": "follow_db_20261024_cx"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-fresh-no-membership",
+    "sql": "SELECT r.rolname,m.admin_option,m.inherit_option,m.set_option FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid WHERE m.member=(SELECT oid FROM pg_roles WHERE rolname='root') AND r.rolname IN ('follow_service_20261024_cx','follow_customer_20261024_cx')",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-fresh-read-service-owned",
+    "sql": "SELECT * FROM meta_cx.users",
+    "result": [
+      {
+        "id": 1,
+        "name": "protected"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "force-rls-owner-service",
+    "sql": "ALTER TABLE meta_cx.users ENABLE ROW LEVEL SECURITY;ALTER TABLE meta_cx.users FORCE ROW LEVEL SECURITY;CREATE POLICY nobody_cx ON meta_cx.users USING(false) WITH CHECK(false)",
+    "result": "CREATE POLICY",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "service-owner-force-rls",
+    "sql": "SELECT * FROM meta_cx.users",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-fresh-force-rls",
+    "sql": "SELECT * FROM meta_cx.users",
+    "result": [
+      {
+        "id": 1,
+        "name": "protected"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "full-attack-01",
+    "sql": "SELECT * FROM \"meta_cx\".users",
+    "error": "permission denied for schema meta_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-02",
+    "sql": "UPDATE \"meta_cx\".users SET name = 'tampered'",
+    "error": "permission denied for schema meta_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-03",
+    "sql": "SELECT * FROM \"bank_cx\".banks",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-04",
+    "sql": "INSERT INTO \"bank_cx\".banks VALUES (2, 'tampered')",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-05",
+    "sql": "UPDATE \"bank_cx\".banks SET content = 'tampered'",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-06",
+    "sql": "DELETE FROM \"bank_cx\".banks",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-07",
+    "sql": "TRUNCATE \"bank_cx\".banks",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-08",
+    "sql": "ALTER TABLE \"bank_cx\".banks ADD COLUMN injected text",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-09",
+    "sql": "ALTER TABLE \"bank_cx\".banks OWNER TO \"follow_customer_20261024_cx\"",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-10",
+    "sql": "DROP TABLE \"bank_cx\".banks",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-11",
+    "sql": "CREATE TABLE \"bank_cx\".injected (id int)",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-12",
+    "sql": "DROP SCHEMA \"bank_cx\" CASCADE",
+    "error": "must be owner of schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-13",
+    "sql": "ALTER SCHEMA \"bank_cx\" RENAME TO injected",
+    "error": "must be owner of schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-14",
+    "sql": "ALTER SCHEMA \"bank_cx\" OWNER TO \"follow_customer_20261024_cx\"",
+    "error": "must be owner of schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-15",
+    "sql": "SET ROLE \"follow_service_20261024_cx\"",
+    "error": "permission denied to set role \"follow_service_20261024_cx\"",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-16",
+    "sql": "GRANT \"follow_service_20261024_cx\" TO \"follow_customer_20261024_cx\"",
+    "error": "permission denied to grant role \"follow_service_20261024_cx\"",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-17",
+    "sql": "GRANT USAGE ON SCHEMA \"bank_cx\" TO \"follow_customer_20261024_cx\"",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-18",
+    "sql": "GRANT SELECT ON \"bank_cx\".banks TO \"follow_customer_20261024_cx\"",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-19",
+    "sql": "SELECT nextval('\"bank_cx\".seq')",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-20",
+    "sql": "SELECT * FROM \"bank_cx\".future",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-21",
+    "sql": "INSERT INTO \"bank_cx\".future VALUES (1)",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-22",
+    "sql": "SELECT \"bank_cx\".future_fn()",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-23",
+    "sql": "SELECT 'protected'::\"bank_cx\".future_type",
+    "error": "permission denied for schema bank_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-24",
+    "sql": "ALTER ROLE \"follow_customer_20261024_cx\" SUPERUSER",
+    "error": "permission denied to alter role",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-25",
+    "sql": "ALTER ROLE \"follow_customer_20261024_cx\" BYPASSRLS",
+    "error": "permission denied to alter role",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "full-attack-26",
+    "sql": "ALTER DEFAULT PRIVILEGES FOR ROLE \"follow_service_20261024_cx\" IN SCHEMA \"bank_cx\" GRANT SELECT ON TABLES TO \"follow_customer_20261024_cx\"",
+    "error": "permission denied to change default privileges",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "own-schema-still-works",
+    "sql": "CREATE TABLE own_customer_cx.notes_cx(body text);INSERT INTO own_customer_cx.notes_cx VALUES('mine')",
+    "result": "INSERT 0 1",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "cleanup-grant",
+    "sql": "GRANT follow_service_20261024_cx TO root",
+    "result": "GRANT ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "cleanup-db",
+    "sql": "DROP DATABASE follow_db_20261024_cx WITH(FORCE)",
+    "result": "DROP DATABASE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "cleanup-follow_customer_20261024_cx",
+    "sql": "DROP ROLE follow_customer_20261024_cx",
+    "result": "DROP ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "cleanup-follow_service_20261024_cx",
+    "sql": "DROP ROLE follow_service_20261024_cx",
+    "result": "DROP ROLE",
+    "sqlstate": "00000",
+    "expected": null
+  }
+]

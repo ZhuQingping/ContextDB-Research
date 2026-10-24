@@ -1,0 +1,1163 @@
+{
+  "supabase_db": {
+    "schemas": {
+      "sql": "SELECT nspname,pg_get_userbyid(nspowner) AS owner,nspacl,has_schema_privilege('root',oid,'USAGE') AS root_usage,has_schema_privilege('root',oid,'CREATE') AS root_create FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname <> 'information_schema' ORDER BY 1",
+      "rows": [
+        {
+          "nspname": "_realtime",
+          "owner": "rds_supabase_admin",
+          "nspacl": [
+            "rds_supabase_admin=UC/rds_supabase_admin",
+            "service_role=U/rds_supabase_admin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "auth",
+          "owner": "rds_supabase_auth_admin",
+          "nspacl": [
+            "rds_supabase_auth_admin=UC/rds_supabase_auth_admin",
+            "service_role=U/rds_supabase_auth_admin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "extensions",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "service_role=U/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "graphql",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "service_role=U/rdsAdmin",
+            "anon=U/rdsAdmin",
+            "authenticated=U/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "graphql_public",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "service_role=U/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "net",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "=U/rdsAdmin",
+            "rds_supabase_functions_admin=U/rdsAdmin",
+            "anon=U/rdsAdmin",
+            "authenticated=U/rdsAdmin",
+            "service_role=U/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "public",
+          "owner": "pg_database_owner",
+          "nspacl": [
+            "pg_database_owner=UC/pg_database_owner",
+            "=U/pg_database_owner",
+            "rds_supabase_auth_admin=UC/pg_database_owner",
+            "rds_supabase_admin=UC/pg_database_owner",
+            "service_role=U/pg_database_owner",
+            "rdsAdmin=UC/pg_database_owner",
+            "rds_supabase_storage_admin=UC/pg_database_owner"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "realtime",
+          "owner": "rds_supabase_admin",
+          "nspacl": [
+            "rds_supabase_admin=UC/rds_supabase_admin",
+            "service_role=U/rds_supabase_admin",
+            "postgres=U/rds_supabase_admin",
+            "anon=U/rds_supabase_admin",
+            "authenticated=U/rds_supabase_admin",
+            "supabase_realtime_admin=UC/rds_supabase_admin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "storage",
+          "owner": "rds_supabase_storage_admin",
+          "nspacl": [
+            "rds_supabase_storage_admin=UC/rds_supabase_storage_admin",
+            "service_role=U/rds_supabase_storage_admin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "supabase_functions",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "anon=U/rdsAdmin",
+            "authenticated=U/rdsAdmin",
+            "service_role=U/rdsAdmin",
+            "rds_supabase_functions_admin=UC/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "vault",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "anon=U/rdsAdmin",
+            "authenticated=U/rdsAdmin",
+            "service_role=U/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        }
+      ]
+    },
+    "extensions": {
+      "sql": "SELECT extname,extversion,nspname FROM pg_extension JOIN pg_namespace ON extnamespace=pg_namespace.oid ORDER BY 1",
+      "rows": [
+        {
+          "extname": "pg_graphql",
+          "extversion": "1.5.12",
+          "nspname": "graphql"
+        },
+        {
+          "extname": "pg_net",
+          "extversion": "0.20.2",
+          "nspname": "extensions"
+        },
+        {
+          "extname": "pgcrypto",
+          "extversion": "1.4",
+          "nspname": "extensions"
+        },
+        {
+          "extname": "pgjwt",
+          "extversion": "0.2.0",
+          "nspname": "extensions"
+        },
+        {
+          "extname": "plpgsql",
+          "extversion": "1.0",
+          "nspname": "pg_catalog"
+        },
+        {
+          "extname": "supabase_vault",
+          "extversion": "0.3.1",
+          "nspname": "vault"
+        },
+        {
+          "extname": "vector",
+          "extversion": "0.8.2",
+          "nspname": "extensions"
+        }
+      ]
+    },
+    "tables": {
+      "sql": "SELECT n.nspname,c.relname,pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity,c.relforcerowsecurity,has_table_privilege('root',c.oid,'SELECT') AS root_select,has_table_privilege('root',c.oid,'UPDATE') AS root_update FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' ORDER BY 1,2",
+      "rows": [
+        {
+          "nspname": "_realtime",
+          "relname": "extensions",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_realtime",
+          "relname": "schema_migrations",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_realtime",
+          "relname": "tenants",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "audit_log_entries",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "custom_oauth_providers",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "flow_state",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "identities",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "instances",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "mfa_amr_claims",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "mfa_challenges",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "mfa_factors",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "oauth_authorizations",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "oauth_client_states",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "oauth_clients",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "oauth_consents",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "one_time_tokens",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "refresh_tokens",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "saml_providers",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "saml_relay_states",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "schema_migrations",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "sessions",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "sso_domains",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "sso_providers",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "users",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "webauthn_challenges",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "auth",
+          "relname": "webauthn_credentials",
+          "owner": "rds_supabase_auth_admin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "net",
+          "relname": "_http_response",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "net",
+          "relname": "http_request_queue",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "public",
+          "relname": "migrations",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages",
+          "owner": "supabase_realtime_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages_2026_10_22",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages_2026_10_23",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages_2026_10_24",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages_2026_10_25",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "messages_2026_10_26",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "schema_migrations",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "realtime",
+          "relname": "subscription",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "buckets",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "buckets_analytics",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "buckets_vectors",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "iceberg_namespaces",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "iceberg_tables",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "migrations",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "objects",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "s3_multipart_uploads",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "s3_multipart_uploads_parts",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "storage",
+          "relname": "vector_indexes",
+          "owner": "rds_supabase_storage_admin",
+          "relrowsecurity": true,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "supabase_functions",
+          "relname": "hooks",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "supabase_functions",
+          "relname": "migrations",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "vault",
+          "relname": "secrets",
+          "owner": "rdsAdmin",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        }
+      ]
+    },
+    "policies": {
+      "sql": "SELECT schemaname,tablename,policyname,roles,cmd FROM pg_policies ORDER BY 1,2,3",
+      "rows": []
+    },
+    "root_membership": {
+      "sql": "SELECT pg_has_role('root','service_role','MEMBER') AS member,pg_has_role('root','service_role','USAGE') AS usage,pg_has_role('root','service_role','SET') AS can_set",
+      "rows": [
+        {
+          "member": true,
+          "usage": true,
+          "can_set": true
+        }
+      ]
+    },
+    "crossdb": {
+      "sql": "SELECT e.extname FROM pg_extension e WHERE extname IN ('dblink','postgres_fdw')",
+      "rows": []
+    }
+  },
+  "_supabase": {
+    "schemas": {
+      "sql": "SELECT nspname,pg_get_userbyid(nspowner) AS owner,nspacl,has_schema_privilege('root',oid,'USAGE') AS root_usage,has_schema_privilege('root',oid,'CREATE') AS root_create FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname <> 'information_schema' ORDER BY 1",
+      "rows": [
+        {
+          "nspname": "_analytics",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "rds_supabase_admin=UC/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "_supavisor",
+          "owner": "rdsAdmin",
+          "nspacl": [
+            "rdsAdmin=UC/rdsAdmin",
+            "rds_supabase_admin=UC/rdsAdmin"
+          ],
+          "root_usage": true,
+          "root_create": true
+        },
+        {
+          "nspname": "public",
+          "owner": "root",
+          "nspacl": [
+            "root=UC/root",
+            "=U/root"
+          ],
+          "root_usage": true,
+          "root_create": true
+        }
+      ]
+    },
+    "extensions": {
+      "sql": "SELECT extname,extversion,nspname FROM pg_extension JOIN pg_namespace ON extnamespace=pg_namespace.oid ORDER BY 1",
+      "rows": [
+        {
+          "extname": "plpgsql",
+          "extversion": "1.0",
+          "nspname": "pg_catalog"
+        }
+      ]
+    },
+    "tables": {
+      "sql": "SELECT n.nspname,c.relname,pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity,c.relforcerowsecurity,has_table_privilege('root',c.oid,'SELECT') AS root_select,has_table_privilege('root',c.oid,'UPDATE') AS root_update FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' ORDER BY 1,2",
+      "rows": [
+        {
+          "nspname": "_analytics",
+          "relname": "alert_queries",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "alert_queries_backends",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "backends",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "billing_accounts",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "billing_counts",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "endpoint_queries",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "key_values",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_04745637_25b9_470a_8005_a5de2def0c18",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_0d572041_aa50_4304_a8c5_30de42906b1a",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_30c536f6_d8e9_4a1e_a8f8_911aa94f057d",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_5f4c02bd_21d3_4970_bdd5_dd708491026c",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_b020fe4c_5997_4cef_b497_1fc25f6bceec",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_b81ce18c_e300_418c_9081_83ed8929fdda",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_c457af89_3e64_44df_8f98_d404c293f8e7",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_d922dbc1_e8d9_484f_a26c_f461bafefcd9",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "log_events_e0c0d853_8a30_4e12_96a4_f5581dff009c",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "oauth_access_grants",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "oauth_access_tokens",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "oauth_applications",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "partner_users",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "partners",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "payment_methods",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "plans",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "rules",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "saved_search_counters",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "saved_searches",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "schema_migrations",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "source_backends",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "source_schemas",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "sources",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "sources_backends",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "system_metrics",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "team_users",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "teams",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "users",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_analytics",
+          "relname": "vercel_auths",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_supavisor",
+          "relname": "cluster_tenants",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_supavisor",
+          "relname": "clusters",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_supavisor",
+          "relname": "schema_migrations",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_supavisor",
+          "relname": "tenants",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "_supavisor",
+          "relname": "users",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "public",
+          "relname": "oban_jobs",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        },
+        {
+          "nspname": "public",
+          "relname": "oban_peers",
+          "owner": "root",
+          "relrowsecurity": false,
+          "relforcerowsecurity": false,
+          "root_select": true,
+          "root_update": true
+        }
+      ]
+    },
+    "policies": {
+      "sql": "SELECT schemaname,tablename,policyname,roles,cmd FROM pg_policies ORDER BY 1,2,3",
+      "rows": []
+    },
+    "root_membership": {
+      "sql": "SELECT pg_has_role('root','service_role','MEMBER') AS member,pg_has_role('root','service_role','USAGE') AS usage,pg_has_role('root','service_role','SET') AS can_set",
+      "rows": [
+        {
+          "member": true,
+          "usage": true,
+          "can_set": true
+        }
+      ]
+    },
+    "crossdb": {
+      "sql": "SELECT e.extname FROM pg_extension e WHERE extname IN ('dblink','postgres_fdw')",
+      "rows": []
+    }
+  },
+  "postgres": {
+    "schemas": {
+      "sql": "SELECT nspname,pg_get_userbyid(nspowner) AS owner,nspacl,has_schema_privilege('root',oid,'USAGE') AS root_usage,has_schema_privilege('root',oid,'CREATE') AS root_create FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname <> 'information_schema' ORDER BY 1",
+      "rows": [
+        {
+          "nspname": "public",
+          "owner": "pg_database_owner",
+          "nspacl": [
+            "pg_database_owner=UC/pg_database_owner",
+            "=U/pg_database_owner"
+          ],
+          "root_usage": true,
+          "root_create": false
+        }
+      ]
+    },
+    "extensions": {
+      "sql": "SELECT extname,extversion,nspname FROM pg_extension JOIN pg_namespace ON extnamespace=pg_namespace.oid ORDER BY 1",
+      "rows": [
+        {
+          "extname": "plpgsql",
+          "extversion": "1.0",
+          "nspname": "pg_catalog"
+        },
+        {
+          "extname": "rds_performance_statements",
+          "extversion": "1.0",
+          "nspname": "public"
+        }
+      ]
+    },
+    "tables": {
+      "sql": "SELECT n.nspname,c.relname,pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity,c.relforcerowsecurity,has_table_privilege('root',c.oid,'SELECT') AS root_select,has_table_privilege('root',c.oid,'UPDATE') AS root_update FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' ORDER BY 1,2",
+      "rows": []
+    },
+    "policies": {
+      "sql": "SELECT schemaname,tablename,policyname,roles,cmd FROM pg_policies ORDER BY 1,2,3",
+      "rows": []
+    },
+    "root_membership": {
+      "sql": "SELECT pg_has_role('root','service_role','MEMBER') AS member,pg_has_role('root','service_role','USAGE') AS usage,pg_has_role('root','service_role','SET') AS can_set",
+      "rows": [
+        {
+          "member": true,
+          "usage": true,
+          "can_set": true
+        }
+      ]
+    },
+    "crossdb": {
+      "sql": "SELECT e.extname FROM pg_extension e WHERE extname IN ('dblink','postgres_fdw')",
+      "rows": []
+    }
+  }
+}

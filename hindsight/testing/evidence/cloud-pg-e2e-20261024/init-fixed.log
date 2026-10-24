@@ -1,0 +1,56 @@
+{
+  "checks": [
+    {
+      "name": "platform",
+      "status": "pass",
+      "detail": "Darwin arm64 Python 3.11.15"
+    },
+    {
+      "name": "hindsight_api",
+      "status": "pass",
+      "detail": "/Users/zhuqingping/Work/Database/Context/hindsight/.git/deployments/cloud-pg-e2e-20261024/source/hindsight-api-slim/hindsight_api/__init__.py"
+    },
+    {
+      "name": "hindsight_ext_contextdb",
+      "status": "pass",
+      "detail": "/Users/zhuqingping/Work/Database/Context/hindsight/.git/deployments/cloud-pg-e2e-20261024/source/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__init__.py"
+    },
+    {
+      "name": "extension_contract",
+      "status": "pass",
+      "detail": "Required BankListScope contract is available"
+    },
+    {
+      "name": "postgresql",
+      "status": "pass",
+      "detail": "PostgreSQL 18.6; encoding=UTF8"
+    },
+    {
+      "name": "btree_gin",
+      "status": "pass",
+      "detail": "Enabled in target database"
+    },
+    {
+      "name": "pg_trgm",
+      "status": "pass",
+      "detail": "Enabled in target database"
+    },
+    {
+      "name": "vector",
+      "status": "pass",
+      "detail": "Enabled in target database"
+    },
+    {
+      "name": "chinese_fulltext",
+      "status": "warning",
+      "detail": "Native English validation does not establish Chinese full-text capability"
+    },
+    {
+      "name": "pg_stat_statements",
+      "status": "warning",
+      "detail": "Optional SQL observation is not fully configured"
+    }
+  ]
+}
+Deployment secrets persisted; existing values preserved
+ContextDB metadata version 1 initialized; credentials preserved

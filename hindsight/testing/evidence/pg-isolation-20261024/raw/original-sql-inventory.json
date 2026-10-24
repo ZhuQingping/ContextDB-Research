@@ -1,0 +1,338 @@
+[
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A01",
+    "line": 85,
+    "sql": "\\c my_biz",
+    "kind": "psql命令；本轮用独立驱动连接等价替代"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A02",
+    "line": 85,
+    "sql": "CREATE DATABASE my_biz OWNER root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A03",
+    "line": 85,
+    "sql": "CREATE ROLE biz_app LOGIN PASSWORD '<强密码>';",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A04",
+    "line": 85,
+    "sql": "GRANT CONNECT ON DATABASE my_biz TO biz_app;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A05",
+    "line": 85,
+    "sql": "CREATE SCHEMA biz_ext AUTHORIZATION root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A06",
+    "line": 85,
+    "sql": "CREATE EXTENSION vector WITH SCHEMA biz_ext;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A07",
+    "line": 85,
+    "sql": "CREATE EXTENSION pg_trgm;",
+    "kind": "同语句云测：默认public；路径可改变结果"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A08",
+    "line": 85,
+    "sql": "SELECT name FROM pg_available_extensions ORDER BY name;",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A09",
+    "line": 85,
+    "sql": "GRANT USAGE ON SCHEMA public, biz_ext TO biz_app;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A10",
+    "line": 85,
+    "sql": "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO biz_app;",
+    "kind": "同类云测：不补旧表/序列；核对创建角色"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A11",
+    "line": 85,
+    "sql": "ALTER ROLE biz_app VALID UNTIL '2027-12-31';",
+    "kind": "同语句类云测成功（替换为临时角色）"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A12",
+    "line": 120,
+    "sql": "SELECT rolname, rolcanlogin, rolvaliduntil FROM pg_roles ORDER BY 1;",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A13",
+    "line": 120,
+    "sql": "SELECT rolname, rolpassword, rolvaliduntil FROM pg_authid WHERE rolcanlogin;",
+    "kind": "只读等价实测；实际输出截断hash，不原样导出全hash"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A14",
+    "line": 120,
+    "sql": "SELECT datname, usename, application_name, count(*) FROM pg_stat_activity WHERE pid <> pg_backend_pid() GROUP BY 1,2,3 ORDER BY 4 DESC;",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A15",
+    "line": 120,
+    "sql": "SELECT has_database_privilege('root','supabase_db','CREATE');",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "PG权限与Supabase数据隔离分析.md",
+    "id": "A16",
+    "line": 120,
+    "sql": "SELECT has_schema_privilege('root','public','CREATE');",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B01",
+    "line": 47,
+    "sql": "CREATE ROLE ctxdb_service LOGIN PASSWORD '<强密码>' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B02",
+    "line": 47,
+    "sql": "GRANT ctxdb_service TO root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B03",
+    "line": 47,
+    "sql": "CREATE DATABASE ctxdb OWNER ctxdb_service TEMPLATE template0 ENCODING 'UTF8';",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B04",
+    "line": 47,
+    "sql": "REVOKE ALL ON DATABASE ctxdb FROM PUBLIC;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B05",
+    "line": 47,
+    "sql": "GRANT CONNECT, CREATE, TEMPORARY ON DATABASE ctxdb TO ctxdb_service;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B06",
+    "line": 65,
+    "sql": "REVOKE CREATE ON SCHEMA public FROM PUBLIC;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B07",
+    "line": 65,
+    "sql": "CREATE EXTENSION vector WITH SCHEMA public;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B08",
+    "line": 65,
+    "sql": "CREATE EXTENSION pg_trgm WITH SCHEMA public;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B09",
+    "line": 65,
+    "sql": "CREATE EXTENSION btree_gin WITH SCHEMA public;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B10",
+    "line": 65,
+    "sql": "REVOKE ctxdb_service FROM root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B11",
+    "line": 90,
+    "sql": "CREATE ROLE biz_app LOGIN PASSWORD '<强密码>' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B12",
+    "line": 90,
+    "sql": "GRANT biz_app TO root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B13",
+    "line": 90,
+    "sql": "CREATE DATABASE biz OWNER biz_app TEMPLATE template0 ENCODING 'UTF8';",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B14",
+    "line": 90,
+    "sql": "REVOKE ALL ON DATABASE biz FROM PUBLIC;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B15",
+    "line": 90,
+    "sql": "GRANT CONNECT, CREATE, TEMPORARY ON DATABASE biz TO biz_app;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B16",
+    "line": 90,
+    "sql": "REVOKE biz_app FROM root;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B17",
+    "line": 90,
+    "sql": "REVOKE CREATE ON SCHEMA public FROM PUBLIC;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B18",
+    "line": 105,
+    "sql": "CREATE ROLE customer_sql LOGIN PASSWORD '<强密码>' NOSUPERUSER NOCREATEROLE NOCREATEDB NOREPLICATION NOBYPASSRLS;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B19",
+    "line": 105,
+    "sql": "GRANT CONNECT, TEMPORARY ON DATABASE ctxdb TO customer_sql;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B20",
+    "line": 105,
+    "sql": "CREATE SCHEMA own_customer1 AUTHORIZATION customer_sql;",
+    "kind": "临时对象同类云测；具体结果/顺序限制见第5章"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B21",
+    "line": 134,
+    "sql": "SELECT datname, usename, application_name, count(*) FROM pg_stat_activity WHERE pid <> pg_backend_pid() GROUP BY 1,2,3 ORDER BY 4 DESC;",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B22",
+    "line": 134,
+    "sql": "SELECT * FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid JOIN pg_roles g ON g.oid=m.member WHERE r.rolname='ctxdb_service' AND g.rolname='root';",
+    "kind": "只读同类实测；见快照/元数据/终态证据"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B23",
+    "line": 156,
+    "sql": "REVOKE <role> FROM root;",
+    "kind": "占位模板，需替换；临时对象DROP/REVOKE同类实测"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B24",
+    "line": 156,
+    "sql": "DROP DATABASE <db> WITH (FORCE);",
+    "kind": "占位模板，需替换；临时对象DROP/REVOKE同类实测"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B25",
+    "line": 156,
+    "sql": "DROP ROLE <role>;",
+    "kind": "占位模板，需替换；临时对象DROP/REVOKE同类实测"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B26",
+    "line": 123,
+    "sql": "SELECT rolname FROM pg_authid LIMIT 1;",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B27",
+    "line": 124,
+    "sql": "ALTER ROLE ctxdb_service SUPERUSER;",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B28",
+    "line": 125,
+    "sql": "CREATE DATABASE x;",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B29",
+    "line": 125,
+    "sql": "CREATE ROLE x LOGIN;",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B30",
+    "line": 129,
+    "sql": "ALTER ROLE ... PASSWORD",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B31",
+    "line": 148,
+    "sql": "ALTER ROLE ctxdb_service PASSWORD '<新密码>';",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  },
+  {
+    "document": "ContextDB数据隔离方案2落地文档.md",
+    "id": "B32",
+    "line": 149,
+    "sql": "ALTER ROLE ctxdb_service PASSWORD '<新密码>';",
+    "kind": "正文模板/检查语句；临时角色同类验证，不能原样改现有账号"
+  }
+]

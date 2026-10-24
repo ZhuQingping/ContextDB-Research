@@ -1,0 +1,66 @@
+        clock_timestamp        | current_user 
+-------------------------------+--------------
+ 2026-10-24 10:34:35.902212+08 | root
+(1 row)
+
+   datname   | pg_get_userbyid 
+-------------+-----------------
+ _supabase   | rdsAdmin
+ postgres    | rdsAdmin
+ supabase_db | rdsAdmin
+ template0   | rdsAdmin
+ template1   | rdsAdmin
+(5 rows)
+
+ role_count 
+------------
+         32
+(1 row)
+
+ rolname 
+---------
+(0 rows)
+
+ datname 
+---------
+(0 rows)
+
+           rolname            |           member           | admin_option | inherit_option | set_option 
+------------------------------+----------------------------+--------------+----------------+------------
+ anon                         | rds_supabase_auth_admin    | f            | f              | t
+ anon                         | rds_supabase_authenticator | f            | f              | t
+ anon                         | rds_supabase_storage_admin | f            | f              | t
+ anon                         | root                       | f            | t              | t
+ authenticated                | rds_supabase_auth_admin    | f            | f              | t
+ authenticated                | rds_supabase_authenticator | f            | f              | t
+ authenticated                | rds_supabase_storage_admin | f            | f              | t
+ authenticated                | root                       | f            | t              | t
+ pg_checkpoint                | root                       | f            | t              | t
+ pg_create_subscription       | root                       | f            | t              | t
+ pg_maintain                  | root                       | f            | t              | t
+ pg_monitor                   | root                       | f            | t              | t
+ pg_read_all_settings         | pg_monitor                 | f            | t              | t
+ pg_read_all_stats            | pg_monitor                 | f            | t              | t
+ pg_read_all_stats            | rdsMetric                  | f            | t              | t
+ pg_read_all_stats            | rdsRepl                    | f            | t              | t
+ pg_read_all_stats            | root                       | f            | t              | t
+ pg_signal_autovacuum_worker  | root                       | f            | t              | t
+ pg_signal_backend            | root                       | f            | t              | t
+ pg_stat_scan_tables          | pg_monitor                 | f            | t              | t
+ pg_stat_scan_tables          | root                       | f            | t              | t
+ pg_use_reserved_connections  | root                       | f            | t              | t
+ postgres                     | root                       | f            | t              | t
+ rds_supabase_admin           | root                       | f            | t              | t
+ rds_supabase_auth_admin      | root                       | f            | t              | t
+ rds_supabase_authenticator   | root                       | f            | t              | t
+ rds_supabase_functions_admin | rdsAdmin                   | f            | t              | t
+ rds_supabase_functions_admin | root                       | f            | t              | t
+ rds_supabase_postgres        | root                       | f            | t              | t
+ rds_supabase_storage_admin   | root                       | f            | t              | t
+ service_role                 | rds_supabase_auth_admin    | f            | f              | t
+ service_role                 | rds_supabase_authenticator | f            | f              | t
+ service_role                 | rds_supabase_storage_admin | f            | f              | t
+ service_role                 | root                       | f            | t              | t
+ supabase_realtime_admin      | postgres                   | f            | t              | t
+(35 rows)
+

@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "name": "platform",
+      "status": "pass",
+      "detail": "Darwin arm64 Python 3.11.15"
+    },
+    {
+      "name": "hindsight_api",
+      "status": "pass",
+      "detail": "/Users/zhuqingping/Work/Database/Context/hindsight/.git/deployments/cloud-pg-e2e-20261024/source/hindsight-api-slim/hindsight_api/__init__.py"
+    },
+    {
+      "name": "hindsight_ext_contextdb",
+      "status": "pass",
+      "detail": "/Users/zhuqingping/Work/Database/Context/hindsight/.git/deployments/cloud-pg-e2e-20261024/source/hindsight-extensions/contextdb-service/hindsight_ext_contextdb/__init__.py"
+    },
+    {
+      "name": "extension_contract",
+      "status": "pass",
+      "detail": "Required BankListScope contract is available"
+    },
+    {
+      "name": "database_probe",
+      "status": "fail",
+      "detail": "Database or selected plugin probe failed; inspect private deployment logs and configuration"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"db": "contextbase_e2e_20261024", "role": "cb_e2e_service_20261024", "host": "124.71.227.243", "root_membership_unchanged": true, "extensions": ["vector", "pg_trgm", "btree_gin"], "ssl": "require"}

@@ -1,0 +1,219 @@
+{
+  "cases": [
+    {
+      "case": "customer-own-business-write",
+      "sql": "CREATE SCHEMA own_biz_cx;CREATE TABLE own_biz_cx.notes_cx(body text);INSERT INTO own_biz_cx.notes_cx VALUES('mine')",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": "INSERT 0 1"
+    },
+    {
+      "case": "customer-own-business-read",
+      "sql": "SELECT * FROM own_biz_cx.notes_cx",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "body": "mine"
+        }
+      ]
+    },
+    {
+      "case": "independent-db-customer-connect-service-denied",
+      "passed": true,
+      "actual": "42501"
+    },
+    {
+      "case": "service-connect-independent-customer-db-denied",
+      "passed": true,
+      "actual": "42501"
+    },
+    {
+      "case": "apply-boundary-ctxdb_meta",
+      "passed": true
+    },
+    {
+      "case": "apply-boundary-ctxdb_ws_cloud_merged_a",
+      "passed": true
+    },
+    {
+      "case": "apply-boundary-ctxdb_ws_cloud_merged_b",
+      "passed": true
+    },
+    {
+      "case": "customer-own-schema-create",
+      "sql": "CREATE TABLE own_customer_cx.notes_cx(body text);INSERT INTO own_customer_cx.notes_cx VALUES('mine')",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": "INSERT 0 1"
+    },
+    {
+      "case": "customer-own-schema-select",
+      "sql": "SELECT * FROM own_customer_cx.notes_cx",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "body": "mine"
+        }
+      ]
+    },
+    {
+      "case": "shared-vector-works",
+      "sql": "SELECT '[1,2]'::public.vector",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "vector": "[1,2]"
+        }
+      ]
+    },
+    {
+      "case": "protected-metadata-read",
+      "sql": "SELECT 1 FROM ctxdb_meta.users LIMIT 1",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_meta"
+    },
+    {
+      "case": "protected-metadata-update",
+      "sql": "UPDATE ctxdb_meta.users SET name='tampered'",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_meta"
+    },
+    {
+      "case": "read-ctxdb_ws_cloud_merged_a",
+      "sql": "SELECT 1 FROM \"ctxdb_ws_cloud_merged_a\".memory_units LIMIT 1",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_a"
+    },
+    {
+      "case": "delete-ctxdb_ws_cloud_merged_a",
+      "sql": "DELETE FROM \"ctxdb_ws_cloud_merged_a\".memory_units",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_a"
+    },
+    {
+      "case": "truncate-ctxdb_ws_cloud_merged_a",
+      "sql": "TRUNCATE \"ctxdb_ws_cloud_merged_a\".memory_units",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_a"
+    },
+    {
+      "case": "drop-ctxdb_ws_cloud_merged_a",
+      "sql": "DROP SCHEMA \"ctxdb_ws_cloud_merged_a\" CASCADE",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "must be owner of schema ctxdb_ws_cloud_merged_a"
+    },
+    {
+      "case": "read-ctxdb_ws_cloud_merged_b",
+      "sql": "SELECT 1 FROM \"ctxdb_ws_cloud_merged_b\".memory_units LIMIT 1",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_b"
+    },
+    {
+      "case": "delete-ctxdb_ws_cloud_merged_b",
+      "sql": "DELETE FROM \"ctxdb_ws_cloud_merged_b\".memory_units",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_b"
+    },
+    {
+      "case": "truncate-ctxdb_ws_cloud_merged_b",
+      "sql": "TRUNCATE \"ctxdb_ws_cloud_merged_b\".memory_units",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied for schema ctxdb_ws_cloud_merged_b"
+    },
+    {
+      "case": "drop-ctxdb_ws_cloud_merged_b",
+      "sql": "DROP SCHEMA \"ctxdb_ws_cloud_merged_b\" CASCADE",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "must be owner of schema ctxdb_ws_cloud_merged_b"
+    },
+    {
+      "case": "cannot-switch-owner",
+      "sql": "SET ROLE cb_e2e_service_20261024",
+      "expected": "42501",
+      "actual": "42501",
+      "passed": true,
+      "result": "permission denied to set role \"cb_e2e_service_20261024\""
+    },
+    {
+      "case": "root-no-service-membership",
+      "sql": "SELECT pg_has_role('root','cb_e2e_service_20261024','MEMBER') AS member",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "member": true
+        }
+      ]
+    },
+    {
+      "case": "root-reads-synthetic-service-metadata",
+      "sql": "SELECT name FROM ctxdb_meta.users WHERE name LIKE 'Cloud %' ORDER BY name",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "name": "Cloud merged User Updated"
+        }
+      ]
+    },
+    {
+      "case": "runtime-pg-identities",
+      "sql": "SELECT usename,application_name,count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() GROUP BY 1,2 ORDER BY 1,2",
+      "expected": "00000",
+      "actual": "00000",
+      "passed": true,
+      "result": [
+        {
+          "usename": "cb_e2e_service_20261024",
+          "application_name": "",
+          "count": 4
+        },
+        {
+          "usename": "cloud_e2e_customer_cx",
+          "application_name": "",
+          "count": 1
+        },
+        {
+          "usename": "root",
+          "application_name": "",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "role_count": 0,
+    "db_count": 0,
+    "root_membership_unchanged": true
+  }
+}

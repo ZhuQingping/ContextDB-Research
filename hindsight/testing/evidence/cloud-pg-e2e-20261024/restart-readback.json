@@ -1,0 +1,8 @@
+{
+  "api_restarted": true,
+  "ui_restarted": true,
+  "repeat_init_secrets_unchanged": true,
+  "chrome_existing_data_recall_results": 2,
+  "cloud_data_persisted": true,
+  "ui_runtime_cache_code_fix": false
+}

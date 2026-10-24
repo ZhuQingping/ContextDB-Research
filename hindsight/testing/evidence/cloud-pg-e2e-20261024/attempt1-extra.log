@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/tmp/cb-cloud-extra.py", line 17, in main
+    try:await rw.acreate_bank(bank_id=bank);raise AssertionError('Native Bank creation accepted')
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Native Bank creation accepted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/cb-cloud-extra.py", line 27, in <module>
+    asyncio.run(main())
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/tmp/cb-cloud-extra.py", line 19, in main
+    assert getattr(e,'status',None)==403;events.append({'case':'native-bank-create-denied','passed':True,'status':403})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

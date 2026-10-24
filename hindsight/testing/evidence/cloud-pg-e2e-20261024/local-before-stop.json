@@ -1,0 +1,12 @@
+[
+  {
+    "port": 8888,
+    "spaces": 2,
+    "active_operations": []
+  },
+  {
+    "port": 8891,
+    "spaces": 1,
+    "active_operations": []
+  }
+]

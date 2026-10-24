@@ -1,0 +1,23 @@
+mcp-tool-scope PASS
+mcp-recall PASS
+user-disable PASS
+disabled-key-denied PASS
+user-reactivate PASS
+key-revoke PASS
+revoked-key-denied PASS
+cycle-create PASS
+cycle-snapshot PASS
+cycle-delete PASS
+cycle-missing PASS
+cycle-recreate PASS
+cycle-new-uuid PASS
+stale-delete-rejected PASS
+cycle-new-snapshot PASS
+cycle-cleanup PASS
+disposable-user-create PASS
+disposable-user-delete PASS
+pg-session-service-tls PASS
+public-no-business-tables-after-story PASS
+metadata-six-tables PASS
+workspace-owned-by-service PASS
+MODE COMPLETE merged 59

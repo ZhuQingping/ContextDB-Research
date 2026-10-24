@@ -1,0 +1,17 @@
+{
+  "cases": [
+    {
+      "case": "customer-own-business-write",
+      "sql": "CREATE SCHEMA own_biz_cx;CREATE TABLE own_biz_cx.notes_cx(body text);INSERT INTO own_biz_cx.notes_cx VALUES('mine')",
+      "expected": "00000",
+      "actual": "42601",
+      "passed": false,
+      "result": "cannot insert multiple commands into a prepared statement"
+    }
+  ],
+  "cleanup": {
+    "role_count": 0,
+    "db_count": 0,
+    "root_membership_unchanged": true
+  }
+}

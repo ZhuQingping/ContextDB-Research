@@ -1,0 +1,153 @@
+cleanup {'databases': [], 'roles': [], 'membership_restored': True, 'supabase_schema_count': 0}
+cases 88
+[
+  {
+    "id": "biz-public-create",
+    "sql": "CREATE TABLE public.customer_table_cx(id int)",
+    "result": "CREATE TABLE",
+    "sqlstate": "00000",
+    "expected": "00000"
+  },
+  {
+    "id": "defaults-existing-table",
+    "sql": "SELECT * FROM doc_data_cx.before_cx",
+    "error": "permission denied for table before_cx",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "defaults-future-table",
+    "sql": "SELECT * FROM doc_data_cx.after_cx",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": "00000"
+  },
+  {
+    "id": "unqualified-extension-schema",
+    "sql": "SELECT extname,nspname FROM pg_extension JOIN pg_namespace ON extnamespace=pg_namespace.oid WHERE extname='pg_trgm'",
+    "result": [
+      {
+        "extname": "pg_trgm",
+        "nspname": "doc_ext_cx"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-after-revoke-membership",
+    "sql": "SELECT r.rolname,a.admin_option,a.inherit_option,a.set_option FROM pg_auth_members a JOIN pg_roles r ON r.oid=a.roleid WHERE a.member=(SELECT oid FROM pg_roles WHERE rolname='root') AND r.rolname=ANY(ARRAY['iso_20261024_service_cx','iso_20261024_biz_cx','iso_20261024_customer_cx'])",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "root-after-revoke-table-access",
+    "sql": "SELECT * FROM meta_cx.users_cx",
+    "result": [
+      {
+        "id": 1,
+        "name": "protected"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-anon-alice",
+    "sql": "SELECT current_user,tenant_id,body FROM iso_20261024_rls_cx.rows_cx ORDER BY tenant_id",
+    "result": [],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-authenticated-alice",
+    "sql": "SELECT current_user,tenant_id,body FROM iso_20261024_rls_cx.rows_cx ORDER BY tenant_id",
+    "result": [
+      {
+        "current_user": "authenticated",
+        "tenant_id": "alice",
+        "body": "alpha"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-cross-tenant-write",
+    "sql": "INSERT INTO iso_20261024_rls_cx.rows_cx VALUES('bob','blocked')",
+    "error": "new row violates row-level security policy for table \"rows_cx\"",
+    "sqlstate": "42501",
+    "expected": "42501"
+  },
+  {
+    "id": "rls-authenticated-bob",
+    "sql": "SELECT current_user,tenant_id,body FROM iso_20261024_rls_cx.rows_cx ORDER BY tenant_id",
+    "result": [
+      {
+        "current_user": "authenticated",
+        "tenant_id": "bob",
+        "body": "beta"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-service_role-alice",
+    "sql": "SELECT current_user,tenant_id,body FROM iso_20261024_rls_cx.rows_cx ORDER BY tenant_id",
+    "result": [
+      {
+        "current_user": "service_role",
+        "tenant_id": "alice",
+        "body": "alpha"
+      },
+      {
+        "current_user": "service_role",
+        "tenant_id": "bob",
+        "body": "beta"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-root-owner-force",
+    "sql": "SELECT * FROM iso_20261024_rls_cx.rows_cx",
+    "result": [
+      {
+        "tenant_id": "alice",
+        "body": "alpha"
+      },
+      {
+        "tenant_id": "bob",
+        "body": "beta"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-root-can-disable",
+    "sql": "ALTER TABLE iso_20261024_rls_cx.rows_cx DISABLE ROW LEVEL SECURITY",
+    "result": "ALTER TABLE",
+    "sqlstate": "00000",
+    "expected": null
+  },
+  {
+    "id": "rls-root-after-disable",
+    "sql": "SELECT * FROM iso_20261024_rls_cx.rows_cx",
+    "result": [
+      {
+        "tenant_id": "alice",
+        "body": "alpha"
+      },
+      {
+        "tenant_id": "bob",
+        "body": "beta"
+      }
+    ],
+    "sqlstate": "00000",
+    "expected": null
+  }
+]

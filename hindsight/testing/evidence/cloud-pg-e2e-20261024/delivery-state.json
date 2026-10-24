@@ -1,0 +1,11 @@
+{
+  "api_ready": true,
+  "ui_ready": true,
+  "temporary_bank_config_restored": true,
+  "cloud_database_retained": true,
+  "old_local_hindsight_stopped": true,
+  "known_findings_unfixed": 2,
+  "code_changes": false,
+  "committed": false,
+  "pushed": false
+}

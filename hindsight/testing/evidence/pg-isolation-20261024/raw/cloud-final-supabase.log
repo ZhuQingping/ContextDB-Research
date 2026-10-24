@@ -1,0 +1,15 @@
+ temporary_schema_count 
+------------------------
+                      0
+(1 row)
+
+ user_table_count 
+------------------
+               50
+(1 row)
+
+ policy_count 
+--------------
+            0
+(1 row)
+

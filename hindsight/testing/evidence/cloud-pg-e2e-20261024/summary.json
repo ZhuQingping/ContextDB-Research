@@ -1,0 +1,16 @@
+{
+  "checks": {
+    "merged-final.json": 59,
+    "split-e2e.json": 59,
+    "extra-e2e.json": 12,
+    "sql-boundary.json": 24
+  },
+  "total": 154,
+  "not_pytest_case_count": true,
+  "overall": "conditional: default-flow checks passed; two unresolved deployment/policy defects",
+  "failed_supplementary_policy": "Bank MCP allowlist not enforced",
+  "unresolved_findings": [
+    "UI runtime cache causes bundle guard false positive",
+    "Bank MCP tool allowlist not enforced"
+  ]
+}

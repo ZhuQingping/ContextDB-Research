@@ -1,0 +1,183 @@
+           snapshot            |                                   version                                    | current_user | current_database 
+-------------------------------+------------------------------------------------------------------------------+--------------+------------------
+ 2026-10-24 10:29:39.408214+08 | PostgreSQL 18.6 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.3.1, 64-bit | root         | postgres
+(1 row)
+
+           rolname            | rolsuper | rolinherit | rolcreaterole | rolcreatedb | rolcanlogin | rolreplication | rolbypassrls | rolvaliduntil 
+------------------------------+----------+------------+---------------+-------------+-------------+----------------+--------------+---------------
+ anon                         | f        | f          | f             | f           | f           | f              | f            | 
+ authenticated                | f        | f          | f             | f           | f           | f              | f            | 
+ pg_checkpoint                | f        | t          | f             | f           | f           | f              | f            | 
+ pg_create_subscription       | f        | t          | f             | f           | f           | f              | f            | 
+ pg_database_owner            | f        | t          | f             | f           | f           | f              | f            | 
+ pg_execute_server_program    | f        | t          | f             | f           | f           | f              | f            | 
+ pg_maintain                  | f        | t          | f             | f           | f           | f              | f            | 
+ pg_monitor                   | f        | t          | f             | f           | f           | f              | f            | 
+ pg_read_all_data             | f        | t          | f             | f           | f           | f              | f            | 
+ pg_read_all_settings         | f        | t          | f             | f           | f           | f              | f            | 
+ pg_read_all_stats            | f        | t          | f             | f           | f           | f              | f            | 
+ pg_read_server_files         | f        | t          | f             | f           | f           | f              | f            | 
+ pg_signal_autovacuum_worker  | f        | t          | f             | f           | f           | f              | f            | 
+ pg_signal_backend            | f        | t          | f             | f           | f           | f              | f            | 
+ pg_stat_scan_tables          | f        | t          | f             | f           | f           | f              | f            | 
+ pg_use_reserved_connections  | f        | t          | f             | f           | f           | f              | f            | 
+ pg_write_all_data            | f        | t          | f             | f           | f           | f              | f            | 
+ pg_write_server_files        | f        | t          | f             | f           | f           | f              | f            | 
+ postgres                     | f        | t          | t             | t           | t           | f              | f            | 
+ rdsAdmin                     | t        | t          | t             | t           | t           | t              | t            | 
+ rdsBackup                    | f        | f          | f             | f           | t           | t              | f            | 
+ rdsMetric                    | f        | t          | f             | f           | t           | f              | f            | 
+ rdsRepl                      | f        | t          | f             | f           | t           | t              | f            | 
+ rds_supabase_admin           | f        | t          | t             | t           | t           | t              | f            | 
+ rds_supabase_auth_admin      | f        | f          | t             | f           | t           | f              | f            | 
+ rds_supabase_authenticator   | f        | f          | f             | f           | t           | f              | f            | 
+ rds_supabase_functions_admin | f        | f          | t             | f           | t           | f              | f            | 
+ rds_supabase_postgres        | f        | t          | t             | t           | t           | f              | f            | 
+ rds_supabase_storage_admin   | f        | f          | t             | f           | t           | f              | f            | 
+ root                         | f        | t          | t             | t           | t           | t              | f            | 
+ service_role                 | f        | f          | f             | f           | f           | f              | t            | 
+ supabase_realtime_admin      | f        | f          | f             | f           | f           | f              | f            | 
+(32 rows)
+
+          role_name           |        member_name         | grantor  | admin_option | inherit_option | set_option 
+------------------------------+----------------------------+----------+--------------+----------------+------------
+ anon                         | rds_supabase_auth_admin    | rdsAdmin | f            | f              | t
+ anon                         | rds_supabase_authenticator | rdsAdmin | f            | f              | t
+ anon                         | rds_supabase_storage_admin | rdsAdmin | f            | f              | t
+ anon                         | root                       | rdsAdmin | f            | t              | t
+ authenticated                | rds_supabase_auth_admin    | rdsAdmin | f            | f              | t
+ authenticated                | rds_supabase_authenticator | rdsAdmin | f            | f              | t
+ authenticated                | rds_supabase_storage_admin | rdsAdmin | f            | f              | t
+ authenticated                | root                       | rdsAdmin | f            | t              | t
+ pg_checkpoint                | root                       | rdsAdmin | f            | t              | t
+ pg_create_subscription       | root                       | rdsAdmin | f            | t              | t
+ pg_maintain                  | root                       | rdsAdmin | f            | t              | t
+ pg_monitor                   | root                       | rdsAdmin | f            | t              | t
+ pg_read_all_settings         | pg_monitor                 | rdsAdmin | f            | t              | t
+ pg_read_all_stats            | pg_monitor                 | rdsAdmin | f            | t              | t
+ pg_read_all_stats            | rdsMetric                  | rdsAdmin | f            | t              | t
+ pg_read_all_stats            | rdsRepl                    | rdsAdmin | f            | t              | t
+ pg_read_all_stats            | root                       | rdsAdmin | f            | t              | t
+ pg_signal_autovacuum_worker  | root                       | rdsAdmin | f            | t              | t
+ pg_signal_backend            | root                       | rdsAdmin | f            | t              | t
+ pg_stat_scan_tables          | pg_monitor                 | rdsAdmin | f            | t              | t
+ pg_stat_scan_tables          | root                       | rdsAdmin | f            | t              | t
+ pg_use_reserved_connections  | root                       | rdsAdmin | f            | t              | t
+ postgres                     | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_admin           | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_auth_admin      | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_authenticator   | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_functions_admin | rdsAdmin                   | rdsAdmin | f            | t              | t
+ rds_supabase_functions_admin | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_postgres        | root                       | rdsAdmin | f            | t              | t
+ rds_supabase_storage_admin   | root                       | rdsAdmin | f            | t              | t
+ service_role                 | rds_supabase_auth_admin    | rdsAdmin | f            | f              | t
+ service_role                 | rds_supabase_authenticator | rdsAdmin | f            | f              | t
+ service_role                 | rds_supabase_storage_admin | rdsAdmin | f            | f              | t
+ service_role                 | root                       | rdsAdmin | f            | t              | t
+ supabase_realtime_admin      | postgres                   | rdsAdmin | f            | t              | t
+(35 rows)
+
+   datname   |  owner   |                                                                                                                            datacl                                                                                                                            
+-------------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ _supabase   | rdsAdmin | {=Tc/rdsAdmin,rdsAdmin=CTc/rdsAdmin,rds_supabase_admin=CTc/rdsAdmin}
+ postgres    | rdsAdmin | {=Tc/rdsAdmin,rdsAdmin=CTc/rdsAdmin,rdsMetric=c/rdsAdmin,rdsRepl=c/rdsAdmin}
+ supabase_db | rdsAdmin | {=Tc/rdsAdmin,rdsAdmin=CTc/rdsAdmin,rds_supabase_storage_admin=c/rdsAdmin,rds_supabase_auth_admin=c/rdsAdmin,rds_supabase_functions_admin=c/rdsAdmin,rds_supabase_authenticator=c/rdsAdmin,anon=c/rdsAdmin,authenticated=c/rdsAdmin,service_role=c/rdsAdmin}
+ template0   | rdsAdmin | {=c/rdsAdmin,rdsAdmin=CTc/rdsAdmin}
+ template1   | rdsAdmin | {=c/rdsAdmin,rdsAdmin=CTc/rdsAdmin}
+(5 rows)
+
+           rolname            |    password_prefix    | rolvaliduntil 
+------------------------------+-----------------------+---------------
+ anon                         | NULL                  | 
+ authenticated                | NULL                  | 
+ pg_checkpoint                | NULL                  | 
+ pg_create_subscription       | NULL                  | 
+ pg_database_owner            | NULL                  | 
+ pg_execute_server_program    | NULL                  | 
+ pg_maintain                  | NULL                  | 
+ pg_monitor                   | NULL                  | 
+ pg_read_all_data             | NULL                  | 
+ pg_read_all_settings         | NULL                  | 
+ pg_read_all_stats            | NULL                  | 
+ pg_read_server_files         | NULL                  | 
+ pg_signal_autovacuum_worker  | NULL                  | 
+ pg_signal_backend            | NULL                  | 
+ pg_stat_scan_tables          | NULL                  | 
+ pg_use_reserved_connections  | NULL                  | 
+ pg_write_all_data            | NULL                  | 
+ pg_write_server_files        | NULL                  | 
+ postgres                     | NULL                  | 
+ rdsAdmin                     | SCRAM-SHA-256$4096:O… | 
+ rdsBackup                    | SCRAM-SHA-256$4096:A… | 
+ rdsMetric                    | SCRAM-SHA-256$4096:5… | 
+ rdsRepl                      | SCRAM-SHA-256$4096:w… | 
+ rds_supabase_admin           | SCRAM-SHA-256$4096:w… | 
+ rds_supabase_auth_admin      | SCRAM-SHA-256$4096:b… | 
+ rds_supabase_authenticator   | SCRAM-SHA-256$4096:o… | 
+ rds_supabase_functions_admin | SCRAM-SHA-256$4096:w… | 
+ rds_supabase_postgres        | SCRAM-SHA-256$4096:R… | 
+ rds_supabase_storage_admin   | SCRAM-SHA-256$4096:X… | 
+ root                         | SCRAM-SHA-256$4096:C… | 
+ service_role                 | NULL                  | 
+ supabase_realtime_admin      | NULL                  | 
+(32 rows)
+
+ shadow_count 
+--------------
+           12
+(1 row)
+
+ERROR:  42501: permission denied for function pg_hba_file_rules
+LOCATION:  aclcheck_error, aclchk.c:2830
+   datname   |          usename           |          application_name           |  state   | count 
+-------------+----------------------------+-------------------------------------+----------+-------
+ _supabase   | root                       |                                     | active   |     1
+ _supabase   | root                       |                                     | idle     |    14
+ _supabase   | root                       | cluster_node_supavisor@cbcad5fbfaa9 | idle     |     2
+ _supabase   | root                       | supavisor_meta                      | idle     |    20
+ postgres    | rdsAdmin                   |                                     | idle     |     2
+ postgres    | rdsAdmin                   | pg_net 0.20.2                       |          |     1
+ postgres    | rdsMetric                  |                                     | idle     |     4
+ postgres    | root                       | psql                                | active   |     1
+ postgres    | root                       | psql                                | idle     |     1
+ supabase_db | rds_supabase_authenticator | PostgREST 14.8                      | idle     |     2
+ supabase_db | rds_supabase_storage_admin |                                     | idle     |     1
+ supabase_db | root                       | cluster_node_realtime@127.0.0.1     | idle     |     2
+ supabase_db | root                       | supabase_mt_realtime                | idle     |     5
+             | rdsAdmin                   |                                     |          |     1
+             |                            |                                     | starting |     1
+             |                            |                                     |          |     8
+(16 rows)
+
+                                                       shared_preload_libraries                                                        
+---------------------------------------------------------------------------------------------------------------------------------------
+ passwordcheck.so,pg_stat_statements,pg_sql_history,pgaudit,auth_delay,rds_pg_sql_ccl,rds_performance_statements,supabase_vault,pg_net
+(1 row)
+
+ ssl 
+-----
+ on
+(1 row)
+
+ max_connections 
+-----------------
+ 96
+(1 row)
+
+ available_extensions 
+----------------------
+                   96
+(1 row)
+
+      name      | installed_version 
+----------------+-------------------
+ btree_gin      | 
+ dblink         | 
+ pg_net         | 
+ pg_trgm        | 
+ postgres_fdw   | 
+ supabase_vault | 
+ vector         | 
+(7 rows)
+

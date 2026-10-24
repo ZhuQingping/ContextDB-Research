@@ -1,0 +1,19 @@
+cleanup {'databases': [], 'roles': [], 'membership_restored': True, 'supabase_schema_count': 0}
+Traceback (most recent call last):
+  File "/tmp/contextbase-pg-isolation-20261024/cloud-validation.py", line 136, in <module>
+    asyncio.run(main())
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhuqingping/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/tmp/contextbase-pg-isolation-20261024/cloud-validation.py", line 33, in main
+    await setup(a,'role-'+r,f"CREATE ROLE {r} LOGIN PASSWORD '{passwords[r]}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS")
+  File "/tmp/contextbase-pg-isolation-20261024/cloud-validation.py", line 20, in setup
+    if x['sqlstate']!='00000':raise RuntimeError(label+' '+x['sqlstate'])
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: role-iso_20261024_service_cx 22023

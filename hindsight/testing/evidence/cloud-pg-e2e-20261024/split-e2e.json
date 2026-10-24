@@ -1,0 +1,422 @@
+{
+  "mode": "split",
+  "cases": [
+    {
+      "case": "api-readiness",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "ui-login",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "ui-proxy-management",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "admin-identity",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "workspace-create-a",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "workspace-create-b",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "workspace-search",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "workspace-search-result",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "workspace-get",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "workspace-etag",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "user-create",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "user-list",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "user-list-match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "user-edit",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "key-create-rw",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "key-create-ro",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "key-create-other",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "key-list",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "key-list-secret-not-returned",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "key-edit",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "anonymous-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 401,
+        "expected": 401
+      }
+    },
+    {
+      "case": "invalid-key-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 401,
+        "expected": 401
+      }
+    },
+    {
+      "case": "cross-space-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 403,
+        "expected": 403
+      }
+    },
+    {
+      "case": "readonly-write-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 403,
+        "expected": 403
+      }
+    },
+    {
+      "case": "business-management-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 403,
+        "expected": 403
+      }
+    },
+    {
+      "case": "business-config-projection",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "business-config-has-no-visible-fields",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "sdk-async-retain-accepted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "worker-completes-retain",
+      "passed": true,
+      "detail": {
+        "operation_id": "21578219-d40d-4d8d-9c86-7307d14af37b"
+      }
+    },
+    {
+      "case": "sdk-readonly-recall",
+      "passed": true,
+      "detail": {
+        "results": 2,
+        "chunks": 1
+      }
+    },
+    {
+      "case": "sdk-list-document-chunks",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "sdk-get-chunk-rw",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "sdk-get-chunk-ro",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "sdk-get-chunk-admin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "cross-space-chunk-denied",
+      "passed": true,
+      "detail": {
+        "status": 403
+      }
+    },
+    {
+      "case": "other-schema-empty",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "sdk-reflect",
+      "passed": true,
+      "detail": {
+        "answer_nonempty": true
+      }
+    },
+    {
+      "case": "mcp-tool-scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "mcp-recall",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "user-disable",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "disabled-key-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 401,
+        "expected": 401
+      }
+    },
+    {
+      "case": "user-reactivate",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "key-revoke",
+      "passed": true,
+      "detail": {
+        "actual_status": 204,
+        "expected": 204
+      }
+    },
+    {
+      "case": "revoked-key-denied",
+      "passed": true,
+      "detail": {
+        "actual_status": 401,
+        "expected": 401
+      }
+    },
+    {
+      "case": "cycle-create",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "cycle-snapshot",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "cycle-delete",
+      "passed": true,
+      "detail": {
+        "actual_status": 204,
+        "expected": 204
+      }
+    },
+    {
+      "case": "cycle-missing",
+      "passed": true,
+      "detail": {
+        "actual_status": 404,
+        "expected": 404
+      }
+    },
+    {
+      "case": "cycle-recreate",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "cycle-new-uuid",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "stale-delete-rejected",
+      "passed": true,
+      "detail": {
+        "actual_status": 412,
+        "expected": 412
+      }
+    },
+    {
+      "case": "cycle-new-snapshot",
+      "passed": true,
+      "detail": {
+        "actual_status": 200,
+        "expected": 200
+      }
+    },
+    {
+      "case": "cycle-cleanup",
+      "passed": true,
+      "detail": {
+        "actual_status": 204,
+        "expected": 204
+      }
+    },
+    {
+      "case": "disposable-user-create",
+      "passed": true,
+      "detail": {
+        "actual_status": 201,
+        "expected": 201
+      }
+    },
+    {
+      "case": "disposable-user-delete",
+      "passed": true,
+      "detail": {
+        "actual_status": 204,
+        "expected": 204
+      }
+    },
+    {
+      "case": "pg-session-service-tls",
+      "passed": true,
+      "detail": {
+        "current_user": "cb_e2e_service_20261024",
+        "current_database": "contextbase_e2e_20261024",
+        "ssl": true
+      }
+    },
+    {
+      "case": "public-no-business-tables-after-story",
+      "passed": true,
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "case": "metadata-six-tables",
+      "passed": true,
+      "detail": {
+        "count": 6
+      }
+    },
+    {
+      "case": "workspace-owned-by-service",
+      "passed": true,
+      "detail": {
+        "schema": "ctxdb_ws_cloud_split_a",
+        "owner": "cb_e2e_service_20261024"
+      }
+    }
+  ]
+}
