@@ -7,6 +7,7 @@
 | 你要做什么 | 先看哪份 |
 | --- | --- |
 | 理解方案、评审架构 | [完整设计](design/contextdb-release-design.md) |
+| 理解召回次数/时间、读取权限、配置和旧实例升级 | [召回统计设计与使用说明（已实现，PR #54送审）](design/contextdb-recall-usage-design.md) |
 | 查看简化实施状态、核对依赖与验收 | [简化与实施清单](design/contextdb-simplification-plan.md) |
 | 检视相对原生 Hindsight 的代码改动 | [代码检视指南](design/code-review-guide.md) |
 | 查看管理 API、参数、返回值并执行测试 | [API 与 curl 手册](api/contextdb-management-api-curl-guide.md) |
