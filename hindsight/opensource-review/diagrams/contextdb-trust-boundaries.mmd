@@ -1,0 +1,26 @@
+%% 根据固定提交2606e883源码及方案整理，非Hindsight官方原图；依据见diagrams/README.md
+flowchart TB
+  subgraph cloud[Cloud operations integration: target design]
+    console[Huawei Cloud Console / Control] -.-> node[Node management Agent]
+  end
+  browser[Administrator browser: session] --> ui[Modified Next.js UI: Admin Key on server]
+  agent[Business Agent: scoped Key] --> outer[NEW ASGI authorization / response projection]
+  ui --> outer
+  node -. configure / init / start .-> outer
+  outer --> native[MODIFIED native REST / MCP / engine / Worker]
+  native --> ext[NEW Tenant / Validator / HTTP / MCP extensions]
+  ext --> meta[(ctxdb_meta: six tables)]
+  ext -. authorized schema context .-> native
+  native --> ws[(ctxdb_ws_bank: native memory tables)]
+  native --> maas[Approved LLM / Embedding / Reranker]
+  native -. metrics / optional OTLP .-> obs[Approved observability backend]
+  native --> local[Per-bank LLM request records: separate control]
+  subgraph db[Dedicated instance: one PostgreSQL database]
+    meta
+    ws
+    local
+  end
+  classDef modified fill:#fff1df,stroke:#b76b15
+  classDef added fill:#e8f5ed,stroke:#28784c
+  class ui,native modified
+  class outer,ext added

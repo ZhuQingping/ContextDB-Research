@@ -1,0 +1,11 @@
+# 权限变更的验证方法
+
+文档ID：team_demo_testing_20261027。来源为2026年10月27日核对的cdd067170源码：hindsight-extensions/contextdb-service/tests/system/test_113_contextdb_optimized_authorization.py、test_105_contextdb_knowledge_scope.py、test_104_contextdb_mcp_identity.py，以及docs/contextdb-management/VALIDATION.md。本资料由Codex整理，测试代码存在不表示本次已执行测试。
+
+113系统故事创建两个空间，同一业务Key在其中一个空间只有read，在另一个空间有read_write。测试用发布SDK验证空只读空间可Recall、Retain被Forbidden拒绝、读写空间可Retain并完成后台任务后Recall。它同时使用REST管理、原生SDK和MCP客户端。测试说明Worker矩阵每项使用独立临时数据库；正式首发仍采用API内置Worker。
+
+权限变更最小验证应包含：正常读写；只读写入拒绝；未授权空间拒绝；知识页读取与空间隔离；MCP工具发现与实际调用；换Key和并发场景。修复public.banks误路由不能只断言客户端拿到工具列表，还要检查配置读取确实落在目标schema及服务日志不再出现对应错误。
+
+验证public零业务表时，还要验证原生后台维护依赖的共享函数已经安装并能执行维护周期。零表不是初始化完整性的充分条件。
+
+VALIDATION.md保留多个日期、提交与旧计数；应读取对应版本章节，不能相加或把历史通过当作今天通过。系统故事使用真实API、Worker、SDK与生产UI，但模型可采用确定性stub，不能用它证明真实MaaS配额、中文效果或生产性能。真实模型、浏览器、目标环境和负载验证应另列证据。测试使用隔离数据库，不要把现有业务服务的数据库交给全量测试。

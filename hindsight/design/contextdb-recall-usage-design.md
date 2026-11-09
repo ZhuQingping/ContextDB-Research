@@ -496,3 +496,26 @@ UI通过固定代理及服务端管理员Key读取usage，Key不进入浏览器�
 | 知识页 | [知识页召回统计](https://github.com/RSIXDB/hindsight/blob/9a5ba2c61d27a2a6c94cd91b9e3a6089325df6b5/docs/contextdb-management/screenshots/recall-usage-knowledge.jpg) |
 | 开启 | [启用统计](https://github.com/RSIXDB/hindsight/blob/9a5ba2c61d27a2a6c94cd91b9e3a6089325df6b5/docs/contextdb-management/screenshots/recall-usage-enabled.jpg) |
 | 关闭 | [关闭统计](https://github.com/RSIXDB/hindsight/blob/9a5ba2c61d27a2a6c94cd91b9e3a6089325df6b5/docs/contextdb-management/screenshots/recall-usage-disabled.jpg) |
+
+## 2026-11-08 复核：默认Reflect场景的统计覆盖缺口
+
+状态：分析与优化建议，尚未修改统计实现或既有口径。复核提交为`9a5ba2c61d27a2a6c94cd91b9e3a6089325df6b5`，同时检查当前运行release `gpt61-20261107-dd5521cb9`。
+
+原设计明确只统计外部直接Recall和知识搜索，排除Reflect内部检索、全文读取和后台任务；当前实现仍遵循这一合同。这是既定范围带来的产品覆盖缺口，不能称为计数代码没有实现原设计。
+
+最新真实客户端默认autoInject=reflect，首轮Reflect内部依次搜索知识、观察、原始memory并生成950字回忆，但这些内部命中不增加recall_count/last_recalled_at。客户端另行通过MCP搜索知识页会计知识命中；MCP全文读取不计。因此“直接检索命中”仍有意义，但不能解释为“知识和记忆被业务使用的全部次数”。0或旧时间不代表从未参与回答。
+
+2026-11-08只读检查outer_space统计表：memory共有12个统计对象、累计21次，最后事件为2026-11-07 16:41:03.222830（北京时间）；knowledge_page有3个对象、累计42次，最后事件为2026-11-08 18:18:15.320169。它是整个Bank累计快照，不是本次测试的增量；不得把这些次数全部归为最新三轮。11月8日首轮Reflect已有明确memory检索日志，但记忆统计时间仍停留在11月7日，体现现口径的边界。
+
+建议后续评估：
+
+| 指标层次 | 期望含义 | 需要保持的边界 |
+| --- | --- | --- |
+| 直接检索命中 | 保留现Recall/知识搜索统计，可明确显示名称与范围 | 不静默改变历史recall_count口径 |
+| 外部Reflect命中 | 客户端发起一次成功Reflect时，统计其检索取得的知识/记忆对象 | 同一根请求按对象去重；不把多轮内部查询机械累计 |
+| 知识全文读取 | 反映客户端实际取得正文 | 与搜索命中分别记录，避免混用 |
+| 回答引用/采用 | 如有可靠来源关联，再展示使用证据 | 检索命中不等于模型实际引用，不应把命中指标命名为已采用 |
+
+建议区分来源渠道并提供合理的最后访问/命中时间；维护任务（观察整理、知识页刷新等）仍与外部业务访问隔离，不让后台自循环制造热度。本次Reflect响应based_on/trace均为null，缺少逐条完整来源清单，因此不能仅在外层POST成功后从摘要猜对象ID；扩展采集点需在服务端内部有证据的工具结果处捕获，再按根请求汇总。
+
+具体是保留recall_count并增加reflect_hit_count/knowledge_read_count，还是提供带渠道的统一业务命中指标，需要另行评审；历史数据不具备可靠回填依据时，不得把旧计数解释成新口径。详细交互证据见[统一交互文档](../product-guide/07-agent-knowledge-interaction-20261108.md)。

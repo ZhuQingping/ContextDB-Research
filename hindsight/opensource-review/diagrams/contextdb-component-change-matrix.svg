@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1430" viewBox="0 0 1680 1430">
+<title>ContextDB 修改哪些组件以及为什么修改</title>
+<desc>根据官方v1.0.0提交39c65ffe与ContextDB提交2606e883的差异整理，非Hindsight官方原图。按原有组件、实际修改或新增、业务原因三列展示；M01至M09对应评审报告的逐模块差异证据。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#8292a6" stroke-width="1.4"/></marker></defs>
+<rect width="1680" height="1430" fill="#f8fafc"/>
+<style>text{font-family:Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#172b45}.arrow{fill:none;stroke:#8292a6;stroke-width:1.6;marker-end:url(#arrow)}</style>
+<text x="44" y="49" font-size="31" font-weight="600">ContextDB 修改哪些组件，为什么修改</text>
+<text x="44" y="82" font-size="16" font-weight="400" style="fill:#53637a">组件改造视图 · 根据固定源码与差异整理，非官方原图 · 官方 39c65ffe → ContextDB 2606e883</text>
+<rect x="44" y="105" width="213" height="28" rx="7" fill="#edf3fc" stroke="#abc0df" stroke-width="1.3"/>
+<text x="54" y="125" font-size="14" font-weight="600" style="fill:#375e91">蓝：Hindsight 原有组件</text>
+<rect x="273" y="105" width="213" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="283" y="125" font-size="14" font-weight="600" style="fill:#955710">橙：直接修改上游源码</text>
+<rect x="502" y="105" width="265" height="28" rx="7" fill="#e6f4ed" stroke="#79b393" stroke-width="1.3"/>
+<text x="512" y="125" font-size="14" font-weight="600" style="fill:#226c46">绿：新增扩展 / 管理表 / 脚本</text>
+<text x="44" y="181" font-size="21" font-weight="600">Hindsight 原有组件</text>
+<text x="410" y="181" font-size="21" font-weight="600">ContextDB 实际修改 / 新增内容</text>
+<text x="1080" y="181" font-size="21" font-weight="600">为什么修改</text>
+<rect x="44" y="204" width="316" height="142" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="236" font-size="21" font-weight="600">01  控制台 UI</text>
+<text x="62" y="270" font-size="17" font-weight="400">已有 Bank 浏览与管理页面</text>
+<text x="62" y="295" font-size="17" font-weight="400">Next.js Control Plane</text>
+<rect x="410" y="204" width="620" height="142" rx="12" fill="#fff3e2" stroke="#d99c4a" stroke-width="1.3"/>
+<text x="430" y="236" font-size="21" font-weight="600">修改 UI 接线，增加管理页面</text>
+<text x="430" y="269" font-size="17" font-weight="400">接入工作空间、用户与 API Key 管理</text>
+<text x="430" y="294" font-size="17" font-weight="400">修改服务端代理、会话与产品展示</text>
+<text x="430" y="328" font-size="14" font-weight="400" style="fill:#53637a">control-plane/src/components/contextdb/ · src/app/api/</text>
+<rect x="874" y="217" width="136" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="884" y="237" font-size="14" font-weight="600" style="fill:#955710">M07</text>
+<rect x="1080" y="204" width="556" height="142" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="242" font-size="18" font-weight="400">让管理员直接完成实例内资源管理；</text>
+<text x="1101" y="270" font-size="18" font-weight="400">把新增管理模型接入原有控制台，</text>
+<text x="1101" y="298" font-size="18" font-weight="400">通过服务端代理保护 Admin Key。</text>
+<path class="arrow" d="M366 275.0H402"/>
+<path class="arrow" d="M1038 275.0H1072"/>
+<rect x="44" y="364" width="316" height="178" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="396" font-size="21" font-weight="600">02  REST / MCP 接入</text>
+<text x="62" y="430" font-size="17" font-weight="400">已有业务接口与扩展槽</text>
+<text x="62" y="455" font-size="17" font-weight="400">已有认证 / schema 选择机制</text>
+<rect x="410" y="364" width="620" height="101" rx="12" fill="#e9f5ee" stroke="#6aa484" stroke-width="1.3"/>
+<text x="430" y="396" font-size="21" font-weight="600">新增 ASGI 准入与四类扩展</text>
+<text x="430" y="429" font-size="17" font-weight="400">实现动态 Key、空间授权及管理生命周期</text>
+<text x="430" y="447" font-size="14" font-weight="400" style="fill:#53637a">asgi.py · tenant.py · validator.py · http.py · mcp.py</text>
+<rect x="874" y="377" width="136" height="28" rx="7" fill="#e6f4ed" stroke="#79b393" stroke-width="1.3"/>
+<text x="884" y="397" font-size="14" font-weight="600" style="fill:#226c46">M05 / M06</text>
+<rect x="410" y="475" width="620" height="67" rx="12" fill="#fff3e2" stroke="#d99c4a" stroke-width="1.3"/>
+<text x="430" y="501" font-size="20" font-weight="600">修改 REST / MCP 的公开响应</text>
+<text x="430" y="525" font-size="14" font-weight="400" style="fill:#53637a">api/http.py · api/mcp.py · mcp_tools.py</text>
+<rect x="874" y="488" width="136" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="884" y="508" font-size="14" font-weight="600" style="fill:#955710">M01</text>
+<rect x="1080" y="364" width="556" height="178" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="402" font-size="18" font-weight="400">上游通用扩展不等于本产品管理模型；</text>
+<text x="1101" y="430" font-size="18" font-weight="400">需让 REST、MCP 和内部操作统一授权，</text>
+<text x="1101" y="458" font-size="18" font-weight="400">阻止绕过管理入口创建 / 删除空间；</text>
+<text x="1101" y="486" font-size="18" font-weight="400">公开响应避免暴露内部诊断。</text>
+<path class="arrow" d="M366 453.0H402"/>
+<path class="arrow" d="M1038 453.0H1072"/>
+<rect x="44" y="560" width="316" height="142" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="592" font-size="21" font-weight="600">03  记忆引擎与 Worker</text>
+<text x="62" y="626" font-size="17" font-weight="400">Retain / Recall / Reflect</text>
+<text x="62" y="651" font-size="17" font-weight="400">Provider 与后台任务</text>
+<rect x="410" y="560" width="620" height="142" rx="12" fill="#fff3e2" stroke="#d99c4a" stroke-width="1.3"/>
+<text x="430" y="592" font-size="21" font-weight="600">修改异常与诊断输出</text>
+<text x="430" y="625" font-size="17" font-weight="400">统一业务异常、Provider / 异步任务错误展示</text>
+<text x="430" y="650" font-size="17" font-weight="400">继续复用原有记忆处理与检索机制</text>
+<text x="430" y="684" font-size="14" font-weight="400" style="fill:#53637a">engine/ · worker/ · public_errors.py</text>
+<rect x="874" y="573" width="136" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="884" y="593" font-size="14" font-weight="600" style="fill:#955710">M02</text>
+<rect x="1080" y="560" width="556" height="142" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="598" font-size="18" font-weight="400">直连 API 与后台任务都会产生错误；</text>
+<text x="1101" y="626" font-size="18" font-weight="400">需要限制对外暴露的内部信息，</text>
+<text x="1101" y="654" font-size="18" font-weight="400">同时保留运维定位所需的诊断。</text>
+<path class="arrow" d="M366 631.0H402"/>
+<path class="arrow" d="M1038 631.0H1072"/>
+<rect x="44" y="720" width="316" height="142" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="752" font-size="21" font-weight="600">04  指标与追踪</text>
+<text x="62" y="786" font-size="17" font-weight="400">已有 Prometheus / OTLP</text>
+<text x="62" y="811" font-size="17" font-weight="400">已有 PG 内 LLM 请求记录</text>
+<rect x="410" y="720" width="620" height="142" rx="12" fill="#fff3e2" stroke="#d99c4a" stroke-width="1.3"/>
+<text x="430" y="752" font-size="21" font-weight="600">修改服务标识与部分错误文本</text>
+<text x="430" y="785" font-size="17" font-weight="400">调整指标 / trace 命名与相关诊断展示</text>
+<text x="430" y="810" font-size="17" font-weight="400">观测框架与默认开关沿用上游</text>
+<text x="430" y="844" font-size="14" font-weight="400" style="fill:#53637a">metrics.py · tracing.py · engine/llm_trace.py</text>
+<rect x="874" y="733" width="136" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="884" y="753" font-size="14" font-weight="600" style="fill:#955710">M04</text>
+<rect x="1080" y="720" width="556" height="142" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="758" font-size="18" font-weight="400">让面板和追踪识别产品服务身份，</text>
+<text x="1101" y="786" font-size="18" font-weight="400">并对齐错误展示策略；</text>
+<text x="1101" y="814" font-size="18" font-weight="400">采集字段与留存治理另列为待办。</text>
+<path class="arrow" d="M366 791.0H402"/>
+<path class="arrow" d="M1038 791.0H1072"/>
+<rect x="44" y="880" width="316" height="142" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="912" font-size="21" font-weight="600">05  配置与客户端体系</text>
+<text x="62" y="946" font-size="17" font-weight="400">API 配置、SDK、CLI</text>
+<text x="62" y="971" font-size="17" font-weight="400">生态集成与生成规则</text>
+<rect x="410" y="880" width="620" height="142" rx="12" fill="#fff3e2" stroke="#d99c4a" stroke-width="1.3"/>
+<text x="430" y="912" font-size="21" font-weight="600">修改品牌、配置与兼容身份</text>
+<text x="430" y="945" font-size="17" font-weight="400">统一产品显示和配置读取</text>
+<text x="430" y="970" font-size="17" font-weight="400">保留既有包名 / 配置前缀的兼容路径</text>
+<text x="430" y="1004" font-size="14" font-weight="400" style="fill:#53637a">brand/ · config.py · clients/ · cli/ · integrations/</text>
+<rect x="874" y="893" width="136" height="28" rx="7" fill="#fff0d9" stroke="#d69842" stroke-width="1.3"/>
+<text x="884" y="913" font-size="14" font-weight="600" style="fill:#955710">M03 / M08</text>
+<rect x="1080" y="880" width="556" height="142" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="918" font-size="18" font-weight="400">以产品身份交付服务与接入工具，</text>
+<text x="1101" y="946" font-size="18" font-weight="400">同时控制已有调用方的迁移成本；</text>
+<text x="1101" y="974" font-size="18" font-weight="400">具体兼容边界需按发布组合回归。</text>
+<path class="arrow" d="M366 951.0H402"/>
+<path class="arrow" d="M1038 951.0H1072"/>
+<rect x="44" y="1040" width="316" height="178" rx="12" fill="#edf3fc" stroke="#b7c9e0" stroke-width="1.3"/>
+<text x="62" y="1072" font-size="21" font-weight="600">06  PG 存储与部署</text>
+<text x="62" y="1106" font-size="17" font-weight="400">已有 Bank / schema 机制</text>
+<text x="62" y="1131" font-size="17" font-weight="400">已有通用部署方式</text>
+<rect x="410" y="1040" width="300" height="178" rx="12" fill="#e9f5ee" stroke="#6aa484" stroke-width="1.3"/>
+<text x="430" y="1072" font-size="19" font-weight="600">新增管理表与空间映射</text>
+<rect x="430" y="1087" width="70" height="28" rx="7" fill="#e6f4ed" stroke="#79b393" stroke-width="1.3"/>
+<text x="440" y="1107" font-size="14" font-weight="600" style="fill:#226c46">M05</text>
+<text x="430" y="1145" font-size="17" font-weight="400">ctxdb_meta 六表</text>
+<text x="430" y="1172" font-size="16" font-weight="400">每空间一个 Bank / schema</text>
+<text x="430" y="1200" font-size="14" font-weight="400" style="fill:#53637a">schema.sql · tenant.py</text>
+<rect x="730" y="1040" width="300" height="178" rx="12" fill="#e9f5ee" stroke="#6aa484" stroke-width="1.3"/>
+<text x="750" y="1072" font-size="19" font-weight="600">新增部署与初始化脚本</text>
+<rect x="750" y="1087" width="70" height="28" rx="7" fill="#e6f4ed" stroke="#79b393" stroke-width="1.3"/>
+<text x="760" y="1107" font-size="14" font-weight="600" style="fill:#226c46">M09</text>
+<text x="750" y="1145" font-size="17" font-weight="400">离线 init、配置和启停</text>
+<text x="750" y="1172" font-size="17" font-weight="400">外部 PG 与镜像构建</text>
+<text x="750" y="1200" font-size="14" font-weight="400" style="fill:#53637a">deployment/ · scripts/</text>
+<rect x="1080" y="1040" width="556" height="178" rx="12" fill="#ffffff" stroke="#dde4ed" stroke-width="1.3"/>
+<text x="1101" y="1078" font-size="18" font-weight="400">持久保存空间、用户、Key 与授权；</text>
+<text x="1101" y="1106" font-size="18" font-weight="400">一个 PG 数据库承载多个逻辑 Bank；</text>
+<text x="1101" y="1134" font-size="18" font-weight="400">给节点 Agent 提供部署操作入口。</text>
+<text x="1101" y="1162" font-size="18" font-weight="400">云侧管控 / HA 实现仍需另行验证。</text>
+<path class="arrow" d="M366 1129.0H402"/>
+<path class="arrow" d="M1038 1129.0H1072"/>
+<path d="M44 1253H1636" stroke="#d8e1ec"/>
+<text x="44" y="1288" font-size="18" font-weight="600">读图方法：原有组件 → 实际改动 → 业务原因；横向箭头表示改造对应关系，不是运行调用顺序。</text>
+<text x="44" y="1320" font-size="16" font-weight="400">M01—M09 对应报告第 5.2 节和逐模块差异证据；分组存在交叉，不按框数或行数累计改动量。</text>
+<text x="44" y="1350" font-size="16" font-weight="400">新增扩展使用上游扩展槽；并不表示整个产品零侵入。PG 应用 schema 的新增不表示改造 PG 数据库内核。</text>
+<text x="44" y="1380" font-size="15" font-weight="400" style="fill:#53637a">依据：官方 v1.0.0 文档、2606e883 源码、evidence/modification-evidence.json；逐项链接见 diagrams/README.md。</text>
+</svg>

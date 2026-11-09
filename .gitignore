@@ -3,3 +3,13 @@
 .venv/
 tdai-memory/
 tdai-memory-containers-snapshot.json
+
+# Local document build previews and editor recovery files
+hindsight/opensource-review/.doc-build/
+hindsight/opensource-review/.ppt-build/
+hindsight/opensource-review/diagrams/source/.$*.drawio.bkp
+hindsight/opensource-review/diagrams/source/backups/
+hindsight/opensource-review/diagrams/source/hindsight-contextdb-huawei-cloud_副本.drawio
+
+# Raw evidence, historical snapshots and document exports stay local
+.local-archive/

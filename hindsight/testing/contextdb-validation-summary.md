@@ -9,7 +9,7 @@
 
 ## O01真实浏览器补验与O02复核（2026-10-21，最新结果）
 
-用户提供的[O01报告](/Users/zhuqingping/Documents/Codex/2026-10-21/pets-plugin-work-pets-openai-curated/outputs/o01-browser/report.md)已读取，与任务证据副本SHA256核对一致。真实Chrome、隔离PG/API及正式UI执行，59张截图；未改源码。**O01已执行，未全部通过**：新增N-P008（390页头溢出）、N-P009（关闭焦点不恢复）、N-P010（超长成员名提示不清楚）；复制反馈通过，但复制内容核对失败、归因未定。三项均待修复，不能沿用前轮独立复核ACCEPT将其关闭。完整复现与清理证据见[质量记录第11章](contextdb-quality-improvement-plan.md#11-o01-补验2026-10-21-真实-chrome)。下文历史“浏览器未执行”保留当时语境，以本节为当前状态。
+用户提供的O01报告（本机现场路径：`/Users/zhuqingping/Documents/Codex/2026-10-21/pets-plugin-work-pets-openai-curated/outputs/o01-browser/report.md`）已读取，与任务证据副本SHA256核对一致。真实Chrome、隔离PG/API及正式UI执行，59张截图；未改源码。**O01已执行，未全部通过**：新增N-P008（390页头溢出）、N-P009（关闭焦点不恢复）、N-P010（超长成员名提示不清楚）；复制反馈通过，但复制内容核对失败、归因未定。三项均待修复，不能沿用前轮独立复核ACCEPT将其关闭。完整复现与清理证据见[质量记录第11章](contextdb-quality-improvement-plan.md#11-o01-补验2026-10-21-真实-chrome)。下文历史“浏览器未执行”保留当时语境，以本节为当前状态。
 
 O02追加最小复核：同一构建镜像在本机Colima（Ubuntu24.04 ARM）中独立运行cryptography50 RSA探针，默认SIGILL/132，临时诊断OPENSSL_armcap=0后通过。无需PG或ContextDB运行即可复现。默认init仍未通过；覆盖后已有完整冒烟通过，云上原样部署尚未验证。见质量记录第12章及`o02-recheck-20261021/results.json`。未改生产默认、依赖或服务。 **用户随后决定跳过本机后续O02验证，转其他开发环境；不是标记通过。** 原因、外部密码库探针及容器验收矩阵见质量记录12.1。
 

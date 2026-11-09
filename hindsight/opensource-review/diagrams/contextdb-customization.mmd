@@ -1,0 +1,40 @@
+%% 根据官方39c65ffe与ContextDB 2606e883源码整理，非官方原图。
+%% 颜色表达归属；实施状态与局部修改见主报告4.2。
+flowchart TB
+  subgraph cp[控制台 Control Plane]
+    bankui[Bank 浏览与管理]
+    managementui[管理页面<br/>空间 · 用户 · Key]
+  end
+  app[AI Agent / SDK<br/>Claude Code · Codex · Hermes] --> api
+  cp --> api
+  subgraph native[Hindsight 原生模块]
+    api[HTTP / MCP API<br/>业务接口 · 扩展入口]
+    engine[Memory Engine<br/>Retain · Recall · Reflect]
+    worker[Worker<br/>异步任务执行]
+    subgraph pg[PostgreSQL]
+      data[记忆 · 索引 · 关系 · 任务]
+      meta[管理元数据<br/>空间 · 用户 · Key · 权限 · 审计]
+    end
+    api --> engine
+    worker -->|任务执行| engine
+    engine -->|记忆读写| pg
+    worker -->|任务队列| pg
+  end
+  ext[ContextDB 管理扩展<br/>空间 · 用户 · Key 管理<br/>认证授权 · 空间路由<br/>生命周期 · 管理审计]
+  api -. 准入与路由 .-> ext
+  engine -. 操作授权 .-> ext
+  ext -->|管理数据| meta
+  fs[FileStorage 文件存储接口]
+  adapter[OBS 存储对接<br/>文件与附件存取]
+  obs[华为云 OBS<br/>外部服务]
+  engine -->|文件存取| fs
+  fs --> adapter --> obs
+  classDef reused fill:#F3F7FB,stroke:#B9C9D9,color:#20364D
+  classDef added fill:#087F5B,stroke:#087F5B,color:#FFFFFF,stroke-width:2px
+  classDef external fill:#FFFFFF,stroke:#AAB8C5,color:#20364D
+  class bankui,api,engine,worker,data,fs reused
+  class managementui,ext,meta,adapter added
+  class obs,app external
+  style cp fill:#F3F7FB,stroke:#B9C9D9
+  style pg fill:#F3F7FB,stroke:#B9C9D9
+  style native fill:#FFFFFF,stroke:#D6E0EA,stroke-dasharray:7 6

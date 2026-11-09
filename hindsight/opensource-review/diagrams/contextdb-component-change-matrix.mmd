@@ -1,0 +1,41 @@
+%% 根据官方39c65ffe与ContextDB 2606e883差异整理，非官方原图。
+%% 左→中→右表示组件改造对应关系，不是运行调用关系。M编号对应报告第5.2节。
+flowchart LR
+  subgraph r1[01 控制台 UI]
+    direction LR
+    u1[原有 Control Plane<br/>Bank 浏览与管理] --> m1[修改 UI 接线并新增管理页面<br/>工作空间 / 用户 / Key / 代理<br/>M07] --> w1[为什么：实例内自助管理<br/>服务端代理保护 Admin Key]
+  end
+  subgraph r2[02 REST / MCP 接入]
+    direction LR
+    u2[原有 REST / MCP<br/>认证与 schema 扩展机制] --> a2[新增 ASGI 准入与四类扩展<br/>动态 Key / 逐空间权限 / 生命周期<br/>M05 / M06]
+    u2 --> m2[修改 REST / MCP 公开响应<br/>M01]
+    a2 --> w2[为什么：各入口统一授权<br/>防生命周期旁路与内部诊断外泄]
+    m2 --> w2
+  end
+  subgraph r3[03 记忆引擎 / Provider / Worker]
+    direction LR
+    u3[原有记忆引擎与后台任务] --> m3[修改异常和诊断输出<br/>继续复用记忆与检索机制<br/>M02] --> w3[为什么：控制公开错误<br/>保留运维诊断]
+  end
+  subgraph r4[04 指标与追踪]
+    direction LR
+    u4[原有 Prometheus / OTLP<br/>原有 PG LLM 请求记录] --> m4[修改服务标识及部分错误文本<br/>框架与默认开关沿用上游<br/>M04] --> w4[为什么：统一产品身份与错误展示<br/>采集留存治理仍是后续事项]
+  end
+  subgraph r5[05 配置与客户端体系]
+    direction LR
+    u5[原有配置 / SDK / CLI / 集成] --> m5[修改品牌配置与兼容身份<br/>M03 / M08] --> w5[为什么：以产品身份交付<br/>控制已有调用方迁移成本]
+  end
+  subgraph r6[06 PG 存储与部署]
+    direction LR
+    u6[原有 PG / schema 与部署方式] --> a6[新增 ctxdb_meta 六表<br/>每空间映射一个 Bank / schema<br/>M05]
+    u6 --> a7[新增离线 init / 配置 / 启停脚本<br/>M09]
+    a6 --> w6[为什么：持久保存管理与授权<br/>一个 PG 承载多个 Bank<br/>提供节点部署操作入口]
+    a7 --> w6
+  end
+  classDef base fill:#edf3fc,stroke:#b7c9e0,color:#172b45
+  classDef changed fill:#fff3e2,stroke:#d99c4a,color:#172b45
+  classDef added fill:#e9f5ee,stroke:#6aa484,color:#172b45
+  classDef reason fill:#ffffff,stroke:#dde4ed,color:#172b45
+  class u1,u2,u3,u4,u5,u6 base
+  class m1,m2,m3,m4,m5 changed
+  class a2,a6,a7 added
+  class w1,w2,w3,w4,w5,w6 reason

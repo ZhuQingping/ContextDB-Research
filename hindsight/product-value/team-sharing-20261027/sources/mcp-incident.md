@@ -1,0 +1,11 @@
+# MCP 可以连接但查询 public.banks 报错的真实案例
+
+文档ID：team_demo_mcp_incident_20261027。Codex于2026年10月27日整理。历史证据来自同名最新聊天 hindsight_team_dev1，线程01a15c4c-97fe-7881-a4cb-01c3dc00c644；当前源码核对 integration/rsixdb-contextdb，提交cdd067170。资料未经人工审批。历史发生与当前修复必须分开描述。
+
+历史部署出现MCP工具列表可以返回、实际记忆存取可用，但服务日志报public.banks不存在。原因是ContextDB插件与原生MCP的上下文适配遗漏：工具列表筛选会读取Bank配置，部分原生筛选发生在middleware之外；缺少认证后的空间schema时，查询误入public。实际业务调用进入正确的schema，因此可用与报错会同时出现。历史部署当时Bank未配置mcp_enabled_tools，不能据此断言已经发生工具禁用绕过，也不能仅视为无害日志。这是服务端集成问题，修改客户端地址或赋予管理员Key不是正确修复方向。
+
+Issue #31跟踪该问题。修复应优先局限在自研插件：让原生MCP工具列表、调用前配置筛选和审计配置读取都处于经过认证的Bank/schema上下文；保留原生工具过滤；用当前HTTP消息的凭据重新认证，不能沿用initialize时的旧身份；根MCP工具发现按各已授权空间的原生配置和权限合并，不允许用第一个空间的配置代替其他空间。单Bank MCP禁止切换到另一个Bank。
+
+当前源码mcp.py的install包装mcp.list_tools与mcp.call_tool；_list_tools逐空间使用bank_target(workspace.bank_id, schema_name=workspace.schema_name)，_call_tool读取当前HTTP请求凭据。上述结构与历史修复方向一致。源码存在修复不等于当前进程已加载该提交，也不代表当前部署全部回归通过，部署版本和运行行为仍要单独核对。
+
+检视要点：认证边界覆盖middleware外的原生行为；跨空间不能串schema；并发与切换Key不能复用旧身份；同时检查返回内容和内部错误日志。验收要覆盖工具发现、实际调用、未授权空间拒绝、同名Bank不同schema，以及原生过滤仍有效。所有生产操作仍需现有流程授权。

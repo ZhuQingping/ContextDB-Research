@@ -447,6 +447,8 @@ curl -fsS -G \
 
 ### 5.2.1 原生业务正向验证（在改权限与清理资源之前）
 
+直接使用curl验证Retain/Recall，可按[独立业务用例](contextdb-retain-recall-curl-guide.md)执行，包含同步/异步、中英文、严格标签与跨空间数据隔离。
+
 本节使用刚创建的 BUSINESS_KEY，它对 BANK_ID 有读写权限。SDK 走原生 REST，bank_id 使用本手册的 BANK_ID 可读标识；内部 WORKSPACE_UUID 只作身份前置条件。需同版发布 Python SDK、fastmcp，使用模型的 Retain/Reflect 会实际调用模型。
 
 ```bash

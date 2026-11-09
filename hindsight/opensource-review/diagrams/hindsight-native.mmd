@@ -1,0 +1,17 @@
+%% 根据固定提交2606e883源码及方案整理，非Hindsight官方原图；依据见diagrams/README.md
+flowchart TB
+  client[Agent / SDK / MCP Client] --> api[FastAPI REST / MCP]
+  ui[Next.js Control Plane] --> api
+  api --> retain[Retain: facts / entities / embeddings]
+  api --> recall[Recall: semantic / keyword / graph / temporal]
+  api --> reflect[Reflect: retrieval and model reasoning]
+  api --> worker[Native Worker: async jobs]
+  retain --> pg[(PostgreSQL + vector / text indexes)]
+  recall --> pg
+  reflect --> pg
+  worker --> pg
+  retain --> model[LLM / Embedding / Reranker endpoints]
+  recall --> model
+  reflect --> model
+  worker --> model
+  api -. metrics / optional traces .-> obs[Approved observability backend]
