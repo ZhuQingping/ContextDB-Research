@@ -1,0 +1,2139 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hindsight 记忆检索执行分析与 PostgreSQL 增强方案</title>
+<style>
+:root{color-scheme:light;--ink:#1e3047;--muted:#52657b;--line:#dce4ee;--blue:#244d84;--paper:#fff;--canvas:#f3f6fa}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--canvas);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif;font-size:16px;line-height:1.8}
+nav{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 24px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}nav strong{font-size:15px;margin-right:auto}nav a,nav button{font:inherit;font-size:14px;line-height:1.5;text-decoration:none;color:var(--blue);background:#f2f5fa;border:1px solid #dce4ee;padding:6px 12px;border-radius:6px;cursor:pointer}
+main{max-width:1480px;margin:28px auto 60px;padding:42px 52px 70px;background:var(--paper);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 35px #172b4310}h1,h2,h3,h4,h5{line-height:1.45;letter-spacing:.01em}h1{font-size:32px;margin:0 0 16px}h2{font-size:26px;color:#173d6c;margin:50px 0 22px;padding:14px 18px;background:#edf3fb;border-left:5px solid #416a9e}h3{font-size:22px;margin:32px 0 16px}h4{font-size:18px;margin:24px 0 12px;color:#244d84}p{margin:12px 0}a{color:#225a99;text-underline-offset:3px;overflow-wrap:anywhere}li{margin:7px 0}strong{font-weight:650}
+.architecture-figure{margin:16px -20px 22px}.architecture-figure svg{display:block;width:100%;height:auto}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;line-height:1.7;table-layout:auto}th{background:#eef3f9;color:#244261;text-align:left;font-weight:600}th,td{border:1px solid #d9e3ef;padding:10px 12px;vertical-align:top;overflow-wrap:anywhere}tbody tr:nth-child(even){background:#fafbfd}td code{font-size:12.5px}
+pre{border-radius:7px;background:#f4f7fb;border:1px solid #e1e8f0;padding:16px 20px;font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,'PingFang SC',monospace;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'PingFang SC',monospace;font-size:.9em}p code,li code,td code{background:#eef2f7;border-radius:3px;padding:2px 4px}.flow{color:#294c74;background:#eef4fc;font-size:14px}.code-detail{margin:18px 0;border:1px solid #dce4ef;border-radius:7px;background:#fbfcfe}.code-detail summary{padding:12px 16px;cursor:pointer;color:#294d79;font-size:14px}.code-detail pre{margin:0;border:0;border-top:1px solid #e2e8f0;border-radius:0 0 7px 7px}.evidence-ref{color:#52657b;border-bottom:1px dotted #94a5b8}.evidence-ref sup{font-size:9px;margin-left:3px;color:#6b7d92}hr{border:0;border-top:1px solid #e0e7ef;margin:40px 0}blockquote{margin:18px 0;padding:10px 22px;border-left:4px solid #99afd0;background:#f6f8fc}footer{padding:22px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:900px){nav{padding:10px 14px;gap:6px}nav strong{width:100%}main{margin:10px 8px 30px;padding:24px 18px;border-radius:6px}h1{font-size:25px}h2{font-size:22px;margin-top:34px}h3{font-size:19px}table{font-size:12px}th,td{padding:7px 6px}.architecture-figure{margin:10px -10px}.source{font-size:11px}}
+@media print{body{background:#fff;font-size:10pt}nav{display:none}main{max-width:none;margin:0;padding:0;border:0;box-shadow:none}h1{font-size:21pt}h2{font-size:17pt;break-before:page;background:none;padding-left:0;border:0}h3{font-size:13pt;break-after:avoid}h4{font-size:11pt;break-after:avoid}table{font-size:8pt}tr{break-inside:avoid}.architecture-figure{margin:0}pre{font-size:7.5pt;background:none}summary{display:none}details{border:0}.evidence-ref sup{display:none}a{color:inherit;text-decoration:none}footer{display:none}}
+</style></head><body>
+<nav><strong>Hindsight × PostgreSQL｜技术分析报告</strong><a href="#executive-summary">第一章 · 摘要</a><a href="#chapter4">第二章 · Recall</a><a href="#chapter7">第三章 · PG 增强</a><a href="#independent-review">架构与选型</a><button id="toggle-code" type="button">展开全部 SQL / 接口</button><button id="print" type="button">打印</button></nav>
+<main><h1 id="heading-1">Hindsight 记忆检索执行分析与 PostgreSQL 增强方案</h1>
+<p><strong>技术分析报告｜2026-11-12</strong></p>
+<p><a href="#executive-summary">1. 执行摘要</a> · <a href="#chapter4">2. Recall 执行分析</a> · <a href="#chapter7">3. PG 增强方案</a> · <a href="#api-appendix">附录 A：接口参考</a> · <a href="#independent-review">附录 B：架构与选型</a></p>
+<p>本报告聚焦 Recall 执行机制与 PG 增强方案，包含完整 SQL、调用次数与耗时分析。附录 A 提供厂商接口参考，附录 B 评估数据库通用性、模型部署、AGE 选型和 Reflect 执行能力。</p>
+<p><strong>范围与架构边界：</strong> 第二章记录现场实测，第三章提出执行增强方案，附录 B 讨论选型与实施优先级。MemoryRecall 定位为 Hindsight 适配/SQL 包装入口，PG 底层提供通用执行机制，不固化 world、observation 等业务类型。拟研发机制尚未实现，性能收益有待验证。</p>
+<p><strong>实测范围：</strong> PG 16.15、pgvector 0.6.0；agent_memory 共 2,002 条记忆。请求 21 使用 RRF，请求 23 使用 MaaS 模型，两条时间线分别分析；19 次业务 SQL、PG execute 累计、应用调用累计和 HTTP 时间不是同一口径。</p>
+<p><a id="executive-summary"></a></p>
+<h2 id="heading-2">1. 执行摘要</h2>
+<p><strong>本报告回答两个问题：Hindsight 的一次 Recall 如何调用 PG，以及 PG 应增强哪些执行能力。</strong> 第二章给出现有流程、完整 SQL 与实测耗时，第三章提出增强方案；现状与拟建设能力分别说明。</p>
+<table>
+<thead>
+<tr>
+<th>分析结论</th>
+<th>实测依据</th>
+<th>对增强方案的启示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>当前 Recall 需要应用分步编排，四路检索未完全并行</strong></td>
+<td>主样本执行 19 次业务 SQL：2 次准备、14 次检索、3 次补全；图扩展在时序路径完成后启动，图任务内部存在局部并发</td>
+<td>用统一入口组织融合执行计划；独立任务并行，图扩展按起点依赖启动，关系扩展在库内迭代</td>
+</tr>
+<tr>
+<td><strong>候选融合前已读取正文，存在减少宽字段搬运的空间</strong></td>
+<td>四路交给融合的 1,915 条记录，按 ID 合并为 1,032 条，再裁剪为 300 条候选</td>
+<td>融合与 Top-K 阶段优先传递 ID、分数和必要属性，入选后再读取正文；存储 I/O 收益需另行验证</td>
+</tr>
+<tr>
+<td><strong>数据库优化应集中在检索阶段</strong></td>
+<td>主样本 PG execute 累计 360.034 ms；向量＋关键词查询占 212.779 ms，图与时序阶段合计 144.085 ms，结果补全仅 2.982 ms</td>
+<td>优先优化检索访问、执行调度与迭代；在具备可靠分数上界的访问路径实施 Top-K 提前剪枝</td>
+</tr>
+<tr>
+<td><strong>启用模型后，模型服务可能成为主要耗时来源</strong></td>
+<td>独立 MaaS 样本中，重排阶段 7.782 s、检索阶段 493 ms；不能与主样本 SQL 时间拼接</td>
+<td>提供批量模型重排执行能力，并分别评估模型部署、吞吐与预算；仅将同一模型迁入数据库不会自动提升质量或缩短推理时间</td>
+</tr>
+</tbody></table>
+<p><strong>建议建设：一个 MemoryRecall 适配入口，两项执行能力——融合检索执行、批量模型重排。</strong> 检索侧重点研发延迟物化、依赖感知并行与库内迭代、Top-K 动态剪枝，分别争取减少数据搬运、串行等待与无效计算。MemoryRecall 表达 Hindsight 的业务规则，PG 底层保持通用。</p>
+<p><strong>验收以同等检索质量下的端到端延迟、资源消耗和吞吐为准。</strong> 接口合并不等于减少数据库工作；减少候选搬运不等于提升召回质量。上述机制尚未实现，预期收益需要通过同条件测试验证。AGE、模型部署方式和 Reflect 的扩展讨论见附录 B，不作为本报告主线结论。</p>
+<hr>
+<p><a id="chapter4"></a></p>
+<h2 id="heading-3">2. Recall 执行流程与 SQL 耗时分析</h2>
+<h3 id="heading-4">2.1 执行概览：调度顺序、SQL 次数与结果规模</h3>
+<p><strong>Recall 先通过四种策略找候选，再融合、裁剪和排序，最后限制返回的记忆正文总长度。四种策略不等于四次 SQL，也不意味着四路同时执行。</strong></p>
+<p>本章以真实 Bank <code>agent_memory</code> 的请求 <strong>21</strong> 为主样本：使用 RRF，HTTP 耗时 1.585 秒，执行 19 次已采集业务 SQL，最终返回 38 条记忆。请求 <strong>23</strong> 使用 MaaS 模型，作为独立对照，最终返回 35 条。先用主样本讲完整条交互，再说明模型路径的差别。</p>
+<h4 id="heading-5">2.1.1 检索、融合与补全的调度顺序</h4>
+<pre class="flow"><code class="language-text">读取 Bank 信息与配置
+    ↓
+应用生成查询向量
+    ↓
+向量＋关键词：一条组合 SQL
+    ↓
+时序检索：先找入口，再按批次扩展邻居
+    ↓
+图检索：按三种事实类型调度，存在局部并发
+    ↓
+应用合并候选并排序，再选择总长度符合上限的记忆
+    ↓
+补全实体与文档/附件引用
+    ↓
+主样本返回 38 条记忆</code></pre><p>向量＋关键词、时序入口及后续扩展先后执行；图任务在这些步骤结束后才启动。图扩展依赖语义种子，但代码中还等待了整条时序路径结束。不能根据 trace 阶段名 <code>parallel_retrieval</code> 判断为“四路完全并行”。</p>
+<h4 id="heading-6">2.1.2 19 次业务 SQL 的阶段分布</h4>
+<table>
+<thead>
+<tr>
+<th>执行阶段</th>
+<th align="right">本次 SQL 次数</th>
+<th>SQL 编号</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>准备</td>
+<td align="right"><strong>2</strong></td>
+<td>SQL-036、037</td>
+<td>读 Bank 信息和配置</td>
+</tr>
+<tr>
+<td>向量＋关键词</td>
+<td align="right"><strong>1</strong></td>
+<td>SQL-038</td>
+<td>一条 SQL 包含三种事实类型各自的向量、关键词分支，共六个分支</td>
+</tr>
+<tr>
+<td>时序入口</td>
+<td align="right"><strong>1</strong></td>
+<td>SQL-039</td>
+<td>按时间窗找入口候选</td>
+</tr>
+<tr>
+<td>时序扩展</td>
+<td align="right"><strong>9</strong></td>
+<td>SQL-040</td>
+<td>同一 SQL 按类型和本批节点重复执行：observation 1 批、experience 3 批、world 5 批</td>
+</tr>
+<tr>
+<td>图扩展</td>
+<td align="right"><strong>3</strong></td>
+<td>SQL-041、042</td>
+<td>Observation 1 次；world、experience 各 1 次</td>
+</tr>
+<tr>
+<td>应用合并、排序、控制返回长度</td>
+<td align="right"><strong>0</strong></td>
+<td>Python 处理</td>
+<td>这部分在应用中完成；启用 MaaS 时还会调用模型服务</td>
+</tr>
+<tr>
+<td>结果补全</td>
+<td align="right"><strong>3</strong></td>
+<td>SQL-043、044、045</td>
+<td>补充实体、读取文档/附件引用、检查附件是否存在</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td align="right"><strong>19</strong></td>
+<td><strong>2＋1＋1＋9＋3＋0＋3</strong></td>
+<td><strong>2 次准备＋14 次检索＋3 次补全</strong></td>
+</tr>
+</tbody></table>
+<p>这里统计的是本请求已捕获的业务 SQL，排除管理面鉴权、连接初始化和异步 usage 统计。SQL-038 的六个分支只算一次应用 SQL 调用；“应用处理 0 次 SQL”也不表示没有 CPU、网络或模型成本。每种 SQL 的全文放在后面对应步骤，重复调用不重复粘贴全文。</p>
+<h4 id="heading-7">2.1.3 候选集合与最终返回结果的变化</h4>
+<table>
+<thead>
+<tr>
+<th>处理位置</th>
+<th align="right">主样本请求 21（RRF）</th>
+<th>数量的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>四路交给 RRF 的候选汇总</td>
+<td align="right"><strong>1,915 条记录</strong></td>
+<td>向量 642＋关键词 502＋图 622＋时序 149；跨路可能重复</td>
+</tr>
+<tr>
+<td>按 ID 合并并融合排名</td>
+<td align="right"><strong>1,032 条不同记忆</strong></td>
+<td>同一记忆合为一条，各路名次仍共同贡献分数</td>
+</tr>
+<tr>
+<td>按融合排名裁剪</td>
+<td align="right"><strong>300 条候选</strong></td>
+<td>本次排序候选预算；其余 732 条不进入后续排序处理</td>
+</tr>
+<tr>
+<td>排好顺序后，选出正文总长度不超过 4,000 Token 的记忆</td>
+<td align="right"><strong>38 条记忆</strong></td>
+<td>本次不用重排模型；应用按排名和长度选择，正文共 3,992 Token</td>
+</tr>
+<tr>
+<td>实体/附件补全后返回</td>
+<td align="right"><strong>仍为 38 条记忆</strong></td>
+<td>补充信息，不重新加回未入选候选</td>
+</tr>
+</tbody></table>
+<p><strong>独立 MaaS 对照请求 23：</strong> 四路计数、合并数量和 300 条候选上限相同；模型对 300 组问题/正文返回 300 个评分，随后应用按分数和时间等规则排序，再按正文总长度上限选出 <strong>35 条、3,999 Token</strong>。35 条不是模型直接淘汰后的数量。同样的预算容纳条数不同，取决于优先装入的内容与长度，不能据此判断哪次检索质量更高。</p>
+<p>以上计数属于不同层次：1,915 是各路整理后交给 RRF 的候选数，不是所有 PG 查询返回行数之和；1,032 是唯一记忆数；300 是候选上限；38/35 是最终内容预算下的结果数。两次请求的计数相同，也不保证具体候选和顺序完全相同。结果选择细节见 2.6 节。</p>
+<h4 id="heading-8">2.1.4 分阶段耗时与主要成本</h4>
+<p>同一主样本的 HTTP 总耗时为 <strong>1,585 ms</strong>。下表分别统计应用驱动调用耗时和 PG 执行阶段耗时：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th align="right">SQL 次数</th>
+<th align="right">应用侧调用耗时合计 ms</th>
+<th align="right">PG execute 耗时合计 ms</th>
+<th align="right">占本样本 PG execute 合计的比例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>准备</td>
+<td align="right">2</td>
+<td align="right">7.167</td>
+<td align="right">0.188</td>
+<td align="right">0.1%</td>
+</tr>
+<tr>
+<td>向量＋关键词</td>
+<td align="right">1</td>
+<td align="right">539.147</td>
+<td align="right">212.779</td>
+<td align="right">59.1%</td>
+</tr>
+<tr>
+<td>时序入口</td>
+<td align="right">1</td>
+<td align="right">25.473</td>
+<td align="right">18.875</td>
+<td align="right">5.2%</td>
+</tr>
+<tr>
+<td>时序扩展</td>
+<td align="right">9</td>
+<td align="right">107.575</td>
+<td align="right">65.017</td>
+<td align="right">18.1%</td>
+</tr>
+<tr>
+<td>图扩展</td>
+<td align="right">3</td>
+<td align="right">246.279</td>
+<td align="right">60.193</td>
+<td align="right">16.7%</td>
+</tr>
+<tr>
+<td>结果补全</td>
+<td align="right">3</td>
+<td align="right">16.472</td>
+<td align="right">2.982</td>
+<td align="right">0.8%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td align="right"><strong>19</strong></td>
+<td align="right"><strong>942.112</strong></td>
+<td align="right"><strong>360.034</strong></td>
+<td align="right"><strong>100%</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>应用侧耗时</strong>：从驱动调用开始到取得结果，包含 PG 协议处理、执行、传输、驱动解码和调度等。它不等于纯网络时间。</li>
+<li><strong>PG execute 耗时</strong>：数据库日志记录的执行阶段时间，不是纯 CPU 时间，也不包含单独记录的 parse/bind 等所有工作。</li>
+<li><strong>两个合计都不是请求总耗时。</strong> 图查询有重叠区间，逐条相加会重复计算部分时间；请求还包括生成向量、RRF、结果处理及未计入这些业务 SQL 的其他开销。因此不能用 1,585 减去 360.034 就断言其余全是应用或网络开销。</li>
+</ul>
+<p><strong>本次应优先分析向量＋关键词查询，再分析图/时间扩展与阶段等待。</strong> 3 次结果补全的 PG 执行合计仅约 3 ms，调用次数虽可合并，却不是本次主要 SQL 耗时来源。逐条双侧时间见 2.8.1 节，具体优化判断见 2.9 节。</p>
+<h3 id="heading-9">2.2 第一步：读取 Bank 信息与配置——2 次 SQL</h3>
+<p>应用先确认当前记忆库的身份、目标和配置，为随后检索准备上下文。本次两个查询分别返回一条记录。</p>
+<p><strong>SQL-036：读取 Bank 名称、立场和任务目标，执行 1 次（R01）。</strong> <code>$1=agent_memory</code>。</p>
+<pre class="source"><code class="language-sql">SELECT name, disposition, mission
+        FROM ctxdb_ws_agent_memory.banks WHERE bank_id = $1</code></pre><p><strong>SQL-037：读取 Bank 配置，执行 1 次（R02）。</strong> <code>$1=agent_memory</code>。</p>
+<pre class="source"><code class="language-sql">SELECT config FROM ctxdb_ws_agent_memory.banks WHERE bank_id = $1</code></pre><p>接下来应用生成 1024 维查询向量。向量生成是应用/模型步骤，不计入上述业务 SQL；随后 PG 同时接收向量和关键词查询文本。</p>
+<h3 id="heading-10">2.3 第二步：向量与关键词一起召回——1 次 SQL</h3>
+<p><strong>这一查询解决两个问题：内容在意思上是否相关，文字上是否包含相关词项。</strong> 本次检索 observation、experience、world 三种事实类型，每种都有向量与关键词分支，六个分支用 <code>UNION ALL</code> 组合为 SQL-038，只调用一次（R03）。</p>
+<ul>
+<li>向量分支用 <code>&lt;=&gt;</code> 计算余弦距离，各自排序并取前 300 条，同时要求相似度至少为 0.3。</li>
+<li>关键词分支用 <code>@@ to_tsquery(...)</code> 匹配，再按 <code>ts_rank_cd(...)</code> 排序并取预算内的候选。虽然输出列名为 <code>bm25_score</code>，本次原生分支实际不是 BM25 算法。</li>
+<li>这条 SQL 已经返回正文、context、metadata 等字段，并非只返回 ID。</li>
+</ul>
+<p><strong>输入。</strong> <code>$1</code> 为查询向量，<code>$2=agent_memory</code>，<code>$3=300</code>；<code>$4</code> 是以下 OR 连接关键词：</p>
+<pre class="flow"><code class="language-text">2026年9月至11月 | 团队为什么选择 | hindsight | 作为 | contextbase | 底座 | 而不是 | openviking | 和 | cognee | 有哪些已明确的选型边界</code></pre><p><strong>完整 SQL-038：</strong></p>
+<details class="code-detail"><summary>完整 SQL · 38 行，点击展开</summary><pre class="source"><code class="language-sql">(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        1 - (embedding &lt;=&gt; $1::vector) AS similarity,
+    NULL::float AS bm25_score,        'semantic' AS source FROM ctxdb_ws_agent_memory.memory_units WHERE
+    bank_id = $2   AND fact_type = 'observation'   AND embedding IS NOT NULL   AND (1 - (embedding &lt;=&gt;
+    $1::vector)) &gt;= 0.3          ORDER BY embedding &lt;=&gt; $1::vector LIMIT 300)
+UNION ALL
+(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        1 - (embedding &lt;=&gt; $1::vector) AS similarity,
+    NULL::float AS bm25_score,        'semantic' AS source FROM ctxdb_ws_agent_memory.memory_units WHERE
+    bank_id = $2   AND fact_type = 'experience'   AND embedding IS NOT NULL   AND (1 - (embedding &lt;=&gt;
+    $1::vector)) &gt;= 0.3          ORDER BY embedding &lt;=&gt; $1::vector LIMIT 300)
+UNION ALL
+(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        1 - (embedding &lt;=&gt; $1::vector) AS similarity,
+    NULL::float AS bm25_score,        'semantic' AS source FROM ctxdb_ws_agent_memory.memory_units WHERE
+    bank_id = $2   AND fact_type = 'world'   AND embedding IS NOT NULL   AND (1 - (embedding &lt;=&gt;
+    $1::vector)) &gt;= 0.3          ORDER BY embedding &lt;=&gt; $1::vector LIMIT 300)
+UNION ALL
+(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        NULL::float AS similarity,
+    ts_rank_cd(search_vector, to_tsquery('english', $4)) AS bm25_score,        'bm25' AS source FROM
+    ctxdb_ws_agent_memory.memory_units WHERE bank_id = $2   AND fact_type = 'observation'   AND
+    search_vector @@ to_tsquery('english', $4)          ORDER BY ts_rank_cd(search_vector,
+    to_tsquery('english', $4)) DESC LIMIT $3)
+UNION ALL
+(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        NULL::float AS similarity,
+    ts_rank_cd(search_vector, to_tsquery('english', $4)) AS bm25_score,        'bm25' AS source FROM
+    ctxdb_ws_agent_memory.memory_units WHERE bank_id = $2   AND fact_type = 'experience'   AND search_vector
+    @@ to_tsquery('english', $4)          ORDER BY ts_rank_cd(search_vector, to_tsquery('english', $4)) DESC
+    LIMIT $3)
+UNION ALL
+(SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type, document_id,
+    chunk_id, tags, metadata, proof_count,        NULL::float AS similarity,
+    ts_rank_cd(search_vector, to_tsquery('english', $4)) AS bm25_score,        'bm25' AS source FROM
+    ctxdb_ws_agent_memory.memory_units WHERE bank_id = $2   AND fact_type = 'world'   AND search_vector @@
+    to_tsquery('english', $4)          ORDER BY ts_rank_cd(search_vector, to_tsquery('english', $4)) DESC
+    LIMIT $3)</code></pre></details><p><strong>返回与下一步。</strong> 本次 PG 返回 <strong>1,144 行</strong>，应用整理为 semantic 642 条和 keyword 502 条。随后复用同一获取连接执行时序查询，而非先把四路结果立刻融合。向量结果也为后面的图检索提供起点，避免在条件允许时重复检索语义种子。</p>
+<p>这是一条六分支 SQL，不是六次独立调用。本次只读计划回放观察到普通 <code>Append</code>，没有据此证明原请求六个分支并行；是否使用 HNSW 也要看实际计划，不能仅凭 SQL 形态判断。</p>
+<h3 id="heading-11">2.4 第三步：找时间入口，再沿时间/因果关系扩展——1＋9 次 SQL</h3>
+<h4 id="heading-12">2.4.1 时间与因果关系扩展示例</h4>
+<p>下面是假设例子，用于说明机制，<strong>不是本次真实 Bank 中的记忆或测试结果</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>记忆</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>11 月 1 日，Atlas 项目出现检索延迟高的问题</td>
+</tr>
+<tr>
+<td>B</td>
+<td>11 月 3 日，团队给 Atlas 增加了索引</td>
+</tr>
+<tr>
+<td>C</td>
+<td>11 月 5 日，Atlas 的检索延迟下降</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Alice 是 Atlas 的负责人</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Alice 还负责另一个项目的数据库优化</td>
+</tr>
+</tbody></table>
+<p>用户问“Atlas 在 11 月是怎么解决检索慢的问题的？”如果先找到 B，时间扩展会继续寻找相邻事件，希望把过程补齐：</p>
+<pre class="flow"><code class="language-text">问题是什么？             做了什么？              后来有什么结果？
+A：检索延迟高   ───→    B：增加索引   ───→    C：延迟下降</code></pre><p>这表示时间顺序。如果库里还已经记录“增加索引促成延迟下降”的因果边，也可以沿该边从 B 找到 C。<strong>日期先后本身不证明因果。</strong> 后面的图扩展则会从共同项目 Atlas 找到 D，关注相关背景，见 2.5 节。</p>
+<h4 id="heading-13">2.4.2 SQL-039：先找入口候选，执行 1 次（R04）</h4>
+<p>应用已经提供时间窗 2026-09-01 至 2026-11-10。PG 用事件区间重叠或 mentioned_at / occurred_start / occurred_end 落在窗口内等条件找入口，再按向量相似度排序，每种类型最多取 60 条。</p>
+<p><code>$1</code> 为查询向量，<code>$2=agent_memory</code>，<code>$3/$4</code> 为时间窗开始与结束，<code>$5</code> 为相似度阈值。</p>
+<details class="code-detail"><summary>完整 SQL · 68 行，点击展开</summary><pre class="source"><code class="language-sql">(
+        SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type,
+    proof_count, document_id, chunk_id, tags, metadata, 1 - (embedding &lt;=&gt; $1::vector) AS similarity
+        FROM ctxdb_ws_agent_memory.memory_units
+        WHERE bank_id = $2
+          AND fact_type = 'observation'
+          AND embedding IS NOT NULL
+          AND (
+              (occurred_start IS NOT NULL AND occurred_end IS NOT NULL
+               AND occurred_start &lt;= $4 AND occurred_end &gt;= $3)
+              OR
+              (mentioned_at IS NOT NULL AND mentioned_at BETWEEN $3 AND $4)
+              OR
+              (occurred_start IS NOT NULL AND occurred_start BETWEEN $3 AND $4)
+              OR
+              (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
+          )
+          AND (1 - (embedding &lt;=&gt; $1::vector)) &gt;= $5
+
+        ORDER BY embedding &lt;=&gt; $1::vector
+        LIMIT 60
+        )
+UNION ALL
+(
+        SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type,
+    proof_count, document_id, chunk_id, tags, metadata, 1 - (embedding &lt;=&gt; $1::vector) AS similarity
+        FROM ctxdb_ws_agent_memory.memory_units
+        WHERE bank_id = $2
+          AND fact_type = 'experience'
+          AND embedding IS NOT NULL
+          AND (
+              (occurred_start IS NOT NULL AND occurred_end IS NOT NULL
+               AND occurred_start &lt;= $4 AND occurred_end &gt;= $3)
+              OR
+              (mentioned_at IS NOT NULL AND mentioned_at BETWEEN $3 AND $4)
+              OR
+              (occurred_start IS NOT NULL AND occurred_start BETWEEN $3 AND $4)
+              OR
+              (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
+          )
+          AND (1 - (embedding &lt;=&gt; $1::vector)) &gt;= $5
+
+        ORDER BY embedding &lt;=&gt; $1::vector
+        LIMIT 60
+        )
+UNION ALL
+(
+        SELECT id, text, context, event_date, occurred_start, occurred_end, mentioned_at, fact_type,
+    proof_count, document_id, chunk_id, tags, metadata, 1 - (embedding &lt;=&gt; $1::vector) AS similarity
+        FROM ctxdb_ws_agent_memory.memory_units
+        WHERE bank_id = $2
+          AND fact_type = 'world'
+          AND embedding IS NOT NULL
+          AND (
+              (occurred_start IS NOT NULL AND occurred_end IS NOT NULL
+               AND occurred_start &lt;= $4 AND occurred_end &gt;= $3)
+              OR
+              (mentioned_at IS NOT NULL AND mentioned_at BETWEEN $3 AND $4)
+              OR
+              (occurred_start IS NOT NULL AND occurred_start BETWEEN $3 AND $4)
+              OR
+              (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
+          )
+          AND (1 - (embedding &lt;=&gt; $1::vector)) &gt;= $5
+
+        ORDER BY embedding &lt;=&gt; $1::vector
+        LIMIT 60
+        )</code></pre></details><p><strong>返回与后续处理。</strong> 本次返回 <strong>162 行入口候选</strong>。应用按时间分桶选择入口，每种类型最多选 10 个，使入口不都集中在一个时间片，然后开始查邻居。</p>
+<h4 id="heading-14">2.4.3 SQL-040：批量查邻居，重复执行 9 次（R05～R13）</h4>
+<p>每次应用传入“当前准备继续扩展的一批节点”。PG 沿已有时间/因果边查邻居，对每个源节点限制边数，再关联目标事实并检查类型、相似度和适用过滤。应用接收结果后，更新已访问集合、传播得分、剩余预算和下一批节点。</p>
+<p><code>$1</code> 为查询向量，<code>$2</code> 为本批源节点 ID 数组，<code>$3</code> 为事实类型，<code>$4</code> 为相似度阈值，<code>$5</code> 为每源节点邻边上限，<code>$6=agent_memory</code>。</p>
+<details class="code-detail"><summary>完整 SQL · 19 行，点击展开</summary><pre class="source"><code class="language-sql">SELECT src.from_unit_id, mu.id, mu.text, mu.context, mu.event_date, mu.occurred_start, mu.occurred_end,
+    mu.mentioned_at, mu.fact_type, mu.document_id, mu.chunk_id, mu.tags, mu.metadata, mu.proof_count,
+                       l.weight, l.link_type,
+                       1 - (mu.embedding &lt;=&gt; $1::vector) AS similarity
+                FROM unnest($2::uuid[]) AS src(from_unit_id)
+                CROSS JOIN LATERAL (
+                    SELECT ml.to_unit_id, ml.weight, ml.link_type
+                    FROM ctxdb_ws_agent_memory.memory_links ml
+                    WHERE ml.from_unit_id = src.from_unit_id
+                      AND ml.link_type IN ('temporal', 'causes', 'caused_by', 'enables', 'prevents')
+                      AND ml.weight &gt;= 0.1
+                    ORDER BY ml.weight DESC
+                    LIMIT $5
+                ) l
+                JOIN ctxdb_ws_agent_memory.memory_units mu ON mu.id = l.to_unit_id
+                WHERE mu.bank_id = $6
+                  AND mu.fact_type = $3
+                  AND mu.embedding IS NOT NULL
+                  AND (1 - (mu.embedding &lt;=&gt; $1::vector)) &gt;= $4</code></pre></details><p>同一 SQL 的不同参数形成以下 9 个查询批次：</p>
+<table>
+<thead>
+<tr>
+<th>调用</th>
+<th>类型与批次</th>
+<th align="right">本批源节点数</th>
+<th align="right">SQL 返回行数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R05</td>
+<td>observation 第 1 批</td>
+<td align="right">10</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>R06</td>
+<td>experience 第 1 批</td>
+<td align="right">10</td>
+<td align="right">93</td>
+</tr>
+<tr>
+<td>R07</td>
+<td>experience 第 2 批</td>
+<td align="right">20</td>
+<td align="right">184</td>
+</tr>
+<tr>
+<td>R08</td>
+<td>experience 第 3 批</td>
+<td align="right">12</td>
+<td align="right">101</td>
+</tr>
+<tr>
+<td>R09</td>
+<td>world 第 1 批</td>
+<td align="right">10</td>
+<td align="right">100</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>world 第 2 批</td>
+<td align="right">20</td>
+<td align="right">200</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>world 第 3 批</td>
+<td align="right">20</td>
+<td align="right">170</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>world 第 4 批</td>
+<td align="right">20</td>
+<td align="right">181</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>world 第 5 批</td>
+<td align="right">11</td>
+<td align="right">110</td>
+</tr>
+</tbody></table>
+<p><strong>9 次查询批次不等于同一条记忆沿关系走了 9 跳。</strong> 每批处理多个节点，同一目标也可能经不同源节点或关系反复出现。应用保留适用的传播结果并控制预算，最后时序路交给 RRF 的是 <strong>149 条候选</strong>，不是上表返回行数的简单相加。</p>
+<h4 id="heading-15">2.4.4 时间窗的边界</h4>
+<p>时间窗直接用于 SQL-039 的入口选择，并参与后续时间接近度评分；SQL-040 <strong>没有再用该事件时间窗硬过滤所有邻居</strong>，因此扩展结果也可能在窗外。语义、关键词和图也不会因这个窗口自动排除窗外事实。<code>temporal_window</code> 应理解为时序检索与评分的输入，不是整个 recall 的硬过滤条件。</p>
+<p>上述入口和扩展查询在主样本中先后执行，完成之后才进入图阶段。</p>
+<h3 id="heading-16">2.5 第四步：找关联事实与背景——3 次图 SQL</h3>
+<h4 id="heading-17">2.5.1 按事实类型组织图扩展</h4>
+<p>沿用 2.4 节的假设例子：B“给 Atlas 增加索引”和 D“Alice 是 Atlas 的负责人”都提到项目 Atlas，系统可以沿这个共同实体找到关联事实：</p>
+<pre class="flow"><code class="language-text">B：给 Atlas 增加索引
+          │
+       共同项目：Atlas
+          │
+D：Alice 是 Atlas 的负责人</code></pre><p>时间扩展侧重补齐事件过程；图扩展侧重补齐相关背景与证据。两者都可以使用因果边，也可能找到同一记忆，并非互斥分类。E 是 Alice 的其他资料，是否被带回取决于本次起点和扩展范围，不会沿所有关系无限查下去。</p>
+<p>“按事实类型”是分别处理以下三种记忆，不是说图只有三种关系：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>world</td>
+<td>外部世界的事实</td>
+<td>Atlas 使用 PostgreSQL</td>
+</tr>
+<tr>
+<td>experience</td>
+<td>Agent 自己参与的行动或经历</td>
+<td>我执行了 Atlas 的索引检查</td>
+</tr>
+<tr>
+<td>observation</td>
+<td>根据来源事实整理出的结论</td>
+<td>Atlas 的主要瓶颈在关键词检索</td>
+</tr>
+</tbody></table>
+<p>图检索从向量检索选出的起点记忆出发。本次三个类型各有 20 个起点，执行以下查询：</p>
+<table>
+<thead>
+<tr>
+<th>调用</th>
+<th>类型</th>
+<th>SQL</th>
+<th align="right">SQL 返回行数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R14</td>
+<td>observation</td>
+<td>SQL-041</td>
+<td align="right">300</td>
+</tr>
+<tr>
+<td>R15</td>
+<td>world</td>
+<td>SQL-042，绑定 world</td>
+<td align="right">345</td>
+</tr>
+<tr>
+<td>R16</td>
+<td>experience</td>
+<td>SQL-042，绑定 experience</td>
+<td align="right">34</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3 次查询</strong></td>
+<td><strong>两种 SQL 形态</strong></td>
+<td align="right"><strong>679 行</strong></td>
+</tr>
+</tbody></table>
+<p>三个任务由应用并发调度，但本次连接池上限为 2，仅有部分调用区间重叠，不能描述成“三条图 SQL 同时执行”。</p>
+<h4 id="heading-18">2.5.2 SQL-041：Observation 先通过来源事实寻找关联，执行 1 次</h4>
+<p>Observation 是整理后的结论，共享实体信息可能存在于其来源事实中。这条 SQL 先展开 <code>source_memory_ids</code>，通过来源事实的共享实体找到关联来源事实，再映射回 Observation；另外两条分支直接按起点 Observation ID 查询语义边和因果边，最后汇总三类结果。</p>
+<p><code>$1</code> 为本类型的 20 个起点 ID，<code>$2</code> 为图候选预算。</p>
+<details class="code-detail"><summary>完整 SQL · 125 行，点击展开</summary><pre class="source"><code class="language-sql">WITH seed_sources AS (
+                SELECT DISTINCT unnest(source_memory_ids) AS source_id
+                FROM ctxdb_ws_agent_memory.memory_units
+                WHERE id = ANY($1::uuid[])
+                  AND source_memory_ids IS NOT NULL
+            ),
+            source_entities AS (
+                SELECT DISTINCT ue_seed.entity_id
+                FROM seed_sources ss
+                JOIN ctxdb_ws_agent_memory.unit_entities ue_seed ON ue_seed.unit_id = ss.source_id
+            ),
+            connected_sources AS (
+                SELECT DISTINCT t.unit_id AS source_id
+                FROM (
+                    SELECT
+                        ue_target.unit_id,
+                        row_number() OVER (
+                            PARTITION BY ue_target.entity_id
+                            ORDER BY ue_target.unit_id DESC
+                        ) AS rn
+                    FROM ctxdb_ws_agent_memory.unit_entities ue_target
+                    JOIN source_entities se ON se.entity_id = ue_target.entity_id
+                ) t
+                WHERE t.rn &lt;= 200
+                  AND NOT EXISTS (
+                      SELECT 1 FROM seed_sources ss WHERE ss.source_id = t.unit_id
+                  )
+            ),
+            candidate_ids AS (
+                SELECT DISTINCT o.id
+                FROM connected_sources cs
+                CROSS JOIN LATERAL (
+                    SELECT m.id
+                    FROM ctxdb_ws_agent_memory.memory_units m
+                    WHERE m.source_memory_ids @&gt; ARRAY[cs.source_id]
+                    OFFSET 0
+                ) o
+            ),
+            candidates AS (
+                SELECT
+                    mu.id, mu.text, mu.context, mu.event_date,
+                    mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                    mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                    mu.source_memory_ids
+                FROM ctxdb_ws_agent_memory.memory_units mu
+                JOIN candidate_ids ci ON ci.id = mu.id
+                WHERE mu.fact_type = 'observation'
+                  AND mu.id != ALL($1::uuid[])
+
+            ),
+            scored AS (
+                SELECT c.id, COUNT(DISTINCT cs.source_id)::float AS score
+                FROM candidates c
+                CROSS JOIN LATERAL unnest(c.source_memory_ids) AS s(source_id)
+                JOIN connected_sources cs ON cs.source_id = s.source_id
+                GROUP BY c.id
+            ),
+            observation_entity_expanded AS (
+                SELECT
+                    c.id, c.text, c.context, c.event_date,
+                    c.occurred_start, c.occurred_end, c.mentioned_at, c.fact_type,
+                    c.document_id, c.chunk_id, c.tags, c.proof_count,
+                    sc.score,
+                    'entity'::text AS source
+                FROM candidates c
+                JOIN scored sc ON sc.id = c.id
+                ORDER BY sc.score DESC
+                LIMIT $2
+            ),
+            -- Exact v0.5.6 query shape: GROUP BY + MAX(weight) for semantic,
+            -- DISTINCT ON for causal, hardcoded to fact_type='observation'.
+            semantic_expanded AS (
+                SELECT
+                    id, text, context, event_date,
+                    occurred_start, occurred_end, mentioned_at, fact_type,
+                    document_id, chunk_id, tags, proof_count,
+                    MAX(weight) AS score,
+                    'semantic'::text AS source
+                FROM (
+                    SELECT mu.id, mu.text, mu.context, mu.event_date,
+                           mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                           mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                           ml.weight
+                    FROM ctxdb_ws_agent_memory.memory_links ml JOIN ctxdb_ws_agent_memory.memory_units mu ON
+    mu.id = ml.to_unit_id
+                    WHERE ml.from_unit_id = ANY($1::uuid[])
+                      AND ml.link_type = 'semantic' AND mu.fact_type = 'observation'
+                      AND mu.id != ALL($1::uuid[])
+
+                    UNION ALL
+                    SELECT mu.id, mu.text, mu.context, mu.event_date,
+                           mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                           mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                           ml.weight
+                    FROM ctxdb_ws_agent_memory.memory_links ml JOIN ctxdb_ws_agent_memory.memory_units mu ON
+    mu.id = ml.from_unit_id
+                    WHERE ml.to_unit_id = ANY($1::uuid[])
+                      AND ml.link_type = 'semantic' AND mu.fact_type = 'observation'
+                      AND mu.id != ALL($1::uuid[])
+
+                ) sem_raw
+                GROUP BY id, text, context, event_date,
+                         occurred_start, occurred_end, mentioned_at, fact_type,
+                         document_id, chunk_id, tags, proof_count
+                ORDER BY score DESC LIMIT $2
+            ),
+            causal_expanded AS (
+                SELECT DISTINCT ON (mu.id)
+                    mu.id, mu.text, mu.context, mu.event_date,
+                    mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                    mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                    ml.weight AS score, 'causal'::text AS source
+                FROM ctxdb_ws_agent_memory.memory_links ml JOIN ctxdb_ws_agent_memory.memory_units mu ON
+    ml.to_unit_id = mu.id
+                WHERE ml.from_unit_id = ANY($1::uuid[])
+                  AND ml.link_type IN ('causes', 'caused_by', 'enables', 'prevents')
+                  AND mu.fact_type = 'observation'
+
+                ORDER BY mu.id, ml.weight DESC LIMIT $2
+            )
+            SELECT * FROM observation_entity_expanded
+            UNION ALL
+            SELECT * FROM semantic_expanded
+            UNION ALL
+            SELECT * FROM causal_expanded</code></pre></details><h4 id="heading-19">2.5.3 SQL-042：普通事实查共享实体、语义边和因果边，执行 2 次</h4>
+<p>world 和 experience 使用相同 SQL，分别绑定各自的类型及起点。SQL 内包括三条关联路径：共享实体计数、双向语义边最大权重、因果边去重，并对各路径限流。每个实体的扩展上限为 200。</p>
+<p><code>$1</code> 为当前类型的起点 ID 数组，<code>$2</code> 分别为 world 或 experience，<code>$3</code> 为该类型图预算。</p>
+<details class="code-detail"><summary>完整 SQL · 98 行，点击展开</summary><pre class="source"><code class="language-sql">WITH
+            seed_entities AS (
+                SELECT DISTINCT ue.entity_id
+                FROM ctxdb_ws_agent_memory.unit_entities ue
+                WHERE ue.unit_id = ANY($1::uuid[])
+            ),
+            entity_expanded AS (
+                SELECT mu.id, mu.text, mu.context, mu.event_date,
+                       mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                       mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                       COUNT(DISTINCT se.entity_id)::float AS score,
+                       'entity'::text AS source
+                FROM seed_entities se
+                CROSS JOIN LATERAL (
+                    SELECT ue_target.unit_id
+                    FROM ctxdb_ws_agent_memory.unit_entities ue_target
+                    WHERE ue_target.entity_id = se.entity_id
+                      AND ue_target.unit_id != ALL($1::uuid[])
+                      -- Filter before applying the cap: candidates from other fact
+                      -- types, or outside the recall window, must not consume this
+                      -- entity's bounded fan-out.
+                      AND EXISTS (
+                          SELECT 1
+                          FROM ctxdb_ws_agent_memory.memory_units mu_target
+                          WHERE mu_target.id = ue_target.unit_id
+                            AND mu_target.fact_type = $2
+
+                      )
+                    ORDER BY ue_target.unit_id DESC
+                    LIMIT 200
+                ) t
+                JOIN ctxdb_ws_agent_memory.memory_units mu ON mu.id = t.unit_id
+                GROUP BY mu.id
+                ORDER BY score DESC
+                LIMIT $3
+            ),
+
+            semantic_expanded AS (
+                SELECT
+                    id, text, context, event_date,
+                    occurred_start, occurred_end, mentioned_at, fact_type,
+                    document_id, chunk_id, tags, proof_count,
+                    MAX(weight) AS score,
+                    'semantic'::text AS source
+                FROM (
+                    SELECT
+                        mu.id, mu.text, mu.context, mu.event_date,
+                        mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                        mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                        ml.weight
+                    FROM ctxdb_ws_agent_memory.memory_links ml
+                    JOIN ctxdb_ws_agent_memory.memory_units mu ON mu.id = ml.to_unit_id
+                    WHERE ml.from_unit_id = ANY($1::uuid[])
+                      AND ml.link_type = 'semantic'
+                      AND mu.fact_type = $2
+                      AND mu.id != ALL($1::uuid[])
+
+                    UNION ALL
+                    SELECT
+                        mu.id, mu.text, mu.context, mu.event_date,
+                        mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                        mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                        ml.weight
+                    FROM ctxdb_ws_agent_memory.memory_links ml
+                    JOIN ctxdb_ws_agent_memory.memory_units mu ON mu.id = ml.from_unit_id
+                    WHERE ml.to_unit_id = ANY($1::uuid[])
+                      AND ml.link_type = 'semantic'
+                      AND mu.fact_type = $2
+                      AND mu.id != ALL($1::uuid[])
+
+                ) sem_raw
+                GROUP BY id, text, context, event_date,
+                         occurred_start, occurred_end, mentioned_at, fact_type,
+                         document_id, chunk_id, tags, proof_count
+                ORDER BY score DESC
+                LIMIT $3
+            ),
+            causal_expanded AS (
+                SELECT DISTINCT ON (mu.id)
+                    mu.id, mu.text, mu.context, mu.event_date,
+                    mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
+                    mu.document_id, mu.chunk_id, mu.tags, mu.proof_count,
+                    ml.weight AS score,
+                    'causal'::text AS source
+                FROM ctxdb_ws_agent_memory.memory_links ml
+                JOIN ctxdb_ws_agent_memory.memory_units mu ON ml.to_unit_id = mu.id
+                WHERE ml.from_unit_id = ANY($1::uuid[])
+                  AND ml.link_type IN ('causes', 'caused_by', 'enables', 'prevents')
+                  AND mu.fact_type = $2
+
+                ORDER BY mu.id, ml.weight DESC
+                LIMIT $3
+            )
+            SELECT * FROM entity_expanded
+            UNION ALL
+            SELECT * FROM semantic_expanded
+            UNION ALL
+            SELECT * FROM causal_expanded</code></pre></details><p><strong>返回与后续处理。</strong> 三次图查询共返回 679 行，各关系来源可能重复命中同一记忆。应用按以下规则合并图分数、去重并裁剪，得到 <strong>622 条图候选</strong>：</p>
+<pre class="flow"><code class="language-text">图分数 = tanh(共享实体数 × 0.5) ＋ 语义关系最大权重 ＋ 因果关系最大权重</code></pre><p>最后的三路评分合并仍在 Python，图关系查询本身已经在 PG。图结果还涉及应用中的标签过滤与截断顺序，不能仅看 SQL 就宣称全部过滤已在索引内部完成。各图任务完成后，应用才进入四路融合。</p>
+<h3 id="heading-20">2.6 第五步：合并候选、决定顺序，再限制返回的文本长度——0 次业务 SQL</h3>
+<p>本节描述应用计算及模型调用，不新增本请求的业务 SQL。PG 当前在召回时已返回正文，候选裁剪后的 <code>hydrate_results</code> 对 PG store 是空操作，不能再算一次补读正文 SQL。</p>
+<h4 id="heading-21">2.6.1 RRF 先合并重复候选，再限制排序预算</h4>
+<p>四路交给 RRF 的候选分别为向量 642、关键词 502、图 622、时序 149，合计 1,915 条记录。应用按记忆 ID 合并，并用各路名次计算 RRF：</p>
+<pre class="flow"><code class="language-text">RRF 分数 = 该记忆在各命中路中 1 / (60＋名次) 的总和</code></pre><p>同一记忆跨路出现时只保留一个候选，但保留各路排名贡献。由此得到 1,032 条不同记忆；再按融合排名保留 300 条，剩余 732 条不进入后续排序处理。</p>
+<h4 id="heading-22">2.6.2 两种排序配置：RRF 主样本与 MaaS 对照</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>请求 21：RRF 主样本</th>
+<th>请求 23：独立 MaaS 对照</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>合并、裁剪后</td>
+<td>300 条候选</td>
+<td>300 条候选</td>
+</tr>
+<tr>
+<td>是否调用神经 reranker</td>
+<td>否，RRF passthrough</td>
+<td>是，<code>bge-reranker-v2-m3</code></td>
+</tr>
+<tr>
+<td>基础相关性信号</td>
+<td>由 RRF 名次建立基础分</td>
+<td>模型对 300 组 query/text 返回 300 个评分</td>
+</tr>
+<tr>
+<td>之后做什么</td>
+<td>新近度、时间、证据等加权，再排序</td>
+<td>相同类别的后续加权，再排序</td>
+</tr>
+<tr>
+<td>应用选出正文总长度不超过 4,000 Token 的记忆；这一步不调用模型</td>
+<td><strong>38 条，3,992 Token</strong></td>
+<td><strong>35 条，3,999 Token</strong></td>
+</tr>
+<tr>
+<td>整个 HTTP 请求耗时</td>
+<td>1.585 秒</td>
+<td>10.294 秒，其中模型调用及等待约 7.78 秒</td>
+</tr>
+</tbody></table>
+<p>本次 MaaS 对照的完整数字路径是：</p>
+<pre class="flow"><code class="language-text">1,915 条多路候选记录
+    → RRF 合并为 1,032 条不同记忆
+    → 裁剪为 300 条模型候选
+    → 模型返回 300 个评分，应用加权并重新排序
+    → 应用按顺序选择返回内容：正文总长度上限 4,000 Token，本次选出 35 条
+    → 补全并返回</code></pre><p><strong>35 条主要由最终内容预算决定，不代表模型只认为 35 条相关。</strong> 每条记忆长度不同，排序后优先装入的内容也不同，所以同样预算能容纳不同条数。两次请求的向量和候选细节可能变化，38 与 35 不能直接作为质量高低的依据。</p>
+<p>RRF 配置仍可能经过名称为 <code>CrossEncoderReranker</code> 的包装类，trace 也可能写着 cross-encoder；不能只据这个阶段名认定调用了神经模型。具体评分与 provider 关系见第五章。</p>
+<h4 id="heading-23">2.6.3 排序与返回长度控制的执行边界</h4>
+<p><strong>先决定哪些记忆排在前面，再决定这次能返回多少内容。</strong></p>
+<ul>
+<li><strong>决定顺序：</strong> RRF 路径不用重排模型，按融合排名和时间、证据等规则排序；MaaS 路径先调用模型评分，再结合这些规则排序。</li>
+<li><strong>控制长度：</strong> 应用计算候选记忆正文的 Token 数，按排名优先选择能放进长度上限的内容。本次上限是 4,000 Token，所以不会把所有 300 条候选的正文都返回。<strong>这一步只是应用程序选择内容，不调用 reranker 模型，也不新发业务 SQL。</strong></li>
+</ul>
+<p>Token 是文本长度的计量单位，不等于汉字数，因此 4,000 Token 不能写成“4,000 字”。这里统计的是返回记忆的正文长度，不是包含全部实体、元数据和 trace 的 HTTP 响应总长度。</p>
+<p><strong>返回集合由排序结果和正文 Token 预算共同确定。</strong> 两条排序路径分别返回 38 条和 35 条记忆，均为实际筛选结果，不是预设返回条数。</p>
+<h3 id="heading-24">2.7 第六步：补全最终结果——3 次 SQL</h3>
+<p>以主样本请求 21 为例，应用按顺序和正文总长度上限选定了 38 条记忆，随后只为这些结果补充关联信息。</p>
+<h4 id="heading-25">2.7.1 SQL-043：补全实体名称，执行 1 次（R17）</h4>
+<p>查询直接事实的实体；对于没有直接实体关联的 Observation，可从来源事实推导实体。<code>$1</code> 为要补全的结果 ID 数组。</p>
+<pre class="source"><code class="language-sql">(SELECT ue.unit_id, e.id AS entity_id, e.canonical_name FROM ctxdb_ws_agent_memory.unit_entities ue JOIN
+    ctxdb_ws_agent_memory.entities e ON e.id = ue.entity_id WHERE ue.unit_id = ANY($1::uuid[])) UNION
+    (SELECT obs.id AS unit_id, e.id AS entity_id, e.canonical_name FROM ctxdb_ws_agent_memory.memory_units
+    obs CROSS JOIN LATERAL unnest(obs.source_memory_ids) AS src_id JOIN ctxdb_ws_agent_memory.unit_entities
+    src_ue ON src_ue.unit_id = src_id JOIN ctxdb_ws_agent_memory.entities e ON e.id = src_ue.entity_id WHERE
+    obs.id = ANY($1::uuid[]) AND obs.fact_type = 'observation' AND obs.source_memory_ids IS NOT NULL AND NOT
+    EXISTS (SELECT 1 FROM ctxdb_ws_agent_memory.unit_entities d WHERE d.unit_id = obs.id))</code></pre><p>本次返回 <strong>218 行事实—实体关联</strong>，不是新增 218 条记忆。应用将关联整理后附加到返回结果中。</p>
+<h4 id="heading-26">2.7.2 SQL-044：读取文档与附件引用，执行 1 次（R18）</h4>
+<p><code>$1=agent_memory</code>，<code>$2</code> 为最终 38 条记忆 ID。SQL 只返回 <code>id、document_id、attachment_ids</code>，<strong>不在这里补读正文</strong>。</p>
+<pre class="source"><code class="language-sql">SELECT id::text AS id, document_id, attachment_ids FROM ctxdb_ws_agent_memory.memory_units WHERE bank_id =
+    $1 AND id = ANY($2::uuid[])</code></pre><p>本次返回 38 行引用信息。</p>
+<h4 id="heading-27">2.7.3 SQL-045：检查当前 Bank 是否存在附件，执行 1 次（R19）</h4>
+<p>这是通用返回组装路径的一部分，<code>$1=agent_memory</code>。</p>
+<pre class="source"><code class="language-sql">SELECT 1 WHERE EXISTS (SELECT 1 FROM ctxdb_ws_agent_memory.attachments WHERE bank_id = $1)</code></pre><p>本次返回 0 行，表示这次检查没有发现附件，不表示查询没有执行。组装完成后，主样本仍返回 38 条记忆。</p>
+<h3 id="heading-28">2.8 技术复核：19 次调用明细与统计口径</h3>
+<h4 id="heading-29">2.8.1 按应用发送顺序逐条定位</h4>
+<p>下表只对应 <strong>RRF 请求 21</strong>。qid 对应发送记录，PID 是 PG 后端连接；每行均匹配到 1 次 PG execute。相对起止时间是从 HTTP 请求开始算的驱动调用区间，含等待、结果读取和调度；PG 执行耗时另列，二者不能混为一谈。</p>
+<table>
+<thead>
+<tr>
+<th>调用 / qid</th>
+<th>本次步骤</th>
+<th>SQL</th>
+<th>相对起止时间 s</th>
+<th align="right">PG PID</th>
+<th align="right">应用侧调用 ms</th>
+<th align="right">PG execute ms</th>
+<th align="right">SQL 返回行/项数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R01 / 184</td>
+<td>读取 Bank 身份与目标</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-036">SQL-036<sup>原证据</sup></span></td>
+<td>0.020～0.023</td>
+<td align="right">49673</td>
+<td align="right">3.510</td>
+<td align="right">0.078</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>R02 / 186</td>
+<td>读取 Bank 配置</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-037">SQL-037<sup>原证据</sup></span></td>
+<td>0.044～0.047</td>
+<td align="right">49673</td>
+<td align="right">3.657</td>
+<td align="right">0.110</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>R03 / 188</td>
+<td>合并向量与关键词召回</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-038">SQL-038<sup>原证据</sup></span></td>
+<td>0.435～0.974</td>
+<td align="right">49673</td>
+<td align="right">539.147</td>
+<td align="right">212.779</td>
+<td align="right">1144</td>
+</tr>
+<tr>
+<td>R04 / 189</td>
+<td>查找时间窗内的入口事实</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-039">SQL-039<sup>原证据</sup></span></td>
+<td>0.980～1.005</td>
+<td align="right">49673</td>
+<td align="right">25.473</td>
+<td align="right">18.875</td>
+<td align="right">162</td>
+</tr>
+<tr>
+<td>R05 / 190</td>
+<td>observation 第 1 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.006～1.011</td>
+<td align="right">49673</td>
+<td align="right">4.297</td>
+<td align="right">0.148</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>R06 / 191</td>
+<td>experience 第 1 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.011～1.020</td>
+<td align="right">49673</td>
+<td align="right">9.001</td>
+<td align="right">5.272</td>
+<td align="right">93</td>
+</tr>
+<tr>
+<td>R07 / 192</td>
+<td>experience 第 2 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.021～1.037</td>
+<td align="right">49673</td>
+<td align="right">16.800</td>
+<td align="right">12.395</td>
+<td align="right">184</td>
+</tr>
+<tr>
+<td>R08 / 193</td>
+<td>experience 第 3 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.038～1.048</td>
+<td align="right">49673</td>
+<td align="right">9.998</td>
+<td align="right">5.498</td>
+<td align="right">101</td>
+</tr>
+<tr>
+<td>R09 / 194</td>
+<td>world 第 1 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.049～1.059</td>
+<td align="right">49673</td>
+<td align="right">10.512</td>
+<td align="right">5.347</td>
+<td align="right">100</td>
+</tr>
+<tr>
+<td>R10 / 195</td>
+<td>world 第 2 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.060～1.078</td>
+<td align="right">49673</td>
+<td align="right">17.743</td>
+<td align="right">11.839</td>
+<td align="right">200</td>
+</tr>
+<tr>
+<td>R11 / 196</td>
+<td>world 第 3 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.079～1.096</td>
+<td align="right">49673</td>
+<td align="right">17.008</td>
+<td align="right">11.936</td>
+<td align="right">170</td>
+</tr>
+<tr>
+<td>R12 / 197</td>
+<td>world 第 4 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.097～1.109</td>
+<td align="right">49673</td>
+<td align="right">12.059</td>
+<td align="right">7.510</td>
+<td align="right">181</td>
+</tr>
+<tr>
+<td>R13 / 198</td>
+<td>world 第 5 批</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-040">SQL-040<sup>原证据</sup></span></td>
+<td>1.110～1.120</td>
+<td align="right">49673</td>
+<td align="right">10.158</td>
+<td align="right">5.072</td>
+<td align="right">110</td>
+</tr>
+<tr>
+<td>R14 / 200</td>
+<td>Observation 图扩展</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-041">SQL-041<sup>原证据</sup></span></td>
+<td>1.130～1.207</td>
+<td align="right">49673</td>
+<td align="right">76.827</td>
+<td align="right">20.810</td>
+<td align="right">300</td>
+</tr>
+<tr>
+<td>R15 / 203</td>
+<td>world 图扩展</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-042">SQL-042<sup>原证据</sup></span></td>
+<td>1.217～1.267</td>
+<td align="right">49673</td>
+<td align="right">50.016</td>
+<td align="right">32.524</td>
+<td align="right">345</td>
+</tr>
+<tr>
+<td>R16 / 205</td>
+<td>experience 图扩展</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-042">SQL-042<sup>原证据</sup></span></td>
+<td>1.227～1.346</td>
+<td align="right">49742</td>
+<td align="right">119.436</td>
+<td align="right">6.859</td>
+<td align="right">34</td>
+</tr>
+<tr>
+<td>R17 / 207</td>
+<td>补全实体名称</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-043">SQL-043<sup>原证据</sup></span></td>
+<td>1.460～1.469</td>
+<td align="right">49742</td>
+<td align="right">9.054</td>
+<td align="right">2.787</td>
+<td align="right">218</td>
+</tr>
+<tr>
+<td>R18 / 209</td>
+<td>读取附件引用</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-044">SQL-044<sup>原证据</sup></span></td>
+<td>1.493～1.497</td>
+<td align="right">49742</td>
+<td align="right">3.387</td>
+<td align="right">0.164</td>
+<td align="right">38</td>
+</tr>
+<tr>
+<td>R19 / 210</td>
+<td>检查 Bank 是否有附件</td>
+<td><span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md#sql-045">SQL-045<sup>原证据</sup></span></td>
+<td>1.497～1.501</td>
+<td align="right">49742</td>
+<td align="right">4.031</td>
+<td align="right">0.031</td>
+<td align="right">0</td>
+</tr>
+</tbody></table>
+<p>图阶段的证据是：Observation 调用区间为 1.130～1.207 秒；world 为 1.217～1.267 秒；experience 为 1.227～1.346 秒。后两条使用不同 PID，驱动调用区间有重叠，但这不能证明整个区间都在同时消耗 PG CPU。</p>
+<h4 id="heading-30">2.8.2 SQL 次数、返回行数与候选数量的统计口径</h4>
+<ul>
+<li><strong>SQL 次数：</strong> 本次是 19 次已采集业务 SQL，不是全实例日志条数。parse/bind 不重复算为业务执行，其他请求和后台轮询也不混入。</li>
+<li><strong>SQL 返回行数：</strong> 向量＋关键词 1,144 行，时间入口 162 行，时序扩展多批返回的目标可能重复，图查询共 679 行。这些是阶段的原始返回量。</li>
+<li><strong>各路候选与最终结果：</strong> 上述结果经过各路应用处理后才形成 1,915 条融合候选，再变成 1,032、300 和最终 38/35。不能将所有 SQL 返回行数直接相加，作为唯一记忆数。</li>
+</ul>
+<p>19 次不是固定常数。时间路径是否启用、事实类型、扩展批次、种子是否复用、配置缓存及实体/来源/片段等返回选项，都会影响调用次数；模型调用数也不能直接算成 PG SQL 次数。</p>
+<p>证据：<span class="evidence-ref" title="原报告证据：../evidence/21-dual-rrf-recall.json">主样本接口响应与 trace<sup>原证据</sup></span>、<span class="evidence-ref" title="原报告证据：../evidence/23-dual-maas-recall.json">MaaS 对照响应与 trace<sup>原证据</sup></span>、<span class="evidence-ref" title="原报告证据：../evidence/recall-21-sequence.json">19 次调用顺序<sup>原证据</sup></span>、<span class="evidence-ref" title="原报告证据：../%E5%8F%8C%E5%90%91%E5%AE%A1%E8%AE%A1%E5%AF%B9%E7%85%A7.md#21-dual-rrf-recall">应用发送与 PG 执行对照<sup>原证据</sup></span>、<span class="evidence-ref" title="原报告证据：../evidence/sender-siliconflow.jsonl">模型调用记录<sup>原证据</sup></span>。本章 SQL 可与 <span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md">SQL 全文目录<sup>原证据</sup></span>逐项复核。</p>
+<h3 id="heading-31">2.9 基于执行耗时的优化优先级</h3>
+<p>下列判断只针对这次带 trace 和日志采集的单次样本，不是延迟分位数，也不等于已经实现的收益。</p>
+<table>
+<thead>
+<tr>
+<th>优先分析的对象</th>
+<th>时间证据</th>
+<th>可研究的改造</th>
+<th>不能据此推导什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>向量＋关键词 SQL-038</strong></td>
+<td>PG execute 212.779 ms，约占本样本 PG 执行合计的 59.1%；应用侧 539.147 ms，返回 1,144 行</td>
+<td>按六个分支分析扫描/排序成本；候选只返回必要字段；融合裁剪后再取正文；排查接收、解码和调度</td>
+<td>不能把 212.779 ms 全算给向量或全文；也不能把约 326 ms 差额直接当作网络耗时</td>
+</tr>
+<tr>
+<td><strong>9 批时序扩展 SQL-040</strong></td>
+<td>PG execute 合计 65.017 ms，应用调用合计 107.575 ms</td>
+<td>把多批循环与状态更新留在库内；复用节点读取与邻接访问，减少应用往返</td>
+<td>9 批变成一次前台调用，不意味着只做一批计算；也不是提速 9 倍</td>
+</tr>
+<tr>
+<td><strong>图 SQL-041/042</strong></td>
+<td>PG execute 合计 60.193 ms；应用调用合计 246.279 ms，第一条发送到最后一条完成约 216 ms</td>
+<td>优化来源反查、宽行读取和图评分合并；区分执行、结果解码、调度与等待</td>
+<td>不能将 246.279 ms 全部视为图算法或可节省的时长；三个调用存在重叠</td>
+</tr>
+<tr>
+<td><strong>阶段串行等待</strong></td>
+<td>时间入口到最后一个扩展批次完成约 140 ms，此后才启动图任务</td>
+<td>时间路径可与向量/关键词重叠；图在语义起点确定后启动，不必等待时间路径结束</td>
+<td>约 140 ms 是本样本可研究的重叠窗口，不是保证节省量；资源竞争可能抵消收益</td>
+</tr>
+<tr>
+<td><strong>2 次准备＋3 次补全</strong></td>
+<td>PG execute 合计仅 3.170 ms</td>
+<td>随统一接口合并配置/关联访问，主要减少调用组织与往返</td>
+<td>本次不应把这部分包装成主要执行性能瓶颈</td>
+</tr>
+</tbody></table>
+<p>应用 trace 给出的主样本生成向量约 <strong>369 ms</strong>，检索阶段约 <strong>923 ms</strong>；检索阶段还包含查询编排、连接获取和结果处理，并非纯 PG 执行。一次 recall 的优化，应将数据库执行成本、应用等待和整个请求的关键路径分别观察。</p>
+<p>另一条 MaaS 请求 23 中，检索阶段约 <strong>493 ms</strong>，模型重排阶段约 <strong>7,782 ms</strong>。因此数据库检索更快，并不会自动消除模型等待。对于启用模型的路径，还要评估候选规模、模型用量与限流；同时保持检索质量，而非只追求少返回候选。</p>
+<p><strong>本次建议的顺序是：先定位最重的组合查询及结果搬运，再验证图/时间的库内状态共享与并行；统一接口作为这些改造的载体。</strong> 是否值得继续投入，应由固定输入下的质量、实际扫描/回表量、传输字节、多请求吞吐和 p95/p99 决定。</p>
+<hr>
+<p><a id="chapter7"></a></p>
+<h2 id="heading-32">3. PostgreSQL 检索与模型执行增强方案</h2>
+<p><strong>目标执行流程与优化位置（拟建设）</strong></p>
+<pre class="flow"><code class="language-text">                          Hindsight / Agent
+                                  |
+                                  v
+                MemoryRecall(问题, 向量, 条件, 预算)
+                                  |
+                                  v
+                           PG 融合执行计划
+                [重点一：查询内并行，减少客户端往返]
+                                  |
+          +-----------------------+-----------------------+
+          |                       |                       |
+          v                       v                       v
+      向量检索                全文检索                时序检索
+          |                       |                       |
+  保留候选 + 图扩展       分数上界提前剪枝          时间关系扩展
+   [依赖向量起点]      [重点二：少做无效计算]        [库内迭代]
+          |                       |                       |
+          +-----------------------+-----------------------+
+                                  |
+                                  v
+                 按 ID 去重 + RRF 融合 + Top-K(300)
+                                  |
+                                  v
+                        仅为入选候选读取正文
+                  [重点三：延迟物化，减少数据搬运]
+                                  |
+                                  v
+                批量模型重排 &lt;--&gt; 本地 / 远程模型服务
+                                  |
+                                  v
+                加权排序 + Token 预算筛选 + 信息补全
+                                  |
+                                  v
+                           返回记忆及来源</code></pre><table>
+<thead>
+<tr>
+<th>优化重点</th>
+<th>执行机制</th>
+<th>目标收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. 并行调度与库内迭代</strong></td>
+<td>向量、全文、时序检索在条件允许时并行；图扩展等待语义起点后启动。扩展进度和预算保留在库内</td>
+<td>缩短串行等待，减少客户端逐批交互</td>
+</tr>
+<tr>
+<td><strong>2. Top-K 提前剪枝</strong></td>
+<td>在全文访问阶段，利用可靠分数上界与当前入选阈值，跳过不可能进入前 K 名的记录或索引块</td>
+<td>减少评分计算、倒排访问和记录读取</td>
+</tr>
+<tr>
+<td><strong>3. 投影列延迟物化</strong></td>
+<td>融合与 Top-K 阶段仅传递 ID、分数及必要属性，候选入选后再读取正文</td>
+<td>减少宽字段搬运、物化与重复读取</td>
+</tr>
+</tbody></table>
+<p>图中展示模型重排策略；RRF 策略不调用模型，直接进入结果组装。提前剪枝作用于具备可靠上界的访问路径，不表示可以直接关闭整条检索分支。MemoryRecall 承担业务适配，PG 底层执行机制保持通用。</p>
+<h3 id="heading-33">3.1 能力定义、研发重点与收益</h3>
+<p><strong>建议建设一个 PG 侧的 <code>MemoryRecall</code> 入口，让 Hindsight 一次提交检索要求，由 PG 提供记忆检索融合执行和批量模型重排两项能力，组织找记忆、排序筛选和结果返回。首期争取的收益是接入简单、检索和模型执行更高效、资源与数据搬运更省。排序质量取决于模型、候选与评分策略，不能归因于执行位置。</strong></p>
+<h4 id="heading-34">3.1.1 统一适配入口：MemoryRecall</h4>
+<p>这是 <strong>Hindsight 调 PG 的入口</strong>，属于拟建设能力，尚未实现。它接收问题与查询向量、Bank/标签条件、时间路径参数、候选与返回 Token 预算、排序策略与模型配置，返回筛选后的记忆及其来源。</p>
+<pre class="flow"><code class="language-text">现在：Hindsight 分步调用 PG → 取回候选 → 应用融合、筛选和补全
+目标：Hindsight 调一次 MemoryRecall → PG 组织整次检索 → 返回选中记忆</code></pre><p><strong>收益：</strong> 应用少编排、少往返，并能统一查看各阶段成本。本次样本保留 2 次 Bank/配置准备查询，把 14 次检索和 3 次补全收进一次调用，前台目标为 <strong>19→3</strong>。这只是调用目标，内部扫描和耗时是否下降，要靠下面的执行研发证明。</p>
+<h4 id="heading-35">3.1.2 融合检索执行与批量模型重排两项能力</h4>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>PG 具体做什么</th>
+<th>预期收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>能力一：记忆检索融合执行</strong></td>
+<td>组织向量、关键词、图、时间四路检索及关系扩展；保留各路贡献，按 ID 合并、RRF 排序并裁剪候选；随后按返回长度预算选择、补全结果</td>
+<td><strong>主要解决性能与成本。</strong> 少传落选正文、争取少重复读数据、减少串行等待；以同等检索质量为基线</td>
+</tr>
+<tr>
+<td><strong>能力二：批量模型重排执行</strong></td>
+<td>将模型评分纳入查询执行计划，统一组织输入取数、推理批次、预算、取消、配额与失败处理，再把模型分数交给结果排序</td>
+<td><strong>主要收益是执行效率、资源控制和稳定性。</strong> 减少应用编排、重复推理与无效搬运，争取更高吞吐和更稳定延迟；同一模型、同一输入迁入 PG 不产生准确率增益</td>
+</tr>
+</tbody></table>
+<p><strong>两项能力均列入数据库建设与交付范围。</strong> 每次查询先完成四路检索与 RRF 融合裁剪，再由执行策略决定直接采用融合排序，还是继续调用模型重排；全过程由同一个 MemoryRecall 入口组织。</p>
+<pre class="flow"><code class="language-text">MemoryRecall
+    → 四路检索与关系扩展 → 融合、裁剪候选
+    → 批量模型重排〔由查询策略调度〕
+    → 按正文 Token 预算选择、补全 → 返回</code></pre><p>普通加权、Token 计数和结果补全属于结果处理，优先复用现有逻辑，不各自立一个内核项目。启用同一模型后，把调用位置迁到 PG 本身不代表质量提高或模型变快。</p>
+<h4 id="heading-36">3.1.3 三项研发重点：延迟物化、查询内并行与库内迭代、Top-K 动态剪枝</h4>
+<p>按照数据库执行技术，三项分别对应<strong>数据物化时机、执行调度、索引访问剪枝</strong>。目标是在既定质量要求下，减少数据搬运、客户端交互和无效评分；模型执行的调度、预算与评分复用见第 3.3.4 节。</p>
+<table>
+<thead>
+<tr>
+<th>研发方向与通用术语</th>
+<th>本次 SQL 依据</th>
+<th>执行机制</th>
+<th>预期收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>一、过滤与 Top-K 裁剪前置，投影列延迟物化（Late Materialization）</strong></td>
+<td>SQL-038、040、041/042 较早返回正文等宽字段。四路交给融合的 1,915 条记录按 ID 合并为 1,032 条，再保留 300 个候选</td>
+<td>沿用既定过滤与限流语义，前段仅传递 ID、分数及计算必需属性；完成候选融合与 Top-K 裁剪后，再按 ID 批量读取正文等投影列，并复用已读取的数据</td>
+<td>减少宽字段物化、结果传输、复制与重复回表；存储 I/O 收益需结合实际访问与布局验证</td>
+</tr>
+<tr>
+<td><strong>二、依赖感知的查询内并行与库内迭代（Intra-query Parallelism / Iterative Execution）</strong></td>
+<td>SQL-040 的时间扩展由应用推进 9 批，SQL-041/042 有 3 次图查询；现场尚有串行阶段和语义起点依赖</td>
+<td>按检索依赖组织执行：向量、全文、时序在资源与语义允许时并行；图扩展等待向量提供起点后启动。扩展节点内部保留进度、各路传播状态和预算，连续推进后续批次</td>
+<td>并行调度缩短关键路径；库内迭代减少客户端逐批往返和状态传递。两项收益分别测量</td>
+</tr>
+<tr>
+<td><strong>三、基于分数上界的 Top-K 动态剪枝（Score-bound Pruning）</strong></td>
+<td>SQL-038 的关键词分支执行 <code>@@</code> 匹配、<code>ts_rank_cd</code> 评分及 <code>ORDER BY ... LIMIT</code>；LIMIT 本身不保证跳过无效评分</td>
+<td>以当前可见候选的第 K 名分数作为竞争阈值；访问方法提供可靠分数上界，跳过上界低于阈值的记录或索引块。可借鉴 WAND / Block-Max WAND，并结合过滤条件进行代价选择</td>
+<td>减少评分次数、倒排表遍历及记录读取；只有上界可靠且评分、过滤与排序语义一致时，才能作为保持 Top-K 结果的剪枝优化</td>
+</tr>
+</tbody></table>
+<p><strong>延迟物化的执行边界：在过滤、候选融合与 Top-K 裁剪后，读取入选记录的投影列。</strong> 过滤下推减少参与后续运算的行，列裁剪/投影下推减少不需要的列；延迟物化则把“最终需要、当前阶段还不需要”的列推迟读取。正文必须在模型评分之前取出；筛选、评分或图/时间计算必需的列不能一并延后。仅修改 SELECT 输出列，也不自动消除 PG 的 heap 访问。可参考业界 Top-N 延迟物化设计，但不能直接套用其列存 I/O 收益。<a href="https://clickhouse.com/blog/clickhouse-gets-lazier-and-faster-introducing-lazy-materialization">ClickHouse Lazy Materialization</a></p>
+<p><strong>“延迟物化”的术语出处与本报告用法：</strong> ICDE 2007 的 <em>Materialization Strategies in a Column-Oriented DBMS</em> 在第 1 节使用 <code>late materialization</code>，第 3.1 节系统讨论其优势：先处理列值/位置等中间表示，延后构造行元组。这是经典研究依据，不据此宣称它首次提出该术语。<a href="https://www.cs.umd.edu/~abadi/papers/abadiicde2007.pdf">作者公开论文，§1、§3.1</a></p>
+<p>中文产品文档也直接使用该名称：Apache Doris 3.x《TOPN 查询优化》将“先读排序列、确定行号后再读取入选行的其他列”称为延迟物化；ClickHouse 的相关实现使用 <code>lazy materialization</code> 名称。它们说明业界确有这一类优化，但不同系统的物理实现不能直接等同。<a href="https://doris.apache.org/zh-CN/docs/3.x/query-acceleration/optimization-technology-principle/topn-optimization/">Doris 中文官方文档</a></p>
+<p>在本 PG 方案中，具体指<strong>候选融合/Top-K 裁剪后，再按 ID 读取正文等后续阶段所需的投影列</strong>。这是对该思想的借鉴，不表示 PG 已有完整的列存式延迟物化执行。也不要与 PG 的 <code>Materialize</code> 节点混淆：后者用于保存子计划结果供重复读取。<a href="https://www.postgresql.org/docs/16/using-explain.html">PG Materialize 节点说明</a></p>
+<p><strong>查询内并行与库内迭代分别优化关键路径和客户端交互：</strong></p>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>本场景的执行关系</th>
+<th>技术边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>查询内并行调度</strong></td>
+<td>时间路径可提前启动；图扩展取得语义起点后，可与时间路径重叠。向量与全文分支也纳入并行计划评估</td>
+<td>图不能在缺少起点时独立执行；不是四路无依赖同时启动。现场 SQL-038 的六分支回放为普通 Append，不能据此称已实现分支并行</td>
+</tr>
+<tr>
+<td><strong>库内迭代执行</strong></td>
+<td>对有前后依赖的扩展批次，在数据库内更新进度并继续执行，避免每批返回应用再发起下一批 SQL</td>
+<td>有依赖的批次仍顺序推进；9 批不等于 9 个可并行任务。单个函数入口也不会自动提供共享状态与并行协作</td>
+</tr>
+</tbody></table>
+<p>可以复用 PG 的部分并行与扩展机制；整次检索的依赖调度、共享状态和资源预算仍需设计。<a href="https://www.postgresql.org/docs/16/parallel-plans.html#PARALLEL-APPEND">PG Parallel Plans</a></p>
+<p><strong>Top-K 动态剪枝的执行边界：依据可靠分数上界，跳过不可能进入前 K 名的记录或索引块。</strong> WAND/Block-Max WAND 跳过的是不具竞争力的记录或索引块；若要裁掉整条 UNION 分支、图路或时间路，还必须额外证明不会影响候选与 RRF 排名贡献。没有证明时，直接关闭分支属于有损策略，不能与排名剪枝混为一谈。现场 GIN＋<code>ts_rank_cd</code> 尚未证明具备这种上界及剪枝路径。<a href="https://www.elastic.co/blog/faster-retrieval-of-top-hits-in-elasticsearch-with-block-max-wand">Block-Max WAND 原理</a></p>
+<p>三项的研发范围与验收在第 3.3.1～3.3.3 节展开：现有过滤、JOIN、RRF 与索引先作为基线；以共享执行状态、依赖调度及访问方法协作为重点，先验证 SQL/扩展原型，再按实际限制确定 PG 核心改动。上述候选数不是全部 SQL 原始行数之和；收益尚未测出，不能直接按 1,915→300 换算 I/O 或加速比。</p>
+<h3 id="heading-37">3.2 行业实现与接口对标</h3>
+<h4 id="heading-38">3.2.1 产品能力与执行边界对比</h4>
+<p>统一入口位于 <strong>Hindsight→数据引擎</strong> 之间。Hindsight 已提供 Recall HTTP 接口，本方案重点减少其与 PG 之间的逐步查询交互。</p>
+<table>
+<thead>
+<tr>
+<th>产品与真实入口</th>
+<th>一次业务请求可由系统组织的流程</th>
+<th>可借鉴的能力与边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Redis <code>FT.HYBRID</code></strong></td>
+<td>文本＋向量 → RRF → 前 K 条</td>
+<td>两路融合入口已产品化；该命令不包含神经模型重排。<a href="https://redis.io/docs/latest/commands/ft.hybrid/">命令</a></td>
+</tr>
+<tr>
+<td><strong>Elasticsearch <code>_search</code></strong></td>
+<td>关键词全文（standard.query.match）＋稠密向量（knn） → RRF → 模型重排 → 返回</td>
+<td>本章示例是两路；最直接的完整搜索流程参考，8.16 已有明确发布依据。<a href="https://www.elastic.co/blog/whats-new-elasticsearch-platform-8-16-0/">发布说明</a></td>
+</tr>
+<tr>
+<td><strong>OpenSearch <code>_search</code>＋pipeline</strong></td>
+<td>检索 → RRF → 取候选正文 → 模型处理 → 截断</td>
+<td>流程提前配置，每次搜索只发一次；不同阶段仍有内部工作。<a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/score-ranker-processor/">RRF</a>、<a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/rerank-processor/">模型阶段</a></td>
+</tr>
+<tr>
+<td><strong>Vespa query＋rank-profile</strong></td>
+<td>检索 → 分阶段排序/模型评分 → 返回</td>
+<td>将便宜与昂贵计算分阶段安排；公式可配置，不限于 RRF 先于模型。<a href="https://docs.vespa.ai/en/ranking/phased-ranking.html">分阶段排序</a></td>
+</tr>
+<tr>
+<td><strong>PostgresML <code>pgml.rank</code></strong></td>
+<td>已有候选正文 → PG 内模型评分、重排</td>
+<td>本例只证明 PG 可以运行 Cross-Encoder，不负责寻找候选与四路融合。<a href="https://github.com/postgresml/postgresml/blob/v2.9.2/pgml-extension/src/bindings/transformers/transformers.py">实现</a></td>
+</tr>
+<tr>
+<td><strong>Qdrant Query API</strong></td>
+<td>稠密向量（dense）＋稀疏向量（sparse） 两个 prefetch → RRF → 前 K 条</td>
+<td>本文示例是两路向量检索；稀疏编码器未指定，不能认定为 BM25。条数 limit 不是 Token 预算。<a href="https://api.qdrant.tech/v-1-10-x/api-reference/search/query-points">版本固定 API</a></td>
+</tr>
+<tr>
+<td><strong>Memlake recall（内部 gRPC）</strong></td>
+<td>四路记忆检索 → 应用下发的融合、模型重排、权重与 Token 预算策略 → 返回</td>
+<td>当前官方描述最接近完整 MemoryRecall；模型位置、预算细节和 RPC 参数尚未独立核实。<a href="https://docs.hindsight.vectorize.io/enterprise/memlake/architecture/">架构</a></td>
+</tr>
+</tbody></table>
+<p><strong>这里的“路”是同一次查询中生成候选的一种检索方式，不是 SQL 次数或网络连接数。</strong> 本章 ES 示例的两个子检索器分别按正文中的词和向量相似度查找；Qdrant 示例的两个子请求分别使用稠密向量与稀疏向量。稀疏向量由特征编号及权重构成，编码方式决定它表达什么，不能仅凭 sparse 名称认定为 BM25。两例均未包含 Hindsight 的图和时间路径，不能统称为相同的四路检索。</p>
+<p>三个核验结果会直接影响设计：</p>
+<ul>
+<li><strong>一次请求不等于一个物理算子。</strong> ES/OpenSearch 的协调层可以组织多个阶段，模型还可运行在 ML 节点或外部服务；一次搜索也不保证只发一次模型请求。</li>
+<li><strong>少返回字段不等于少读磁盘。</strong> Redis v8.4.0 显式 LOAD 被移到融合前的两路分支；Vespa 也说明缩减 summary 字段可能只减少网络量。延迟物化必须验证真实加载位置与存储访问。<a href="https://github.com/RediSearch/RediSearch/blob/v8.4.0/src/hybrid/parse_hybrid.c">Redis 源码</a>、<a href="https://docs.vespa.ai/en/querying/document-summaries.html">Vespa 字段获取</a></li>
+<li><strong>前 K 条不等于 4,000 Token。</strong> Memlake 当前架构声明支持预算策略，但完整 tokenizer/超限合同未公开核实到基准日历史版本；其公开 recall 性能明确排除了 Cross-Encoder，不能直接推算本方案的模型或 PG 加速比。<a href="https://hindsight.vectorize.io/blog/2026/10/13/memlake#performance">基准口径</a></li>
+</ul>
+<p><a id="example-es"></a></p>
+<h4 id="heading-39">3.2.2 Elasticsearch 混合检索与模型重排接口</h4>
+<p>下面按 Elasticsearch 8.16 已支持的接口改写。假设 <code>memory_idx</code> 已有正文和向量索引，<code>memory_reranker</code> 是已配置的模型推理端点。三维向量只说明参数位置，实际必须使用与索引相同模型生成的向量；索引、模型名称均为本例自取。<strong>这是官方接口示例，不是本轮实际集群运行结果。</strong></p>
+<details class="code-detail"><summary>接口请求 · 33 行，点击展开</summary><pre class="source"><code class="language-http">POST /memory_idx/_search
+{
+  &quot;size&quot;: 10,
+  &quot;retriever&quot;: {
+    &quot;text_similarity_reranker&quot;: {
+      &quot;retriever&quot;: {
+        &quot;rrf&quot;: {
+          &quot;retrievers&quot;: [
+            {
+              &quot;standard&quot;: {
+                &quot;query&quot;: {&quot;match&quot;: {&quot;text&quot;: &quot;PostgreSQL memory&quot;}}
+              }
+            },
+            {
+              &quot;knn&quot;: {
+                &quot;field&quot;: &quot;embedding&quot;,
+                &quot;query_vector&quot;: [0.1, 0.2, 0.3],
+                &quot;k&quot;: 100,
+                &quot;num_candidates&quot;: 200
+              }
+            }
+          ],
+          &quot;rank_window_size&quot;: 100,
+          &quot;rank_constant&quot;: 60
+        }
+      },
+      &quot;field&quot;: &quot;text&quot;,
+      &quot;inference_id&quot;: &quot;memory_reranker&quot;,
+      &quot;inference_text&quot;: &quot;Why does Atlas use PostgreSQL for agent memory?&quot;,
+      &quot;rank_window_size&quot;: 100
+    }
+  }
+}</code></pre></details><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>standard</code> 与 <code>knn</code></td>
+<td>关键词全文（standard.query.match）和稠密向量（knn）两路检索；向量由应用准备</td>
+</tr>
+<tr>
+<td><code>k=100</code>、<code>num_candidates=200</code></td>
+<td>向量结果规模、每分片 ANN 候选参数；不是两个模型批次</td>
+</tr>
+<tr>
+<td>内层 RRF 的窗口 100</td>
+<td>各子路参与融合的排名窗口；常数 60 控制名次分值差异</td>
+</tr>
+<tr>
+<td>外层模型的窗口 100</td>
+<td>从融合结果取最多 100 条给模型，不是两个窗口相乘</td>
+</tr>
+<tr>
+<td><code>field</code>、<code>inference_text</code>、<code>inference_id</code></td>
+<td>给模型的正文字段、用户问题、已配置的推理端点</td>
+</tr>
+<tr>
+<td><code>size=10</code></td>
+<td>最终返回最多 10 条；没有指定 Token 预算</td>
+</tr>
+</tbody></table>
+<p><strong>应用交一份完整请求，ES 组织“关键词全文＋稠密向量找候选→RRF→最多 100 条模型评分→最多返回 10 条”。</strong> 可借鉴的是完整要求一次表达、候选窗口和模型阶段集成；不能由此推断 Hindsight 的图/时间/Observation 来源语义已经被覆盖。<a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.16/retriever.html">8.16 参数合同</a></p>
+<p>其他产品的可读调用、参数与前置条件已合并在本文附录 A。理解本章不需要先读完全部厂商语法。</p>
+<h3 id="heading-40">3.3 SQL 成本依据与研发方向</h3>
+<p>请求 21 使用 RRF，HTTP 约 <strong>1,585 ms</strong>，trace 检索阶段约 <strong>923 ms</strong>；19 次已采集业务 SQL 的 PG execute 合计 <strong>360.034 ms</strong>，应用侧调用耗时合计 <strong>942.112 ms</strong>。后两项包含重叠调用，均不是请求关键路径；差额不能全部归因网络。下表来自同一请求，逐条证据见第 2.8 节。</p>
+<table>
+<thead>
+<tr>
+<th>现场工作</th>
+<th align="right">SQL 次数</th>
+<th align="right">PG execute 合计</th>
+<th align="right">应用调用合计</th>
+<th>对应问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>向量＋关键词 SQL-038</td>
+<td align="right">1</td>
+<td align="right">212.779 ms</td>
+<td align="right">539.147 ms</td>
+<td>六分支扫描/排序及 1,144 行宽候选输出</td>
+</tr>
+<tr>
+<td>时间入口 SQL-039</td>
+<td align="right">1</td>
+<td align="right">18.875 ms</td>
+<td align="right">25.473 ms</td>
+<td>独立时间路径被串行安排</td>
+</tr>
+<tr>
+<td>时间扩展 SQL-040</td>
+<td align="right">9 批</td>
+<td align="right">65.017 ms</td>
+<td align="right">107.575 ms</td>
+<td>状态与下一批节点由应用推进</td>
+</tr>
+<tr>
+<td>图扩展 SQL-041/042</td>
+<td align="right">3</td>
+<td align="right">60.193 ms</td>
+<td align="right">246.279 ms</td>
+<td>来源映射、查边、聚合与正文读取；调用存在重叠</td>
+</tr>
+<tr>
+<td>准备与补全</td>
+<td align="right">5</td>
+<td align="right">3.170 ms</td>
+<td align="right">23.639 ms</td>
+<td>可以集成，但不是主要 SQL 执行瓶颈</td>
+</tr>
+</tbody></table>
+<h4 id="heading-41">3.3.1 延迟物化与候选共享：融合裁剪后读取投影列</h4>
+<p>SQL-038 已经用一条 <code>UNION ALL</code> 组合六个检索分支，并非还缺少“一条 SQL 查多路”。下面是其中 world 关键词分支的结构节选，省略了部分输出字段；完整原文在第 2.3 节：</p>
+<pre class="source"><code class="language-sql">SELECT id, text, context, metadata,
+       ts_rank_cd(search_vector, to_tsquery('english', $4)) AS bm25_score
+FROM ctxdb_ws_agent_memory.memory_units
+WHERE bank_id = $2
+  AND fact_type = 'world'
+  AND search_vector @@ to_tsquery('english', $4)
+ORDER BY ts_rank_cd(search_vector, to_tsquery('english', $4)) DESC
+LIMIT $3;</code></pre><p>图和时间查询也较早返回正文。应用最后才把各路 <strong>1,915 条记录按 ID 合并为 1,032 条，再保留 300 条</strong>。这些是交给 RRF 的记录数，不是所有 SQL 原始行数之和。</p>
+<p><strong>先复用：</strong> 各路 SQL、RRF 求和/去重、按 ID 批量读取都可用现有能力做基线。候选阶段保留 ID、分数、来源及计算必需的时间/证据属性，融合裁剪后再读取入选正文；模型启用时先为模型候选取正文，最终结果确定后再补实体、附件等字段。</p>
+<p><strong>值得研发：</strong> 让融合执行器在同次请求中共享候选 ID 与读取状态，减少不同路径重复回表、复制和正文物化，并把这些成本纳入优化器选择。仅把输出列改少是 SQL 改造；让多个子计划复用同一候选/取数状态，才是执行器层面的工作。初版先收齐既定窗口再融合；跨路提前停止必须有正确的排名上界或明确的质量损失约定，不能某一路凑满 300 条就停止其他路。</p>
+<p><strong>收益验收：</strong> 正文传输字节、重复回表/TOAST 读取、CPU 和检索时间下降，同时候选与排序符合预期。<strong>1,915→300 不代表 I/O 按同比例下降</strong>；ANN 距离与可见性检查仍需执行。</p>
+<h4 id="heading-42">3.3.2 查询内并行与库内迭代：按依赖调度检索，减少客户端交互</h4>
+<p>SQL-040 的核心片段说明 PG 已会批量查邻居，应用则负责更新“访问过谁、传播分数、还剩多少预算、下一批查谁”：</p>
+<details class="code-detail"><summary>完整 SQL · 11 行，点击展开</summary><pre class="source"><code class="language-sql">FROM unnest($2::uuid[]) AS src(from_unit_id)
+CROSS JOIN LATERAL (
+    SELECT ml.to_unit_id, ml.weight, ml.link_type
+    FROM ctxdb_ws_agent_memory.memory_links ml
+    WHERE ml.from_unit_id = src.from_unit_id
+      AND ml.link_type IN ('temporal', 'causes', 'caused_by', 'enables', 'prevents')
+      AND ml.weight &gt;= 0.1
+    ORDER BY ml.weight DESC
+    LIMIT $5
+) l
+JOIN ctxdb_ws_agent_memory.memory_units mu ON mu.id = l.to_unit_id</code></pre></details><p>这是第 2.4.3 节 SQL 的片段，不是可独立执行的语句。现场是 9 个批次，不是同一节点走 9 跳。Observation 的 SQL-041 还要经过“起点结论→来源事实→共享实体→关联来源→反查结论”，其中包含：</p>
+<pre class="source"><code class="language-sql">WHERE m.source_memory_ids @&gt; ARRAY[cs.source_id]</code></pre><p><strong>先复用：</strong> 现有 JOIN、LATERAL、边索引和来源数组索引，先用库内循环/SQL 保持传播与限流顺序。SQL-040 是先按源节点限边，再过滤目标事实；将过滤提前属于语义变化，应单独评测。</p>
+<p><strong>值得研发：</strong> 执行器保留批次、传播和预算状态，支持批量邻接/来源读取；优化器与调度器识别依赖，安排工作和资源。读取缓存可共享，图与时间的排名、已访问和传播状态仍须按各自策略保留。把同一 ID 出现多次简单删掉，可能丢失不同路径的排名贡献。</p>
+<pre class="flow"><code class="language-text">向量检索 → 语义起点 → 图扩展 ─┐
+关键词检索 ───────────────────┼→ 融合
+时间入口＋时间/因果扩展 ──────┘</code></pre><p>时间入口不依赖语义候选；图等待语义起点，不必等时间路径结束。本样本时间入口到最后一批扩展约 <strong>140 ms</strong>，是一段可研究重叠的工作，不是保证节省量。<code>Parallel Append</code> 和 CustomScan 可以提供部分基础，但不会自动实现整套调度。<a href="https://www.postgresql.org/docs/16/parallel-plans.html#PARALLEL-APPEND">PG 并行计划</a></p>
+<p><strong>收益验收：</strong> 外部往返、内部批次数、真实查边/回表量、单请求关键路径及并发 p95/p99。9 批收进一次调用不等于一次扫描；多 worker 也不等于吞吐必然上升。</p>
+<h4 id="heading-43">3.3.3 Top-K 动态剪枝与代价选择：减少无效评分和索引访问</h4>
+<p>SQL-038 单次 PG execute 已占本样本合计的 <strong>59.1%</strong>，减少其他 SQL 次数无法替代对它的优化。但六分支同时含向量与关键词，不能把 212.779 ms 全算给全文，也不能据此归因某个索引。</p>
+<p>上面的 <code>@@</code> 负责找匹配，<code>ORDER BY ts_rank_cd(...) LIMIT</code> 负责挑排名。现场不是 BM25；普通 GIN 不直接提供按查询相关度排列的输出，写了 LIMIT 也不保证能只访问前 K 个匹配。<a href="https://www.postgresql.org/docs/16/indexes-ordering.html">PG 索引与排序</a></p>
+<p><strong>这里应区分两种剪枝：</strong> 全文检索内部可研究“记录/索引块的分数上界低于当前第 K 名，就跳过评分”的 Top-K 排名剪枝。Lucene 通过最大可能得分与最小竞争得分协作支持这类执行，可借鉴 WAND/Block-Max WAND 的方法和访问接口；不能据此认定现场 <code>ts_rank_cd</code> 可直接套用。<a href="https://lucene.apache.org/core/9_10_0/core/org/apache/lucene/search/TermScorer.html">Lucene 最大分数与竞争阈值接口</a></p>
+<p>若要裁掉 SQL-038 的一个 UNION 分支、停止图/时间路，或提前结束整路检索，还必须证明该路不会再改变候选集合及 RRF 排名贡献；单路原始分数上界也不能直接充当模型相关性分数上界。没有这样的依据时，停止某一路属于有损策略，需要另行质量评测，不能写成已证明的无损优化。</p>
+<p><strong>先复用：</strong> 验证分词/索引一致性和可用全文插件，分析各分支真实计划；现场 pgvector 0.6.0 的升级与过滤填充策略也先做兼容验证。中文子词探针失败提示质量题集应覆盖中文和混合语料，不能只测速度。</p>
+<p><strong>值得研发：</strong> 评估能按相关度上界剪枝的全文 Top-K 访问方法，以及结合过滤选择率、向量候选填充、关系扇出和剩余预算的路径选择。目标是让引擎知道“继续读哪一路还有价值”，而不只是执行应用固定下发的多个 LIMIT。更换 <code>ts_rank_cd</code> 为 BM25 会改变排序语义；候选缩减或近似剪枝也必须单独衡量质量。</p>
+<p><strong>收益验收：</strong> 大 Bank 下的实际评分/访问行数、CPU/I/O、候选满额率、Recall@K 和排序质量。只有现有 SQL/插件的成本曲线证明必要，才推进专用访问方法或核心接口改动。当前 2,002 行样本不能证明规模优势；存储/索引布局与查询、维护资源分工放在规模实验后决定。</p>
+<h4 id="heading-44">3.3.4 批量模型重排执行：价值在执行效率，质量由模型与策略决定</h4>
+<p><strong>把相同模型、相同候选、相同预处理和排序规则从应用移到 PG，不会自动提高准确率。</strong> 模型可能比 RRF 更善于识别问题与正文的相关性，这是模型/策略变化带来的收益，在应用侧调用同样可以获得。Hindsight 已经在应用侧调用 MaaS；数据库新增的价值应由执行成本与服务能力证明。</p>
+<p>本轮 MaaS 请求 23 已将 300 组“问题＋正文”提交模型评分，重排阶段约 <strong>7,782 ms</strong>，检索约 <strong>493 ms</strong>，最终返回 <strong>35 条、3,999 个正文 Token</strong>。这既不是逐条请求模型的低效基线，也不证明模型比 RRF 更准确；35 条是最终长度筛选结果。仅把调用者换成 PG，不能推断 7.8 秒会下降。另一次模型 reflect 因 20,000 TPM 配额失败，说明总用量控制也是实际问题。此处时间不能拼入请求 21 的 19 次 SQL。</p>
+<p><strong>数据库要提供的高级能力，是把模型评分作为可估算、可调度、可复用、可取消的查询执行阶段。</strong> PostgresML 的模型函数、现有推理服务和调用协议先复用；在此之上研发下列执行机制，均尚未实现、尚未测出收益：</p>
+<table>
+<thead>
+<tr>
+<th>执行机制</th>
+<th>结合本场景具体做什么</th>
+<th>争取的收益与边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>候选与模型输入协同</strong></td>
+<td>SQL-038/040/041/042 先产生轻量候选；融合确定模型输入集合后，按 ID 批量取正文并准备模型输入，避免应用反复接收和组装落选正文</td>
+<td>减少搬运和重复物化；维持同样 300 个模型输入时，不减少这 300 组模型计算，也不能免除远端正文传输</td>
+</tr>
+<tr>
+<td><strong>模型感知批处理与资源调度</strong></td>
+<td>按模型版本、输入长度和服务能力组织批次；管理队列、并发和取消。自建推理服务时研究跨查询合批与 GPU 调度；外部 MaaS 按其 API、配额和取消能力执行</td>
+<td>争取吞吐、资源利用和延迟稳定性；当前 MaaS 已接收一批 300 条，不能把“首次批量化”当收益。同步 SQL 仍可能占用连接/快照，释放等待资源需另行设计</td>
+</tr>
+<tr>
+<td><strong>输入代价与全流程预算管理</strong></td>
+<td>执行计划记录模型候选数、输入长度、预计开销；同一 reflect 的多次 recall 累计记账，在发送前排队或控制用量</td>
+<td>减少配额冲击和超时后继续做的无效工作。模型输入预算与最终 4,000 Token 输出预算分开；缩减 300 个候选或截短正文会改变输入，质量必须重评</td>
+</tr>
+<tr>
+<td><strong>有效评分复用</strong></td>
+<td>对可独立复用的成对评分，按问题、正文版本、模型版本和预处理配置建立缓存，复用前核验 Bank/权限；正文或模型变化后失效</td>
+<td>降低重复问题的推理量；只在有重复且评分语义允许时有收益，不能把旧分数跨版本或越权复用；本轮尚未证明命中率</td>
+</tr>
+</tbody></table>
+<p>上述批处理、缓存等也可以由推理服务或应用实现。<strong>ContextBase 的研究价值在于将其与候选计划、索引取数、作用域和用量统一协同，而不是声称这些机制只有数据库能做。</strong> 缓存、协议接入先做组件原型；跨执行节点的资源协作、代价估计与等待机制，才按扩展边界确定执行框架或核心改动。</p>
+<p><strong>分别验收两类结果：</strong> 固定模型和输入，测搬运字节、重复推理量、吞吐、p95/p99、配额失败和等待资源，验证数据库执行收益；改变模型、候选或排序策略时，另测排序与回答质量。当前证据只确认了 MaaS 调用成功和耗时/配额问题，没有证明 PG 已具备这些高级机制，也没有证明准确率提升。</p>
+<h3 id="heading-45">3.4 现有能力复用与研发边界</h3>
+<p>以下是<strong>设计范围，尚未实现</strong>。输入包括问题与向量、Bank/标签作用域、事实类型、时间路径参数、候选和返回 Token 预算、排序策略和模型配置；输出是选中记忆、来源及阶段诊断。模型名称/端点通过配置选择，不增加第二个业务接口。</p>
+<pre class="flow"><code class="language-text">Hindsight
+  │ 2次 Bank/配置准备查询
+  │ 1次 MemoryRecall〔目标；尚未实现〕
+  ▼
+PG：组织四路检索与关系扩展 → 融合裁剪
+    → 批量模型重排〔由查询策略调度〕 → 按正文长度预算选择、补全 → 返回</code></pre><p>本样本保留 2 次准备查询，把 14 次检索和 3 次补全收进一次调用，前台目标 <strong>19→3</strong>。这首先是接口和往返收益；内部执行、读取量和耗时必须另测。融合检索和批量模型重排都是交付能力；权重、Token 计数、实体补全优先复用现有逻辑。</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>具体交付</th>
+<th>何时属于真正数据库研发</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>优先复用现有 SQL/组件</strong></td>
+<td>JOIN/LATERAL/索引、RRF 求和、ID 去重、批量取正文、权重与结果补全；参考现有模型函数/服务</td>
+<td>行为与成本基线；不是重复发明一种 RRF</td>
+</tr>
+<tr>
+<td><strong>扩展/执行器与优化器重点</strong></td>
+<td>共享候选和物化状态；关系扩展状态；依赖与资源调度；排名感知访问与路径选择</td>
+<td>真正改变内部重复工作、访问行数或关键路径。先评估 CustomScan/访问方法等扩展入口</td>
+</tr>
+<tr>
+<td><strong>必要时改 PG 核心</strong></td>
+<td>扩展无法有效表达的跨执行节点共享执行状态、并行协作或等待恢复机制</td>
+<td>原型证明确有收益，且扩展边界成为限制后再确定核心范围；不预先把全部工作归入核心</td>
+</tr>
+<tr>
+<td><strong>批量模型重排执行</strong></td>
+<td>模型与协议优先复用；建设候选/输入协同、批次与资源调度、全流程预算和有效评分复用，明确取消与失败行为</td>
+<td>两项交付能力之一；先组件/扩展验证，再按调度与等待瓶颈深化执行框架。质量不归因于模型执行位置</td>
+</tr>
+</tbody></table>
+<p>PG 提供 Custom Scan 扩展的规划与执行入口，但不会因此自动具备以上融合能力。<a href="https://www.postgresql.org/docs/16/custom-scan.html">PG Custom Scan</a></p>
+<p>必须保持的行为也要同时明确：保持各路排名贡献、来源与过滤/限流顺序，Token 计数兼容现有实现。新的单次执行要明确快照与并发可见性，不能默认与原多个语句时刻完全相同。引擎提供通用候选、关系扩展与预算机制，Hindsight 的事实类型、公式和来源策略仍由配置/SQL 表达。</p>
+<h3 id="heading-46">3.5 实施优先级与验收指标</h3>
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>交付</th>
+<th>判断是否值得继续投入</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>第一步：建立兼容基线</strong></td>
+<td>一个入口组织原有 SQL；固定候选、排名与 Token 规则；建立中文/关系/时间题集</td>
+<td>指定样本前台调用目标可核验；内部执行仍单列，不把封装算作扫描优化</td>
+</tr>
+<tr>
+<td><strong>第二步：验证融合执行收益</strong></td>
+<td>窄候选、按需取正文、库内关系扩展和受控并行；同步分析全文/向量分支</td>
+<td>同等质量下，正文传输、访问量、CPU/I/O、检索延迟与并发性能有可复现改善</td>
+</tr>
+<tr>
+<td><strong>第三步：有证据再深化</strong></td>
+<td>对瓶颈建设访问方法、代价模型；按需推进核心共享/并行/任务机制与规模布局</td>
+<td>十万/百万级、多 Bank 和持续写入下仍有收益；质量、恢复与一致性通过验证</td>
+</tr>
+<tr>
+<td><strong>模型能力交付与评测</strong></td>
+<td>固定模型/输入测执行收益；模型、候选或排序变化后单独质评；统计多轮 reflect 总用量</td>
+<td>验证吞吐、延迟、重复推理、预算及失败管理；质量收益归因于模型/策略变化，不归因于入库执行</td>
+</tr>
+</tbody></table>
+<p><strong>建议立项的是“PG 记忆检索与模型执行能力”，通过一个 MemoryRecall 入口交付融合检索和批量模型重排；行业方案作为可行性依据，现场 SQL 作为研发取舍依据，实测成本与质量作为验收依据。</strong> 不预先承诺固定加速比或准确率提升百分比。</p>
+<hr>
+<p><a id="api-appendix"></a></p>
+<h2 id="heading-47">附录 A. 友商真实接口与参数</h2>
+<p>本附录给出真实接口的最小使用示例，便于理解调用边界。<strong>Redis、Elasticsearch、OpenSearch、Vespa、PostgresML、Qdrant 示例依据官方接口改写，本轮未在对应集群执行；Hindsight 的请求参数在前轮现场调用中已经使用。Memlake 的私有 gRPC 参数未公开核实，不编造调用。</strong></p>
+<p>为方便阅读，多数例子围绕“Atlas 为什么使用 PostgreSQL 存储 Agent 记忆”，用英文查询展示。索引、数据、模型和认证需要提前准备；示例只计算每次检索的业务调用，不把建索引、部署模型算成每次查询。除 Vespa 官方样例外，<code>memory_idx</code>、<code>memory_reranker</code> 等名称均是本例自取的部署名称，不是产品内置对象。</p>
+<p>向量 <code>[0.1, 0.2, 0.3]</code> 是用于说明参数的三维示例，不能代替真实问题的 embedding；实际维度、模型和字段应与建库时一致。候选 100、返回 10 均为示例参数，不构成实测数量或质量建议。各检索索引/集合假设仅包含一个演示 Bank 的数据。</p>
+<h3 id="heading-48">A.1 接口输入、执行职责与返回内容</h3>
+<table>
+<thead>
+<tr>
+<th>例子</th>
+<th>应用交什么</th>
+<th>引擎做什么</th>
+<th>应用收到什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Redis</td>
+<td>文本条件＋问题向量</td>
+<td>两路检索、RRF、取前 K 条</td>
+<td>入选 ID 与分数</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>文本、稠密向量、融合窗口、模型端点、最终条数</td>
+<td>关键词全文＋稠密向量→RRF→模型重排</td>
+<td>最多 10 个结果及字段、分数</td>
+</tr>
+<tr>
+<td>OpenSearch</td>
+<td>文本、向量和已配置 pipeline 名</td>
+<td>检索→RRF→取正文→模型重排→截断</td>
+<td>最多 10 个结果</td>
+</tr>
+<tr>
+<td>Vespa 官方样例</td>
+<td>问题、检索表达式和 rank-profile</td>
+<td>检索、分阶段模型评分及排名融合</td>
+<td>最多 10 个结果</td>
+</tr>
+<tr>
+<td>PostgresML</td>
+<td>问题＋<strong>已经准备好的候选正文数组</strong></td>
+<td>模型评分与重排</td>
+<td>候选数组位置、模型分数等</td>
+</tr>
+<tr>
+<td>Qdrant</td>
+<td>稠密/稀疏查询向量与候选限制</td>
+<td>稠密向量＋稀疏向量→RRF</td>
+<td>最多 10 个 point</td>
+</tr>
+<tr>
+<td>Hindsight／Memlake</td>
+<td>Hindsight 接收问题、预算与 Bank</td>
+<td>使用 Memlake 时，内部把记忆检索策略交给引擎</td>
+<td>选中的记忆；直接 gRPC 参数未核实</td>
+</tr>
+</tbody></table>
+<h3 id="heading-49">A.2 Redis：一次命令完成两路检索与融合</h3>
+<p><strong>前置条件：</strong> Redis 8.4 能力可用，已创建名为 <code>memory_idx</code> 的搜索索引，正文可全文检索，<code>embedding</code> 为三维 FLOAT32 向量字段。Python 安装了 <code>redis</code> 客户端。为展示二进制向量如何传递，用 Python 调用真实 Redis 命令。</p>
+<pre class="source"><code class="language-python">import struct
+import redis
+
+client = redis.Redis(host=&quot;localhost&quot;, port=6379)
+query_vector = struct.pack(&quot;&lt;3f&quot;, 0.1, 0.2, 0.3)
+
+result = client.execute_command(
+    &quot;FT.HYBRID&quot;, &quot;memory_idx&quot;,
+    &quot;SEARCH&quot;, &quot;PostgreSQL memory&quot;,
+    &quot;VSIM&quot;, &quot;@embedding&quot;, &quot;$qv&quot;,
+    &quot;KNN&quot;, 2, &quot;K&quot;, 100,
+    &quot;COMBINE&quot;, &quot;RRF&quot;, 4, &quot;WINDOW&quot;, 100, &quot;CONSTANT&quot;, 60,
+    &quot;LIMIT&quot;, 0, 10,
+    &quot;PARAMS&quot;, 2, &quot;qv&quot;, query_vector,
+)
+print(result)</code></pre><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SEARCH &quot;PostgreSQL memory&quot;</code></td>
+<td>以这些词做全文检索，默认文本评分为 BM25STD</td>
+</tr>
+<tr>
+<td><code>VSIM @embedding $qv</code></td>
+<td>用传入的问题向量搜索相似记忆</td>
+</tr>
+<tr>
+<td><code>KNN 2 K 100</code></td>
+<td>向量路请求 100 个邻近候选；<code>2</code> 是后面 <code>K 100</code> 的参数项数量</td>
+</tr>
+<tr>
+<td><code>WINDOW 100</code></td>
+<td>设置参与融合的排名窗口；不是 Token 上限</td>
+</tr>
+<tr>
+<td><code>CONSTANT 60</code></td>
+<td>RRF 公式的平滑常数，控制不同名次的分值差异</td>
+</tr>
+<tr>
+<td><code>COMBINE RRF 4</code></td>
+<td>使用 RRF；<code>4</code> 是 <code>WINDOW 100 CONSTANT 60</code> 的参数项数量</td>
+</tr>
+<tr>
+<td><code>LIMIT 0 10</code></td>
+<td>从第 0 条开始，最多返回 10 条</td>
+</tr>
+<tr>
+<td><code>PARAMS 2 qv ...</code></td>
+<td>绑定名为 qv 的二进制参数；<code>2</code> 是名称和值两项</td>
+</tr>
+</tbody></table>
+<p><strong>实际职责：</strong> 应用调用一次，Redis 做文本与向量检索、融合和条数裁剪，返回 key/ID 与分数。本例未加载正文、未调用 rerank 模型。100 是向量候选/融合窗口参数，10 是返回条数，60 不是候选数。</p>
+<p><a href="https://redis.io/docs/latest/commands/ft.hybrid/">官方 FT.HYBRID 语法</a>。关于 8.4.0 显式 LOAD 会进入融合前分支的边界，见 <a href="#chapter7">第三章核验结论</a>。</p>
+<h3 id="heading-50">A.3 Elasticsearch：检索、融合与模型重排接口</h3>
+<p>完整请求、参数含义和执行流程见 <a href="#example-es">第 3.2.2 节</a>。索引和模型需提前配置，单次搜索不等于单次模型 HTTP 调用。</p>
+<h3 id="heading-51">A.4 OpenSearch：配置一次流程，之后每次只发一次搜索</h3>
+<p><strong>前置条件：</strong> 以 2.19 文档为依据；<code>memory_idx</code> 的 <code>text</code> 可全文检索，<code>embedding</code> 为已配置的三维 k-NN 字段；本地 Cross-Encoder 已部署，下面的 <code>DEPLOYED_MODEL_ID</code> 必须换成其真实模型 ID。</p>
+<p>先创建 pipeline。<strong>这是部署配置动作，不是每次查询都创建。</strong></p>
+<details class="code-detail"><summary>接口请求 · 22 行，点击展开</summary><pre class="source"><code class="language-http">PUT /_search/pipeline/memory_recall
+{
+  &quot;request_processors&quot;: [
+    {&quot;oversample&quot;: {&quot;sample_factor&quot;: 10}}
+  ],
+  &quot;phase_results_processors&quot;: [
+    {
+      &quot;score-ranker-processor&quot;: {
+        &quot;combination&quot;: {&quot;technique&quot;: &quot;rrf&quot;, &quot;rank_constant&quot;: 60}
+      }
+    }
+  ],
+  &quot;response_processors&quot;: [
+    {
+      &quot;rerank&quot;: {
+        &quot;ml_opensearch&quot;: {&quot;model_id&quot;: &quot;DEPLOYED_MODEL_ID&quot;},
+        &quot;context&quot;: {&quot;document_fields&quot;: [&quot;text&quot;]}
+      }
+    },
+    {&quot;truncate_hits&quot;: {}}
+  ]
+}</code></pre></details><p>每次检索只发送下面这一条：</p>
+<details class="code-detail"><summary>接口请求 · 19 行，点击展开</summary><pre class="source"><code class="language-http">POST /memory_idx/_search?search_pipeline=memory_recall
+{
+  &quot;size&quot;: 10,
+  &quot;query&quot;: {
+    &quot;hybrid&quot;: {
+      &quot;queries&quot;: [
+        {&quot;match&quot;: {&quot;text&quot;: &quot;PostgreSQL memory&quot;}},
+        {&quot;knn&quot;: {&quot;embedding&quot;: {&quot;vector&quot;: [0.1, 0.2, 0.3], &quot;k&quot;: 100}}}
+      ]
+    }
+  },
+  &quot;ext&quot;: {
+    &quot;rerank&quot;: {
+      &quot;query_context&quot;: {
+        &quot;query_text&quot;: &quot;Why does Atlas use PostgreSQL for agent memory?&quot;
+      }
+    }
+  }
+}</code></pre></details><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>search_pipeline=memory_recall</code></td>
+<td>选择前面已经配置的执行流程</td>
+</tr>
+<tr>
+<td><code>hybrid.queries</code></td>
+<td>定义文本、向量两路检索</td>
+</tr>
+<tr>
+<td><code>oversample.sample_factor: 10</code></td>
+<td>把请求 <code>size=10</code> 放大成内部 <code>size=100</code>，给后续重排留候选</td>
+</tr>
+<tr>
+<td><code>score-ranker-processor</code></td>
+<td>在 query 与 fetch 之间执行 RRF</td>
+</tr>
+<tr>
+<td><code>document_fields: [text]</code></td>
+<td>读取并提供给模型的文档字段</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>已部署模型，不是任意 MaaS URL</td>
+</tr>
+<tr>
+<td><code>query_text</code></td>
+<td>模型读取的完整问题</td>
+</tr>
+<tr>
+<td><code>truncate_hits: {}</code></td>
+<td>模型重排之后，恢复到原始请求的最多 10 条</td>
+</tr>
+</tbody></table>
+<p><strong>引擎执行：</strong> 两路检索 → RRF → fetch 最多 100 个候选文档 → 模型重排 → 截成最多 10 个结果。实际不足 100 条时按现有结果处理；内部候选与处理次数仍受分片、查询配置影响。</p>
+<p>本例说明“统一入口”还需要正确配置内部窗口：如果只设置 <code>size=10</code>，没有扩大候选，模型就不能自动在 100 条中挑选。配置能力已经由官方组件支持，本组合尚未集群实测。</p>
+<p><a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/score-ranker-processor/">RRF</a>、<a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/rerank-processor/">本地模型 rerank</a>、<a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/oversample-processor/">oversample</a>、<a href="https://docs.opensearch.org/2.19/search-plugins/search-pipelines/truncate-hits-processor/">truncate_hits</a>。</p>
+<h3 id="heading-52">A.5 Vespa：用官方样例，看一次查询怎样选择整个模型排序流程</h3>
+<p>这里使用官方 <code>msmarco-ranking</code> 样例实际定义的 schema、embedder 和 rank-profile 名称，避免编造 ONNX 输入绑定。<strong>前置条件：</strong> 按该样例部署应用、模型及数据，查询参数替换语法要求 Vespa 8.299 或以上；使用当前样例时还需满足其 GPU 配置要求。下面是调用格式示例，本轮未部署该样例。</p>
+<pre class="source"><code class="language-bash">vespa query \
+  'query=Why does Atlas use PostgreSQL for agent memory?' \
+  'yql=select * from passage where userQuery() or ({targetHits:100}nearestNeighbor(e5_embedding,q))' \
+  'input.query(q)=embed(e5_embedding_model,@query)' \
+  'input.query(qt)=embed(colbert_embedding_model,@query)' \
+  'input.query(query_token_ids)=embed(tokenizer,@query)' \
+  'ranking=e5-colbert-cross-encoder-rrf' \
+  'hits=10'</code></pre><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>query</code></td>
+<td>用户的问题</td>
+</tr>
+<tr>
+<td><code>userQuery() or nearestNeighbor(...)</code></td>
+<td>用关键词和向量共同寻找候选</td>
+</tr>
+<tr>
+<td><code>targetHits:100</code></td>
+<td>向量检索的目标命中参数；不是全流程最终返回条数</td>
+</tr>
+<tr>
+<td><code>input.query(q)</code></td>
+<td>让已配置的 E5 embedder 生成查询向量</td>
+</tr>
+<tr>
+<td><code>input.query(qt)</code></td>
+<td>为 ColBERT 阶段生成查询的多向量表示</td>
+</tr>
+<tr>
+<td><code>input.query(query_token_ids)</code></td>
+<td>为 Cross-Encoder 准备问题的 token ID</td>
+</tr>
+<tr>
+<td><code>ranking</code></td>
+<td>选用整个预定义排序方案，而不是只指定一个模型名称</td>
+</tr>
+<tr>
+<td><code>hits=10</code></td>
+<td>最多返回 10 条</td>
+</tr>
+</tbody></table>
+<p><strong>这个官方 profile 的顺序是：</strong> 文本/向量找候选 → 向量相似度初排 → ColBERT 对每节点最多 1,000 个候选评分 → 全局最多 12 个候选执行 Cross-Encoder，并将向量、ColBERT、Cross-Encoder 的三种名次作 RRF 融合 → 返回结果。</p>
+<p><strong>融合与模型评分的先后顺序由具体执行计划决定。</strong> Vespa 该样例在全局模型阶段融合三种评分的排名，不采用固定的“RRF→Cross-Encoder”顺序。profile 的 1,000 和 12 为所核验当前官方源码中的配置值，不作为本方案推荐参数；其基准日历史配置尚未固定。</p>
+<p><a href="https://github.com/vespa-engine/sample-apps/tree/master/msmarco-ranking">官方可部署样例及查询</a>、<a href="https://github.com/vespa-engine/sample-apps/blob/master/msmarco-ranking/schemas/passage.sd">profile 实际定义</a>。</p>
+<h3 id="heading-53">A.6 PostgresML：一个 SQL 调模型，但候选已由调用者准备</h3>
+<p><strong>前置条件：</strong> 安装包含 <code>pgml.rank</code> 的 PostgresML 扩展及 Python/模型依赖，模型权重可获得。v2.9.2 固定源码能确认这一能力。</p>
+<details class="code-detail"><summary>完整 SQL · 11 行，点击展开</summary><pre class="source"><code class="language-sql">SELECT *
+FROM pgml.rank(
+    'cross-encoder/ms-marco-MiniLM-L-6-v2',
+    'Why does Atlas use PostgreSQL for agent memory?',
+    ARRAY[
+        'Atlas stores agent memories in PostgreSQL to reuse transactions and SQL.',
+        'Alice prefers hiking on weekends.',
+        'Atlas uses vector and full-text indexes to retrieve stored facts.'
+    ],
+    '{&quot;top_k&quot;: 2, &quot;return_documents&quot;: true}'::jsonb
+);</code></pre></details><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一个参数</td>
+<td>模型名称；不是外部 MaaS 接口地址</td>
+</tr>
+<tr>
+<td>第二个参数</td>
+<td>要判断相关性的用户问题</td>
+</tr>
+<tr>
+<td><code>ARRAY[...]</code></td>
+<td>已准备的候选正文；本例使用 3 条示例文本</td>
+</tr>
+<tr>
+<td><code>top_k:2</code></td>
+<td>评分排序后返回最多 2 条；不代表只对 2 条输入推理</td>
+</tr>
+<tr>
+<td><code>return_documents:true</code></td>
+<td>同时返回候选正文</td>
+</tr>
+</tbody></table>
+<p>返回包含 <code>corpus_id</code>、<code>score</code>、<code>text</code>：分别表示候选在输入数组中的位置、模型相关性分数和正文。实际分数由模型运行得到，本文不伪造分数或排序结果。</p>
+<p><strong>职责边界：</strong> PG 扩展完成模型推理；候选检索、四路融合、图/时间扩展、4,000 Token 筛选，都不是这个函数自动完成的。本例的 3 条正文可以由前面的 SQL 查询得到，也可以像这里由应用直接传入。</p>
+<p><a href="https://github.com/postgresml/postgresml/blob/v2.9.2/pgml-extension/sql/pgml--2.8.5--2.9.0.sql">固定版本 SQL 定义</a>、<a href="https://github.com/postgresml/postgresml/blob/v2.9.2/pgml-extension/src/bindings/transformers/transformers.py">Cross-Encoder 调用实现</a>。</p>
+<h3 id="heading-54">A.7 Qdrant：一次 Query API 完成两路候选与 RRF</h3>
+<p><strong>前置条件：</strong> 以 1.10 Query API 的基础语法为依据，collection <code>memory_bank</code> 已配置名为 <code>dense</code> 的三维稠密向量和名为 <code>sparse</code> 的稀疏向量，payload 含 <code>text</code>。下面的稀疏坐标也是示例；真实查询需要同一编码器生成。</p>
+<details class="code-detail"><summary>接口请求 · 18 行，点击展开</summary><pre class="source"><code class="language-http">POST /collections/memory_bank/points/query
+{
+  &quot;prefetch&quot;: [
+    {
+      &quot;query&quot;: [0.1, 0.2, 0.3],
+      &quot;using&quot;: &quot;dense&quot;,
+      &quot;limit&quot;: 100
+    },
+    {
+      &quot;query&quot;: {&quot;indices&quot;: [7, 23], &quot;values&quot;: [0.6, 0.9]},
+      &quot;using&quot;: &quot;sparse&quot;,
+      &quot;limit&quot;: 100
+    }
+  ],
+  &quot;query&quot;: {&quot;fusion&quot;: &quot;rrf&quot;},
+  &quot;limit&quot;: 10,
+  &quot;with_payload&quot;: [&quot;text&quot;]
+}</code></pre></details><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>prefetch</code></td>
+<td>引擎先执行的候选检索子请求</td>
+</tr>
+<tr>
+<td><code>using</code></td>
+<td>查询哪个命名向量索引</td>
+</tr>
+<tr>
+<td>子请求 <code>limit:100</code></td>
+<td>每路最多输出 100 个候选给后续处理</td>
+</tr>
+<tr>
+<td><code>indices/values</code></td>
+<td>稀疏向量的坐标及权重；不能直接当成原始关键词</td>
+</tr>
+<tr>
+<td><code>fusion:rrf</code></td>
+<td>引擎按两路排名融合</td>
+</tr>
+<tr>
+<td>最外层 <code>limit:10</code></td>
+<td>融合后最多返回 10 个 point</td>
+</tr>
+<tr>
+<td><code>with_payload:[text]</code></td>
+<td>返回相应正文字段</td>
+</tr>
+</tbody></table>
+<p><strong>引擎执行：</strong> 接收两种已生成的查询向量 → 两路各取最多 100 个候选 → RRF → 返回最多 10 个 point 与正文。本例没有发送原始问题给 Cross-Encoder，也没有指定 Token 预算。</p>
+<p><a href="https://api.qdrant.tech/v-1-10-x/api-reference/search/query-points">1.10 Query API</a>。当前文档还展示了其他、新版本的 RRF 表达方式；此处故意采用已核验早期版本的 <code>fusion</code> 语法，避免把新语法当成所有版本都支持。</p>
+<h3 id="heading-55">A.8 Memlake 与 Hindsight 的接口边界</h3>
+<p>Memlake 官方说明 Hindsight 通过 gRPC 调用 Query Node，但本轮没有找到可公开核实的完整 protobuf/service 定义。因此不能提供一个声称真实可调用的 <code>MemlakeRecall(...)</code> 方法及参数表。</p>
+<p>用户可使用的是 Hindsight 的真实 Recall HTTP 接口。下面的请求结构在此前 PG 后端环境中已使用；要走 Memlake，必须是已由服务端配置成 Memlake 后端的企业部署，<strong>不能靠增加一个猜测的请求参数切换后端</strong>。</p>
+<pre class="source"><code class="language-bash">curl -X POST \
+  &quot;${HINDSIGHT_API_URL}/v1/default/banks/agent_memory/memories/recall&quot; \
+  -H &quot;Authorization: Bearer ${HINDSIGHT_API_KEY}&quot; \
+  -H 'Content-Type: application/json' \
+  -d '{
+    &quot;query&quot;: &quot;2026年9月至11月，团队为什么选择 Hindsight 作为 ContextBase 底座，而不是 OpenViking 和 cognee？有哪些已明确的选型边界？&quot;,
+    &quot;budget&quot;: &quot;mid&quot;,
+    &quot;max_tokens&quot;: 4000,
+    &quot;trace&quot;: true,
+    &quot;temporal_window&quot;: {
+      &quot;start&quot;: &quot;2026-09-01T00:00:00Z&quot;,
+      &quot;end&quot;: &quot;2026-11-10T00:00:00Z&quot;
+    }
+  }'</code></pre><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>人能看懂的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>URL 中的 <code>agent_memory</code></td>
+<td>从哪个 Bank 检索</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>用户问题；由 Hindsight 准备向量等后续输入</td>
+</tr>
+<tr>
+<td><code>budget:mid</code></td>
+<td>检索努力程度档位，影响候选/扩展配置；不是 4,000 Token 上限</td>
+</tr>
+<tr>
+<td><code>max_tokens:4000</code></td>
+<td>本次返回记忆的 Token 预算，现场口径以记忆正文为主，不是 HTTP 响应所有字段总长度</td>
+</tr>
+<tr>
+<td><code>temporal_window</code></td>
+<td>时间路径的窗口参数；不是保证所有图/时间扩展结果都落在窗口内的全局过滤器</td>
+</tr>
+<tr>
+<td><code>trace:true</code></td>
+<td>请求返回可用的过程诊断信息</td>
+</tr>
+</tbody></table>
+<p><strong>调用边界：</strong> 应用→Hindsight 是上面这个 HTTP；Hindsight→Memlake 是另一个内部 gRPC。官方架构称后者带上检索与排序策略；上面 HTTP 不能直接证明内部 protobuf 字段和模型批次。</p>
+<p>该成功请求在 PG 后端验证，不构成 Memlake 实测证据。请求体不包含 <code>reranker_model</code> 字段；模型调用策略由部署/Bank 支持的配置确定。</p>
+<p><a href="https://docs.hindsight.vectorize.io/enterprise/memlake/architecture/">官方 Memlake 架构</a>、<span class="evidence-ref" title="原报告证据：../%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E8%AE%B0%E5%BD%95.md#10-agent-recall-four-arms">此前真实接口调用记录<sup>原证据</sup></span>。</p>
+<hr>
+<p><a id="independent-review"></a></p>
+<h2 id="heading-56">附录 B. 架构边界与技术选型评估</h2>
+<p>2026-11-12。评估依据为现场 SQL、API trace、官方技术文档与公开源码。本文讨论架构边界和实施优先级；AGE 与本地模型尚未进行对照测试，拟研发机制的收益有待验证。</p>
+<p><strong>核心判断：建设通用的检索与模型执行能力，MemoryRecall 保留为业务适配入口；按端到端瓶颈决定投入，不以一个接口、本地模型或图插件本身作为竞争力。</strong></p>
+<h3 id="heading-57">B.1 业务适配与通用内核的职责边界</h3>
+<p><strong>风险存在，建议明确分层。</strong> <code>world / experience / observation</code>、Observation 如何追溯来源、不同事实如何加权，以及 Reflect 如何规划工具，均属于 Hindsight 的业务策略。PG 只需理解 ID、属性、过滤、排名、边、时间范围、投影列和资源预算。</p>
+<p>现场 SQL-041 通过来源事实的共享实体映射回 Observation，SQL-042 则对普通事实直接扩展。这两条不同路径应由适配层表达，而非成为 PG 内核内置的记忆类型分支。</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>放什么</th>
+<th>对其他应用的复用价值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hindsight 适配层</strong></td>
+<td>MemoryRecall、事实类型映射、来源规则、评分/Token 策略、Reflect 工具编排</td>
+<td>可随记忆框架演进，不牵动通用内核语义</td>
+</tr>
+<tr>
+<td><strong>PG 通用执行层</strong></td>
+<td>接收多路候选子计划；融合、Top-K、延迟物化、关系扩展、并行/迭代、模型调用与观测</td>
+<td>可服务混合搜索、推荐、RAG 和记忆检索</td>
+</tr>
+<tr>
+<td><strong>独立模型 runtime</strong></td>
+<td>Embedding/Rerank、版本、批处理、缓存、GPU/CPU 与服务配额</td>
+<td>与数据库解耦部署，本地和远程均可接入</td>
+</tr>
+</tbody></table>
+<p>MemoryRecall 可以是适配层函数、SQL 包装或产品入口；不能把“一次调用”直接等同于内核融合。先用 SQL/扩展建立候选流基线，共享状态与调度确实受限时再确定核心研发。PG 的 Custom Scan 是可用扩展入口，不是现成的记忆执行器。<a href="https://www.postgresql.org/docs/16/custom-scan.html">PG Custom Scan</a></p>
+<h3 id="heading-58">B.2 端到端瓶颈与模型部署策略</h3>
+<p><strong>需要按路径判断。模型路径优先解决模型成本，RRF 路径仍有独立检索优化价值。</strong> “19 条 SQL 耗时约一秒”不够准确：请求 21 的 PG execute 累计为 360.034 ms，驱动调用累计为 942.112 ms，HTTP 为 1.585 s，累计数含重叠，均不能直接当作数据库关键路径。</p>
+<table>
+<thead>
+<tr>
+<th>同一请求内的证据</th>
+<th>直接说明什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>请求 21：RRF；HTTP 1.585 s，检索 trace 923 ms；SQL-038 一次 PG execute 212.779 ms</td>
+<td>不调用神经重排时，检索是重要成本；优先分析大查询及宽候选处理，而不只减 SQL 数量</td>
+</tr>
+<tr>
+<td>请求 23：MaaS；HTTP 10.294 s，重排 7.782 s，Embedding 1.834 s，检索 493 ms</td>
+<td>此路径的主瓶颈在模型侧；检索优化不能消除重排等待</td>
+</tr>
+</tbody></table>
+<p>例如，<strong>假设请求 23 的 493 ms 检索全部位于关键路径、可以完全消除，其占 HTTP 总时间也只有约 4.8%</strong>。这是条件性的时间预算分析，不是实测可达加速，更不能与请求 21 拼接。</p>
+<p><strong>本地/同区域模型值得对照，但不是必然更快。</strong> 它可能减少网络、供应商排队和外部配额依赖；也可能因 CPU、GPU不足、冷启动或并发干扰而变慢。模型、输入长度、精度、batch 与硬件都必须固定或明确记录。官方 Cross-Encoder 文档同样要求针对具体模型、硬件和输入测量不同后端的收益。<a href="https://www.sbert.net/docs/cross_encoder/usage/efficiency.html">Sentence Transformers 推理优化</a></p>
+<p>Hindsight 当前代码已支持本地 Embedding 和 Cross-Encoder；单纯增加本地调用入口难以形成差异化优势。<a href="https://github.com/vectorize-io/hindsight/blob/34a138684a899b6ec34175f7a2b633860466d289/hindsight-api-slim/hindsight_api/engine/embeddings.py">Embedding 实现</a>、<a href="https://github.com/vectorize-io/hindsight/blob/34a138684a899b6ec34175f7a2b633860466d289/hindsight-api-slim/hindsight_api/engine/cross_encoder.py">Rerank 实现</a></p>
+<p>数据库的竞争力应体现在：<strong>同等质量下，更少候选搬运与重复取数，更有效的模型输入、批处理和预算管理，以及稳定的多请求吞吐。</strong> 当前 300 组输入已一次批量提交，不能再把“首次批量化”计为新增收益。优先采用独立模型服务，避免与 PG Backend、事务和在线查询资源强耦合。</p>
+<h3 id="heading-59">B.3 Apache AGE 的适用场景与对照评估</h3>
+<p><strong>AGE 应纳入选型实验，不能因为它是图插件就推定更快。</strong> AGE 是 Apache 顶级项目及 PG 属性图扩展，提供 Cypher 和 SQL 混合查询；其架构把 Cypher 转换为 PG Query tree，并复用 PG 事务与存储，底层也使用图对应的 schema、顶点表和边表。<a href="https://age.apache.org/overview/">官方架构</a>、<a href="https://age.apache.org/age-manual/master/intro/graphs.html">图存储结构</a></p>
+<p>Hindsight 当前主要是有限种子、共享实体、预计算语义边、因果/时间边的受限扩展，用 JOIN/LATERAL 表达本身合理。<strong>尚未找到作者明确比较并否决 AGE 的一手记录。</strong> “减少依赖、复用关系结构、满足有限扩展”属于架构推断，不能冒充作者结论。</p>
+<p>本次三条图查询 PG execute 累计约 60 ms，物理边仅 6,085 行，尚不足以决定图引擎选型。未来若出现复杂多跳、路径约束或 Cypher 开发需求，AGE 的价值更值得验证；当前应与优化后的 SQL 对照，而非直接替换。</p>
+<p>评测必须保持：边方向、去重、每源/每实体上限、事实过滤、Observation 来源映射、权限和超时语义相同。AGE 的模式表达能力与查询性能分别验收。实测环境是 PG 16，官方下载矩阵列出的对应稳定候选为 AGE 1.6.0；不要把其他 PG 分支或预发行版本的能力直接归给它。<a href="https://age.apache.org/download/">版本兼容矩阵</a></p>
+<p><strong>本轮没有实施 AGE 迁移。</strong> 下一步是固定 PG16/AGE 版本，把 SQL-040/041/042 的完整语义逐项映射后，比较小图、高扇出、多跳、大图、并发写入与删除场景。</p>
+<h3 id="heading-60">B.4 Reflect 多轮取证的数据库支撑能力</h3>
+<p><strong>加强多轮取证，保持 LLM 规划与生成在策略/模型层。</strong> Reflect 不只是执行一次 Recall；数据库、工具调度、LLM 时间和证据质量要分别观察。</p>
+<p>原始响应中的工具与 LLM trace 统计如下：</p>
+<table>
+<thead>
+<tr>
+<th>请求</th>
+<th align="right">HTTP</th>
+<th>工具 trace</th>
+<th>LLM trace</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>11：默认工具</td>
+<td align="right">135.374 s</td>
+<td>9 次，均为 search_mental_models；累计 4.568 s</td>
+<td>11 次调用，累计 130.729 s</td>
+</tr>
+<tr>
+<td>22：raw-only / low</td>
+<td align="right">34.862 s</td>
+<td>4 次，均为 recall；累计 2.514 s</td>
+<td>5 次调用，累计 32.231 s</td>
+</tr>
+</tbody></table>
+<p>这是同一请求各自的 trace 累计，不是 PG execute，也不宣称严格的关键路径分解。两请求工具和预算条件不同，<strong>不能把 135 秒到 35 秒写成优化加速</strong>。但这些证据表明，当前两个 Reflect 样本中 LLM 与多轮编排的成本显著，不能只盯数据库。</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>数据库提供的通用能力</th>
+<th>策略层仍决定什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>更快取证</strong></td>
+<td>批量证据读取、知识新鲜度检查、请求内向量/候选复用、按数据水位失效的缓存</td>
+<td>哪些子问题互相独立、哪些查询可以一起提交</td>
+</tr>
+<tr>
+<td><strong>改善证据覆盖</strong></td>
+<td>多查询检索、分路窗口、关系/时间扩展、增量继续检索、返回各路贡献与截断原因</td>
+<td>何时扩大窗口、改写问题、继续检索或停止</td>
+</tr>
+<tr>
+<td><strong>支撑可追溯回答</strong></td>
+<td>来源、版本、时间、派生依赖及从摘要展开原始证据的读取能力</td>
+<td>如何解释证据、处理矛盾并生成回答</td>
+</tr>
+<tr>
+<td><strong>控制整次成本</strong></td>
+<td>按请求标识累计模型候选、输入 Token、次数及预算，支持取消与限流协同</td>
+<td>总预算与超限后的业务行为</td>
+</tr>
+</tbody></table>
+<p>模型 Reflect 已出现 20,000 TPM 限制，100 候选第一轮成功、第二轮仍超额；因此需要整次 Reflect 的累计输入预算，而非只有每次 Recall 的候选上限。Recall 最终返回记忆正文的约 4,000 Token 预算也不能替代模型输入预算。</p>
+<p>数据库可以支持更广的候选检索，但不能单独保证召回率或回答准确率提升。重排找不回未进入候选的证据；扩大窗口也可能增加噪声和模型成本，应分别测候选覆盖、排序、引用正确性与最终回答质量。</p>
+<h3 id="heading-61">B.5 实施优先级与验证计划</h3>
+<ol>
+<li><strong>先明确分层与端到端基线。</strong> RRF Recall、模型 Recall、Reflect 分开统计，记录模型、工具、DB execute、驱动和队列时间。</li>
+<li><strong>并行验证模型部署与通用候选管线。</strong> 同模型同候选比较远程/同区域/本地；比较宽候选与 ID/分数管线，报告质量、资源与时间。</li>
+<li><strong>把 AGE 作为对照候选。</strong> 固定版本和语义后实测，再决定是否引入。</li>
+<li><strong>按瓶颈深化执行器/访问方法。</strong> 共享状态、依赖调度和排名剪枝有收益且扩展受限后，再投入核心改动。</li>
+</ol>
+<p>MemoryRecall 应定位为 Hindsight 适配/SQL 包装入口，PG 核心提供通用检索与执行机制，避免固化 Agent Memory 业务类型。研发投入以端到端成本、质量和并发瓶颈为依据，性能收益须经原型和同质量对照验证。</p>
+<hr>
+<p>原始证据保留在<span class="evidence-ref" title="原报告证据：../PG%E5%A2%9E%E5%BC%BA%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A.md">主报告<sup>原证据</sup></span>、<span class="evidence-ref" title="原报告证据：../SQL%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95.md">SQL 执行记录<sup>原证据</sup></span>及原 evidence 目录。正文已包含展示所需的 SQL 与关键数据；单文件 HTML 将外部本地证据引用作为编号展示，不依赖这些附件才能阅读。</p>
+</main><footer>2026-11-12 · 单文件离线展示 · 完整 SQL 已保留，长语句可展开 · 原始证据引用未打包</footer>
+<script>
+const details=[...document.querySelectorAll('.code-detail')];
+const toggle=document.getElementById('toggle-code');
+toggle.addEventListener('click',()=>{const open=details.some(d=>!d.open);details.forEach(d=>d.open=open);toggle.textContent=open?'折叠全部 SQL / 接口':'展开全部 SQL / 接口'});
+document.getElementById('print').addEventListener('click',()=>window.print());
+let printState=[];window.addEventListener('beforeprint',()=>{printState=details.map(d=>d.open);details.forEach(d=>d.open=true)});window.addEventListener('afterprint',()=>details.forEach((d,i)=>d.open=printState[i]));
+</script></body></html>
