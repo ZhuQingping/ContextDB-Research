@@ -1,0 +1,47 @@
+[
+  {
+    "file": "pgvector-hnswscan.c",
+    "url": "https://raw.githubusercontent.com/pgvector/pgvector/v0.8.7/src/hnswscan.c",
+    "bytes": 8306
+  },
+  {
+    "file": "pgvector-hnswvacuum.c",
+    "url": "https://raw.githubusercontent.com/pgvector/pgvector/v0.8.7/src/hnswvacuum.c",
+    "bytes": 21838
+  },
+  {
+    "file": "pgvector-readme.md",
+    "url": "https://raw.githubusercontent.com/pgvector/pgvector/v0.8.7/README.md",
+    "bytes": 42305
+  },
+  {
+    "file": "pgvectorscale-readme.md",
+    "url": "https://raw.githubusercontent.com/timescale/pgvectorscale/0.9.1/README.md",
+    "bytes": 21193
+  },
+  {
+    "file": "pg-memoize.c",
+    "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_7/src/backend/executor/nodeMemoize.c",
+    "bytes": 37602
+  },
+  {
+    "file": "pg-execExpr.c",
+    "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_7/src/backend/executor/execExpr.c",
+    "bytes": 155593
+  },
+  {
+    "file": "pg-pinecone-readme.md",
+    "url": "https://raw.githubusercontent.com/pinecone-io/pg_pinecone/v0.12.1/README.md",
+    "bytes": 5458
+  },
+  {
+    "file": "pg-search-readme.md",
+    "url": "https://raw.githubusercontent.com/paradedb/paradedb/v0.26.6/README.md",
+    "bytes": 6391
+  },
+  {
+    "file": "pg-search-hybrid-example.py",
+    "url": "https://raw.githubusercontent.com/paradedb/django-paradedb/main/examples/hybrid_rrf/hybrid_rrf.py",
+    "error": "HTTP Error 404: Not Found"
+  }
+]

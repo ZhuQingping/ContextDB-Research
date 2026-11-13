@@ -1,0 +1,73 @@
+{
+  "verified_utc": "2026-11-13T09:10:26.480680+00:00",
+  "git_head": "34a138684a899b6ec34175f7a2b633860466d289",
+  "scope": "Current workspace code, not deployed-feature enablement or measured cost saving",
+  "records": [
+    {
+      "file": "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/consolidation/triage.py",
+      "sha256": "36a9bc1cb52c8f6b85946aef16e4210c3b998e783558f0d850450575e6807a10",
+      "observations": [
+        {
+          "line": 103,
+          "code": "def triage_model(config: Any) -> DecisionModel | None:"
+        },
+        {
+          "line": 193,
+          "code": "async def triage_facts("
+        },
+        {
+          "line": 232,
+          "code": "if mission and relation == \"chatter\":"
+        },
+        {
+          "line": 234,
+          "code": "if relation == \"chatter\":"
+        },
+        {
+          "line": 236,
+          "code": "elif relation == \"restates\":"
+        }
+      ]
+    },
+    {
+      "file": "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/consolidation/consolidator.py",
+      "sha256": "22c881769a864ce0c13887139ed34d725e4cceef170609571fcae4e6326591fc",
+      "observations": [
+        {
+          "line": 2707,
+          "code": "3. Single LLM call with all N facts + unioned observations"
+        },
+        {
+          "line": 2804,
+          "code": "# 2c. Triage: restatements and chatter are settled by a typed judgment, not the LLM."
+        },
+        {
+          "line": 2813,
+          "code": "llm_memories = [m for m in memories if not triage.settled(str(m[\"id\"]))]"
+        },
+        {
+          "line": 2815,
+          "code": "# 3. Single LLM call — skipped when triage settled every fact."
+        },
+        {
+          "line": 3839,
+          "code": "\"\"\"Single LLM call for a batch of facts against a pooled set of observations."
+        }
+      ]
+    },
+    {
+      "file": "/Users/zhuqingping/Work/Database/Context/hindsight/hindsight-api-slim/hindsight_api/engine/reflect/agent.py",
+      "sha256": "7d66bcf0263fd6ca1f16d44312240f94dcfdaac9ec9c215fc016b3ca5cc0cfd9",
+      "observations": [
+        {
+          "line": 1918,
+          "code": "async def _prune_round("
+        },
+        {
+          "line": 1955,
+          "code": "keep_flags = await prune_evidence_fn(query, texts)"
+        }
+      ]
+    }
+  ]
+}

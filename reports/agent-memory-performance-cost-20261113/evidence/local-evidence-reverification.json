@@ -1,0 +1,388 @@
+{
+  "verification": "Offline re-read of existing API traces; no API or model request executed tonight",
+  "inputs": {
+    "21-dual-rrf-recall": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/21-dual-rrf-recall.json",
+      "sha256": "40fd66d5fa5242121b12470833885203efbad5ce29b09e5d4a4d8c61d675973b",
+      "http_seconds": 1.585,
+      "phases": [
+        {
+          "phase": "backend_acquisition",
+          "seconds": 6.198883056640625e-06
+        },
+        {
+          "phase": "generate_query_embedding",
+          "seconds": 0.36925292015075684
+        },
+        {
+          "phase": "store_recall",
+          "seconds": 0.9212682247161865
+        },
+        {
+          "phase": "parallel_retrieval",
+          "seconds": 0.9228823184967041
+        },
+        {
+          "phase": "retrieval_temporal_extraction",
+          "seconds": 7.152557373046875e-07
+        },
+        {
+          "phase": "retrieval_store_recall",
+          "seconds": 0.9212682247161865
+        },
+        {
+          "phase": "rrf_merge",
+          "seconds": 0.0221710205078125
+        },
+        {
+          "phase": "rerank_prefilter",
+          "seconds": 0.0
+        },
+        {
+          "phase": "hydrate_results",
+          "seconds": 0.0001590251922607422
+        },
+        {
+          "phase": "reranking",
+          "seconds": 0.012372732162475586
+        },
+        {
+          "phase": "combined_scoring",
+          "seconds": 0.014323711395263672
+        },
+        {
+          "phase": "token_filtering",
+          "seconds": 0.010883092880249023
+        },
+        {
+          "phase": "result_serialization",
+          "seconds": 0.009453535079956055
+        },
+        {
+          "phase": "entity_build",
+          "seconds": 0.014111518859863281
+        },
+        {
+          "phase": "semaphore_wait",
+          "seconds": 2.4080276489257812e-05
+        },
+        {
+          "phase": "trace_finalize",
+          "seconds": 0.007706880569458008
+        }
+      ],
+      "merged": 1032,
+      "processed": 300,
+      "returned": 38
+    },
+    "23-dual-maas-recall": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/23-dual-maas-recall.json",
+      "sha256": "7a8b07a524a9082b8669a9e2042bda5409d712b3d0de5c85b2894aee005a55ea",
+      "http_seconds": 10.294,
+      "phases": [
+        {
+          "phase": "backend_acquisition",
+          "seconds": 1.430511474609375e-06
+        },
+        {
+          "phase": "generate_query_embedding",
+          "seconds": 1.8336315155029297
+        },
+        {
+          "phase": "store_recall",
+          "seconds": 0.4922332763671875
+        },
+        {
+          "phase": "parallel_retrieval",
+          "seconds": 0.49331188201904297
+        },
+        {
+          "phase": "retrieval_temporal_extraction",
+          "seconds": 7.152557373046875e-07
+        },
+        {
+          "phase": "retrieval_store_recall",
+          "seconds": 0.4922332763671875
+        },
+        {
+          "phase": "rrf_merge",
+          "seconds": 0.004830360412597656
+        },
+        {
+          "phase": "rerank_prefilter",
+          "seconds": 0.0
+        },
+        {
+          "phase": "hydrate_results",
+          "seconds": 4.649162292480469e-05
+        },
+        {
+          "phase": "reranking",
+          "seconds": 7.781805038452148
+        },
+        {
+          "phase": "combined_scoring",
+          "seconds": 0.006099224090576172
+        },
+        {
+          "phase": "token_filtering",
+          "seconds": 0.01177978515625
+        },
+        {
+          "phase": "result_serialization",
+          "seconds": 0.003905773162841797
+        },
+        {
+          "phase": "entity_build",
+          "seconds": 0.017222881317138672
+        },
+        {
+          "phase": "semaphore_wait",
+          "seconds": 1.1205673217773438e-05
+        },
+        {
+          "phase": "trace_finalize",
+          "seconds": 0.012589693069458008
+        }
+      ],
+      "merged": 1032,
+      "processed": 300,
+      "returned": 35
+    },
+    "22-dual-rrf-reflect": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/22-dual-rrf-reflect.json",
+      "sha256": "05c1248287c0126b2a8e968818867f33aed01c8793fe3287c915114ad4190606",
+      "http_seconds": 34.862,
+      "llm_calls": 5,
+      "llm_ms": 32231,
+      "tool_calls": 4,
+      "tool_ms": 2514,
+      "llm_duration_to_http_ratio": 0.9245310079742987
+    },
+    "11-agent-reflect": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/11-agent-reflect.json",
+      "sha256": "0079d5d4169268c7158f30ef789cc0ed2012f6f63c15406c7e969851ff56b6e5",
+      "http_seconds": 135.374,
+      "llm_calls": 11,
+      "llm_ms": 130729,
+      "tool_calls": 9,
+      "tool_ms": 4568,
+      "llm_duration_to_http_ratio": 0.9656876505089603
+    },
+    "20-dual-retain": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/20-dual-retain.json",
+      "sha256": "529fb2b620e9556ab3136b95586dbd24bae5b3b0cd3c5405def8b76af3b63cc0",
+      "http_seconds": 11.107
+    },
+    "26-dual-retain-with-transactions": {
+      "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/26-dual-retain-with-transactions.json",
+      "sha256": "7bf61f922d0c337ee2b882638aea2461e51fe58b2efce19d0dd06eaef5e7022f",
+      "http_seconds": 9.017
+    }
+  },
+  "recall_19_sql": {
+    "phase": "21-dual-rrf-recall",
+    "http_elapsed_ms": 1585,
+    "scope": "Captured business SQL; sum of durations is not end-to-end critical path.",
+    "driver_elapsed_ms_sum": 942.1123490610626,
+    "pg_execute_ms_sum": 360.034,
+    "stages": [
+      {
+        "stage": "准备",
+        "calls": 2,
+        "pg_execute_ms_sum": 0.188,
+        "driver_elapsed_ms_sum": 7.166777009842917,
+        "share_of_captured_pg_execute_sum_percent": 0.05221729058922213
+      },
+      {
+        "stage": "向量＋关键词",
+        "calls": 1,
+        "pg_execute_ms_sum": 212.779,
+        "driver_elapsed_ms_sum": 539.1469390015118,
+        "share_of_captured_pg_execute_sum_percent": 59.09969613980902
+      },
+      {
+        "stage": "时序入口",
+        "calls": 1,
+        "pg_execute_ms_sum": 18.875,
+        "driver_elapsed_ms_sum": 25.472560984781012,
+        "share_of_captured_pg_execute_sum_percent": 5.242560424848764
+      },
+      {
+        "stage": "时序扩展",
+        "calls": 9,
+        "pg_execute_ms_sum": 65.017,
+        "driver_elapsed_ms_sum": 107.57530707633123,
+        "share_of_captured_pg_execute_sum_percent": 18.058572245954547
+      },
+      {
+        "stage": "图扩展",
+        "calls": 3,
+        "pg_execute_ms_sum": 60.193,
+        "driver_elapsed_ms_sum": 246.2788539705798,
+        "share_of_captured_pg_execute_sum_percent": 16.718698789558765
+      },
+      {
+        "stage": "结果补全",
+        "calls": 3,
+        "pg_execute_ms_sum": 2.9819999999999998,
+        "driver_elapsed_ms_sum": 16.471911018015817,
+        "share_of_captured_pg_execute_sum_percent": 0.8282551092396829
+      }
+    ],
+    "per_call": [
+      {
+        "call": "R01",
+        "qid": 184,
+        "sql_id": "SQL-036",
+        "driver_elapsed_ms": 3.510000999085605,
+        "pg_execute_ms": 0.078
+      },
+      {
+        "call": "R02",
+        "qid": 186,
+        "sql_id": "SQL-037",
+        "driver_elapsed_ms": 3.656776010757312,
+        "pg_execute_ms": 0.11
+      },
+      {
+        "call": "R03",
+        "qid": 188,
+        "sql_id": "SQL-038",
+        "driver_elapsed_ms": 539.1469390015118,
+        "pg_execute_ms": 212.779
+      },
+      {
+        "call": "R04",
+        "qid": 189,
+        "sql_id": "SQL-039",
+        "driver_elapsed_ms": 25.472560984781012,
+        "pg_execute_ms": 18.875
+      },
+      {
+        "call": "R05",
+        "qid": 190,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 4.297044011764228,
+        "pg_execute_ms": 0.148
+      },
+      {
+        "call": "R06",
+        "qid": 191,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 9.001180995255709,
+        "pg_execute_ms": 5.272
+      },
+      {
+        "call": "R07",
+        "qid": 192,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 16.800017998320982,
+        "pg_execute_ms": 12.395
+      },
+      {
+        "call": "R08",
+        "qid": 193,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 9.997586021199822,
+        "pg_execute_ms": 5.498
+      },
+      {
+        "call": "R09",
+        "qid": 194,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 10.511767002753913,
+        "pg_execute_ms": 5.347
+      },
+      {
+        "call": "R10",
+        "qid": 195,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 17.742528027156368,
+        "pg_execute_ms": 11.839
+      },
+      {
+        "call": "R11",
+        "qid": 196,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 17.00826099840924,
+        "pg_execute_ms": 11.936
+      },
+      {
+        "call": "R12",
+        "qid": 197,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 12.058573018293828,
+        "pg_execute_ms": 7.51
+      },
+      {
+        "call": "R13",
+        "qid": 198,
+        "sql_id": "SQL-040",
+        "driver_elapsed_ms": 10.158349003177136,
+        "pg_execute_ms": 5.072
+      },
+      {
+        "call": "R14",
+        "qid": 200,
+        "sql_id": "SQL-041",
+        "driver_elapsed_ms": 76.82656397810206,
+        "pg_execute_ms": 20.81
+      },
+      {
+        "call": "R15",
+        "qid": 203,
+        "sql_id": "SQL-042",
+        "driver_elapsed_ms": 50.016102992231026,
+        "pg_execute_ms": 32.524
+      },
+      {
+        "call": "R16",
+        "qid": 205,
+        "sql_id": "SQL-042",
+        "driver_elapsed_ms": 119.43618700024672,
+        "pg_execute_ms": 6.859
+      },
+      {
+        "call": "R17",
+        "qid": 207,
+        "sql_id": "SQL-043",
+        "driver_elapsed_ms": 9.053902002051473,
+        "pg_execute_ms": 2.787
+      },
+      {
+        "call": "R18",
+        "qid": 209,
+        "sql_id": "SQL-044",
+        "driver_elapsed_ms": 3.3870900224428624,
+        "pg_execute_ms": 0.164
+      },
+      {
+        "call": "R19",
+        "qid": 210,
+        "sql_id": "SQL-045",
+        "driver_elapsed_ms": 4.030918993521482,
+        "pg_execute_ms": 0.031
+      }
+    ]
+  },
+  "illustrative_refresh_work": {
+    "status": "Synthetic analytical illustration, not deployed measurement",
+    "eager_internal_summary_sequence": [
+      "P",
+      "R",
+      "P",
+      "R",
+      "Q",
+      "R"
+    ],
+    "batch_internal_summary_sequence": [
+      "P",
+      "Q",
+      "R"
+    ],
+    "eager_calls": 6,
+    "batch_calls": 3,
+    "independence": "P and Q independent; R depends on both"
+  }
+}

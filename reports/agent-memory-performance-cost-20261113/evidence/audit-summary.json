@@ -1,0 +1,58 @@
+{
+  "20-dual-retain": {
+    "sender_calls": 37,
+    "matched_calls": 37,
+    "pg_executions": 74,
+    "sender_wait_ms_sum": 189.1109070274979,
+    "pg_execute_ms_sum": 46.258,
+    "unmatched": []
+  },
+  "21-dual-rrf-recall": {
+    "sender_calls": 19,
+    "matched_calls": 19,
+    "pg_executions": 19,
+    "sender_wait_ms_sum": 942.1123490610626,
+    "pg_execute_ms_sum": 360.034,
+    "unmatched": []
+  },
+  "22-dual-rrf-reflect": {
+    "sender_calls": 34,
+    "matched_calls": 34,
+    "pg_executions": 34,
+    "sender_wait_ms_sum": 783.2800660398789,
+    "pg_execute_ms_sum": 546.71,
+    "unmatched": []
+  },
+  "23-dual-maas-recall": {
+    "sender_calls": 19,
+    "matched_calls": 19,
+    "pg_executions": 19,
+    "sender_wait_ms_sum": 516.7663989996072,
+    "pg_execute_ms_sum": 333.359,
+    "unmatched": []
+  },
+  "24-dual-maas-reflect": {
+    "sender_calls": 8,
+    "matched_calls": 8,
+    "pg_executions": 8,
+    "sender_wait_ms_sum": 160.1101360283792,
+    "pg_execute_ms_sum": 92.176,
+    "unmatched": []
+  },
+  "25-dual-maas100-reflect": {
+    "sender_calls": 18,
+    "matched_calls": 18,
+    "pg_executions": 18,
+    "sender_wait_ms_sum": 375.9981819312088,
+    "pg_execute_ms_sum": 246.702,
+    "unmatched": []
+  },
+  "26-dual-retain-with-transactions": {
+    "sender_calls": 43,
+    "matched_calls": 43,
+    "pg_executions": 53,
+    "sender_wait_ms_sum": 257.2574560181238,
+    "pg_execute_ms_sum": 89.08,
+    "unmatched": []
+  }
+}

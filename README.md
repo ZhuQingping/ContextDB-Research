@@ -11,6 +11,13 @@ Agent Memory 与 ContextDB 技术调研仓库。当前主线是评估基于 Post
 
 ## 报告索引
 
+### Agent Memory 性能与成本增强规划（2026-11-13）
+
+[领导报告 Markdown](AgentMemory数据库内核研发方向-领导报告.md) · [离线 HTML](AgentMemory数据库内核研发方向-领导报告.html) · [来源与证据](reports/agent-memory-performance-cost-20261113/来源与证据索引.md)
+
+以提升性能、降低成本为两条主线，保留真实 SQL、现场阶段数据及 Elasticsearch、BigQuery、Snowflake 的依据，明确已实现机制与规划边界。
+
+
 当前 Hindsight v1.0.0 的部署、设计与代码评审从[服务化文档索引](hindsight/README.md)进入；下列早期报告保留作历史对照。
 
 ### Hindsight 当前文档

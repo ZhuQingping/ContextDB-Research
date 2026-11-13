@@ -1,0 +1,76 @@
+{
+  "file": "/Users/zhuqingping/Work/Database/Context/ContextDB-Research/hindsight/PG增强分析报告-20261112/evidence/23-dual-maas-recall.json",
+  "sha256": "7a8b07a524a9082b8669a9e2042bda5409d712b3d0de5c85b2894aee005a55ea",
+  "http_seconds": 10.294,
+  "phases": [
+    {
+      "phase": "backend_acquisition",
+      "seconds": 1.430511474609375e-06
+    },
+    {
+      "phase": "generate_query_embedding",
+      "seconds": 1.8336315155029297
+    },
+    {
+      "phase": "store_recall",
+      "seconds": 0.4922332763671875
+    },
+    {
+      "phase": "parallel_retrieval",
+      "seconds": 0.49331188201904297
+    },
+    {
+      "phase": "retrieval_temporal_extraction",
+      "seconds": 7.152557373046875e-07
+    },
+    {
+      "phase": "retrieval_store_recall",
+      "seconds": 0.4922332763671875
+    },
+    {
+      "phase": "rrf_merge",
+      "seconds": 0.004830360412597656
+    },
+    {
+      "phase": "rerank_prefilter",
+      "seconds": 0.0
+    },
+    {
+      "phase": "hydrate_results",
+      "seconds": 4.649162292480469e-05
+    },
+    {
+      "phase": "reranking",
+      "seconds": 7.781805038452148
+    },
+    {
+      "phase": "combined_scoring",
+      "seconds": 0.006099224090576172
+    },
+    {
+      "phase": "token_filtering",
+      "seconds": 0.01177978515625
+    },
+    {
+      "phase": "result_serialization",
+      "seconds": 0.003905773162841797
+    },
+    {
+      "phase": "entity_build",
+      "seconds": 0.017222881317138672
+    },
+    {
+      "phase": "semaphore_wait",
+      "seconds": 1.1205673217773438e-05
+    },
+    {
+      "phase": "trace_finalize",
+      "seconds": 0.012589693069458008
+    }
+  ],
+  "merged": 1032,
+  "processed": 300,
+  "returned": 35,
+  "scope": "Summary of previously captured request. Raw memory content and embeddings omitted.",
+  "phase": "23-dual-maas-recall"
+}

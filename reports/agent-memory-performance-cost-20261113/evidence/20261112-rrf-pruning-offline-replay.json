@@ -1,0 +1,56 @@
+{
+  "request": 21,
+  "scope": "Offline replay of complete captured ranked lists; no PG query or AM execution savings measured",
+  "streams": {
+    "semantic": 642,
+    "bm25": 502,
+    "graph": 622,
+    "temporal": 149
+  },
+  "unique": 1032,
+  "k": 300,
+  "rational_vs_trace_membership": true,
+  "trace_selected_matches_rrf": true,
+  "policies": [
+    {
+      "policy": "round_robin",
+      "membership_certificate": {
+        "depth": {
+          "semantic": 642,
+          "bm25": 502,
+          "graph": 622,
+          "temporal": 149
+        },
+        "entries": 1915,
+        "saved_entries": 0,
+        "membership_matches_full": true
+      },
+      "optimistic_exact_score_sequential_depth": {
+        "semantic": 642,
+        "bm25": 502,
+        "graph": 622,
+        "temporal": 149
+      }
+    },
+    {
+      "policy": "largest_remaining_bound",
+      "membership_certificate": {
+        "depth": {
+          "semantic": 642,
+          "bm25": 502,
+          "graph": 622,
+          "temporal": 149
+        },
+        "entries": 1915,
+        "saved_entries": 0,
+        "membership_matches_full": true
+      },
+      "optimistic_exact_score_sequential_depth": {
+        "semantic": 642,
+        "bm25": 502,
+        "graph": 622,
+        "temporal": 149
+      }
+    }
+  ]
+}

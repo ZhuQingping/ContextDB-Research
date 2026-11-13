@@ -1,0 +1,12 @@
+{
+  "request": 21,
+  "scope": "Offline count of UTF-8 text/context present in trace, not PG wire bytes, heap reads or timing",
+  "arm_records": 1915,
+  "unique_ids": 1032,
+  "text_context_variants_per_id": 1,
+  "trace_text_context_bytes_all_arm_records": 854185,
+  "trace_text_context_bytes_unique_ids": 446175,
+  "trace_text_context_bytes_selected_300_ids": 151454,
+  "selected_ids": 300,
+  "payload_bytes_reduction_ratio_if_hydrated_once_for_300": 0.8226918056392936
+}
