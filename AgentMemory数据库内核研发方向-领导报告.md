@@ -288,7 +288,7 @@ UNION ALL
 数据库当前可见的是证据读取；如果后续模型任务不被明确提交，数据库不能凭此推测其语义并自动减少调用。
 
 ```sql
-SELECT 
+SELECT
     id, text, fact_type, context, document_id, chunk_id, tags, metadata,
     proof_count, event_date, occurred_start, occurred_end, mentioned_at,
     created_at, updated_at, source_memory_ids, consolidated_at, observation_scopes
@@ -340,7 +340,7 @@ SELECT
 	                tags, created_at, last_refreshed_at, last_memory_seen_at, trigger,
 	                1 - (embedding <=> $2::vector) as relevance
 	            FROM ctxdb_ws_agent_memory.mental_models
-	            WHERE bank_id = $1 AND embedding IS NOT NULL 
+	            WHERE bank_id = $1 AND embedding IS NOT NULL
 	            ORDER BY embedding <=> $2::vector
 	            LIMIT $3
 ```

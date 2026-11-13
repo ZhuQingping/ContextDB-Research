@@ -211,13 +211,13 @@ INSERT INTO ctxdb_ws_pg_trace_20261112.documents (id, bank_id, original_text, co
 观测阶段：`20-dual-retain`、`26-dual-retain-with-transactions`。应用调用 2 次；关联 PG 执行 2 次。首条发送记录：provider=`rrf`、qid=`141`、PID=`49673`。
 
 ```sql
-SELECT 
+SELECT
     id, text, fact_type, context, document_id, chunk_id, tags, metadata,
     proof_count, event_date, occurred_start, occurred_end, mentioned_at,
     created_at, updated_at, source_memory_ids, consolidated_at, observation_scopes
 
         FROM ctxdb_ws_pg_trace_20261112.memory_units
-        WHERE bank_id = $1 AND fact_type = ANY($2) AND document_id = $3  
+        WHERE bank_id = $1 AND fact_type = ANY($2) AND document_id = $3
         ORDER BY created_at, id
         LIMIT $4 OFFSET $5
 ```
@@ -668,9 +668,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -692,9 +692,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -716,9 +716,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -806,7 +806,7 @@ WITH seed_sources AS (
                 JOIN candidate_ids ci ON ci.id = mu.id
                 WHERE mu.fact_type = 'observation'
                   AND mu.id != ALL($1::uuid[])
-                  
+
             ),
             scored AS (
                 SELECT c.id, COUNT(DISTINCT cs.source_id)::float AS score
@@ -845,7 +845,7 @@ WITH seed_sources AS (
                     WHERE ml.from_unit_id = ANY($1::uuid[])
                       AND ml.link_type = 'semantic' AND mu.fact_type = 'observation'
                       AND mu.id != ALL($1::uuid[])
-                      
+
                     UNION ALL
                     SELECT mu.id, mu.text, mu.context, mu.event_date,
                            mu.occurred_start, mu.occurred_end, mu.mentioned_at, mu.fact_type,
@@ -855,7 +855,7 @@ WITH seed_sources AS (
                     WHERE ml.to_unit_id = ANY($1::uuid[])
                       AND ml.link_type = 'semantic' AND mu.fact_type = 'observation'
                       AND mu.id != ALL($1::uuid[])
-                      
+
                 ) sem_raw
                 GROUP BY id, text, context, event_date,
                          occurred_start, occurred_end, mentioned_at, fact_type,
@@ -872,7 +872,7 @@ WITH seed_sources AS (
                 WHERE ml.from_unit_id = ANY($1::uuid[])
                   AND ml.link_type IN ('causes', 'caused_by', 'enables', 'prevents')
                   AND mu.fact_type = 'observation'
-                  
+
                 ORDER BY mu.id, ml.weight DESC LIMIT $2
             )
             SELECT * FROM observation_entity_expanded
@@ -889,7 +889,7 @@ WITH seed_sources AS (
 观测阶段：`21-dual-rrf-recall`、`22-dual-rrf-reflect`、`23-dual-maas-recall`、`24-dual-maas-reflect`、`25-dual-maas100-reflect`。应用调用 18 次；关联 PG 执行 18 次。首条发送记录：provider=`rrf`、qid=`203`、PID=`49673`。
 
 ```sql
-WITH 
+WITH
             seed_entities AS (
                 SELECT DISTINCT ue.entity_id
                 FROM ctxdb_ws_agent_memory.unit_entities ue
@@ -915,7 +915,7 @@ WITH
                           FROM ctxdb_ws_agent_memory.memory_units mu_target
                           WHERE mu_target.id = ue_target.unit_id
                             AND mu_target.fact_type = $2
-                            
+
                       )
                     ORDER BY ue_target.unit_id DESC
                     LIMIT 200
@@ -925,7 +925,7 @@ WITH
                 ORDER BY score DESC
                 LIMIT $3
             ),
-            
+
             semantic_expanded AS (
                 SELECT
                     id, text, context, event_date,
@@ -945,7 +945,7 @@ WITH
                       AND ml.link_type = 'semantic'
                       AND mu.fact_type = $2
                       AND mu.id != ALL($1::uuid[])
-                      
+
                     UNION ALL
                     SELECT
                         mu.id, mu.text, mu.context, mu.event_date,
@@ -958,7 +958,7 @@ WITH
                       AND ml.link_type = 'semantic'
                       AND mu.fact_type = $2
                       AND mu.id != ALL($1::uuid[])
-                      
+
                 ) sem_raw
                 GROUP BY id, text, context, event_date,
                          occurred_start, occurred_end, mentioned_at, fact_type,
@@ -978,7 +978,7 @@ WITH
                 WHERE ml.from_unit_id = ANY($1::uuid[])
                   AND ml.link_type IN ('causes', 'caused_by', 'enables', 'prevents')
                   AND mu.fact_type = $2
-                  
+
                 ORDER BY mu.id, ml.weight DESC
                 LIMIT $3
             )
@@ -1127,9 +1127,9 @@ SELECT chunk_id, chunk_text, chunk_index, document_id
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -1151,9 +1151,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -1166,7 +1166,7 @@ UNION ALL
 观测阶段：`22-dual-rrf-reflect`。应用调用 1 次；关联 PG 执行 1 次。首条发送记录：provider=`rrf`、qid=`316`、PID=`49742`。
 
 ```sql
-SELECT 
+SELECT
     id, text, fact_type, context, document_id, chunk_id, tags, metadata,
     proof_count, event_date, occurred_start, occurred_end, mentioned_at,
     created_at, updated_at, source_memory_ids, consolidated_at, observation_scopes
@@ -1219,9 +1219,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -1243,9 +1243,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -1267,9 +1267,9 @@ UNION ALL
               (occurred_end IS NOT NULL AND occurred_end BETWEEN $3 AND $4)
           )
           AND (1 - (embedding <=> $1::vector)) >= $5
-          
-          
-          
+
+
+
         ORDER BY embedding <=> $1::vector
         LIMIT 60
         )
@@ -1317,7 +1317,7 @@ SELECT
 	                tags, created_at, last_refreshed_at, last_memory_seen_at, trigger,
 	                1 - (embedding <=> $2::vector) as relevance
 	            FROM ctxdb_ws_agent_memory.mental_models
-	            WHERE bank_id = $1 AND embedding IS NOT NULL 
+	            WHERE bank_id = $1 AND embedding IS NOT NULL
 	            ORDER BY embedding <=> $2::vector
 	            LIMIT $3
 ```
